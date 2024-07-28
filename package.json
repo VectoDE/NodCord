@@ -7,21 +7,61 @@
     "start": "node start.js",
     "dev": "nodemon src/api/app.js & nodemon src/bot/bot.js",
     "build": "node build.js",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint .",
+    "prettify": "prettier --write ."
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/vectode/NodCord.git"
   },
+  "bugs": {
+    "url": "https://github.com/vectode/NodCord/issues"
+  },
+  "homepage": "https://github.com/vectode/NodCord#readme",
   "keywords": [
     "nodejs",
     "express",
     "discord",
     "api",
-    "bot"
+    "bot",
+    "mongodb",
+    "ejs",
+    "jest",
+    "pm2",
+    "nodemon"
   ],
   "author": "Vecto. (Tim Hauke)",
+  "contributors": [
+    {
+      "name": "Contributor 1",
+      "email": "contributor1@example.com",
+      "url": "https://github.com/contributor1"
+    },
+    {
+      "name": "Contributor 2",
+      "email": "contributor2@example.com",
+      "url": "https://github.com/contributor2"
+    }
+  ],
   "license": "MIT",
+  "files": [
+    "src",
+    "public",
+    "build.js",
+    "start.js",
+    "start.sh",
+    "stop.sh",
+    "restart.sh",
+    "README.md",
+    "DOCUMENTATION.md",
+    "ROADMAP.md",
+    "Todo.md"
+  ],
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
   "dependencies": {
     "archiver": "^5.3.0",
     "axios": "^0.27.2",
@@ -35,6 +75,18 @@
   },
   "devDependencies": {
     "jest": "^28.1.0",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "eslint": "^8.15.0",
+    "prettier": "^2.5.1"
+  },
+  "config": {
+    "port": 3000,
+    "discord_token": "your_discord_token",
+    "mongo_uri": "your_mongo_connection_string"
+  },
+  "private": false,
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/vectode"
   }
 }
