@@ -79,11 +79,6 @@
     "eslint": "^8.15.0",
     "prettier": "^2.5.1"
   },
-  "config": {
-    "port": 3000,
-    "discord_token": "your_discord_token",
-    "mongo_uri": "your_mongo_connection_string"
-  },
   "private": false,
   "funding": {
     "type": "github",
