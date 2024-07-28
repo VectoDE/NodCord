@@ -1,5 +1,3 @@
-# Todo.md
-
 ## Projekt NodCord Todo-Liste
 
 ### Todo
