@@ -1,5 +1,3 @@
-# NodCord
-
 ![NodCord_Logo](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
 
 
