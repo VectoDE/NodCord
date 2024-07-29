@@ -3,12 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css" />
+    <title>NodCord - Home</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body>
-    
-    <script src="script.js"></script>
+    <header>
+        <h1>Willkommen bei NodCord</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/info">Info</a></li>
+                <li><a href="/status">Status</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Über NodCord</h2>
+        <p>NodCord ist eine Node.js-API mit Express.js und einem integrierten Discord-Bot.</p>
+        <p>Nutzen Sie die Navigation oben, um mehr zu erfahren oder den Status des Bots zu überprüfen.</p>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> NodCord. Alle Rechte vorbehalten.</p>
+    </footer>
+    <script src="/assets/js/scripts.js"></script>
 </body>
 </html>
