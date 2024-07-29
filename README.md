@@ -1,6 +1,7 @@
 # NodCord
 
-![NodCord Logo](path/to/your/logo.png)
+![NodCord_Logo](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
+
 
 NodCord ist eine Node.js API mit Express.js, die einen integrierten Discord Bot beinhaltet. Die API enthält einen Discord Service mit Controller und Router, um den Bot auch über die API steuern zu können.
 
