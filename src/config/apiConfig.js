@@ -10,6 +10,5 @@ module.exports = {
         methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
         preflightContinue: false,
         optionsSuccessStatus: 204
-    },
-    jwtSecret: process.env.JWT_SECRET || 'your_jwt_secret',
+    }
 };
