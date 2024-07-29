@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Error</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body>
-    
-    <script src="script.js"></script>
+    <div class="container">
+        <h1>Error</h1>
+        <p>Oops! Something went wrong.</p>
+        <p><%= error.message %></p>
+        <% if (error.status) { %>
+            <p>Status: <%= error.status %></p>
+        <% } %>
+        <a href="/">Go Back to Home</a>
+    </div>
+    <script src="/assets/js/scripts.js"></script>
 </body>
 </html>

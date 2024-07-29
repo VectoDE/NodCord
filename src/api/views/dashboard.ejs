@@ -3,12 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="styles.css" />
+    <title>NodCord - Dashboard</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
 </head>
 <body>
-    
-    <script src="script.js"></script>
+    <header>
+        <h1>NodCord Dashboard</h1>
+        <nav>
+            <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/info">Info</a></li>
+                <li><a href="/status">Status</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>Dashboard Übersicht</h2>
+        <section>
+            <h3>Bot Steuerung</h3>
+            <form action="/api/control/start" method="POST">
+                <button type="submit">Bot starten</button>
+            </form>
+            <form action="/api/control/stop" method="POST">
+                <button type="submit">Bot stoppen</button>
+            </form>
+            <form action="/api/control/restart" method="POST">
+                <button type="submit">Bot neu starten</button>
+            </form>
+        </section>
+        <section>
+            <h3>System Logs</h3>
+            <div>
+                <a href="/logs" target="_blank">Logs anzeigen</a>
+            </div>
+        </section>
+        <section>
+            <h3>Datei-Uploads</h3>
+            <form action="/api/files/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" required>
+                <button type="submit">Datei hochladen</button>
+            </form>
+        </section>
+        <section>
+            <h3>Status des Discord Bots</h3>
+            <p>Der Bot ist aktuell <strong><%= botStatus %></strong>.</p>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; <%= new Date().getFullYear() %> NodCord. Alle Rechte vorbehalten.</p>
+    </footer>
+    <script src="/assets/js/scripts.js"></script>
 </body>
 </html>
