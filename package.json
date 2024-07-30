@@ -5,9 +5,9 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev": "nodemon src/api/app.js & nodemon src/bot/index.js",
+    "dev": "nodemon src/server.js",
     "build": "node build.js",
-    "start:prod": "node dist/main.js",
+    "start:prod": "node build/start.js",
     "test": "jest",
     "lint": "eslint .",
     "prettify": "prettier --write ."
@@ -63,13 +63,11 @@
     "check-disk-space": "^3.4.0",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
-    "discord": "^0.8.2",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.1",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
     "express-rate-limit": "^7.4.0",
-    "fs": "^0.0.1-security",
     "helmet": "^5.0.2",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",
@@ -84,8 +82,7 @@
     "sharp": "^0.29.3",
     "swagger-ui-express": "^4.3.0",
     "validator": "^13.7.0",
-    "winston": "^3.13.1",
-    "yarn": "^1.22.22"
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "eslint": "^8.15.0",
