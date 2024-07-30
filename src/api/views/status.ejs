@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <style>
+        .status {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .status-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .online {
+            background-color: green;
+        }
+        .maintenance {
+            background-color: yellow;
+        }
+        .offline {
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>System Status</h1>
+    </header>
+    <main>
+        <section>
+            <h2>API Status</h2>
+            <div class="status">
+                <div class="status-dot <%= apiStatus %>"></div>
+                <span><%= apiStatusMessage %></span>
+            </div>
+
+            <h2>Database Status</h2>
+            <div class="status">
+                <div class="status-dot <%= dbStatus %>"></div>
+                <span><%= dbStatusMessage %></span>
+            </div>
+
+            <h2>Discord Bot Status</h2>
+            <div class="status">
+                <div class="status-dot <%= botStatus %>"></div>
+                <span><%= botStatusMessage %></span>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 NodCord. All rights reserved.</p>
+    </footer>
+</body>
+</html>
