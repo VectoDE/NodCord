@@ -3,122 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Routes</title>
+    <title>NodCord - API Routes</title>
     <link rel="stylesheet" href="/assets/css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        .logo img {
+            height: 40px;
+            margin-right: 10px;
+        }
+        nav {
+            display: flex;
+        }
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #575757;
+        }
+        main {
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section h2 {
+            margin-top: 0;
+        }
+        .routes-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .routes-list li {
+            margin: 10px 0;
+        }
+        .routes-list a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .routes-list a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>API Routes Overview</h1>
+        <div class="logo">
+            <img src="/assets/img/logo.png" alt="NodCord Logo">
+            <span>NodCord</span>
+        </div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/discord-members">Discord Members</a>
+            <a href="/discord-servers">Discord Servers</a>
+            <a href="/status">API Status</a>
+            <a href="/info">Info</a>
+            <a href="/docs">Documentation</a>
+        </nav>
     </header>
     <main>
-        <section>
-            <h2>System Routes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>Path</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>GET</td>
-                        <td><a href="/status">/status</a></td>
-                        <td>Returns the status of the application</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h2>Auth Routes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>Path</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>POST</td>
-                        <td><a href="/auth/login">/auth/login</a></td>
-                        <td>Login</td>
-                    </tr>
-                    <tr>
-                        <td>POST</td>
-                        <td><a href="/auth/register">/auth/register</a></td>
-                        <td>Register</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h2>Role Routes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>Path</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>GET</td>
-                        <td><a href="/roles">/roles</a></td>
-                        <td>Get all roles</td>
-                    </tr>
-                    <tr>
-                        <td>POST</td>
-                        <td><a href="/roles">/roles</a></td>
-                        <td>Create a new role</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Repeat similar sections for other route categories -->
-
-            <h2>Product Routes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Method</th>
-                        <th>Path</th>
-                        <th>Description</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>GET</td>
-                        <td><a href="/products">/products</a></td>
-                        <td>Get all products</td>
-                    </tr>
-                    <tr>
-                        <td>GET</td>
-                        <td><a href="/products/:id">/products/:id</a></td>
-                        <td>Get product by ID</td>
-                    </tr>
-                    <tr>
-                        <td>POST</td>
-                        <td><a href="/products">/products</a></td>
-                        <td>Create a new product</td>
-                    </tr>
-                    <tr>
-                        <td>PUT</td>
-                        <td><a href="/products/:id">/products/:id</a></td>
-                        <td>Update product by ID</td>
-                    </tr>
-                    <tr>
-                        <td>DELETE</td>
-                        <td><a href="/products/:id">/products/:id</a></td>
-                        <td>Delete product by ID</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <!-- Continue similarly for other categories like Company, Game, Project, etc. -->
-
-        </section>
+        <div class="section">
+            <h1>API Routes</h1>
+            <p>Below is a list of all available API routes:</p>
+            <ul class="routes-list">
+                <li><a href="/status">GET /status</a> - Returns the status of the application.</li>
+                <li><a href="/discord/status">GET /discord/status</a> - Returns the status of the Discord bot.</li>
+                <li><a href="/discord/restart">POST /discord/restart</a> - Restarts the Discord bot.</li>
+                <li><a href="/api/products">GET /api/products</a> - List all products.</li>
+                <li><a href="/api/products/:id">GET /api/products/:id</a> - Get a specific product by ID.</li>
+                <li><a href="/api/companies">GET /api/companies</a> - List all companies.</li>
+                <li><a href="/api/companies/:id">GET /api/companies/:id</a> - Get a specific company by ID.</li>
+                <li><a href="/api/games">GET /api/games</a> - List all games.</li>
+                <li><a href="/api/games/:id">GET /api/games/:id</a> - Get a specific game by ID.</li>
+                <li><a href="/api/projects">GET /api/projects</a> - List all projects.</li>
+                <li><a href="/api/projects/:id">GET /api/projects/:id</a> - Get a specific project by ID.</li>
+                <li><a href="/api/tasks">GET /api/tasks</a> - List all tasks.</li>
+                <li><a href="/api/tasks/:id">GET /api/tasks/:id</a> - Get a specific task by ID.</li>
+                <li><a href="/api/payments">GET /api/payments</a> - List all payments.</li>
+                <li><a href="/api/payments/:id">GET /api/payments/:id</a> - Get a specific payment by ID.</li>
+                <li><a href="/api/groups">GET /api/groups</a> - List all groups.</li>
+                <li><a href="/api/groups/:id">GET /api/groups/:id</a> - Get a specific group by ID.</li>
+                <li><a href="/api/chats">GET /api/chats</a> - List all chats.</li>
+                <li><a href="/api/chats/:id">GET /api/chats/:id</a> - Get a specific chat by ID.</li>
+                <li><a href="/api/favorites">GET /api/favorites</a> - List all favorites.</li>
+                <li><a href="/api/favorites/:id">GET /api/favorites/:id</a> - Get a specific favorite by ID.</li>
+            </ul>
+        </div>
     </main>
     <footer>
         <p>&copy; 2024 NodCord. All rights reserved.</p>
