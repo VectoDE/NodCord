@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Routes</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+</head>
+<body>
+    <header>
+        <h1>API Routes Overview</h1>
+    </header>
+    <main>
+        <section>
+            <h2>System Routes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Path</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GET</td>
+                        <td><a href="/status">/status</a></td>
+                        <td>Returns the status of the application</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Auth Routes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Path</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>POST</td>
+                        <td><a href="/auth/login">/auth/login</a></td>
+                        <td>Login</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td><a href="/auth/register">/auth/register</a></td>
+                        <td>Register</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Role Routes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Path</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GET</td>
+                        <td><a href="/roles">/roles</a></td>
+                        <td>Get all roles</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td><a href="/roles">/roles</a></td>
+                        <td>Create a new role</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Repeat similar sections for other route categories -->
+
+            <h2>Product Routes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Path</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GET</td>
+                        <td><a href="/products">/products</a></td>
+                        <td>Get all products</td>
+                    </tr>
+                    <tr>
+                        <td>GET</td>
+                        <td><a href="/products/:id">/products/:id</a></td>
+                        <td>Get product by ID</td>
+                    </tr>
+                    <tr>
+                        <td>POST</td>
+                        <td><a href="/products">/products</a></td>
+                        <td>Create a new product</td>
+                    </tr>
+                    <tr>
+                        <td>PUT</td>
+                        <td><a href="/products/:id">/products/:id</a></td>
+                        <td>Update product by ID</td>
+                    </tr>
+                    <tr>
+                        <td>DELETE</td>
+                        <td><a href="/products/:id">/products/:id</a></td>
+                        <td>Delete product by ID</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Continue similarly for other categories like Company, Game, Project, etc. -->
+
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 NodCord. All rights reserved.</p>
+    </footer>
+</body>
+</html>
