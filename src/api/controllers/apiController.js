@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const package = require('../../../package.json');
+const apiStatusService = require('../services/apiStatusService');
 
 // Beispiel-Daten
 const apiData = {
   name: package.name,
   version: package.version,
-  status: apiStatus
+  status: apiStatusService.getStatus()
 };
 
 // API-Status
