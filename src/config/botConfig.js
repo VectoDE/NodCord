@@ -1,7 +1,7 @@
 const { GatewayIntentBits, Partials } = require('discord.js');
 
 module.exports = {
-    token: process.env.DISCORD_TOKEN || 'MTE3NDA5NjYwNzExMzkxMjM1MA.GEiw1q.edAbPTwWDjtAT36WRWObCYM1j3KOojc9NZBHQ4',
+    token: process.env.DISCORD_TOKEN || '',
     prefix: process.env.BOT_PREFIX || '!',
     ownerID: process.env.OWNER_ID || 'your_discord_id',
     activity: {
