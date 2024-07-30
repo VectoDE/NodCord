@@ -4,16 +4,17 @@
   "description": "Eine Node.js-API mit Express.js und einem integrierten Discord-Bot",
   "main": "src/app.js",
   "scripts": {
-    "start": "node start.js",
-    "dev": "nodemon src/api/app.js & nodemon src/bot/bot.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/api/app.js & nodemon src/bot/index.js",
     "build": "node build.js",
+    "start:prod": "node dist/main.js",
     "test": "jest",
     "lint": "eslint .",
     "prettify": "prettier --write ."
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/vectode/NodCord.git"
+    "url": "git+https://github.com/vectode/NodCord.git"
   },
   "bugs": {
     "url": "https://github.com/vectode/NodCord/issues"
@@ -33,16 +34,8 @@
   ],
   "author": "Vecto. (Tim Hauke)",
   "contributors": [
-    {
-      "name": "Contributor 1",
-      "email": "contributor1@example.com",
-      "url": "https://github.com/contributor1"
-    },
-    {
-      "name": "Contributor 2",
-      "email": "contributor2@example.com",
-      "url": "https://github.com/contributor2"
-    }
+    "Contributor 1 <contributor1@example.com> (https://github.com/contributor1)",
+    "Contributor 2 <contributor2@example.com> (https://github.com/contributor2)"
   ],
   "license": "MIT",
   "files": [
@@ -65,34 +58,39 @@
   "dependencies": {
     "archiver": "^5.3.0",
     "axios": "^0.27.2",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.2",
+    "check-disk-space": "^3.4.0",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "discord": "^0.8.2",
     "discord.js": "^14.7.1",
     "dotenv": "^16.0.1",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
-    "mongoose": "^6.3.4",
-    "pm2": "^5.1.2",
+    "express-rate-limit": "^7.4.0",
+    "fs": "^0.0.1-security",
     "helmet": "^5.0.2",
-    "cors": "^2.8.5",
-    "winston": "^3.6.0",
-    "morgan": "^1.10.0",
-    "redis": "^4.0.1",
-    "passport": "^0.5.3",
     "jsonwebtoken": "^8.5.1",
-    "multer": "^1.4.3",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1",
+    "mongoose": "^6.3.4",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.4",
+    "passport": "^0.5.3",
+    "pm2": "^5.1.2",
+    "rate-limiter-flexible": "^2.3.0",
+    "redis": "^4.0.1",
     "sharp": "^0.29.3",
     "swagger-ui-express": "^4.3.0",
-    "compression": "^1.7.4",
-    "rate-limiter-flexible": "^2.3.0",
-    "moment": "^2.29.1",
-    "lodash": "^4.17.21",
-    "bcrypt": "^5.0.1",
-    "validator": "^13.7.0"
+    "validator": "^13.7.0",
+    "winston": "^3.13.1",
+    "yarn": "^1.22.22"
   },
   "devDependencies": {
+    "eslint": "^8.15.0",
     "jest": "^28.1.0",
     "nodemon": "^2.0.19",
-    "eslint": "^8.15.0",
     "prettier": "^2.5.1"
   },
   "private": false,

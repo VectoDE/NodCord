@@ -1,5 +1,5 @@
 module.exports = {
-    mongoURI: process.env.MONGO_URI || 'your_mongo_connection_string',
+    mongoURI: process.env.MONGO_URI || 'mongodb+srv://timhauke99:zAX0dYvqKsBEnhwS@vs-code.8eik4zl.mongodb.net/?retryWrites=true&w=majority',
     sessionSecret: process.env.SESSION_SECRET || 'your_session_secret',
     logLevel: process.env.LOG_LEVEL || 'info',
     publicPath: 'src/public',

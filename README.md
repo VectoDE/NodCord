@@ -1,14 +1,19 @@
-![NodCord_Logo](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
+![NodCord Logo with Text](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
 
 
 NodCord ist eine Node.js API mit Express.js, die einen integrierten Discord Bot beinhaltet. Die API enthält einen Discord Service mit Controller und Router, um den Bot auch über die API steuern zu können.
 
 ## Inhaltsverzeichnis
 
+- [Inhaltsverzeichnis](#inhaltsverzeichnis)
 - [Installation](#installation)
 - [Verwendung](#verwendung)
 - [API Endpoints](#api-endpoints)
+  - [GET /api/discord/status](#get-apidiscordstatus)
+  - [POST /api/discord/message](#post-apidiscordmessage)
+  - [Weitere Endpoints werden bald hinzugefügt...](#weitere-endpoints-werden-bald-hinzugefügt)
 - [Discord Bot Befehle](#discord-bot-befehle)
+  - [Weitere Befehle werden bald hinzugefügt...](#weitere-befehle-werden-bald-hinzugefügt)
 - [Konfiguration](#konfiguration)
 - [Contributing](#contributing)
 - [Lizenz](#lizenz)
@@ -82,3 +87,5 @@ Beiträge sind willkommen! Bitte erstelle einen Fork des Repositories und öffne
 ## Lizenz
 
 Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe die [LICENSE](LICENSE)-Datei für weitere Details.
+
+![NodCord Logo](https://imgur.com/dCl3Q6H.png)
