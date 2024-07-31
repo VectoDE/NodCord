@@ -1,28 +1,29 @@
-const { Client, GatewayIntentBits } = require('discord.js');
-const client = require('../../bot/index');  // Importiere den Discord-Client
+const Ticket = require('../../models/ticketModel');
+const { getRegisteredEventsCount } = require('../../bot/functions/eventHandler'); // Importiere die Methode
 
-// Funktion zum Abrufen aller Discord-Befehle
-const getDiscordCommands = async (req, res) => {
-    try {
-        // Stelle sicher, dass der Bot bereit ist
-        if (!client.isReady()) {
-            return res.status(503).json({ message: 'Bot is not ready' });
-        }
+const getBotStats = async (client) => {
+    // Hole die Anzahl der Server und Mitglieder
+    const guilds = client.guilds.cache.size;
+    const members = client.guilds.cache.reduce((acc, guild) => acc + guild.memberCount, 0);
 
-        // Holen Sie sich die Befehle aus dem Client
-        const commands = client.commands.map(command => ({
-            name: command.data.name,
-            description: command.data.description,
-            options: command.data.options || []
-        }));
+    // Hole die Anzahl der offenen Tickets
+    const openTicketsCount = await Ticket.countDocuments({ status: 'open' });
 
-        res.status(200).json({ commands });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    // Hole die Anzahl der registrierten Events
+    const registeredEventsCount = getRegisteredEventsCount(); // Verwende die Methode
+
+    return { guilds, members, openTicketsCount, registeredEventsCount };
 };
 
-// Exportiere die Controller-Funktion
 module.exports = {
-    getDiscordCommands
+    getStats: async (req, res) => {
+        try {
+            const client = req.app.get('client'); // Hole den Client aus den Express App-Settings
+            const stats = await getBotStats(client);
+            res.json(stats);
+        } catch (error) {
+            console.error('Error getting bot stats:', error);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    },
 };

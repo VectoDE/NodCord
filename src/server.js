@@ -1,20 +1,21 @@
-require('dotenv').config();
-const botConfig = require('./config/botConfig');
+const http = require('http');
+const mongoose = require('mongoose');
+const { app, startApp } = require('./api/app');
+const bot = require('./bot/index'); // Importiere den Bot
+const { initSocketIO } = require('./api/services/socketioService');
+
+// Verbinde mit der Datenbank
 const connectDB = require('./database/connectDB');
-const app = require('./api/app');
-const client = require('./bot/index');
+connectDB();
 
-// Connect to the database first
-connectDB().then(() => {
-    // Start the API server
-    app.listen(app.get('port'), () => {
-        console.log(`API server running on port ${app.get('port')}`);
-    });
+// Erstelle einen HTTP-Server
+const server = http.createServer(app);
 
-    // Start the bot
-    client.login(botConfig.token).then(() => {
-        console.log('Bot logged in successfully.');
-    }).catch(err => {
-        console.error('Error logging in the bot:', err);
-    });
-});
+// Initialisiere Socket.IO
+initSocketIO(server);
+
+// Starte die API und den Server
+startApp();
+
+// Starte den Bot
+bot.start(); // Sicherstellen, dass der Bot korrekt gestartet wird

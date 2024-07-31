@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NodCord - Home</title>
+    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/assets/css/styles.css">
     <style>
         body {
@@ -59,22 +60,31 @@
         .section p {
             font-size: 16px;
         }
+        .footer p a {
+          color: #2fddfe;
+          text-decoration: none;
+        }
+        .footer p a:hover {
+          color: #fc9702;
+        }
     </style>
 </head>
 <body>
     <header>
         <div class="logo">
-            <img src="/assets/img/logo.png" alt="NodCord Logo">
-            <span>NodCord</span>
+            <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+              <span>NodCord</span>
+            </a>
         </div>
         <nav>
             <a href="/">Home</a>
-            <a href="/dashboard">Dashboard</a>
+            <a href="/docs">Documentation</a>
+            <a href="/info">Info</a>
+            <a href="/status">Status</a>
             <a href="/discord-members">Discord Members</a>
             <a href="/discord-servers">Discord Servers</a>
-            <a href="/status">API Status</a>
-            <a href="/info">Info</a>
-            <a href="/docs">Documentation</a>
+            <a href="/socketio">SocketIO</a>
+            <a href="/dashboard">Dashboard</a>
         </nav>
     </header>
     <main>
@@ -95,8 +105,8 @@
             </p>
         </div>
     </main>
-    <footer>
-        <p>&copy; 2024 NodCord. All rights reserved.</p>
+    <footer class="footer">
+        <p>2024 &copy; <a href="/">NodCord</a>. All rights reserved.</p>
     </footer>
 </body>
 </html>

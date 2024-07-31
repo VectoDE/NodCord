@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Pfad zur Statusdatei
-const statusFilePath = path.join(__dirname, '..', '..', 'status.json');
+const statusFilePath = path.join(__dirname, '..', '..', 'public', 'json', 'status.json');
 
 // Standardstatus auf 'online' setzen
 let apiStatus = 'online';

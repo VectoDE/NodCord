@@ -14,4 +14,8 @@ const client = new Client({
 require('./functions/commandHandler')(client);
 require('./functions/eventHandler')(client);
 
-module.exports = client;
+const start = () => {
+  client.login(botConfig.token);
+};
+
+module.exports = { start };

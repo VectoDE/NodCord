@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const discordController = require('../controllers/discordbotController');
+const discordbotController = require('../controllers/discordbotController');
 
-// Endpunkt zum Abrufen aller Discord-Befehle
-router.get('/commands', discordController.getDiscordCommands);
+router.get('/stats', discordbotController.getStats);
 
 module.exports = router;

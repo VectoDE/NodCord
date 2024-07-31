@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { GatewayIntentBits, Partials } = require('discord.js');
 
 module.exports = {

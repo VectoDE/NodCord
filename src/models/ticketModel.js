@@ -22,6 +22,26 @@ const ticketSchema = new mongoose.Schema({
         enum: ['open', 'closed'],
         default: 'open'
     },
+    messages: [
+        {
+            messageId: {
+                type: String,
+                required: true
+            },
+            content: {
+                type: String,
+                required: true
+            },
+            authorId: {
+                type: String,
+                required: true
+            },
+            createdAt: {
+                type: Date,
+                default: Date.now
+            }
+        }
+    ],
     createdAt: {
         type: Date,
         default: Date.now

@@ -1,4 +1,3 @@
-const { Router } = require('express');
 const package = require('../../../package.json');
 const apiStatusService = require('../services/apiStatusService');
 
