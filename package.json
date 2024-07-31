@@ -85,7 +85,7 @@
     "rate-limiter-flexible": "^2.3.0",
     "redis": "^4.7.0",
     "redis-server": "^1.2.2",
-    "sharp": "^0.29.3",
+    "sharp": "^0.32.6",
     "socket.io": "^4.7.5",
     "socket.io-redis": "^6.1.1",
     "socketio": "^1.0.0",
