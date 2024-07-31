@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Servers</title>
+    <link rel="stylesheet" href="/assets/css/styles.css">
+    <style>
+        .server-cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: space-around;
+        }
+        .server-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            width: 300px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            background: #fff;
+        }
+        .server-card img.banner {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .server-card img.icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-top: -50px;
+            border: 4px solid #fff;
+        }
+        .server-card h2 {
+            margin: 1rem 0;
+            font-size: 1.5rem;
+        }
+        .server-card p {
+            margin: 0.5rem 0;
+        }
+        .server-card .info {
+            margin: 1rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Discord Servers</h1>
+    </header>
+    <main>
+        <section>
+            <div class="server-cards">
+                <% servers.forEach(server => { %>
+                <div class="server-card">
+                    <img src="<%= server.banner %>" alt="Banner for <%= server.name %>" class="banner">
+                    <img src="<%= server.icon %>" alt="Icon for <%= server.name %>" class="icon">
+                    <h2><%= server.name %></h2>
+                    <div class="info">
+                        <p><strong>Members:</strong> <%= server.memberCount %></p>
+                        <p><strong>Roles:</strong> <%= server.roleCount %></p>
+                        <!-- Add more server information if available -->
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 NodCord Project</p>
+    </footer>
+</body>
+</html>
