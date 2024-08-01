@@ -14,18 +14,23 @@ module.exports = {
         ],
         category: 'Moderation',
     },
-    async execute(interaction) {
-        const amount = interaction.options.getInteger('amount');
+    async execute(message, args) {
+        const amount = parseInt(args[0], 10);
 
-        if (!interaction.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-            return interaction.reply({ content: 'Du hast nicht die Berechtigung, Nachrichten zu löschen.', ephemeral: true });
+        if (!message.member.permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+            return message.channel.send('Du hast nicht die Berechtigung, Nachrichten zu löschen.');
         }
 
-        if (amount <= 0 || amount > 100) {
-            return interaction.reply({ content: 'Bitte gib eine Anzahl zwischen 1 und 100 an.', ephemeral: true });
+        if (isNaN(amount) || amount <= 0 || amount > 100) {
+            return message.channel.send('Bitte gib eine Anzahl zwischen 1 und 100 an.');
         }
 
-        await interaction.channel.bulkDelete(amount, true);
-        await interaction.reply({ content: `Erfolgreich ${amount} Nachrichten gelöscht.`, ephemeral: true });
+        try {
+            await message.channel.bulkDelete(amount, true);
+            await message.channel.send(`Erfolgreich ${amount} Nachrichten gelöscht.`);
+        } catch (error) {
+            console.error('Fehler beim Löschen der Nachrichten:', error);
+            message.channel.send('Ein Fehler ist aufgetreten beim Löschen der Nachrichten.');
+        }
     },
 };

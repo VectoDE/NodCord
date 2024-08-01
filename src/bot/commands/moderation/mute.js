@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const Mute = require('../../models/muteModel');
+const Mute = require('../../../models/muteModel');
 
 module.exports = {
     data: {
@@ -69,11 +69,11 @@ module.exports = {
         setTimeout(async () => {
             if (member.roles.cache.has(muteRole.id)) {
                 await member.roles.remove(muteRole, 'Stummschaltung beendet');
-                
+
                 // Aktualisiere die Datenbank
                 mute.unmutedAt = Date.now();
                 await mute.save();
-                
+
                 const unmuteEmbed = new EmbedBuilder()
                     .setColor('#00FF00')
                     .setTitle('🔊 Benutzer wieder hörbar')

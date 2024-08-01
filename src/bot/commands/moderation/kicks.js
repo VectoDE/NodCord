@@ -1,4 +1,3 @@
-// src/bot/commands/moderation/kicks.js
 const { EmbedBuilder } = require('discord.js');
 const Kick = require('../../../models/kickModel'); // Überprüfe den Pfad und die Exporte
 

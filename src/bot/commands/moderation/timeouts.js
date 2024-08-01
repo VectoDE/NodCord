@@ -1,4 +1,3 @@
-// src/bot/commands/moderation/timeouts.js
 const { EmbedBuilder } = require('discord.js');
 const Timeout = require('../../../models/timeoutModel'); // Überprüfe den Pfad und die Exporte
 

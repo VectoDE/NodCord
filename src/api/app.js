@@ -13,6 +13,7 @@ const roleRoutes = require('./routes/roleRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
+const feedbackRoutes = require('./routes/feedbackRoutes');
 const serverRoutes = require('./routes/serverRoutes');
 const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
@@ -50,6 +51,7 @@ app.use('/categories', categoryRoutes);
 app.use('/blogs', blogRoutes);
 
 app.use('/tickets', ticketRoutes);
+app.use('/feedback', feedbackRoutes);
 
 app.use('/servers', serverRoutes);
 app.use('/controls', controlRoutes);

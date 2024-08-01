@@ -1,5 +1,5 @@
 const { EmbedBuilder } = require('discord.js');
-const Mute = require('../../models/muteModel');
+const Mute = require('../../../models/muteModel');
 
 module.exports = {
     data: {
