@@ -6,6 +6,7 @@ client.commands = new Collection();
 client.prefix = new Map();
 
 require('dotenv').config();
+const botConfig = require('../config/botConfig');
 
 const functions = fs.readdirSync("./src/bot/functions").filter(file => file.endsWith(".js"));
 const eventFiles = fs.readdirSync("./src/bot/events").filter(file => file.endsWith(".js"));
@@ -24,7 +25,7 @@ const start = () => {
     }
     client.handleEvents(eventFiles, "./src/bot/events");
     client.handleCommands(commandFolders, "./src/bot/commands");
-    client.login(process.env.token)
+    client.login(botConfig.token)
   })();
 }
 

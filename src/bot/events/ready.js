@@ -2,12 +2,13 @@ module.exports = {
   name: 'ready',
   once: true,
   async execute(client) {
-    console.log('Ready!');
+    console.log(`Logged in as ${client.user.username}`);
 
     const activity = [
-      'Subscribe to Ethical Programmer',
-      'Make sure to like & share',
-      'do /ping to pong!'
+      'coming soon...',
+      'Project Management Services',
+      'Development Services',
+      'do /help for helpmenu'
     ]
 
     setInterval(() => {
