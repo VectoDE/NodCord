@@ -5,26 +5,31 @@ const teamModel = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role: {
+    description: {
         type: String,
-        required: true,
+        default: '',
     },
-    joinDate: {
+    createdDate: {
         type: Date,
         default: Date.now,
     },
+    members: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', // Assuming there's a User model
+    }],
     status: {
         type: String,
         enum: ['active', 'inactive'],
         default: 'active',
     },
-    contact: {
+    type: {
         type: String,
-        required: true,
+        enum: ['project', 'department', 'esports', 'other'],
+        default: 'other',
     },
-    profileImage: {
+    logo: {
         type: String,
-        default: 'default-profile.png', // A fallback profile image
+        default: 'default-team-logo.png', // A fallback logo
     }
 });
 
