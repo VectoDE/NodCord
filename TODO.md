@@ -17,7 +17,10 @@
 
 #### Discord Bot-Entwicklung
 - [ ] Discord Bot initialisieren und einrichten
-- [ ] Bot-Befehle implementieren
+- [ ] Bot-Prefix-Befehle implementieren
+    - [ ] `!ping` Befehl
+    - [ ] `!info` Befehl
+- [ ] Bot-Slash-Befehle implementieren
     - [ ] `!ping` Befehl
     - [ ] `!info` Befehl
 - [ ] Bot-Events (z.B. `ready`, `message`) hinzufügen
