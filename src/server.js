@@ -1,7 +1,7 @@
 const http = require('http');
 const mongoose = require('mongoose');
 const { app, startApp } = require('./api/app');
-const bot = require('./bot/index'); // Importiere den Bot
+const bot = require('./bot/index');
 const { initSocketIO } = require('./api/services/socketioService');
 
 // Verbinde mit der Datenbank

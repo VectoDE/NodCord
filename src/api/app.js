@@ -18,7 +18,6 @@ const serverRoutes = require('./routes/serverRoutes');
 const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const fileRoutes = require('./routes/fileRoutes');
-const discordbotRoutes = require('./routes/discordbotRoutes');
 const banRoutes = require('./routes/banRoutes');
 const kickRoutes = require('./routes/kickRoutes');
 const timeoutRoutes = require('./routes/timeoutRoutes');
@@ -44,24 +43,24 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(rateLimiter);
 
 app.use('/', indexRoutes);
-app.use('/infos', infoRoutes);
-app.use('/users', userRoutes);
-app.use('/roles', roleRoutes);
-app.use('/categories', categoryRoutes);
-app.use('/blogs', blogRoutes);
 
-app.use('/tickets', ticketRoutes);
-app.use('/feedback', feedbackRoutes);
+app.use('/api/infos', infoRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/blogs', blogRoutes);
 
-app.use('/servers', serverRoutes);
-app.use('/controls', controlRoutes);
-app.use('/securities', securityRoutes);
-app.use('/files', fileRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
-app.use('/discord', discordbotRoutes);
-app.use('/bans', banRoutes);
-app.use('/kicks', kickRoutes);
-app.use('/timeouts', timeoutRoutes);
+app.use('/api/servers', serverRoutes);
+app.use('/api/controls', controlRoutes);
+app.use('/api/securities', securityRoutes);
+app.use('/api/files', fileRoutes);
+
+app.use('/api/bans', banRoutes);
+app.use('/api/kicks', kickRoutes);
+app.use('/api/timeouts', timeoutRoutes);
 
 // 404 Handler - for undefined routes
 app.use((req, res, next) => {
