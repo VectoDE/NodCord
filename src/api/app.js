@@ -7,20 +7,19 @@ const compressionMiddleware = require('./middlewares/compressionMiddleware');
 const rateLimiter = require('./middlewares/rateLimiterMiddleware');
 
 const indexRoutes = require('./routes/indexRoutes');
+
 const infoRoutes = require('./routes/infoRoutes');
 const userRoutes = require('./routes/userRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+
 const ticketRoutes = require('./routes/ticketRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
-const serverRoutes = require('./routes/serverRoutes');
+
 const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const fileRoutes = require('./routes/fileRoutes');
-const banRoutes = require('./routes/banRoutes');
-const kickRoutes = require('./routes/kickRoutes');
-const timeoutRoutes = require('./routes/timeoutRoutes');
 
 const app = express();
 const baseURL = appConfig.baseURL;
@@ -53,14 +52,9 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/feedback', feedbackRoutes);
 
-app.use('/api/servers', serverRoutes);
 app.use('/api/controls', controlRoutes);
 app.use('/api/securities', securityRoutes);
 app.use('/api/files', fileRoutes);
-
-app.use('/api/bans', banRoutes);
-app.use('/api/kicks', kickRoutes);
-app.use('/api/timeouts', timeoutRoutes);
 
 // 404 Handler - for undefined routes
 app.use((req, res, next) => {
