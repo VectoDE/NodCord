@@ -1,14 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const ticketController = require('../controllers/ticketController');
+const ticketController = require('../../controllers/ticketController');
 
-// Route zum Auflisten aller Tickets
+// Listet alle Tickets auf
 router.get('/', ticketController.listTickets);
 
-// Route zum Erstellen eines neuen Tickets
+// Erstellt ein neues Ticket
 router.post('/', ticketController.createTicket);
 
-// Route zum Schließen eines Tickets
-router.post('/close', ticketController.closeTicket);
+// Schließt ein Ticket
+router.put('/close', ticketController.closeTicket);
+
+// Zeigt Details eines bestimmten Tickets an
+router.get('/:ticketId', ticketController.getTicketDetails);
+
+// Aktualisiert ein Ticket
+router.put('/update', ticketController.updateTicket);
+
+// Fügt eine Antwort zu einem Ticket hinzu
+router.post('/response', ticketController.addTicketResponse);
 
 module.exports = router;
