@@ -1,9 +1,8 @@
 const rateLimit = require('express-rate-limit');
 
-// Definiere das Rate-Limiting
 const rateLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 Minuten
-  max: 100, // Limit auf 100 Anfragen pro IP innerhalb von 15 Minuten
+  windowMs: 15 * 60 * 1000,
+  max: 100,
   message: 'Zu viele Anfragen von dieser IP, bitte versuche es später erneut.',
   headers: true
 });

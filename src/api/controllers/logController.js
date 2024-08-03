@@ -1,11 +1,9 @@
 const Log = require('../../models/logModel');
 
-// Funktion zum Erstellen eines Logs
 const createLog = async (req, res) => {
   try {
     const logData = req.body;
 
-    // Erstelle einen neuen Log-Eintrag
     const newLog = new Log(logData);
     await newLog.save();
 
@@ -16,7 +14,6 @@ const createLog = async (req, res) => {
   }
 };
 
-// Funktion zum Abrufen eines Logs
 const getLog = async (req, res) => {
   try {
     const { logId } = req.params;
@@ -33,7 +30,6 @@ const getLog = async (req, res) => {
   }
 };
 
-// Funktion zum Abrufen aller Logs
 const getAllLogs = async (req, res) => {
   try {
     const logs = await Log.find();
@@ -44,7 +40,6 @@ const getAllLogs = async (req, res) => {
   }
 };
 
-// Funktion zum Löschen eines Logs
 const deleteLog = async (req, res) => {
   try {
     const { logId } = req.params;

@@ -1,6 +1,5 @@
 const Favorite = require('../../models/favoriteModel');
 
-// Listet alle Favoriten eines Benutzers auf
 const listFavorites = async (req, res) => {
     try {
         const { userId } = req.query;
@@ -16,7 +15,6 @@ const listFavorites = async (req, res) => {
     }
 };
 
-// Erstellt einen neuen Favoriten
 const createFavorite = async (req, res) => {
     try {
         const { userId, type, itemId } = req.body;
@@ -38,7 +36,6 @@ const createFavorite = async (req, res) => {
     }
 };
 
-// Entfernt einen Favoriten
 const deleteFavorite = async (req, res) => {
     try {
         const { favoriteId } = req.body;

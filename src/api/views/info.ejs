@@ -8,21 +8,22 @@
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 0;
+      font-family: Arial, sans-serif;
       background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
     }
 
     header {
       background-color: #333;
       color: #fff;
-      padding: 10px 20px;
+      padding: 15px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative;
     }
 
     .logo {
@@ -52,15 +53,12 @@
       background-color: #575757;
     }
 
-    footer {
-      background-color: #333;
-      color: #fff;
-      padding: 1rem;
-      text-align: center;
-    }
-
     main {
+      flex: 1;
       padding: 2rem;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start; /* Oben ausrichten für besseren Platz */
     }
 
     .info-container {
@@ -68,21 +66,23 @@
       border-radius: 8px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       padding: 2rem;
-      max-width: 800px;
-      margin: 0 auto;
+      max-width: 1000px;
+      width: 100%;
     }
 
     h1 {
       margin-top: 0;
+      font-size: 2rem;
+      color: #333;
     }
 
     .info-item {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
 
     .info-item h2 {
       margin: 0;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       color: #333;
     }
 
@@ -91,6 +91,35 @@
       font-size: 1rem;
       color: #555;
     }
+
+    .disk-info {
+      margin-top: 1rem;
+    }
+
+    .disk-info p {
+      margin: 0.5rem 0;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 15px 20px;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
+    }
+
+    footer p a:hover {
+      color: #fc9702;
+    }
   </style>
 </head>
 
@@ -98,59 +127,70 @@
   <header>
     <div class="logo">
       <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>Info - NodCord</span>
-      </a>
+      <span>NodCord</span>
     </div>
     <nav>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
-      <a href="/socketio">SocketIO</a>
-      <a href="/dashboard">Dashboard</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
     </nav>
   </header>
   <main>
     <div class="info-container">
+      <h1>NodCord Information</h1>
       <div class="info-item">
         <h2>Bot Information</h2>
-        <p><strong>Bot Name:</strong>
-          <%= bot.name || 'N/A' %>
-        </p>
-        <p><strong>Bot Username:</strong>
-          <%= bot.username || 'N/A' %>
-        </p>
-        <p><strong>Bot ID:</strong>
-          <%= bot.id || 'N/A' %>
-        </p>
-        <p><strong>Bot Token:</strong>
-          <%= bot.token ? '*****' : 'N/A' %>
-        </p>
-        <p><strong>Connected Servers:</strong>
-          <%= bot.guildsCount || 'N/A' %>
-        </p>
+        <p><strong>Bot Name:</strong> <%= bot.name || 'N/A' %></p>
+        <p><strong>Bot Username:</strong> <%= bot.username || 'N/A' %></p>
+        <p><strong>Bot ID:</strong> <%= bot.id || 'N/A' %></p>
+        <p><strong>Bot Token:</strong> <%= bot.token ? '*****' : 'N/A' %></p>
+        <p><strong>Connected Servers:</strong> <%= bot.guildsCount || 'N/A' %></p>
       </div>
       <div class="info-item">
         <h2>API Information</h2>
-        <p><strong>API Version:</strong>
-          <%= api.version || 'N/A' %>
-        </p>
-        <p><strong>API Base URL:</strong>
-          <%= api.baseUrl || 'N/A' %>
-        </p>
-        <p><strong>Environment:</strong>
-          <%= api.environment || 'N/A' %>
-        </p>
-        <p><strong>Database Status:</strong>
-          <%= api.dbStatus || 'N/A' %>
-        </p>
+        <p><strong>API Version:</strong> <%= api.version || 'N/A' %></p>
+        <p><strong>API Base URL:</strong> <%= api.baseUrl || 'N/A' %></p>
+        <p><strong>Environment:</strong> <%= api.environment || 'N/A' %></p>
+        <p><strong>Database Status:</strong> <%= api.dbStatus || 'N/A' %></p>
+      </div>
+      <div class="info-item">
+        <h2>System Information</h2>
+        <p><strong>CPU Cores:</strong> <%= system.cpuCores || 'N/A' %></p>
+        <p><strong>CPU Load:</strong> <%= system.cpuLoad !== 'N/A' ? system.cpuLoad.toFixed(2) + '%' : 'N/A' %></p>
+        <p><strong>Total Memory:</strong> <%= system.totalMemory ? (system.totalMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+        <p><strong>Free Memory:</strong> <%= system.freeMemory ? (system.freeMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+        <p><strong>Used Memory:</strong> <%= system.usedMemory ? (system.usedMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+        <div class="disk-info">
+          <h3>Disk Information:</h3>
+          <% if (system.disk && system.disk.length > 0) { %>
+            <% system.disk.forEach(disk => { %>
+              <p><strong>Device:</strong> <%= disk.device || 'N/A' %></p>
+              <p><strong>Size:</strong> <%= disk.size ? (disk.size / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+              <p><strong>Used:</strong> <%= disk.used ? (disk.used / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+              <p><strong>Available:</strong> <%= disk.available ? (disk.available / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+              <hr>
+            <% }); %>
+          <% } else { %>
+            <p>No disk information available.</p>
+          <% } %>
+        </div>
+        <p><strong>System Name:</strong> <%= system.systemName || 'N/A' %></p>
+        <p><strong>System Manufacturer:</strong> <%= system.systemManufacturer || 'N/A' %></p>
       </div>
     </div>
   </main>
   <footer>
-    <p>&copy; 2024 NodCord Project</p>
+    <p>&copy; 2024 <a href="/">NodCord</a>. All rights reserved.</p>
   </footer>
 </body>
 

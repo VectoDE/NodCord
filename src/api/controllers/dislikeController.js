@@ -1,6 +1,5 @@
 const Dislike = require('../../models/dislikeModel');
 
-// Erstelle einen neuen Dislike
 exports.createDislike = async (req, res) => {
   try {
     const { user, blog } = req.body;
@@ -24,7 +23,6 @@ exports.createDislike = async (req, res) => {
   }
 };
 
-// Hole alle Dislikes für ein bestimmtes Blog
 exports.getDislikesByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
@@ -42,7 +40,6 @@ exports.getDislikesByBlog = async (req, res) => {
   }
 };
 
-// Hole einen Dislike nach ID
 exports.getDislikeById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,7 +63,6 @@ exports.getDislikeById = async (req, res) => {
   }
 };
 
-// Lösche einen Dislike
 exports.deleteDislike = async (req, res) => {
   try {
     const { id } = req.params;

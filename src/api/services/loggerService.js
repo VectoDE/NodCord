@@ -1,8 +1,7 @@
 const winston = require('winston');
 
-// Erstelle einen Logger mit winston
 const logger = winston.createLogger({
-  level: 'info', // Standard-Log-Level
+  level: 'info',
   format: winston.format.combine(
     winston.format.timestamp(),
     winston.format.printf(({ timestamp, level, message }) => {
@@ -10,19 +9,16 @@ const logger = winston.createLogger({
     })
   ),
   transports: [
-    // Logge in die Konsole
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
       )
     }),
-    // Optional: Logge in eine Datei
     new winston.transports.File({ filename: './logs/app.log' })
   ]
 });
 
-// Log-Level-Methoden
 const logInfo = (message) => logger.info(message);
 const logWarn = (message) => logger.warn(message);
 const logError = (message) => logger.error(message);

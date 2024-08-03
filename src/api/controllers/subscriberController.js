@@ -1,22 +1,18 @@
 const Subscriber = require('../../models/subscriberModel');
 const nodemailerService = require('../services/nodemailerService');
 
-// Erstelle einen neuen Subscriber
 const createSubscriber = async (req, res) => {
   try {
     const { email, name } = req.body;
 
-    // Überprüfe, ob die E-Mail bereits vorhanden ist
     const existingSubscriber = await Subscriber.findOne({ email });
     if (existingSubscriber) {
       return res.status(400).json({ message: 'Subscriber already exists.' });
     }
 
-    // Erstelle einen neuen Subscriber
     const newSubscriber = new Subscriber({ email, name });
     await newSubscriber.save();
 
-    // Sende Bestätigungs-E-Mail
     await nodemailerService.sendSubscriptionConfirmation(email, name);
 
     res.status(201).json({ message: 'Subscriber created and confirmation email sent.' });
@@ -26,7 +22,6 @@ const createSubscriber = async (req, res) => {
   }
 };
 
-// Hol alle Subscriber
 const getAllSubscribers = async (req, res) => {
   try {
     const subscribers = await Subscriber.find();
@@ -37,7 +32,6 @@ const getAllSubscribers = async (req, res) => {
   }
 };
 
-// Hol einen Subscriber nach ID
 const getSubscriberById = async (req, res) => {
   try {
     const subscriber = await Subscriber.findById(req.params.id);
@@ -51,7 +45,6 @@ const getSubscriberById = async (req, res) => {
   }
 };
 
-// Update einen Subscriber
 const updateSubscriber = async (req, res) => {
   try {
     const { email, name } = req.body;
@@ -72,7 +65,6 @@ const updateSubscriber = async (req, res) => {
   }
 };
 
-// Lösche einen Subscriber
 const deleteSubscriber = async (req, res) => {
   try {
     const deletedSubscriber = await Subscriber.findByIdAndDelete(req.params.id);

@@ -51,27 +51,66 @@
       background-color: #575757;
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 2rem 0;
+    .section {
+      padding: 20px;
     }
 
-    th,
-    td {
+    .server-count {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+
+    .server-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .server-card {
       border: 1px solid #ddd;
-      padding: 8px;
+      border-radius: 8px;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      flex: 1 1 calc(25% - 20px);
+      box-sizing: border-box;
+    }
+
+    .server-card img {
+      max-width: 100%;
+      border-radius: 8px;
+    }
+
+    .server-info {
+      margin-top: 10px;
+    }
+
+    .server-info h2 {
+      margin: 10px 0;
+    }
+
+    .server-info p {
+      margin: 5px 0;
+    }
+
+    .server-info ul {
+      padding-left: 20px;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
       text-align: center;
+      padding: 10px 20px;
     }
 
-    th {
-      background-color: #f4f4f4;
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
     }
 
-    img.server-icon {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
+    footer p a:hover {
+      color: #fc9702;
     }
   </style>
 </head>
@@ -80,63 +119,63 @@
   <header>
     <div class="logo">
       <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>Discord Servers - NodCord</span>
-      </a>
+      <span>NodCord</span>
     </div>
     <nav>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
-      <a href="/socketio">SocketIO</a>
-      <a href="/dashboard">Dashboard</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
     </nav>
   </header>
   <main>
-    <section>
-      <table>
-        <thead>
-          <tr>
-            <th>Icon</th>
-            <th>Name</th>
-            <th>Owner</th>
-            <th>Created At</th>
-            <th>Members</th>
-            <th>Roles</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% if (servers && servers.length) { %>
-            <% servers.forEach(server=> { %>
-              <tr>
-                <td><img src="<%= server.icon %>" alt="Icon for <%= server.name %>" class="server-icon"></td>
-                <td>
-                  <%= server.name %>
-                </td>
-                <td>
-                  <%= server.owner %>
-                </td>
-                <td>
-                  <%= server.createdAt %>
-                </td>
-                <td>
-                  <%= server.memberCount %>
-                </td>
-                <td>
-                  <%= server.roleCount %>
-                </td>
-              </tr>
-              <% }); %>
-                <% } else { %>
-                  <tr>
-                    <td colspan="6">Keine Server gefunden.</td>
-                  </tr>
-                  <% } %>
-        </tbody>
-      </table>
-    </section>
+    <div class="section">
+      <h1>Discord Servers</h1>
+      <div class="server-count">
+        <span>Total Servers:</span>
+        <span><%= serverCount %></span>
+      </div>
+      <div class="server-container">
+        <% if (servers.length > 0) { %>
+          <% servers.forEach(server => { %>
+            <div class="server-card">
+              <img src="<%= server.icon %>" alt="<%= server.name %>">
+              <div class="server-info">
+                <h2><%= server.name %></h2>
+                <p><strong>ID:</strong> <%= server.id %></p>
+                <p><strong>Owner:</strong> <%= server.owner %></p>
+                <p><strong>Created At:</strong> <%= server.createdAt.toDateString() %></p>
+                <h3>Members:</h3>
+                <ul>
+                  <% server.members.forEach(member => { %>
+                    <li>
+                      <img src="<%= member.avatar %>" alt="<%= member.displayName %>" style="width: 30px; height: 30px; border-radius: 50%; vertical-align: middle;">
+                      <strong><%= member.displayName %></strong> (<%= member.username %>) - <%= member.hashname %>
+                      <ul>
+                        <% member.badges.forEach(badge => { %>
+                          <li><%= badge %></li>
+                        <% }) %>
+                      </ul>
+                    </li>
+                  <% }) %>
+                </ul>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <p>No servers found.</p>
+        <% } %>
+      </div>
+    </div>
   </main>
   <footer>
     <p>&copy; 2024 NodCord Project</p>

@@ -1,7 +1,6 @@
 const Feature = require('../../models/featureModel');
 const nodemailerService = require('../services/nodemailerService');
 
-// Erstelle ein neues Feature
 const createFeature = async (req, res) => {
   try {
     const { title, description, status, priority, project } = req.body;
@@ -16,7 +15,6 @@ const createFeature = async (req, res) => {
   }
 };
 
-// Hol alle Features
 const getAllFeatures = async (req, res) => {
   try {
     const features = await Feature.find().populate('project');
@@ -27,7 +25,6 @@ const getAllFeatures = async (req, res) => {
   }
 };
 
-// Hol ein Feature nach ID
 const getFeatureById = async (req, res) => {
   try {
     const feature = await Feature.findById(req.params.id).populate('project');
@@ -41,7 +38,6 @@ const getFeatureById = async (req, res) => {
   }
 };
 
-// Update ein Feature
 const updateFeature = async (req, res) => {
   try {
     const { title, description, status, priority } = req.body;
@@ -55,7 +51,6 @@ const updateFeature = async (req, res) => {
       return res.status(404).json({ message: 'Feature not found.' });
     }
 
-    // Optional: Sende E-Mail-Benachrichtigung bei Statusänderung
     if (status === 'Completed') {
       await nodemailerService.sendProjectStatusUpdateEmail(
         'project-manager@example.com',
@@ -70,7 +65,6 @@ const updateFeature = async (req, res) => {
   }
 };
 
-// Lösche ein Feature
 const deleteFeature = async (req, res) => {
   try {
     const deletedFeature = await Feature.findByIdAndDelete(req.params.id);

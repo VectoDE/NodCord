@@ -3,16 +3,13 @@ const path = require('path');
 const fs = require('fs');
 const { checkDiskSpace } = require('check-disk-space');
 
-// Definiere den Speicherort für die Uploads
 const uploadDirectory = path.join(__dirname, '../../public/uploads');
-const maxDiskSpacePercentage = 80; // Schwelle für den verfügbaren Speicherplatz in Prozent
+const maxDiskSpacePercentage = 80;
 
-// Stelle sicher, dass das Verzeichnis existiert
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory, { recursive: true });
 }
 
-// Konfiguriere Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadDirectory);
@@ -36,16 +33,14 @@ const fileFilter = (req, file, cb) => {
   cb(new Error('Only image files are allowed!'));
 };
 
-// Middleware für Multer
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB Maximalgröße
+    fileSize: 10 * 1024 * 1024 // 10MB
   }
 }).single('file');
 
-// Middleware zur Überprüfung des verfügbaren Speicherplatzes
 const checkDiskSpaceMiddleware = async (req, res, next) => {
   try {
     const diskSpace = await checkDiskSpace(uploadDirectory);

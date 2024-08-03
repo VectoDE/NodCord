@@ -1,7 +1,6 @@
 const Issue = require('../../models/issueModel');
 const nodemailerService = require('../services/nodemailerService');
 
-// Erstelle ein neues Issue
 const createIssue = async (req, res) => {
   try {
     const { title, description, status, project } = req.body;
@@ -16,7 +15,6 @@ const createIssue = async (req, res) => {
   }
 };
 
-// Hol alle Issues
 const getAllIssues = async (req, res) => {
   try {
     const issues = await Issue.find().populate('project');
@@ -27,7 +25,6 @@ const getAllIssues = async (req, res) => {
   }
 };
 
-// Hol ein Issue nach ID
 const getIssueById = async (req, res) => {
   try {
     const issue = await Issue.findById(req.params.id).populate('project');
@@ -41,7 +38,6 @@ const getIssueById = async (req, res) => {
   }
 };
 
-// Update ein Issue
 const updateIssue = async (req, res) => {
   try {
     const { title, description, status } = req.body;
@@ -55,7 +51,6 @@ const updateIssue = async (req, res) => {
       return res.status(404).json({ message: 'Issue not found.' });
     }
 
-    // Optional: Sende E-Mail-Benachrichtigung bei Statusänderung
     if (status === 'Resolved' || status === 'Closed') {
       await nodemailerService.sendProjectStatusUpdateEmail(
         'project-manager@example.com',
@@ -70,7 +65,6 @@ const updateIssue = async (req, res) => {
   }
 };
 
-// Lösche ein Issue
 const deleteIssue = async (req, res) => {
   try {
     const deletedIssue = await Issue.findByIdAndDelete(req.params.id);

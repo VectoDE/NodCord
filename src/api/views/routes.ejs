@@ -85,6 +85,22 @@
     .routes-list a:hover {
       text-decoration: underline;
     }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 20px;
+    }
+
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
+    }
+
+    footer p a:hover {
+      color: #fc9702;
+    }
   </style>
 </head>
 
@@ -92,18 +108,22 @@
   <header>
     <div class="logo">
       <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>Routes - NodCord</span>
-      </a>
+      <span>NodCord</span>
     </div>
     <nav>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
-      <a href="/socketio">SocketIO</a>
-      <a href="/dashboard">Dashboard</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
     </nav>
   </header>
   <main>

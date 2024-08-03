@@ -1,7 +1,6 @@
 const Bug = require('../../models/bugModel');
 const nodemailerService = require('../services/nodemailerService');
 
-// Erstelle einen neuen Bug
 const createBug = async (req, res) => {
   try {
     const { title, description, severity, status, project } = req.body;
@@ -16,7 +15,6 @@ const createBug = async (req, res) => {
   }
 };
 
-// Hol alle Bugs
 const getAllBugs = async (req, res) => {
   try {
     const bugs = await Bug.find().populate('project');
@@ -27,7 +25,6 @@ const getAllBugs = async (req, res) => {
   }
 };
 
-// Hol einen Bug nach ID
 const getBugById = async (req, res) => {
   try {
     const bug = await Bug.findById(req.params.id).populate('project');
@@ -41,7 +38,6 @@ const getBugById = async (req, res) => {
   }
 };
 
-// Update einen Bug
 const updateBug = async (req, res) => {
   try {
     const { title, description, severity, status } = req.body;
@@ -55,7 +51,6 @@ const updateBug = async (req, res) => {
       return res.status(404).json({ message: 'Bug not found.' });
     }
 
-    // Optional: Sende E-Mail-Benachrichtigung bei Statusänderung
     if (status === 'Resolved' || status === 'Closed') {
       await nodemailerService.sendProjectStatusUpdateEmail(
         'project-manager@example.com',
@@ -70,7 +65,6 @@ const updateBug = async (req, res) => {
   }
 };
 
-// Lösche einen Bug
 const deleteBug = async (req, res) => {
   try {
     const deletedBug = await Bug.findByIdAndDelete(req.params.id);

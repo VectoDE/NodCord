@@ -29,6 +29,66 @@ const start = () => {
   })();
 }
 
+// Fetch members for all guilds
+const getMembers = async () => {
+  let memberData = [];
+  try {
+    for (const guild of client.guilds.cache.values()) {
+      const members = await guild.members.fetch();
+      members.forEach(member => {
+        memberData.push({
+          guild: guild.name,
+          username: member.user.username,
+          displayName: member.displayName,
+          avatar: member.user.displayAvatarURL(),
+          badges: member.user.flags.toArray(), // Ensure this is correct for your Discord.js version
+          hashname: member.user.id
+        });
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching members:', error);
+  }
+  return memberData;
+};
+
+// Fetch servers and member data
+const getServers = async () => {
+  let serverData = [];
+  try {
+    for (const guild of client.guilds.cache.values()) {
+      // Abrufen der Guild-Besitzerinformationen
+      const owner = await client.users.fetch(guild.ownerId);
+
+      // Abrufen der Mitgliederinformationen
+      const members = await guild.members.fetch();
+
+      // Extrahieren der Mitgliederdaten
+      const memberData = members.map(member => ({
+        avatar: member.user.displayAvatarURL(),
+        username: member.user.username,
+        displayName: member.displayName,
+        badges: member.user.flags.toArray(), // Badges abrufen
+        hashname: `${member.user.username}#${member.user.discriminator}`
+      }));
+
+      // Hinzufügen der Serverdaten und der Mitglieder
+      serverData.push({
+        id: guild.id,
+        name: guild.name,
+        icon: guild.iconURL(), // URL des Server-Icons
+        owner: owner ? owner.username : 'Unknown', // Besitzername
+        createdAt: guild.createdAt, // Erstellungsdatum
+        members: memberData // Mitgliederdaten
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching servers:', error);
+  }
+
+  return serverData;
+};
+
 //Prefix Commands MessageCreate
 client.on('messageCreate', async message => {
   const prefix = process.env.BOT_PREFIX;
@@ -73,4 +133,8 @@ client.on(Events.MessageCreate, async message => {
   }
 });
 
-module.exports = { start };
+module.exports = {
+  start,
+  getMembers,
+  getServers
+};

@@ -1,7 +1,6 @@
 const Story = require('../../models/storyModel');
 const nodemailerService = require('../services/nodemailerService');
 
-// Erstelle eine neue Story
 const createStory = async (req, res) => {
   try {
     const { title, description, status, priority, project } = req.body;
@@ -16,7 +15,6 @@ const createStory = async (req, res) => {
   }
 };
 
-// Hol alle Stories
 const getAllStories = async (req, res) => {
   try {
     const stories = await Story.find().populate('project');
@@ -27,7 +25,6 @@ const getAllStories = async (req, res) => {
   }
 };
 
-// Hol eine Story nach ID
 const getStoryById = async (req, res) => {
   try {
     const story = await Story.findById(req.params.id).populate('project');
@@ -41,7 +38,6 @@ const getStoryById = async (req, res) => {
   }
 };
 
-// Update eine Story
 const updateStory = async (req, res) => {
   try {
     const { title, description, status, priority } = req.body;
@@ -70,7 +66,6 @@ const updateStory = async (req, res) => {
   }
 };
 
-// Lösche eine Story
 const deleteStory = async (req, res) => {
   try {
     const deletedStory = await Story.findByIdAndDelete(req.params.id);

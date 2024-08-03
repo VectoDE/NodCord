@@ -1,6 +1,5 @@
 const Like = require('../../models/likeModel');
 
-// Erstelle einen neuen Like
 exports.createLike = async (req, res) => {
   try {
     const { user, blog } = req.body;
@@ -24,7 +23,6 @@ exports.createLike = async (req, res) => {
   }
 };
 
-// Hole alle Likes für ein bestimmtes Blog
 exports.getLikesByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
@@ -42,7 +40,6 @@ exports.getLikesByBlog = async (req, res) => {
   }
 };
 
-// Hole einen Like nach ID
 exports.getLikeById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,7 +63,6 @@ exports.getLikeById = async (req, res) => {
   }
 };
 
-// Lösche einen Like
 exports.deleteLike = async (req, res) => {
   try {
     const { id } = req.params;

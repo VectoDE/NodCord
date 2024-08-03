@@ -52,71 +52,82 @@
       background-color: #575757;
     }
 
-    .member-cards {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 1rem;
-      justify-content: space-around;
+    .section {
+      padding: 20px;
     }
 
-    .member-card {
-      border: 1px solid #ddd;
+    .server-section {
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: #fff;
       border-radius: 8px;
-      overflow: hidden;
-      width: 300px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      background: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
-    .member-card img.banner {
+    .server-section h2 {
+      margin-top: 0;
+    }
+
+    table {
       width: 100%;
-      height: 150px;
-      object-fit: cover;
+      border-collapse: collapse;
+      margin-bottom: 20px;
     }
 
-    .member-card img.avatar {
-      width: 100px;
-      height: 100px;
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    img.avatar {
+      height: 40px;
+      width: 40px;
       border-radius: 50%;
-      margin-top: -50px;
-      border: 4px solid #fff;
     }
 
-    .member-card h2 {
-      margin: 1rem 0;
-      font-size: 1.5rem;
-    }
-
-    .member-card p {
-      margin: 0.5rem 0;
-    }
-
-    .member-card .info {
-      margin: 1rem;
-      font-size: 0.9rem;
-      color: #555;
-    }
-
-    .badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      justify-content: center;
-      margin-top: 0.5rem;
-    }
-
-    .badge {
-      width: 20px;
-      height: 20px;
-      background-color: #ffcc00;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    footer {
+      background-color: #333;
       color: #fff;
-      font-size: 12px;
-      font-weight: bold;
+      text-align: center;
+      padding: 10px 20px;
+    }
+
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
+    }
+
+    footer p a:hover {
+      color: #fc9702;
+    }
+
+    .btn {
+      padding: 5px 10px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      background-color: #007bff;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #0056b3;
+    }
+
+    .btn-add {
+      background-color: #28a745;
+    }
+
+    .btn-add:hover {
+      background-color: #218838;
     }
   </style>
 </head>
@@ -125,60 +136,80 @@
   <header>
     <div class="logo">
       <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>Discord Members - NodCord</span>
-      </a>
+      <span>NodCord</span>
     </div>
     <nav>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
-      <a href="/socketio">SocketIO</a>
-      <a href="/dashboard">Dashboard</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
     </nav>
   </header>
   <main>
-    <section>
-      <div class="member-cards">
-        <% members.forEach(member=> { %>
-          <div class="member-card">
-            <img src="<%= member.banner %>" alt="Banner for <%= member.username %>" class="banner">
-            <img src="<%= member.avatar %>" alt="Avatar for <%= member.username %>" class="avatar">
-            <h2>
-              <%= member.username %>
-            </h2>
-            <p><strong>Name:</strong>
-              <%= member.name %>
-            </p>
-            <p><strong>Username:</strong>
-              <%= member.username %>
-            </p>
-            <p><strong>Hashname:</strong>
-              <%= member.hashname %>
-            </p>
-            <p><strong>Servers:</strong>
-              <%= member.serverCount %>
-            </p>
-            <p><strong>Created At:</strong>
-              <%= new Date(member.createdAt).toLocaleDateString() %>
-            </p>
-            <div class="badges">
-              <% member.badges.forEach(badge=> { %>
-                <div class="badge">
-                  <%= badge %>
-                </div>
-                <% }); %>
-            </div>
+    <div class="section">
+      <h1>Discord Members</h1>
+      <% if (servers && servers.length > 0) { %>
+        <% servers.forEach(server => { %>
+          <div class="server-section">
+            <h2><%= server.name %></h2>
+            <img class="avatar" src="<%= server.icon %>" alt="<%= server.name %>">
+            <% if (server.members && server.members.length > 0) { %>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Avatar</th>
+                    <th>Username</th>
+                    <th>Display Name</th>
+                    <th>Badges</th>
+                    <th>Hashname</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% server.members.forEach(member => { %>
+                    <tr>
+                      <td><img class="avatar" src="<%= member.avatar %>" alt="<%= member.username %>'s Avatar"></td>
+                      <td><%= member.username %></td>
+                      <td><%= member.displayName %></td>
+                      <td><%= member.badges.join(', ') %></td>
+                      <td><%= member.hashname %></td>
+                      <td>
+                        <a class="btn" href="https://discord.com/users/<%= member.hashname %>" target="_blank">Show</a>
+                        <a class="btn btn-add" href="https://discord.com/users/@me" target="_blank" onclick="addFriend('<%= member.username %>', '<%= member.hashname %>')">Add Friend</a>
+                      </td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            <% } else { %>
+              <p>Keine Mitglieder gefunden.</p>
+            <% } %>
           </div>
-          <% }); %>
-      </div>
-    </section>
+        <% }) %>
+      <% } else { %>
+        <p>Keine Server gefunden.</p>
+      <% } %>
+    </div>
   </main>
   <footer>
     <p>&copy; 2024 NodCord Project</p>
   </footer>
+  <script>
+    function addFriend(username, hashname) {
+      const addFriendUrl = `https://discord.com/users/@me`;
+      window.open(addFriendUrl, '_blank');
+      alert(`Send a friend request to: ${username} (${hashname}) on Discord.`);
+    }
+  </script>
 </body>
 
 </html>

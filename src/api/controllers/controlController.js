@@ -1,40 +1,97 @@
-const { exec } = require('child_process');
-const logger = require('../services/loggerService');
+const botStatusService = require('../services/botStatusService');
+const apiStatusService = require('../services/apiStatusService');
 
-// Funktion zum Starten des Bots
-const startBot = (req, res) => {
-    exec('node path/to/bot.js', (error, stdout, stderr) => {
-        if (error) {
-            logger.logError(`Fehler beim Starten des Bots: ${error.message}`);
-            return res.status(500).json({ message: 'Fehler beim Starten des Bots', error: error.message });
-        }
-        logger.logInfo(`Bot gestartet:\n${stdout}`);
-        res.status(200).json({ message: 'Bot gestartet', output: stdout });
-    });
+exports.startBot = (req, res) => {
+  try {
+    botStatusService.startBot();
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('Fehler beim Starten des Bots:', error);
+    res.status(500).send('Fehler beim Starten des Bots');
+  }
 };
 
-// Funktion zum Stoppen des Bots
-const stopBot = (req, res) => {
-    exec('pkill -f bot.js', (error, stdout, stderr) => {
-        if (error) {
-            logger.logError(`Fehler beim Stoppen des Bots: ${error.message}`);
-            return res.status(500).json({ message: 'Fehler beim Stoppen des Bots', error: error.message });
-        }
-        logger.logInfo(`Bot gestoppt:\n${stdout}`);
-        res.status(200).json({ message: 'Bot gestoppt', output: stdout });
-    });
+exports.stopBot = (req, res) => {
+  try {
+    botStatusService.stopBot();
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('Fehler beim Stoppen des Bots:', error);
+    res.status(500).send('Fehler beim Stoppen des Bots');
+  }
 };
 
-// Funktion zum Neustarten des Bots
-const restartBot = (req, res) => {
-    stopBot(req, res, () => {
-        startBot(req, res);
-    });
+exports.restartBot = (req, res) => {
+  try {
+    botStatusService.restartBot();
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('Fehler beim Neustarten des Bots:', error);
+    res.status(500).send('Fehler beim Neustarten des Bots');
+  }
 };
 
-// Exportiere die Controller-Funktionen
-module.exports = {
-    startBot,
-    stopBot,
-    restartBot
+exports.setBotMaintenance = (req, res) => {
+  try {
+    botStatusService.setMaintenance();
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('Fehler beim Setzen des Wartungsmodus:', error);
+    res.status(500).send('Fehler beim Setzen des Wartungsmodus');
+  }
+};
+
+exports.removeBotMaintenance = (req, res) => {
+  try {
+    botStatusService.removeMaintenance();
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error('Fehler beim Entfernen des Wartungsmodus:', error);
+    res.status(500).send('Fehler beim Entfernen des Wartungsmodus');
+  }
+};
+
+exports.startApi = (req, res) => {
+  try {
+    apiStatusService.startApi();
+    res.status(200).json({ message: 'API erfolgreich gestartet' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.stopApi = (req, res) => {
+  try {
+    apiStatusService.stopApi();
+    res.status(200).json({ message: 'API erfolgreich gestoppt' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.restartApi = (req, res) => {
+  try {
+    apiStatusService.restartApi();
+    res.status(200).json({ message: 'API wird neu gestartet' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.setAPIMaintenance = (req, res) => {
+  try {
+    apiStatusService.setMaintenance();
+    res.status(200).json({ message: 'Wartungsmodus aktiviert' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+exports.removeAPIMaintenance = (req, res) => {
+  try {
+    apiStatusService.removeMaintenance();
+    res.status(200).json({ message: 'Wartungsmodus deaktiviert' });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };

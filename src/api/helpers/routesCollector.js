@@ -8,13 +8,11 @@ const getRoutes = (router, basePath = '') => {
 
     stack.forEach((middleware) => {
         if (middleware.route) {
-            // Middleware mit .route ist eine Route
             routes.push({
                 method: Object.keys(middleware.route.methods)[0].toUpperCase(),
                 path: basePath + middleware.route.path,
             });
         } else if (middleware.name === 'router' && middleware.handle.stack) {
-            // Middleware mit .name === 'router' enthält Unterrouter
             routes.push(...getRoutes(middleware.handle, basePath + middleware.regexp.source.replace(/\\\//g, '/').replace(/\/\^/, '').replace(/\?\(\=\(.+\)\)\?\(\:\.\+\)\?$/, '')));
         }
     });

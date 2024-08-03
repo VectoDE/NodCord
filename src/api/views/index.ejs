@@ -1,112 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NodCord - Home</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: relative;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        nav {
-            display: flex;
-        }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 15px;
-            margin: 0 5px;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        nav a:hover {
-            background-color: #575757;
-        }
-        main {
-            padding: 20px;
-        }
-        .section {
-            margin-bottom: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        .section h2 {
-            margin-top: 0;
-        }
-        .section p {
-            font-size: 16px;
-        }
-        .footer p a {
-          color: #2fddfe;
-          text-decoration: none;
-        }
-        .footer p a:hover {
-          color: #fc9702;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <div class="logo">
-            <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-              <span>NodCord</span>
-            </a>
-        </div>
-        <nav>
-            <a href="/">Home</a>
-            <a href="/docs">Documentation</a>
-            <a href="/status">Status</a>
-            <a href="/info">Info</a>
-            <a href="/discord-members">Discord Members</a>
-            <a href="/discord-servers">Discord Servers</a>
-            <a href="/socketio">SocketIO</a>
-            <a href="/dashboard">Dashboard</a>
-        </nav>
-    </header>
-    <main>
-        <div class="section">
-            <h1>Welcome to NodCord</h1>
-            <p>
-                NodCord is an integrated project combining a Node.js API with Express.js and a Discord bot. This project provides a comprehensive API and a functional Discord bot for various use cases.
-            </p>
-            <p>
-                The API includes a Discord service that can be managed through controllers and routes. The Discord bot can also be controlled via the API.
-            </p>
-        </div>
 
-        <div class="section">
-            <h2>About the Bot</h2>
-            <p>
-                The NodCord Discord bot is designed to interact with your Discord servers, providing commands for managing roles, users, and more. It's integrated into the API for seamless management and configuration.
-            </p>
-        </div>
-    </main>
-    <footer class="footer">
-        <p>2024 &copy; <a href="/">NodCord</a>. All rights reserved.</p>
-    </footer>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NodCord - Home</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #575757;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+    }
+
+    .section {
+      margin-bottom: 20px;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h1 {
+      margin-top: 0;
+      font-size: 2em;
+    }
+
+    .section h2 {
+      margin-top: 0;
+      font-size: 1.5em;
+    }
+
+    .section p {
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 20px;
+    }
+
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
+    }
+
+    footer p a:hover {
+      color: #fc9702;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>NodCord</span>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
+    </nav>
+  </header>
+  <main>
+    <div class="section">
+      <h1>Welcome to NodCord</h1>
+      <p>
+        NodCord is an integrated project combining a Node.js API with Express.js and a Discord bot. This project
+        provides a comprehensive API and a functional Discord bot for various use cases.
+      </p>
+      <p>
+        The API includes a Discord service that can be managed through controllers and routes. The Discord bot can also
+        be controlled via the API.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>About the Bot</h2>
+      <p>
+        The NodCord Discord bot is designed to interact with your Discord servers, providing commands for managing
+        roles, users, and more. It's integrated into the API for seamless management and configuration.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Features</h2>
+      <p>
+        - **Node.js API**: A robust API for interacting with the Discord bot and managing various services.
+        <br>
+        - **Discord Bot**: Control and interact with your Discord servers using various commands and features.
+        <br>
+        - **Comprehensive Documentation**: Detailed documentation to help you get started and make the most out of NodCord.
+      </p>
+    </div>
+
+    <div class="section">
+      <h2>Get Started</h2>
+      <p>
+        To get started with NodCord, check out our <a href="/docs">documentation</a> or visit the <a href="/dashboard">dashboard</a> to manage your settings.
+      </p>
+    </div>
+  </main>
+  <footer>
+    <p>2024 &copy; <a href="/">NodCord</a>. All rights reserved.</p>
+  </footer>
 </body>
+
 </html>

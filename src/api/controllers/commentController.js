@@ -1,6 +1,5 @@
 const Comment = require('../../models/commentModel');
 
-// Erstelle einen neuen Kommentar
 exports.createComment = async (req, res) => {
   try {
     const { content, author, blog } = req.body;
@@ -25,7 +24,6 @@ exports.createComment = async (req, res) => {
   }
 };
 
-// Hole alle Kommentare für ein bestimmtes Blog
 exports.getCommentsByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
@@ -43,7 +41,6 @@ exports.getCommentsByBlog = async (req, res) => {
   }
 };
 
-// Hole einen Kommentar nach ID
 exports.getCommentById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -67,7 +64,6 @@ exports.getCommentById = async (req, res) => {
   }
 };
 
-// Aktualisiere einen Kommentar
 exports.updateComment = async (req, res) => {
   try {
     const { id } = req.params;
@@ -93,7 +89,6 @@ exports.updateComment = async (req, res) => {
   }
 };
 
-// Lösche einen Kommentar
 exports.deleteComment = async (req, res) => {
   try {
     const { id } = req.params;

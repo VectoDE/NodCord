@@ -1,6 +1,5 @@
 const Company = require('../../models/companyModel');
 
-// Listet alle Unternehmen auf
 const listCompanies = async (req, res) => {
     try {
         const companies = await Company.find();
@@ -11,7 +10,6 @@ const listCompanies = async (req, res) => {
     }
 };
 
-// Erstellt ein neues Unternehmen
 const createCompany = async (req, res) => {
     try {
         const { name, description, industry, headquarters, foundedDate, employees, website } = req.body;
@@ -37,7 +35,6 @@ const createCompany = async (req, res) => {
     }
 };
 
-// Zeigt Details eines bestimmten Unternehmens an
 const getCompanyDetails = async (req, res) => {
     try {
         const { companyId } = req.params;
@@ -57,7 +54,6 @@ const getCompanyDetails = async (req, res) => {
     }
 };
 
-// Aktualisiert ein Unternehmen
 const updateCompany = async (req, res) => {
     try {
         const { companyId, name, description, industry, headquarters, foundedDate, employees, website } = req.body;
@@ -88,7 +84,6 @@ const updateCompany = async (req, res) => {
     }
 };
 
-// Entfernt ein Unternehmen
 const deleteCompany = async (req, res) => {
     try {
         const { companyId } = req.body;

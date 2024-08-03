@@ -2,14 +2,12 @@ const path = require('path');
 const fs = require('fs');
 const File = require('../../models/fileModel');
 
-// Handle file upload
 const uploadFile = async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
 
-        // Create a new file record in the database
         const fileData = new File({
             filename: req.file.filename,
             path: req.file.path,
@@ -28,7 +26,6 @@ const uploadFile = async (req, res) => {
     }
 };
 
-// Handle file retrieval
 const getFile = async (req, res) => {
     try {
         const fileId = req.params.id;
@@ -44,7 +41,6 @@ const getFile = async (req, res) => {
     }
 };
 
-// Handle file download
 const downloadFile = async (req, res) => {
     try {
         const fileId = req.params.id;

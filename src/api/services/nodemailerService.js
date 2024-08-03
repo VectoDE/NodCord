@@ -1,17 +1,15 @@
 const nodemailer = require('nodemailer');
 
-// Erstelle einen Transporter für SMTP
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_SECURE === 'true', // true für Port 465, false für andere Ports
+  secure: process.env.SMTP_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
   }
 });
 
-// Funktion zum Versenden von E-Mails
 const sendMail = async (to, subject, text, html) => {
   try {
     const mailOptions = {
@@ -30,15 +28,21 @@ const sendMail = async (to, subject, text, html) => {
   }
 };
 
-// Registrierungsverifikation
-const sendRegistrationVerificationEmail = async (to, name, verificationLink) => {
+const sendRegistrationVerificationEmail = async (to, username, verificationToken) => {
+  const verificationLink = `http://${process.env.BASE_URL}:${process.env.PORT}/verify-email/${verificationToken}`;
   const subject = 'Verify Your Email Address';
-  const text = `Hello ${name},\n\nPlease verify your email address by clicking on the following link: ${verificationLink}\n\nThank you!`;
-  const html = `<p>Hello ${name},</p><p>Please verify your email address by clicking on the following link: <a href="${verificationLink}">${verificationLink}</a></p><p>Thank you!</p>`;
+  const text = `Hello ${username},\n\nPlease verify your email address by clicking on the following link: ${verificationLink}\n\nThank you!`;
+  const html = `<p>Hello ${username},</p><p>Please verify your email address by clicking on the following link: <a href="${verificationLink}">${verificationLink}</a></p><p>Thank you!</p>`;
   await sendMail(to, subject, text, html);
 };
 
-// Bestellbestätigung
+const sendVerificationSuccessEmail = async (to, username) => {
+  const subject = 'Email Verification Successful';
+  const text = `Hello ${username},\n\nYour email address has been successfully verified. You can now log in to your account.\n\nThank you!`;
+  const html = `<p>Hello ${username},</p><p>Your email address has been successfully verified. You can now log in to your account.</p><p>Thank you!</p>`;
+  await sendMail(to, subject, text, html);
+};
+
 const sendOrderConfirmationEmail = async (to, orderDetails) => {
   const subject = 'Order Confirmation';
   const text = `Thank you for your order! Here are your order details:\n\n${orderDetails}\n\nThank you for shopping with us!`;
@@ -46,7 +50,6 @@ const sendOrderConfirmationEmail = async (to, orderDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Ware wurde losgeschickt
 const sendShippingNotificationEmail = async (to, trackingNumber) => {
   const subject = 'Your Order Has Shipped';
   const text = `Your order has been shipped! You can track your shipment using the following tracking number: ${trackingNumber}.`;
@@ -54,7 +57,6 @@ const sendShippingNotificationEmail = async (to, trackingNumber) => {
   await sendMail(to, subject, text, html);
 };
 
-// Einladung
 const sendInvitationEmail = async (to, eventDetails) => {
   const subject = 'You Are Invited!';
   const text = `You are invited to the following event:\n\n${eventDetails}\n\nWe hope to see you there!`;
@@ -62,7 +64,6 @@ const sendInvitationEmail = async (to, eventDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Rücksendung
 const sendReturnOrderEmail = async (to, returnDetails) => {
   const subject = 'Return Order Confirmation';
   const text = `Your return order has been processed. Here are the details:\n\n${returnDetails}\n\nThank you!`;
@@ -70,7 +71,6 @@ const sendReturnOrderEmail = async (to, returnDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Ticket erstellt
 const sendTicketCreatedEmail = async (to, ticketDetails) => {
   const subject = 'New Ticket Created';
   const text = `A new ticket has been created. Here are the details:\n\n${ticketDetails}\n\nThank you!`;
@@ -78,7 +78,6 @@ const sendTicketCreatedEmail = async (to, ticketDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Ticket geschlossen
 const sendTicketClosedEmail = async (to, ticketDetails) => {
   const subject = 'Ticket Closed';
   const text = `Your ticket has been closed. Here are the details:\n\n${ticketDetails}\n\nThank you!`;
@@ -86,7 +85,6 @@ const sendTicketClosedEmail = async (to, ticketDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Ticketantwort
 const sendTicketReplyEmail = async (to, replyDetails) => {
   const subject = 'Ticket Reply';
   const text = `You have received a reply to your ticket. Here are the details:\n\n${replyDetails}\n\nThank you!`;
@@ -94,7 +92,6 @@ const sendTicketReplyEmail = async (to, replyDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Projektstatus-Update
 const sendProjectStatusUpdateEmail = async (to, projectUpdateDetails) => {
   const subject = 'Project Status Update';
   const text = `There is an update on your project. Here are the details:\n\n${projectUpdateDetails}\n\nThank you!`;
@@ -102,7 +99,6 @@ const sendProjectStatusUpdateEmail = async (to, projectUpdateDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-// Newsletter-Abonnentenbestätigung
 const sendSubscriptionConfirmation = async (to, name) => {
   const subject = 'Subscription Confirmation';
   const text = `Dear ${name},\n\nThank you for subscribing to our newsletter! We're excited to keep you updated with the latest news and offers.\n\nBest regards,\nYour Company`;
@@ -112,6 +108,7 @@ const sendSubscriptionConfirmation = async (to, name) => {
 
 module.exports = {
   sendRegistrationVerificationEmail,
+  sendVerificationSuccessEmail,
   sendOrderConfirmationEmail,
   sendShippingNotificationEmail,
   sendInvitationEmail,

@@ -1,6 +1,5 @@
 const Share = require('../../models/shareModel');
 
-// Erstelle einen neuen Share
 exports.createShare = async (req, res) => {
   try {
     const { user, blog, platform } = req.body;
@@ -25,7 +24,6 @@ exports.createShare = async (req, res) => {
   }
 };
 
-// Hole alle Shares für ein bestimmtes Blog
 exports.getSharesByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
@@ -43,7 +41,6 @@ exports.getSharesByBlog = async (req, res) => {
   }
 };
 
-// Hole einen Share nach ID
 exports.getShareById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -67,7 +64,6 @@ exports.getShareById = async (req, res) => {
   }
 };
 
-// Lösche einen Share
 exports.deleteShare = async (req, res) => {
   try {
     const { id } = req.params;

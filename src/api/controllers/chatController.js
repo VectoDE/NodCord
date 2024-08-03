@@ -1,6 +1,5 @@
 const Chat = require('../../models/chatModel');
 
-// Alle Chats abrufen
 exports.getAllChats = async (req, res) => {
   try {
     const chats = await Chat.find();
@@ -10,7 +9,6 @@ exports.getAllChats = async (req, res) => {
   }
 };
 
-// Einen spezifischen Chat abrufen
 exports.getChatById = async (req, res) => {
   try {
     const chat = await Chat.findById(req.params.id);
@@ -23,7 +21,6 @@ exports.getChatById = async (req, res) => {
   }
 };
 
-// Einen neuen Chat erstellen
 exports.createChat = async (req, res) => {
   const chat = new Chat({
     participants: req.body.participants,
@@ -39,7 +36,6 @@ exports.createChat = async (req, res) => {
   }
 };
 
-// Eine Nachricht zu einem Chat hinzufügen
 exports.addMessage = async (req, res) => {
   try {
     const chat = await Chat.findById(req.params.id);
@@ -56,7 +52,6 @@ exports.addMessage = async (req, res) => {
   }
 };
 
-// Einen Chat löschen
 exports.deleteChat = async (req, res) => {
   try {
     const chat = await Chat.findByIdAndDelete(req.params.id);

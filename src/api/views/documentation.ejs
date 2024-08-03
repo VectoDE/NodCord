@@ -13,6 +13,9 @@
       margin: 0;
       padding: 0;
       background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
@@ -22,7 +25,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      position: relative;
     }
 
     .logo {
@@ -51,6 +53,113 @@
     nav a:hover {
       background-color: #575757;
     }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+    }
+
+    .sidebar {
+      width: 250px;
+      background-color: #333;
+      color: #fff;
+      height: calc(100vh - 40px);
+      position: sticky;
+      top: 0;
+      padding-top: 20px;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar a {
+      display: block;
+      color: #fff;
+      text-decoration: none;
+      padding: 15px 20px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #575757;
+    }
+
+    .sidebar a.active {
+      background-color: #2fddfe;
+      color: #000;
+    }
+
+    .content {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+      border-radius: 8px;
+    }
+
+    h1, h2 {
+      color: #333;
+    }
+
+    h1 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      border-bottom: 1px solid #333;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+      margin-top: 30px;
+    }
+
+    p {
+      line-height: 1.6;
+      margin-bottom: 15px;
+    }
+
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    code {
+      background-color: #eaeaea;
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    ul {
+      list-style-type: disc;
+      padding-left: 20px;
+      margin-bottom: 15px;
+    }
+
+    ul ul {
+      list-style-type: circle;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 10px 20px;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+    }
+
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
+    }
+
+    footer p a:hover {
+      color: #fc9702;
+    }
   </style>
 </head>
 
@@ -58,22 +167,114 @@
   <header>
     <div class="logo">
       <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>Documentation - NodCord</span>
-      </a>
+      <span>NodCord</span>
     </div>
     <nav>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
-      <a href="/socketio">SocketIO</a>
-      <a href="/dashboard">Dashboard</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
     </nav>
   </header>
-  <main></main>
-  <footer></footer>
+  <div class="main-container">
+    <aside class="sidebar">
+      <a href="#overview" id="nav-overview">Overview</a>
+      <a href="#installation" id="nav-installation">Installation</a>
+      <a href="#configuration" id="nav-configuration">Configuration</a>
+      <a href="#usage" id="nav-usage">Usage</a>
+      <a href="#api" id="nav-api">API Reference</a>
+      <a href="#faq" id="nav-faq">FAQ</a>
+      <a href="#contact" id="nav-contact">Contact</a>
+    </aside>
+    <main class="content">
+      <section id="overview">
+        <h1>Overview</h1>
+        <p>Welcome to the NodCord documentation. NodCord is a versatile and powerful Discord bot framework that simplifies the process of creating and managing your own Discord bots.</p>
+      </section>
+      <section id="installation">
+        <h2>Installation</h2>
+        <p>To install NodCord, you need to have Node.js and npm installed on your system. Run the following command to install NodCord:</p>
+        <pre><code>npm install nodcord</code></pre>
+      </section>
+      <section id="configuration">
+        <h2>Configuration</h2>
+        <p>After installation, you need to configure NodCord. Create a <code>.env</code> file in your project directory and add the following:</p>
+        <pre><code>DISCORD_TOKEN=your_discord_token_here
+BOT_PREFIX=!</code></pre>
+      </section>
+      <section id="usage">
+        <h2>Usage</h2>
+        <p>To start using NodCord, create an <code>index.js</code> file and add the following code:</p>
+        <pre><code>const { Client, GatewayIntentBits } = require('nodcord');
+const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.login(process.env.DISCORD_TOKEN);</code></pre>
+      </section>
+      <section id="api">
+        <h2>API Reference</h2>
+        <p>NodCord provides a comprehensive API for interacting with Discord. Here are some of the main methods:</p>
+        <ul>
+          <li><code>client.on(event, listener)</code> - Listens for a specific event.</li>
+          <li><code>client.login(token)</code> - Logs in to Discord with the provided token.</li>
+          <li><code>client.user.setActivity(activity)</code> - Sets the bot's activity status.</li>
+        </ul>
+      </section>
+      <section id="faq">
+        <h2>FAQ</h2>
+        <p>Here are some frequently asked questions about NodCord:</p>
+        <h3>What is NodCord?</h3>
+        <p>NodCord is a framework for creating Discord bots with ease.</p>
+        <h3>How do I install NodCord?</h3>
+        <p>Run <code>npm install nodcord</code> to install NodCord.</p>
+      </section>
+      <section id="contact">
+        <h2>Contact</h2>
+        <p>If you have any questions, feel free to reach out to us at <a href="mailto:support@nodcord.com">support@nodcord.com</a>.</p>
+      </section>
+    </main>
+  </div>
+  <footer>
+    <p>&copy; 2024 NodCord Project. All rights reserved. <a href="mailto:support@nodcord.com">Contact Us</a></p>
+  </footer>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const sections = document.querySelectorAll("main section");
+      const navLinks = document.querySelectorAll(".sidebar a");
+
+      function onScroll() {
+        let currentSection = sections[0];
+
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          if (window.scrollY >= sectionTop - 60) {
+            currentSection = section;
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove("active");
+          if (link.getAttribute("href").substring(1) === currentSection.getAttribute("id")) {
+            link.classList.add("active");
+          }
+        });
+      }
+
+      window.addEventListener("scroll", onScroll);
+    });
+  </script>
 </body>
 
 </html>

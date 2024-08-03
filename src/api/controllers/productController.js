@@ -1,6 +1,5 @@
 const Product = require('../../models/productModel');
 
-// Listet alle Produkte auf
 const listProducts = async (req, res) => {
     try {
         const products = await Product.find();
@@ -11,7 +10,6 @@ const listProducts = async (req, res) => {
     }
 };
 
-// Erstellt ein neues Produkt
 const createProduct = async (req, res) => {
     try {
         const { name, description, price, category, stock } = req.body;
@@ -35,7 +33,6 @@ const createProduct = async (req, res) => {
     }
 };
 
-// Zeigt Details eines bestimmten Produkts an
 const getProductDetails = async (req, res) => {
     try {
         const { productId } = req.params;
@@ -55,7 +52,6 @@ const getProductDetails = async (req, res) => {
     }
 };
 
-// Aktualisiert ein Produkt
 const updateProduct = async (req, res) => {
     try {
         const { productId, name, description, price, category, stock } = req.body;
@@ -84,7 +80,6 @@ const updateProduct = async (req, res) => {
     }
 };
 
-// Entfernt ein Produkt
 const deleteProduct = async (req, res) => {
     try {
         const { productId } = req.body;

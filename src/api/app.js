@@ -9,12 +9,15 @@ const rateLimiter = require('./middlewares/rateLimiterMiddleware');
 
 const indexRoutes = require('./routes/indexRoutes');
 
+const authRoutes = require('./routes/authRoutes');
+
 const infoRoutes = require('./routes/infoRoutes');
 const userRoutes = require('./routes/userRoutes');
 const roleRoutes = require('./routes/roleRoutes');
 const tagRoutes = require('./routes/tagRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
+const gameRoutes = require('./routes/gameRoutes');
 
 const favoriteRoutes = require('./routes/favoriteRoutes');
 const commentRoutes = require('./routes/commentRoutes');
@@ -26,6 +29,8 @@ const newsletterRoutes = require('./routes/newsletterRoutes');
 const subscriberRoutes = require('./routes/subscriberRoutes');
 
 const companyRoutes = require('./routes/companyRoutes');
+const organizationRoutes = require('./routes/organizationRoutes');
+const groupRoutes = require('./routes/groupRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const taskRoutes = require('./routes/taskRoutes');
@@ -54,23 +59,21 @@ const app = express();
 const baseURL = appConfig.baseURL;
 const port = appConfig.port;
 
-// Middleware and routes setup
-app.use(corsMiddleware); // Verwende die CORS-Middleware
-app.use(compressionMiddleware); // Verwende die Compression-Middleware
+app.use(corsMiddleware);
+app.use(compressionMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Set up EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Serve static files
 app.use(express.static(path.join(__dirname, '../public')));
 
-// Apply rate limiter middleware to all routes
 app.use(rateLimiter);
 
 app.use('/', indexRoutes);
+
+app.use('/api/auth', authRoutes);
 
 app.use('/api/infos', infoRoutes);
 app.use('/api/users', userRoutes);
@@ -78,6 +81,7 @@ app.use('/api/roles', roleRoutes);
 app.use('/api/tags', tagRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/blogs', blogRoutes);
+app.use('/api/games', gameRoutes);
 
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/comments', commentRoutes);
@@ -89,6 +93,8 @@ app.use('/api/newsletters', newsletterRoutes);
 app.use('/api/subscribers', subscriberRoutes);
 
 app.use('/api/companies', companyRoutes);
+app.use('/api/organizations', organizationRoutes);
+app.use('/api/groups', groupRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
@@ -113,21 +119,18 @@ app.use('/api/logs', logRoutes);
 
 app.use('/api/files', fileRoutes);
 
-// Funktion zum Ermitteln der Routen
 const getRoutes = (router, basePath = '') => {
   const stack = router.stack || [];
   const routes = [];
 
   stack.forEach(middleware => {
     if (middleware.route) {
-      // Middleware mit .route ist eine Route
       const methods = Object.keys(middleware.route.methods).map(method => method.toUpperCase());
       routes.push({
         methods,
         path: basePath + middleware.route.path
       });
     } else if (middleware.name === 'router' && middleware.handle.stack) {
-      // Middleware mit .name === 'router' enthält Unterrouter
       middleware.handle.stack.forEach(subMiddleware => {
         if (subMiddleware.route) {
           const methods = Object.keys(subMiddleware.route.methods).map(method => method.toUpperCase());
@@ -143,11 +146,9 @@ const getRoutes = (router, basePath = '') => {
   return routes;
 };
 
-// Funktion zum Ermitteln aller Routen
 const getAllRoutes = () => {
   const routes = [];
 
-  // Bestimme die Pfade für alle definierten Routen
   const routeDefinitions = [
     { path: '', router: indexRoutes },
     { path: '/api/infos', router: infoRoutes },
@@ -197,19 +198,17 @@ app.get('/routes', (req, res) => {
   res.render('routes', { routes });
 });
 
-// 404 Handler - for undefined routes
 app.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
-// Error Handler - for all errors
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
-    error: app.get('env') === 'development' ? err : {}, // Show stack trace only in development
+    error: app.get('env') === 'development' ? err : {},
   });
 });
 

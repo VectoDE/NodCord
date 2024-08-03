@@ -1,6 +1,5 @@
 const Project = require('../../models/projectModel');
 
-// Listet alle Projekte auf
 const listProjects = async (req, res) => {
     try {
         const projects = await Project.find().populate('members').populate('tags');
@@ -11,7 +10,6 @@ const listProjects = async (req, res) => {
     }
 };
 
-// Erstellt ein neues Projekt
 const createProject = async (req, res) => {
     try {
         const { name, description, status, startDate, endDate, members, tags } = req.body;
@@ -37,7 +35,6 @@ const createProject = async (req, res) => {
     }
 };
 
-// Zeigt Details eines bestimmten Projekts an
 const getProjectDetails = async (req, res) => {
     try {
         const { projectId } = req.params;
@@ -57,7 +54,6 @@ const getProjectDetails = async (req, res) => {
     }
 };
 
-// Aktualisiert ein Projekt
 const updateProject = async (req, res) => {
     try {
         const { projectId, name, description, status, startDate, endDate, members, tags } = req.body;
@@ -86,7 +82,6 @@ const updateProject = async (req, res) => {
     }
 };
 
-// Entfernt ein Projekt
 const deleteProject = async (req, res) => {
     try {
         const { projectId } = req.body;

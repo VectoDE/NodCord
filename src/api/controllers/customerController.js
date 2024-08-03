@@ -1,6 +1,5 @@
 const Customer = require('../../models/customerModel');
 
-// Erstelle einen neuen Customer
 const createCustomer = async (req, res) => {
   try {
     const { name, email, phone, address } = req.body;
@@ -15,7 +14,6 @@ const createCustomer = async (req, res) => {
   }
 };
 
-// Hol alle Customers
 const getAllCustomers = async (req, res) => {
   try {
     const customers = await Customer.find();
@@ -26,7 +24,6 @@ const getAllCustomers = async (req, res) => {
   }
 };
 
-// Hol einen Customer nach ID
 const getCustomerById = async (req, res) => {
   try {
     const customer = await Customer.findById(req.params.id);
@@ -40,7 +37,6 @@ const getCustomerById = async (req, res) => {
   }
 };
 
-// Update einen Customer
 const updateCustomer = async (req, res) => {
   try {
     const { name, email, phone, address } = req.body;
@@ -61,7 +57,6 @@ const updateCustomer = async (req, res) => {
   }
 };
 
-// Lösche einen Customer
 const deleteCustomer = async (req, res) => {
   try {
     const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);

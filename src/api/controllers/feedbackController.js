@@ -1,6 +1,5 @@
 const Feedback = require('../../models/feedbackModel');
 
-// POST: Erstelle Feedback
 exports.createFeedback = async (req, res) => {
     try {
         const { userId, username, feedbackText } = req.body;
@@ -24,7 +23,6 @@ exports.createFeedback = async (req, res) => {
     }
 };
 
-// GET: Alle Feedbacks abrufen
 exports.getAllFeedbacks = async (req, res) => {
     try {
         const feedbacks = await Feedback.find().sort({ createdAt: -1 });

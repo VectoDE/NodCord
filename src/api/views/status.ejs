@@ -8,10 +8,15 @@
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      font-family: Arial, sans-serif;
       background-color: #f4f4f4;
     }
 
@@ -52,15 +57,29 @@
       background-color: #575757;
     }
 
-    footer {
-      background-color: #333;
-      color: #fff;
-      padding: 1rem;
-      text-align: center;
+    main {
+      flex: 1;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    main {
-      padding: 2rem;
+    section {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    h2 {
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+      font-size: 24px;
+      color: #333;
     }
 
     .status {
@@ -71,10 +90,23 @@
     }
 
     .status-dot {
-      width: 15px;
-      height: 15px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      margin-right: 10px;
+      margin-right: 15px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .status-dot::after {
+      content: attr(data-status);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
     }
 
     .online {
@@ -88,6 +120,27 @@
     .offline {
       background-color: red;
     }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      padding: 15px 20px;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    footer p {
+      margin: 0;
+    }
+
+    footer p a {
+      color: #2fddfe;
+      text-decoration: none;
+    }
+
+    footer p a:hover {
+      color: #fc9702;
+    }
   </style>
 </head>
 
@@ -95,50 +148,42 @@
   <header>
     <div class="logo">
       <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>Status - NodCord</span>
-      </a>
+      <span>NodCord</span>
     </div>
     <nav>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
-      <a href="/socketio">SocketIO</a>
-      <a href="/dashboard">Dashboard</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+      <% } %>
     </nav>
   </header>
   <main>
     <section>
       <h2>API Status</h2>
       <div class="status">
-        <div
-          class="status-dot <% if (apiStatus === 'online') { %>online<% } else if (apiStatus === 'maintenance') { %>maintenance<% } else { %>offline<% } %>">
-        </div>
-        <span>
-          <%= apiStatusMessage || 'Unknown' %>
-        </span>
+        <div class="status-dot <%= apiStatus %>" data-status="<%= apiStatusMessage || 'Unknown' %>"></div>
+        <span><%= apiStatusMessage || 'Unknown' %></span>
       </div>
 
       <h2>Database Status</h2>
       <div class="status">
-        <div
-          class="status-dot <% if (dbStatus === 'online') { %>online<% } else if (dbStatus === 'maintenance') { %>maintenance<% } else { %>offline<% } %>">
-        </div>
-        <span>
-          <%= dbStatusMessage || 'Unknown' %>
-        </span>
+        <div class="status-dot <%= dbStatus %>" data-status="<%= dbStatusMessage || 'Unknown' %>"></div>
+        <span><%= dbStatusMessage || 'Unknown' %></span>
       </div>
 
       <h2>Discord Bot Status</h2>
       <div class="status">
-        <div
-          class="status-dot <% if (botStatus === 'online') { %>online<% } else if (botStatus === 'maintenance') { %>maintenance<% } else { %>offline<% } %>">
-        </div>
-        <span>
-          <%= botStatusMessage || 'Unknown' %>
-        </span>
+        <div class="status-dot <%= botStatus %>" data-status="<%= botStatusMessage || 'Unknown' %>"></div>
+        <span><%= botStatusMessage || 'Unknown' %></span>
       </div>
     </section>
   </main>

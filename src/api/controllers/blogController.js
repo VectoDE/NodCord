@@ -1,6 +1,5 @@
 const Blog = require('../../models/blogModel');
 
-// Erstellen eines neuen Blog-Beitrags
 const createBlog = async (req, res) => {
     try {
         const { title, content, author, tags } = req.body;
@@ -19,7 +18,6 @@ const createBlog = async (req, res) => {
     }
 };
 
-// Abrufen aller Blog-Beiträge
 const getAllBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find();
@@ -29,7 +27,6 @@ const getAllBlogs = async (req, res) => {
     }
 };
 
-// Abrufen eines einzelnen Blog-Beitrags
 const getBlogById = async (req, res) => {
     try {
         const blog = await Blog.findById(req.params.id);
@@ -44,7 +41,6 @@ const getBlogById = async (req, res) => {
     }
 };
 
-// Aktualisieren eines Blog-Beitrags
 const updateBlog = async (req, res) => {
     try {
         const blog = await Blog.findByIdAndUpdate(
@@ -63,7 +59,6 @@ const updateBlog = async (req, res) => {
     }
 };
 
-// Löschen eines Blog-Beitrags
 const deleteBlog = async (req, res) => {
     try {
         const blog = await Blog.findByIdAndDelete(req.params.id);
@@ -72,7 +67,7 @@ const deleteBlog = async (req, res) => {
             return res.status(404).json({ message: 'Blog not found' });
         }
 
-        res.status(204).send();  // No Content
+        res.status(204).send();
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

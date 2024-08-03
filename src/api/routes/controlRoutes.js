@@ -2,13 +2,24 @@ const express = require('express');
 const router = express.Router();
 const controlController = require('../controllers/controlController');
 
-// Endpunkt zum Starten des Bots
-router.post('/start', controlController.startBot);
+router.post('/bot/start', controlController.startBot);
 
-// Endpunkt zum Stoppen des Bots
-router.post('/stop', controlController.stopBot);
+router.post('/bot/stop', controlController.stopBot);
 
-// Endpunkt zum Neustarten des Bots
-router.post('/restart', controlController.restartBot);
+router.post('/bot/restart', controlController.restartBot);
+
+router.post('/bot/maintenance', controlController.setBotMaintenance);
+
+router.post('/bot/remove-maintenance', controlController.removeBotMaintenance);
+
+router.post('/api/start', controlController.startApi);
+
+router.post('/api/stop', controlController.stopApi);
+
+router.post('/api/restart', controlController.restartApi);
+
+router.post('/api/maintenance', controlController.setAPIMaintenance);
+
+router.post('/api/remove-maintenance', controlController.removeAPIMaintenance);
 
 module.exports = router;

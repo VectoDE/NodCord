@@ -1,17 +1,14 @@
 const Order = require('../../models/orderModel');
 const nodemailerService = require('../services/nodemailerService');
 
-// Funktion zur Erstellung einer Bestellung
 const createOrder = async (req, res) => {
   try {
     const orderData = req.body;
 
-    // Erstelle eine neue Bestellung
     const newOrder = new Order(orderData);
     await newOrder.save();
 
-    // Sende eine Bestellbestätigungsmail
-    const customerEmail = orderData.customer.email; // Assuming customer has an email field
+    const customerEmail = orderData.customer.email;
     await nodemailerService.sendOrderConfirmationEmail(
       customerEmail,
       `Order ID: ${newOrder._id}\nTotal Amount: ${newOrder.totalAmount}\nDetails: ${JSON.stringify(orderData.products)}`
@@ -24,13 +21,11 @@ const createOrder = async (req, res) => {
   }
 };
 
-// Funktion zur Aktualisierung des Bestellstatus (z.B. Versandbenachrichtigung)
 const updateOrderStatus = async (req, res) => {
   try {
     const { orderId } = req.params;
     const { status, trackingNumber } = req.body;
 
-    // Aktualisiere die Bestellung
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { status, trackingNumber },
@@ -41,9 +36,8 @@ const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
-    // Sende eine Versandbenachrichtigungsmail, wenn der Status auf 'Shipped' geändert wird
     if (status === 'Shipped') {
-      const customerEmail = updatedOrder.customer.email; // Assuming customer has an email field
+      const customerEmail = updatedOrder.customer.email;
       await nodemailerService.sendShippingNotificationEmail(
         customerEmail,
         trackingNumber
@@ -57,7 +51,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// Funktion zum Abrufen einer Bestellung
 const getOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -74,7 +67,6 @@ const getOrder = async (req, res) => {
   }
 };
 
-// Funktion zum Abrufen aller Bestellungen
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find().populate('customer').populate('products.product');
