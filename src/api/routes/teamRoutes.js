@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const teamController = require('../../controllers/teamController');
+const teamController = require('../controllers/teamController');
 
 // Listet alle Teams auf
 router.get('/', teamController.listTeams);

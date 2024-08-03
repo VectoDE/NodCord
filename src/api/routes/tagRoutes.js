@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const tagController = require('../../controllers/tagController');
+const tagController = require('../controllers/tagController');
 
 // Listet alle Tags auf
 router.get('/', tagController.listTags);

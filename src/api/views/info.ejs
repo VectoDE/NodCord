@@ -1,78 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Info - NodCord</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header, footer {
-            background-color: #333;
-            color: #fff;
-            padding: 1rem;
-            text-align: center;
-        }
-        main {
-            padding: 2rem;
-        }
-        .info-container {
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        h1 {
-            margin-top: 0;
-        }
-        .info-item {
-            margin-bottom: 1rem;
-        }
-        .info-item h2 {
-            margin: 0;
-            font-size: 1.25rem;
-            color: #333;
-        }
-        .info-item p {
-            margin: 0.5rem 0;
-            font-size: 1rem;
-            color: #555;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Info - NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #575757;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    .info-container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      margin-top: 0;
+    }
+
+    .info-item {
+      margin-bottom: 1rem;
+    }
+
+    .info-item h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      color: #333;
+    }
+
+    .info-item p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      color: #555;
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <h1>NodCord Bot & API Information</h1>
-    </header>
-    <main>
-        <div class="info-container">
-            <div class="info-item">
-                <h2>Bot Information</h2>
-                <p><strong>Bot Name:</strong> <%= bot.name || 'N/A' %></p>
-                <p><strong>Bot Username:</strong> <%= bot.username || 'N/A' %></p>
-                <p><strong>Bot ID:</strong> <%= bot.id || 'N/A' %></p>
-                <p><strong>Bot Token:</strong> <%= bot.token ? '*****' : 'N/A' %></p>
-                <p><strong>Connected Servers:</strong> <%= bot.guildsCount || 'N/A' %></p>
-            </div>
-            <div class="info-item">
-                <h2>API Information</h2>
-                <p><strong>API Version:</strong> <%= api.version || 'N/A' %></p>
-                <p><strong>API Base URL:</strong> <%= api.baseUrl || 'N/A' %></p>
-                <p><strong>Environment:</strong> <%= api.environment || 'N/A' %></p>
-                <p><strong>Database Status:</strong> <%= api.dbStatus || 'N/A' %></p>
-            </div>
-        </div>
-    </main>
-    <footer>
-        <p>&copy; 2024 NodCord Project</p>
-    </footer>
+  <header>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>Info - NodCord</span>
+      </a>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <a href="/socketio">SocketIO</a>
+      <a href="/dashboard">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <div class="info-container">
+      <div class="info-item">
+        <h2>Bot Information</h2>
+        <p><strong>Bot Name:</strong>
+          <%= bot.name || 'N/A' %>
+        </p>
+        <p><strong>Bot Username:</strong>
+          <%= bot.username || 'N/A' %>
+        </p>
+        <p><strong>Bot ID:</strong>
+          <%= bot.id || 'N/A' %>
+        </p>
+        <p><strong>Bot Token:</strong>
+          <%= bot.token ? '*****' : 'N/A' %>
+        </p>
+        <p><strong>Connected Servers:</strong>
+          <%= bot.guildsCount || 'N/A' %>
+        </p>
+      </div>
+      <div class="info-item">
+        <h2>API Information</h2>
+        <p><strong>API Version:</strong>
+          <%= api.version || 'N/A' %>
+        </p>
+        <p><strong>API Base URL:</strong>
+          <%= api.baseUrl || 'N/A' %>
+        </p>
+        <p><strong>Environment:</strong>
+          <%= api.environment || 'N/A' %>
+        </p>
+        <p><strong>Database Status:</strong>
+          <%= api.dbStatus || 'N/A' %>
+        </p>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2024 NodCord Project</p>
+  </footer>
 </body>
+
 </html>

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const projectController = require('../../controllers/projectController');
+const projectController = require('../controllers/projectController');
 
 // Listet alle Projekte auf
 router.get('/', projectController.listProjects);

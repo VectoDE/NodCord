@@ -5,12 +5,8 @@ router.get('/', (req, res) => {
   res.render('index');
 });
 
-router.get('/discord-members', (req, res) => {
-  res.render('discordmembers');
-});
-
-router.get('/discord-servers', (req, res) => {
-  res.render('discordservers');
+router.get('/docs', (req, res) => {
+  res.render('documentation');
 });
 
 router.get('/status', (req, res) => {
@@ -21,16 +17,20 @@ router.get('/info', (req, res) => {
   res.render('info');
 });
 
-router.get('/docs', (req, res) => {
-  res.render('documentation');
+router.get('/discord-members', (req, res) => {
+  res.render('discordmembers');
 });
 
-router.get('/dashboard', (req, res) => {
-  res.render('dashboard');
+router.get('/discord-servers', (req, res) => {
+  res.render('discordservers');
 });
 
 router.get('/socketio', (req, res) => {
   res.render('socketio');
+});
+
+router.get('/dashboard', (req, res) => {
+  res.render('dashboard');
 });
 
 module.exports = router;

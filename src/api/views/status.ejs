@@ -1,62 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-        .status {
-            display: flex;
-            align-items: center;
-            font-size: 18px;
-            margin: 20px 0;
-        }
-        .status-dot {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .online {
-            background-color: green;
-        }
-        .maintenance {
-            background-color: yellow;
-        }
-        .offline {
-            background-color: red;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Status</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #575757;
+    }
+
+    footer {
+      background-color: #333;
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    main {
+      padding: 2rem;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      font-size: 18px;
+      margin: 20px 0;
+    }
+
+    .status-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .online {
+      background-color: green;
+    }
+
+    .maintenance {
+      background-color: yellow;
+    }
+
+    .offline {
+      background-color: red;
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <h1>System Status</h1>
-    </header>
-    <main>
-        <section>
-            <h2>API Status</h2>
-            <div class="status">
-                <div class="status-dot <%= apiStatus %>"></div>
-                <span><%= apiStatusMessage %></span>
-            </div>
+  <header>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>Status - NodCord</span>
+      </a>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <a href="/socketio">SocketIO</a>
+      <a href="/dashboard">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>API Status</h2>
+      <div class="status">
+        <div
+          class="status-dot <% if (apiStatus === 'online') { %>online<% } else if (apiStatus === 'maintenance') { %>maintenance<% } else { %>offline<% } %>">
+        </div>
+        <span>
+          <%= apiStatusMessage || 'Unknown' %>
+        </span>
+      </div>
 
-            <h2>Database Status</h2>
-            <div class="status">
-                <div class="status-dot <%= dbStatus %>"></div>
-                <span><%= dbStatusMessage %></span>
-            </div>
+      <h2>Database Status</h2>
+      <div class="status">
+        <div
+          class="status-dot <% if (dbStatus === 'online') { %>online<% } else if (dbStatus === 'maintenance') { %>maintenance<% } else { %>offline<% } %>">
+        </div>
+        <span>
+          <%= dbStatusMessage || 'Unknown' %>
+        </span>
+      </div>
 
-            <h2>Discord Bot Status</h2>
-            <div class="status">
-                <div class="status-dot <%= botStatus %>"></div>
-                <span><%= botStatusMessage %></span>
-            </div>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 NodCord. All rights reserved.</p>
-    </footer>
+      <h2>Discord Bot Status</h2>
+      <div class="status">
+        <div
+          class="status-dot <% if (botStatus === 'online') { %>online<% } else if (botStatus === 'maintenance') { %>maintenance<% } else { %>offline<% } %>">
+        </div>
+        <span>
+          <%= botStatusMessage || 'Unknown' %>
+        </span>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2024 NodCord. All rights reserved.</p>
+  </footer>
 </body>
+
 </html>

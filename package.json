@@ -79,8 +79,10 @@
     "mongoose": "^6.3.4",
     "morgan": "^1.10.0",
     "multer": "^1.4.4",
+    "nodemailer": "^6.9.14",
     "os": "^0.1.2",
     "passport": "^0.6.0",
+    "paypal-rest-sdk": "^1.8.1",
     "pm2": "^5.1.2",
     "rate-limiter-flexible": "^2.3.0",
     "redis": "^4.7.0",
@@ -89,6 +91,7 @@
     "socket.io": "^4.7.5",
     "socket.io-redis": "^6.1.1",
     "socketio": "^1.0.0",
+    "stripe": "^16.6.0",
     "swagger-ui-express": "^4.3.0",
     "validator": "^13.7.0",
     "winston": "^3.13.1"

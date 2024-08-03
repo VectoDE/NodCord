@@ -1,17 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Documentation</title>
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #575757;
+    }
+  </style>
 </head>
+
 <body>
   <header>
-    <h1>Hello</h1>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>Documentation - NodCord</span>
+      </a>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <a href="/socketio">SocketIO</a>
+      <a href="/dashboard">Dashboard</a>
+    </nav>
   </header>
   <main></main>
   <footer></footer>
 </body>
+
 </html>

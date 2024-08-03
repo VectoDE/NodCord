@@ -1,101 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Members</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-        .member-cards {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            justify-content: space-around;
-        }
-        .member-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-            width: 300px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            background: #fff;
-        }
-        .member-card img.banner {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-        .member-card img.avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin-top: -50px;
-            border: 4px solid #fff;
-        }
-        .member-card h2 {
-            margin: 1rem 0;
-            font-size: 1.5rem;
-        }
-        .member-card p {
-            margin: 0.5rem 0;
-        }
-        .member-card .info {
-            margin: 1rem;
-            font-size: 0.9rem;
-            color: #555;
-        }
-        .badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-top: 0.5rem;
-        }
-        .badge {
-            width: 20px;
-            height: 20px;
-            background-color: #ffcc00;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 12px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Members</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #575757;
+    }
+
+    .member-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-around;
+    }
+
+    .member-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      overflow: hidden;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      background: #fff;
+    }
+
+    .member-card img.banner {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+
+    .member-card img.avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-top: -50px;
+      border: 4px solid #fff;
+    }
+
+    .member-card h2 {
+      margin: 1rem 0;
+      font-size: 1.5rem;
+    }
+
+    .member-card p {
+      margin: 0.5rem 0;
+    }
+
+    .member-card .info {
+      margin: 1rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 0.5rem;
+    }
+
+    .badge {
+      width: 20px;
+      height: 20px;
+      background-color: #ffcc00;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <h1>Discord Members</h1>
-    </header>
-    <main>
-        <section>
-            <div class="member-cards">
-                <% members.forEach(member => { %>
-                <div class="member-card">
-                    <img src="<%= member.banner %>" alt="Banner for <%= member.username %>" class="banner">
-                    <img src="<%= member.avatar %>" alt="Avatar for <%= member.username %>" class="avatar">
-                    <h2><%= member.username %></h2>
-                    <p><strong>Name:</strong> <%= member.name %></p>
-                    <p><strong>Username:</strong> <%= member.username %></p>
-                    <p><strong>Hashname:</strong> <%= member.hashname %></p>
-                    <p><strong>Servers:</strong> <%= member.serverCount %></p>
-                    <p><strong>Created At:</strong> <%= new Date(member.createdAt).toLocaleDateString() %></p>
-                    <div class="badges">
-                        <% member.badges.forEach(badge => { %>
-                            <div class="badge"><%= badge %></div>
-                        <% }); %>
-                    </div>
+  <header>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>Discord Members - NodCord</span>
+      </a>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <a href="/socketio">SocketIO</a>
+      <a href="/dashboard">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <div class="member-cards">
+        <% members.forEach(member=> { %>
+          <div class="member-card">
+            <img src="<%= member.banner %>" alt="Banner for <%= member.username %>" class="banner">
+            <img src="<%= member.avatar %>" alt="Avatar for <%= member.username %>" class="avatar">
+            <h2>
+              <%= member.username %>
+            </h2>
+            <p><strong>Name:</strong>
+              <%= member.name %>
+            </p>
+            <p><strong>Username:</strong>
+              <%= member.username %>
+            </p>
+            <p><strong>Hashname:</strong>
+              <%= member.hashname %>
+            </p>
+            <p><strong>Servers:</strong>
+              <%= member.serverCount %>
+            </p>
+            <p><strong>Created At:</strong>
+              <%= new Date(member.createdAt).toLocaleDateString() %>
+            </p>
+            <div class="badges">
+              <% member.badges.forEach(badge=> { %>
+                <div class="badge">
+                  <%= badge %>
                 </div>
                 <% }); %>
             </div>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 NodCord Project</p>
-    </footer>
+          </div>
+          <% }); %>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2024 NodCord Project</p>
+  </footer>
 </body>
+
 </html>

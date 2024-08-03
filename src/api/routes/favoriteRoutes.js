@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const favoriteController = require('../../controllers/favoriteController');
+const favoriteController = require('../controllers/favoriteController');
 
 // Listet alle Favoriten eines Benutzers auf
 router.get('/', favoriteController.listFavorites);

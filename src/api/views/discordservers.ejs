@@ -1,71 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discord Servers</title>
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 2rem 0;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        img.server-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Servers</title>
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header {
+      background-color: #333;
+      color: #fff;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+    }
+
+    .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    nav {
+      display: flex;
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      padding: 10px 15px;
+      margin: 0 5px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #575757;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2rem 0;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+
+    img.server-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  </style>
 </head>
+
 <body>
-    <header>
-        <h1>Discord Servers</h1>
-    </header>
-    <main>
-        <section>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Icon</th>
-                        <th>Name</th>
-                        <th>Owner</th>
-                        <th>Created At</th>
-                        <th>Members</th>
-                        <th>Roles</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (servers && servers.length) { %>
-                        <% servers.forEach(server => { %>
-                        <tr>
-                            <td><img src="<%= server.icon %>" alt="Icon for <%= server.name %>" class="server-icon"></td>
-                            <td><%= server.name %></td>
-                            <td><%= server.owner %></td>
-                            <td><%= server.createdAt %></td>
-                            <td><%= server.memberCount %></td>
-                            <td><%= server.roleCount %></td>
-                        </tr>
-                        <% }); %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="6">Keine Server gefunden.</td>
-                        </tr>
-                    <% } %>
-                </tbody>
-            </table>
-        </section>
-    </main>
-    <footer>
-        <p>&copy; 2024 NodCord Project</p>
-    </footer>
+  <header>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>Discord Servers - NodCord</span>
+      </a>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <a href="/socketio">SocketIO</a>
+      <a href="/dashboard">Dashboard</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <table>
+        <thead>
+          <tr>
+            <th>Icon</th>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Created At</th>
+            <th>Members</th>
+            <th>Roles</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (servers && servers.length) { %>
+            <% servers.forEach(server=> { %>
+              <tr>
+                <td><img src="<%= server.icon %>" alt="Icon for <%= server.name %>" class="server-icon"></td>
+                <td>
+                  <%= server.name %>
+                </td>
+                <td>
+                  <%= server.owner %>
+                </td>
+                <td>
+                  <%= server.createdAt %>
+                </td>
+                <td>
+                  <%= server.memberCount %>
+                </td>
+                <td>
+                  <%= server.roleCount %>
+                </td>
+              </tr>
+              <% }); %>
+                <% } else { %>
+                  <tr>
+                    <td colspan="6">Keine Server gefunden.</td>
+                  </tr>
+                  <% } %>
+        </tbody>
+      </table>
+    </section>
+  </main>
+  <footer>
+    <p>&copy; 2024 NodCord Project</p>
+  </footer>
 </body>
+
 </html>
