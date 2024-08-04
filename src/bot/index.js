@@ -29,7 +29,6 @@ const start = () => {
   })();
 }
 
-// Fetch members for all guilds
 const getMembers = async () => {
   let memberData = [];
   try {
@@ -41,7 +40,7 @@ const getMembers = async () => {
           username: member.user.username,
           displayName: member.displayName,
           avatar: member.user.displayAvatarURL(),
-          badges: member.user.flags.toArray(), // Ensure this is correct for your Discord.js version
+          badges: member.user.flags.toArray(),
           hashname: member.user.id
         });
       });
@@ -52,34 +51,29 @@ const getMembers = async () => {
   return memberData;
 };
 
-// Fetch servers and member data
 const getServers = async () => {
   let serverData = [];
   try {
     for (const guild of client.guilds.cache.values()) {
-      // Abrufen der Guild-Besitzerinformationen
       const owner = await client.users.fetch(guild.ownerId);
 
-      // Abrufen der Mitgliederinformationen
       const members = await guild.members.fetch();
 
-      // Extrahieren der Mitgliederdaten
       const memberData = members.map(member => ({
         avatar: member.user.displayAvatarURL(),
         username: member.user.username,
         displayName: member.displayName,
-        badges: member.user.flags.toArray(), // Badges abrufen
+        badges: member.user.flags.toArray(),
         hashname: `${member.user.username}#${member.user.discriminator}`
       }));
 
-      // Hinzufügen der Serverdaten und der Mitglieder
       serverData.push({
         id: guild.id,
         name: guild.name,
-        icon: guild.iconURL(), // URL des Server-Icons
-        owner: owner ? owner.username : 'Unknown', // Besitzername
-        createdAt: guild.createdAt, // Erstellungsdatum
-        members: memberData // Mitgliederdaten
+        icon: guild.iconURL(),
+        owner: owner ? owner.username : 'Unknown',
+        createdAt: guild.createdAt,
+        members: memberData
       });
     }
   } catch (error) {
@@ -89,7 +83,6 @@ const getServers = async () => {
   return serverData;
 };
 
-//Prefix Commands MessageCreate
 client.on('messageCreate', async message => {
   const prefix = process.env.BOT_PREFIX;
 
@@ -102,7 +95,6 @@ client.on('messageCreate', async message => {
   }
 });
 
-//Join Role
 const joinrole = require('../models/joinroleModel');
 client.on(Events.GuildMemberAdd, async (member, guild) => {
   const role = await joinrole.findOne({ Guild: member.guild.id });
@@ -111,7 +103,6 @@ client.on(Events.GuildMemberAdd, async (member, guild) => {
   member.roles.add(giverole);
 })
 
-//Anti link system
 const linkSchema = require('../models/linkModel');
 client.on(Events.MessageCreate, async message => {
   if (message.content.startsWith('http') || message.content.startsWith('discord.gg') || message.content.includes('discord.gg/') || message.content.includes('https://')) {

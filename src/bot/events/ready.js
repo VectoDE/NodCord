@@ -25,11 +25,8 @@ module.exports = {
             {
               name: statusArray[option].content,
               type: statusArray[option].type,
-
             },
-
           ],
-
           status: statusArray[option].status
         })
       } catch (error) {
