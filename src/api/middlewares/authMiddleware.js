@@ -1,16 +1,36 @@
+const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
+    const token = req.cookies.token;
+    if (!token) {
+      // Kein Token vorhanden, Fehler an die Fehlerbehandlungsmiddleware weiterleiten
+      const err = new Error('Unauthorized');
+      err.status = 401;
+      return next(err);
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
 
-    req.userId = decoded.id;
+    if (!user || !user.isAuthenticated) {
+      // Benutzer nicht gefunden oder nicht authentifiziert, Fehler an die Fehlerbehandlungsmiddleware weiterleiten
+      const err = new Error('Unauthorized');
+      err.status = 401;
+      return next(err);
+    }
+
+    // Benutzer ist authentifiziert
+    res.locals.isAuthenticated = true;
+    req.user = user;
     next();
-  } catch (err) {
-    res.status(401).json({ success: false, message: 'Invalid token' });
+  } catch (error) {
+    console.error('Authentication error:', error);
+    // Fehler bei der Authentifizierung, an die Fehlerbehandlungsmiddleware weiterleiten
+    const err = new Error('Unauthorized');
+    err.status = 401;
+    next(err);
   }
 };
 

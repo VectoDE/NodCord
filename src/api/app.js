@@ -1,5 +1,7 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const appConfig = require('../config/apiConfig');
 
@@ -8,6 +10,7 @@ const compressionMiddleware = require('./middlewares/compressionMiddleware');
 const rateLimiter = require('./middlewares/rateLimiterMiddleware');
 
 const indexRoutes = require('./routes/indexRoutes');
+const dashRoutes = require('./routes/dashboardRoutes');
 
 const authRoutes = require('./routes/authRoutes');
 
@@ -59,10 +62,16 @@ const app = express();
 const baseURL = appConfig.baseURL;
 const port = appConfig.port;
 
+app.use(express.urlencoded({
+  extended: true
+}));
+
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
+
 app.use(corsMiddleware);
 app.use(compressionMiddleware);
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -72,6 +81,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(rateLimiter);
 
 app.use('/', indexRoutes);
+app.use('/dashboard', dashRoutes);
 
 app.use('/api/auth', authRoutes);
 
@@ -198,8 +208,13 @@ const getAllRoutes = () => {
 };
 
 app.get('/routes', (req, res) => {
-  const routes = getAllRoutes();
-  res.render('routes', { routes });
+  try {
+    const routes = getAllRoutes();
+    res.render('index/routes', { routes, isAuthenticated: res.locals.isAuthenticated });
+  } catch (error) {
+    console.error('Error fetching routes:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.use((req, res, next) => {
@@ -209,10 +224,14 @@ app.use((req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  res.status(err.status || 500);
-  res.render('error', {
-    message: err.message,
-    error: app.get('env') === 'development' ? err : {},
+  const statusCode = err.status || 500;
+  res.status(statusCode).render('error', {
+    errortitle: statusCode === 401 ? 'Unauthorized' :
+      statusCode === 404 ? 'Not Found' :
+        'Error',
+    errormessage: err.message,
+    errorstatus: statusCode,
+    errorstack: app.get('env') === 'development' ? err.stack : null
   });
 });
 
@@ -222,4 +241,4 @@ const startApp = () => {
   });
 };
 
-module.exports = { app, startApp, getAllRoutes, getRoutes };
+module.exports = { app, startApp, getAllRoutes };

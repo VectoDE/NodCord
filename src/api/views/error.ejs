@@ -1,68 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= errortitle %></title>
+    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            margin: 0;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #d9534f; /* Rote Farbe für den Fehler */
-        }
-        p {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        .error-message {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            padding: 10px;
-            font-family: 'Courier New', Courier, monospace;
-            white-space: pre-wrap; /* Erhält Zeilenumbrüche */
-            text-align: left;
-            margin-top: 20px;
-        }
-        a {
-            display: inline-block;
-            margin-top: 20px;
-            color: #0275d8;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f2f2f2;
+        color: #333;
+        text-align: center;
+        padding: 20px;
+        margin: 0;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #d9534f; /* Rote Farbe für den Fehler */
+      }
+      p {
+        font-size: 18px;
+        margin: 10px 0;
+      }
+      .error-message {
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        font-family: 'Courier New', Courier, monospace;
+        white-space: pre-wrap; /* Erhält Zeilenumbrüche */
+        text-align: left;
+        margin-top: 20px;
+      }
+      pre {
+        display: block;
+        text-align: center; /* Zentriert den Text innerhalb des <pre>-Tags */
+        margin: 0 auto; /* Zentriert das <pre>-Element selbst innerhalb des Containers */
+        white-space: pre-wrap; /* Erhält Zeilenumbrüche */
+        width: fit-content; /* Passt die Breite des <pre>-Tags dem Inhalt an */
+        background-color: #f9f9f9; /* Hintergrundfarbe für den <pre>-Tag */
+        border: 1px solid #ddd; /* Rand für den <pre>-Tag */
+        padding: 10px; /* Innenabstand für den <pre>-Tag */
+        border-radius: 4px; /* Abgerundete Ecken für den <pre>-Tag */
+      }
+      a {
+        display: inline-block;
+        margin-top: 20px;
+        color: #0275d8;
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
     </style>
-</head>
-<body>
+  </head>
+
+  <body>
     <div class="container">
-        <h1>Error</h1>
-        <p>Oops! Something went wrong.</p>
-        <div class="error-message">
-            <%= error.message %>
-        </div>
-        <% if (error.status) { %>
-            <p>Status: <%= error.status %></p>
-        <% } %>
-        <a href="/">Go Back to Home</a>
+      <h1><%= errortitle %></h1>
+      <p>Oops! Something went wrong.</p>
+      <div class="error-message"><%= errormessage %></div>
+      <% if (errorstatus) { %>
+      <p>Status: <%= errorstatus %></p>
+      <% } %> <% if (errorstack) { %>
+      <pre><%= errorstack %></pre>
+      <% } %>
+      <a href="/">Go Back to Home</a>
     </div>
     <script src="/assets/js/script.js"></script>
-</body>
+  </body>
 </html>

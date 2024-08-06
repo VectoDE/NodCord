@@ -1,6 +1,7 @@
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const session = require('express-session');
 const nodemailerService = require('../services/nodemailerService');
 
 exports.register = async (req, res) => {
@@ -63,14 +64,14 @@ exports.login = async (req, res) => {
     const user = await User.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
 
     if (!user || !await user.comparePassword(password)) {
-      return res.status(400).render('login', {
+      return res.status(400).render('auth/login', {
         isAuthenticated: false,
         errorMessage: 'Invalid credentials'
       });
     }
 
     if (!user.isVerified) {
-      return res.status(400).render('login', {
+      return res.status(400).render('auth/login', {
         isAuthenticated: false,
         errorMessage: 'Email not verified'
       });
@@ -81,7 +82,12 @@ exports.login = async (req, res) => {
     user.isAuthenticated = true;
     await user.save();
 
-    req.session.token = token;
+    res.cookie("token", token, {
+      httpOnly: true,
+      //secure: true,
+      //maxAge: 100,
+      //signed: true,
+    });
 
     res.redirect('/dashboard');
   } catch (err) {
@@ -92,19 +98,23 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const user = await User.findById(userId);
+    const token = req.cookies.token;
+    if (!token) {
+      return res.redirect('/login');
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
 
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid user' });
     }
-    
+
     user.isAuthenticated = false;
     await user.save();
 
+    res.clearCookie('token');
     res.redirect('/');
-
-    res.status(200).json({ success: true, message: 'Logged out successfully' });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
