@@ -151,12 +151,14 @@ const getAllRoutes = () => {
 
   const routeDefinitions = [
     { path: '', router: indexRoutes },
+    { path: '/api/auth', router: authRoutes },
     { path: '/api/infos', router: infoRoutes },
     { path: '/api/users', router: userRoutes },
     { path: '/api/roles', router: roleRoutes },
     { path: '/api/tags', router: tagRoutes },
     { path: '/api/categories', router: categoryRoutes },
     { path: '/api/blogs', router: blogRoutes },
+    { path: '/api/games', router: gameRoutes },
     { path: '/api/favorites', router: favoriteRoutes },
     { path: '/api/comments', router: commentRoutes },
     { path: '/api/likes', router: likeRoutes },
@@ -165,6 +167,8 @@ const getAllRoutes = () => {
     { path: '/api/newsletters', router: newsletterRoutes },
     { path: '/api/subscribers', router: subscriberRoutes },
     { path: '/api/companies', router: companyRoutes },
+    { path: '/api/organizations', router: organizationRoutes },
+    { path: '/api/groups', router: groupRoutes },
     { path: '/api/teams', router: teamRoutes },
     { path: '/api/projects', router: projectRoutes },
     { path: '/api/tasks', router: taskRoutes },

@@ -17,11 +17,11 @@ router.use((req, res, next) => {
 });
 
 router.get('/', (req, res) => {
-  res.render('index', { isAuthenticated: res.locals.isAuthenticated });
+  res.render('index/index', { isAuthenticated: res.locals.isAuthenticated });
 });
 
 router.get('/docs', (req, res) => {
-  res.render('documentation', { isAuthenticated: res.locals.isAuthenticated });
+  res.render('index/documentation', { isAuthenticated: res.locals.isAuthenticated });
 });
 
 router.get('/status', async (req, res) => {
@@ -40,7 +40,7 @@ router.get('/status', async (req, res) => {
     const dbStatusMessage = dbStatus === 'online' ? 'Datenbank ist online' :
       'Datenbank ist offline';
 
-    res.render('status', {
+    res.render('index/status', {
       apiStatus,
       apiStatusMessage,
       botStatus,
@@ -68,7 +68,7 @@ router.get('/info', async (req, res) => {
 
     const systemInfo = await infoService.getSystemInfo();
 
-    res.render('info', { bot: botInfo, api: apiInfo, system: systemInfo, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/info', { bot: botInfo, api: apiInfo, system: systemInfo, isAuthenticated: res.locals.isAuthenticated });
   } catch (error) {
     console.error('Error fetching info:', error);
     res.status(500).send('Internal Server Error');
@@ -77,13 +77,13 @@ router.get('/info', async (req, res) => {
 
 router.get('/logs', (req, res) => {
   const loggerLogs = logService.getLoggerLogs();
-  res.render('logs', { loggerLogs, isAuthenticated: res.locals.isAuthenticated });
+  res.render('dashboard/logging/logs', { loggerLogs, isAuthenticated: res.locals.isAuthenticated });
 });
 
 router.get('/discord-members', async (req, res) => {
   try {
     const servers = await bot.getServers();
-    res.render('discordmembers', { servers, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/discordmembers', { servers, isAuthenticated: res.locals.isAuthenticated });
   } catch (error) {
     console.error('Error fetching servers:', error);
     res.status(500).send('Internal Server Error');
@@ -94,7 +94,7 @@ router.get('/discord-servers', async (req, res) => {
   try {
     const servers = await bot.getServers();
     const serverCount = servers.length;
-    res.render('discordservers', { servers, serverCount, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/discordservers', { servers, serverCount, isAuthenticated: res.locals.isAuthenticated });
   } catch (error) {
     console.error('Error fetching servers:', error);
     res.status(500).send('Internal Server Error');
@@ -110,7 +110,7 @@ router.get('/dashboard', async (req, res) => {
     const botStatus = await botStatusService.getStatus();
     const apiStatus = await apiStatusService.getStatus();
     const dbStatus = await dbStatusService.getStatus();
-    res.render('dashboard', { botStatus, apiStatus, dbStatus, isAuthenticated: res.locals.isAuthenticated });
+    res.render('dashboard/dashboard', { botStatus, apiStatus, dbStatus, isAuthenticated: res.locals.isAuthenticated });
   } catch (error) {
     console.error('Fehler beim Abrufen des Status:', error);
     res.status(500).send('Fehler beim Abrufen des Status');
@@ -124,7 +124,7 @@ router.get('/login', (req, res) => {
 
   const errorMessage = req.query.errorMessage || null;
 
-  res.render('login', {
+  res.render('auth/login', {
     isAuthenticated: res.locals.isAuthenticated,
     errorMessage: errorMessage
   });
@@ -134,7 +134,7 @@ router.get('/register', (req, res) => {
   if (res.locals.isAuthenticated) {
     return res.redirect('/login');
   }
-  res.render('register', { isAuthenticated: res.locals.isAuthenticated });
+  res.render('auth/register', { isAuthenticated: res.locals.isAuthenticated });
 });
 
 router.get('/verify-email/:token', authController.verifyEmail);

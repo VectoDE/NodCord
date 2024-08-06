@@ -6,9 +6,10 @@ module.exports = {
 
     const activity = [
       'coming soon...',
-      'Project Management Services',
-      'Development Services',
-      'do /help for helpmenu'
+      'Server Management',
+      'Games for Users',
+      'Support Feature',
+      '/help for helpmenu'
     ]
 
     setInterval(() => {

@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 module.exports = {
   version: process.env.VERSION,
   environment: process.env.NODE_ENV,

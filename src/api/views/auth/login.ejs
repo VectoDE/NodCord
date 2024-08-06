@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Register - NodCord</title>
+  <title>Login - NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <style>
     html,
@@ -57,7 +58,7 @@
     }
 
     .form-container {
-      max-width: 500px;
+      max-width: 400px;
       margin: 0 auto;
       padding: 2rem;
       background: #fff;
@@ -143,20 +144,19 @@
   </header>
   <main>
     <div class="form-container">
-      <h1>Register</h1>
-      <form action="/api/auth/register" method="POST">
-        <label for="fullname">Full Name</label>
-        <input type="text" id="fullname" name="fullname" required>
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required>
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-        <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
-        <button type="submit">Register</button>
-      </form>
+      <h1>Login</h1>
+      <% if (errorMessage) { %>
+        <p style="color: red;">
+          <%= errorMessage %>
+        </p>
+        <% } %>
+          <form action="/api/auth/login" method="POST">
+            <label for="emailOrUsername">Username or Email</label>
+            <input type="text" id="emailOrUsername" name="emailOrUsername" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            <button type="submit">Login</button>
+          </form>
     </div>
   </main>
   <footer>
