@@ -15,7 +15,9 @@ const createSubscriber = async (req, res) => {
 
     await nodemailerService.sendSubscriptionConfirmation(email, name);
 
-    res.status(201).json({ message: 'Subscriber created and confirmation email sent.' });
+    res
+      .status(201)
+      .json({ message: 'Subscriber created and confirmation email sent.' });
   } catch (error) {
     console.error('Error creating subscriber:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -83,5 +85,5 @@ module.exports = {
   getAllSubscribers,
   getSubscriberById,
   updateSubscriber,
-  deleteSubscriber
+  deleteSubscriber,
 };

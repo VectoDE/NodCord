@@ -52,5 +52,5 @@ const removeSubscriber = async (req, res) => {
 module.exports = {
   addSubscriber,
   getSubscribers,
-  removeSubscriber
+  removeSubscriber,
 };

@@ -1,4 +1,4 @@
-const { Interaction } = require("discord.js");
+const { Interaction } = require('discord.js');
 
 module.exports = {
   name: 'interactionCreate',
@@ -7,7 +7,7 @@ module.exports = {
 
     const command = client.commands.get(interaction.commandName);
 
-    if (!command) return
+    if (!command) return;
 
     try {
       await command.execute(interaction, client);
@@ -15,7 +15,7 @@ module.exports = {
       console.log(error);
       await interaction.reply({
         content: 'There was an error while executing this command!',
-        ephemeral: true
+        ephemeral: true,
       });
     }
   },

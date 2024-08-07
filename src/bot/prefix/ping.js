@@ -2,7 +2,7 @@ const { EmbedBuilder } = require('discord.js');
 
 module.exports = {
   name: 'ping',
-  description: 'Displays the bot\'s ping and latency.',
+  description: "Displays the bot's ping and latency.",
   run: async (client, message, args) => {
     const startTime = Date.now();
 
@@ -18,5 +18,5 @@ module.exports = {
       .setTimestamp();
 
     replyMessage.edit({ embeds: [pingEmbed] });
-  }
-}
+  },
+};

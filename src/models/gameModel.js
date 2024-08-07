@@ -4,35 +4,39 @@ const gameSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
-    trim: true
+    trim: true,
   },
   genre: {
     type: String,
-    trim: true
+    trim: true,
   },
   releaseDate: {
-    type: Date
+    type: Date,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   developer: {
     type: String,
-    trim: true
+    trim: true,
   },
-  platforms: [{
-    type: String,
-    trim: true
-  }],
-  ratings: [{
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    rating: { type: Number, min: 1, max: 10 }
-  }]
+  platforms: [
+    {
+      type: String,
+      trim: true,
+    },
+  ],
+  ratings: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      rating: { type: Number, min: 1, max: 10 },
+    },
+  ],
 });
 
 module.exports = mongoose.model('Game', gameSchema);

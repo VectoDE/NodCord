@@ -7,7 +7,9 @@ exports.createUser = async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Passwords do not match' });
     }
 
     const user = new User({ username, email, password });
@@ -30,7 +32,10 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found' });
     res.status(200).json({ success: true, user });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
@@ -42,7 +47,9 @@ exports.updateUser = async (req, res) => {
     const { username, email, password, confirmPassword } = req.body;
 
     if (password && password !== confirmPassword) {
-      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Passwords do not match' });
     }
 
     const updates = { username, email };
@@ -51,8 +58,13 @@ exports.updateUser = async (req, res) => {
       updates.password = password;
     }
 
-    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true });
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    const user = await User.findByIdAndUpdate(req.params.id, updates, {
+      new: true,
+    });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found' });
 
     res.status(200).json({ success: true, user });
   } catch (err) {
@@ -63,8 +75,13 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
-    res.status(200).json({ success: true, message: 'User deleted successfully' });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: 'User not found' });
+    res
+      .status(200)
+      .json({ success: true, message: 'User deleted successfully' });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }

@@ -15,7 +15,7 @@ const createReturn = async (req, res) => {
       orderId,
       returnNumber,
       reason,
-      items
+      items,
     });
 
     await newReturn.save();
@@ -24,7 +24,9 @@ const createReturn = async (req, res) => {
     const returnDetails = `Return Number: ${returnNumber}\nReason: ${reason}`;
     await nodemailerService.sendReturnOrderEmail(customer.email, returnDetails);
 
-    res.status(201).json({ message: 'Return created successfully.', return: newReturn });
+    res
+      .status(201)
+      .json({ message: 'Return created successfully.', return: newReturn });
   } catch (error) {
     console.error('Error creating return:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -33,7 +35,9 @@ const createReturn = async (req, res) => {
 
 const getAllReturns = async (req, res) => {
   try {
-    const returns = await Return.find().populate('orderId').populate('items.productId');
+    const returns = await Return.find()
+      .populate('orderId')
+      .populate('items.productId');
     res.status(200).json(returns);
   } catch (error) {
     console.error('Error fetching returns:', error);
@@ -43,7 +47,9 @@ const getAllReturns = async (req, res) => {
 
 const getReturnById = async (req, res) => {
   try {
-    const returnItem = await Return.findById(req.params.id).populate('orderId').populate('items.productId');
+    const returnItem = await Return.findById(req.params.id)
+      .populate('orderId')
+      .populate('items.productId');
     if (!returnItem) {
       return res.status(404).json({ message: 'Return not found.' });
     }
@@ -92,5 +98,5 @@ module.exports = {
   getAllReturns,
   getReturnById,
   updateReturn,
-  deleteReturn
+  deleteReturn,
 };

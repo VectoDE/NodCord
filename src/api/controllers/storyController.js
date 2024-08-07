@@ -5,10 +5,18 @@ const createStory = async (req, res) => {
   try {
     const { title, description, status, priority, project } = req.body;
 
-    const newStory = new Story({ title, description, status, priority, project });
+    const newStory = new Story({
+      title,
+      description,
+      status,
+      priority,
+      project,
+    });
     await newStory.save();
 
-    res.status(201).json({ message: 'Story created successfully.', story: newStory });
+    res
+      .status(201)
+      .json({ message: 'Story created successfully.', story: newStory });
   } catch (error) {
     console.error('Error creating story:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -84,5 +92,5 @@ module.exports = {
   getAllStories,
   getStoryById,
   updateStory,
-  deleteStory
+  deleteStory,
 };

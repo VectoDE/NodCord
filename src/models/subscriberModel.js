@@ -7,16 +7,16 @@ const subscriberSchema = new mongoose.Schema({
     required: true,
     unique: true,
     trim: true,
-    lowercase: true
+    lowercase: true,
   },
   name: {
     type: String,
-    trim: true
+    trim: true,
   },
   subscribedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Erstelle das Modell aus dem Schema

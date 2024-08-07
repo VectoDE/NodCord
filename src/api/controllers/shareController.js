@@ -7,19 +7,19 @@ exports.createShare = async (req, res) => {
     const newShare = new Share({
       user,
       blog,
-      platform
+      platform,
     });
 
     const savedShare = await newShare.save();
 
     res.status(201).json({
       message: 'Share created successfully',
-      share: savedShare
+      share: savedShare,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error creating share',
-      error
+      error,
     });
   }
 };
@@ -28,15 +28,17 @@ exports.getSharesByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
 
-    const shares = await Share.find({ blog: blogId }).populate('user', 'name').populate('blog', 'title');
+    const shares = await Share.find({ blog: blogId })
+      .populate('user', 'name')
+      .populate('blog', 'title');
 
     res.status(200).json({
-      shares
+      shares,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error fetching shares',
-      error
+      error,
     });
   }
 };
@@ -45,21 +47,23 @@ exports.getShareById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const share = await Share.findById(id).populate('user', 'name').populate('blog', 'title');
+    const share = await Share.findById(id)
+      .populate('user', 'name')
+      .populate('blog', 'title');
 
     if (!share) {
       return res.status(404).json({
-        message: 'Share not found'
+        message: 'Share not found',
       });
     }
 
     res.status(200).json({
-      share
+      share,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error fetching share',
-      error
+      error,
     });
   }
 };
@@ -72,17 +76,17 @@ exports.deleteShare = async (req, res) => {
 
     if (!deletedShare) {
       return res.status(404).json({
-        message: 'Share not found'
+        message: 'Share not found',
       });
     }
 
     res.status(200).json({
-      message: 'Share deleted successfully'
+      message: 'Share deleted successfully',
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error deleting share',
-      error
+      error,
     });
   }
 };

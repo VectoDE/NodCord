@@ -3,9 +3,9 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const paypal = require('paypal-rest-sdk');
 
 paypal.configure({
-  'mode': 'sandbox', // 'sandbox' or 'live'
-  'client_id': process.env.PAYPAL_CLIENT_ID,
-  'client_secret': process.env.PAYPAL_CLIENT_SECRET,
+  mode: 'sandbox', // 'sandbox' or 'live'
+  client_id: process.env.PAYPAL_CLIENT_ID,
+  client_secret: process.env.PAYPAL_CLIENT_SECRET,
 });
 
 const listPayments = async (req, res) => {
@@ -25,9 +25,12 @@ const listPayments = async (req, res) => {
 
 const createPayment = async (req, res) => {
   try {
-    const { userId, amount, method, token, payerId, returnUrl, cancelUrl } = req.body;
+    const { userId, amount, method, token, payerId, returnUrl, cancelUrl } =
+      req.body;
     if (!userId || !amount || !method) {
-      return res.status(400).json({ error: 'User ID, Amount, and Method are required' });
+      return res
+        .status(400)
+        .json({ error: 'User ID, Amount, and Method are required' });
     }
 
     let transactionId;
@@ -42,20 +45,21 @@ const createPayment = async (req, res) => {
       });
       transactionId = charge.id;
       paymentStatus = charge.status;
-
     } else if (method === 'paypal') {
       const create_payment_json = {
         intent: 'sale',
         payer: {
           payment_method: 'paypal',
         },
-        transactions: [{
-          amount: {
-            total: amount,
-            currency: 'USD',
+        transactions: [
+          {
+            amount: {
+              total: amount,
+              currency: 'USD',
+            },
+            description: 'Payment for your order',
           },
-          description: 'Payment for your order',
-        }],
+        ],
         redirect_urls: {
           return_url: returnUrl,
           cancel_url: cancelUrl,
@@ -74,15 +78,16 @@ const createPayment = async (req, res) => {
       });
 
       return;
-
-    } else if (method === 'apple_pay' || method === 'google_pay' || method === 'amazon_pay') {
+    } else if (
+      method === 'apple_pay' ||
+      method === 'google_pay' ||
+      method === 'amazon_pay'
+    ) {
       transactionId = 'mock_transaction_id';
       paymentStatus = 'completed';
-
     } else if (method === 'bank_transfer') {
       transactionId = 'mock_transaction_id';
       paymentStatus = 'completed';
-
     } else {
       return res.status(400).json({ error: 'Invalid payment method' });
     }
@@ -92,7 +97,7 @@ const createPayment = async (req, res) => {
       amount,
       method,
       status: paymentStatus,
-      transactionId
+      transactionId,
     });
 
     await newPayment.save();
@@ -109,31 +114,37 @@ const paypalSuccess = async (req, res) => {
 
     const execute_payment_json = {
       payer_id: PayerID,
-      transactions: [{
-        amount: {
-          currency: 'USD',
-          total: req.query.amount,
+      transactions: [
+        {
+          amount: {
+            currency: 'USD',
+            total: req.query.amount,
+          },
         },
-      }],
+      ],
     };
 
-    paypal.payment.execute(paymentId, execute_payment_json, async function (error, payment) {
-      if (error) {
-        console.error(error);
-        res.status(500).json({ error: error.message });
-      } else {
-        const newPayment = new Payment({
-          userId: payment.payer.payer_info.payer_id,
-          amount: payment.transactions[0].amount.total,
-          method: 'paypal',
-          status: payment.state,
-          transactionId: payment.id
-        });
+    paypal.payment.execute(
+      paymentId,
+      execute_payment_json,
+      async function (error, payment) {
+        if (error) {
+          console.error(error);
+          res.status(500).json({ error: error.message });
+        } else {
+          const newPayment = new Payment({
+            userId: payment.payer.payer_info.payer_id,
+            amount: payment.transactions[0].amount.total,
+            method: 'paypal',
+            status: payment.state,
+            transactionId: payment.id,
+          });
 
-        await newPayment.save();
-        res.status(200).json(newPayment);
+          await newPayment.save();
+          res.status(200).json(newPayment);
+        }
       }
-    });
+    );
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });

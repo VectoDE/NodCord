@@ -13,24 +13,24 @@ const getSystemInfo = async (req, res) => {
     const disk = await checkDiskSpace('/');
 
     const systemInfo = {
-      cpu: cpuInfo.map(cpu => ({
+      cpu: cpuInfo.map((cpu) => ({
         model: cpu.model,
         speed: cpu.speed,
-        times: cpu.times
+        times: cpu.times,
       })),
       memory: {
         total: totalMemory,
         free: freeMemory,
-        used: totalMemory - freeMemory
+        used: totalMemory - freeMemory,
       },
       disk: {
         total: disk.size,
         free: disk.free,
-        available: disk.free
+        available: disk.free,
       },
       uptime: uptime,
       platform: platform,
-      architecture: arch
+      architecture: arch,
     };
 
     res.status(200).json(systemInfo);
@@ -40,5 +40,5 @@ const getSystemInfo = async (req, res) => {
 };
 
 module.exports = {
-  getSystemInfo
+  getSystemInfo,
 };

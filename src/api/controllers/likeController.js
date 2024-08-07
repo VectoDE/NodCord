@@ -6,19 +6,19 @@ exports.createLike = async (req, res) => {
 
     const newLike = new Like({
       user,
-      blog
+      blog,
     });
 
     const savedLike = await newLike.save();
 
     res.status(201).json({
       message: 'Like created successfully',
-      like: savedLike
+      like: savedLike,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error creating like',
-      error
+      error,
     });
   }
 };
@@ -27,15 +27,17 @@ exports.getLikesByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
 
-    const likes = await Like.find({ blog: blogId }).populate('user', 'name').populate('blog', 'title');
+    const likes = await Like.find({ blog: blogId })
+      .populate('user', 'name')
+      .populate('blog', 'title');
 
     res.status(200).json({
-      likes
+      likes,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error fetching likes',
-      error
+      error,
     });
   }
 };
@@ -44,21 +46,23 @@ exports.getLikeById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const like = await Like.findById(id).populate('user', 'name').populate('blog', 'title');
+    const like = await Like.findById(id)
+      .populate('user', 'name')
+      .populate('blog', 'title');
 
     if (!like) {
       return res.status(404).json({
-        message: 'Like not found'
+        message: 'Like not found',
       });
     }
 
     res.status(200).json({
-      like
+      like,
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error fetching like',
-      error
+      error,
     });
   }
 };
@@ -71,17 +75,17 @@ exports.deleteLike = async (req, res) => {
 
     if (!deletedLike) {
       return res.status(404).json({
-        message: 'Like not found'
+        message: 'Like not found',
       });
     }
 
     res.status(200).json({
-      message: 'Like deleted successfully'
+      message: 'Like deleted successfully',
     });
   } catch (error) {
     res.status(500).json({
       message: 'Error deleting like',
-      error
+      error,
     });
   }
 };

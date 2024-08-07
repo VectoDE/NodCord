@@ -14,6 +14,9 @@ const dashRoutes = require('./routes/dashboardRoutes');
 
 const authRoutes = require('./routes/authRoutes');
 
+const developerProgramRoutes = require('./routes/developerProgramRoutes');
+const apiKeyRoutes = require('./routes/apiKeyRoutes');
+
 const infoRoutes = require('./routes/infoRoutes');
 const userRoutes = require('./routes/userRoutes');
 const roleRoutes = require('./routes/roleRoutes');
@@ -62,9 +65,11 @@ const app = express();
 const baseURL = appConfig.baseURL;
 const port = appConfig.port;
 
-app.use(express.urlencoded({
-  extended: true
-}));
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -84,6 +89,9 @@ app.use('/', indexRoutes);
 app.use('/dashboard', dashRoutes);
 
 app.use('/api/auth', authRoutes);
+
+app.use('/api/developerprogram', developerProgramRoutes);
+app.use('/api/apikeys', apiKeyRoutes);
 
 app.use('/api/infos', infoRoutes);
 app.use('/api/users', userRoutes);
@@ -133,20 +141,24 @@ const getRoutes = (router, basePath = '') => {
   const stack = router.stack || [];
   const routes = [];
 
-  stack.forEach(middleware => {
+  stack.forEach((middleware) => {
     if (middleware.route) {
-      const methods = Object.keys(middleware.route.methods).map(method => method.toUpperCase());
+      const methods = Object.keys(middleware.route.methods).map((method) =>
+        method.toUpperCase()
+      );
       routes.push({
         methods,
-        path: basePath + middleware.route.path
+        path: basePath + middleware.route.path,
       });
     } else if (middleware.name === 'router' && middleware.handle.stack) {
-      middleware.handle.stack.forEach(subMiddleware => {
+      middleware.handle.stack.forEach((subMiddleware) => {
         if (subMiddleware.route) {
-          const methods = Object.keys(subMiddleware.route.methods).map(method => method.toUpperCase());
+          const methods = Object.keys(subMiddleware.route.methods).map(
+            (method) => method.toUpperCase()
+          );
           routes.push({
             methods,
-            path: basePath + subMiddleware.route.path
+            path: basePath + subMiddleware.route.path,
           });
         }
       });
@@ -196,7 +208,7 @@ const getAllRoutes = () => {
     { path: '/api/controls', router: controlRoutes },
     { path: '/api/securities', router: securityRoutes },
     { path: '/api/logs', router: logRoutes },
-    { path: '/api/files', router: fileRoutes }
+    { path: '/api/files', router: fileRoutes },
   ];
 
   routeDefinitions.forEach(({ path, router }) => {
@@ -210,7 +222,10 @@ const getAllRoutes = () => {
 app.get('/routes', (req, res) => {
   try {
     const routes = getAllRoutes();
-    res.render('index/routes', { routes, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/routes', {
+      routes,
+      isAuthenticated: res.locals.isAuthenticated,
+    });
   } catch (error) {
     console.error('Error fetching routes:', error);
     res.status(500).send('Internal Server Error');
@@ -226,12 +241,15 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   res.status(statusCode).render('error', {
-    errortitle: statusCode === 401 ? 'Unauthorized' :
-      statusCode === 404 ? 'Not Found' :
-        'Error',
+    errortitle:
+      statusCode === 401
+        ? 'Unauthorized'
+        : statusCode === 404
+        ? 'Not Found'
+        : 'Error',
     errormessage: err.message,
     errorstatus: statusCode,
-    errorstack: app.get('env') === 'development' ? err.stack : null
+    errorstack: app.get('env') === 'development' ? err.stack : null,
   });
 });
 

@@ -5,15 +5,23 @@ const checkRole = (roles) => {
   return async (req, res, next) => {
     try {
       const token = req.cookies.token;
-      if (!token) return res.status(401).json({ success: false, message: 'No token provided' });
+      if (!token)
+        return res
+          .status(401)
+          .json({ success: false, message: 'No token provided' });
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
       const user = await User.findById(decoded.id);
-      if (!user) return res.status(401).json({ success: false, message: 'User not found' });
+      if (!user)
+        return res
+          .status(401)
+          .json({ success: false, message: 'User not found' });
 
       if (!roles.includes(user.role)) {
-        return res.status(403).json({ success: false, message: 'Forbidden: insufficient role' });
+        return res
+          .status(403)
+          .json({ success: false, message: 'Forbidden: insufficient role' });
       }
 
       req.user = user;

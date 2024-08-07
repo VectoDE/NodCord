@@ -5,39 +5,39 @@ const bugSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   severity: {
     type: String,
     enum: ['Low', 'Medium', 'High'],
-    default: 'Medium'
+    default: 'Medium',
   },
   status: {
     type: String,
     enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
-    default: 'Open'
+    default: 'Open',
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Aktualisiere `updatedAt` bei Änderungen
-bugSchema.pre('save', function(next) {
+bugSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

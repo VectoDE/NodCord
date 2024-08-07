@@ -97,5 +97,5 @@ module.exports = {
   createTag,
   getTagDetails,
   updateTag,
-  deleteTag
+  deleteTag,
 };

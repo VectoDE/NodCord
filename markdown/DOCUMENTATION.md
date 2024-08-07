@@ -1,6 +1,7 @@
 # NodCord Documentation
 
 ## Inhaltsverzeichnis
+
 1. [Einführung](#einführung)
 2. [Installation](#installation)
 3. [Verwendung](#verwendung)
@@ -13,15 +14,19 @@
 10. [Tests](#tests)
 
 ## Einführung
+
 NodCord ist ein Projekt, das eine Node.js-API mit Express.js und einen Discord-Bot kombiniert. Die API enthält einen Discord-Service, der über Controller und Router gesteuert werden kann. Der Discord-Bot kann ebenfalls über die API gesteuert werden.
 
 ## Installation
+
 ### Voraussetzungen
+
 - Node.js (>= 14.x)
 - npm (>= 6.x)
 - MongoDB
 
 ### Installationsschritte
+
 1. Klonen Sie das Repository:
    ```
    git clone https://github.com/IhrBenutzername/NodCord.git
@@ -41,8 +46,11 @@ NodCord ist ein Projekt, das eine Node.js-API mit Express.js und einen Discord-B
    ```
 
 ## Verwendung
+
 ### Starten der Anwendung
+
 Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
+
 - Mit pm2:
   ```
   ./start.sh
@@ -53,6 +61,7 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
   ```
 
 ### Stoppen der Anwendung
+
 - Mit pm2:
   ```
   ./stop.sh
@@ -63,6 +72,7 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
   ```
 
 ### Neustarten der Anwendung
+
 - Mit pm2:
   ```
   ./restart.sh
@@ -73,8 +83,11 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
   ```
 
 ## API-Referenz
+
 ### System Routes
+
 #### GET /status
+
 - Beschreibung: Liefert den Status der Anwendung.
 - Beispiel:
   ```
@@ -82,7 +95,9 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
   ```
 
 ### Discord Routes
+
 #### GET /discord/status
+
 - Beschreibung: Liefert den Status des Discord-Bots.
 - Beispiel:
   ```
@@ -90,6 +105,7 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
   ```
 
 #### POST /discord/restart
+
 - Beschreibung: Startet den Discord-Bot neu.
 - Beispiel:
   ```
@@ -97,20 +113,26 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
   ```
 
 ## Discord Bot Referenz
+
 ### Befehle
+
 #### !ping
+
 - Beschreibung: Gibt eine Ping-Antwort zurück.
 - Beispiel: `!ping`
 
 #### !info
+
 - Beschreibung: Gibt Informationen über den Bot und die API zurück.
 - Beispiel: `!info`
 
 #### !restart
+
 - Beschreibung: Startet den Bot neu.
 - Beispiel: `!restart`
 
 ### Events
+
 - `ready.js`: Wird ausgelöst, wenn der Bot erfolgreich gestartet wurde.
 - `messageCreate.js`: Wird ausgelöst, wenn eine Nachricht in einem Kanal gesendet wird.
 - `interactionCreate.js`: Wird ausgelöst, wenn eine Interaktion stattfindet.
@@ -129,25 +151,34 @@ Verwenden Sie eines der bereitgestellten Skripte, um die Anwendung zu starten:
 - `voiceStateUpdate.js`: Wird ausgelöst, wenn sich der Sprachstatus eines Benutzers ändert.
 
 ## Build und Deployment
+
 ### Build-Skript
+
 Um die Anwendung für die Produktion zu bauen, verwenden Sie das `build.js`-Skript:
+
 ```
 node build.js
 ```
+
 Dieses Skript:
+
 1. Reinigt das `dist`-Verzeichnis.
 2. Kopiert die notwendigen Dateien aus dem `src`-Verzeichnis in das `dist`-Verzeichnis.
 3. Installiert nur die Produktionsabhängigkeiten.
 4. Komprimiert das `dist`-Verzeichnis in eine Zip-Datei `nodcord.zip`.
 
 ### Deployment
+
 Nach dem Erstellen können Sie die Anwendung starten, indem Sie die `start.js`-Datei ausführen:
+
 ```
 node start.js
 ```
 
 ## Skripte
+
 ### start.sh
+
 - Beschreibung: Startet die Anwendung mit pm2 oder nodemon.
 - Verwendung:
   ```
@@ -155,6 +186,7 @@ node start.js
   ```
 
 ### stop.sh
+
 - Beschreibung: Stoppt die Anwendung mit pm2 oder nodemon.
 - Verwendung:
   ```
@@ -162,6 +194,7 @@ node start.js
   ```
 
 ### restart.sh
+
 - Beschreibung: Startet die Anwendung mit pm2 oder nodemon neu.
 - Verwendung:
   ```
@@ -169,6 +202,7 @@ node start.js
   ```
 
 ## Verzeichnisstruktur
+
 ```
 NodCord/
 ├── .gitignore
@@ -419,8 +453,11 @@ NodCord/
 ```
 
 ## Konfiguration
+
 ### .env Datei
+
 Erstellen Sie eine `.env`-Datei im Stammverzeichnis des Projekts und fügen Sie die folgenden Umgebungsvariablen hinzu:
+
 ```
 PORT=3000
 DISCORD_TOKEN=your_discord_token
@@ -428,15 +465,19 @@ MONGO_URI=your_mongo_connection_string
 ```
 
 ### Konfigurationsdateien
+
 Die Konfigurationsdateien befinden sich im `src/config`-Verzeichnis. Sie können die `default.json` und `production.json` an Ihre Bedürfnisse anpassen.
 
 ## Tests
+
 Tests befinden sich im `tests`-Verzeichnis und sind in drei Kategorien unterteilt:
+
 - api: Tests für die API.
 - bot: Tests für den Discord-Bot.
 - integration: Integrationstests.
 
-Um die Tests  auszuführen, verwenden Sie:
+Um die Tests auszuführen, verwenden Sie:
+
 ```
 npm test
 ```

@@ -4,24 +4,24 @@ const roleplaySchema = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   characterName: {
     type: String,
-    required: true
+    required: true,
   },
   characterLevel: {
     type: Number,
-    default: 1
+    default: 1,
   },
   experiencePoints: {
     type: Number,
-    default: 0
+    default: 0,
   },
   lastRoleplayDate: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 roleplaySchema.pre('save', function (next) {

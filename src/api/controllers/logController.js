@@ -60,5 +60,5 @@ module.exports = {
   createLog,
   getLog,
   getAllLogs,
-  deleteLog
+  deleteLog,
 };

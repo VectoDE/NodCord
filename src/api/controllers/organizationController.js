@@ -11,9 +11,13 @@ exports.getAllOrganizations = async (req, res) => {
 
 exports.getOrganizationById = async (req, res) => {
   try {
-    const organization = await Organization.findById(req.params.id).populate('members');
+    const organization = await Organization.findById(req.params.id).populate(
+      'members'
+    );
     if (!organization) {
-      return res.status(404).json({ success: false, message: 'Organization not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Organization not found' });
     }
     res.status(200).json({ success: true, data: organization });
   } catch (err) {
@@ -33,9 +37,15 @@ exports.createOrganization = async (req, res) => {
 
 exports.updateOrganization = async (req, res) => {
   try {
-    const organization = await Organization.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    const organization = await Organization.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!organization) {
-      return res.status(404).json({ success: false, message: 'Organization not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Organization not found' });
     }
     res.status(200).json({ success: true, data: organization });
   } catch (err) {
@@ -47,9 +57,13 @@ exports.deleteOrganization = async (req, res) => {
   try {
     const organization = await Organization.findByIdAndDelete(req.params.id);
     if (!organization) {
-      return res.status(404).json({ success: false, message: 'Organization not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'Organization not found' });
     }
-    res.status(200).json({ success: true, message: 'Organization deleted successfully' });
+    res
+      .status(200)
+      .json({ success: true, message: 'Organization deleted successfully' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

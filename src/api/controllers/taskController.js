@@ -12,9 +12,12 @@ const listTasks = async (req, res) => {
 
 const createTask = async (req, res) => {
   try {
-    const { title, description, category, status, assignedTo, team, dueDate } = req.body;
+    const { title, description, category, status, assignedTo, team, dueDate } =
+      req.body;
     if (!title || !assignedTo || !team) {
-      return res.status(400).json({ error: 'Title, Assigned To, and Team are required' });
+      return res
+        .status(400)
+        .json({ error: 'Title, Assigned To, and Team are required' });
     }
 
     const newTask = new Task({
@@ -24,7 +27,7 @@ const createTask = async (req, res) => {
       status,
       assignedTo,
       team,
-      dueDate
+      dueDate,
     });
 
     await newTask.save();
@@ -42,7 +45,9 @@ const getTaskDetails = async (req, res) => {
       return res.status(400).json({ error: 'Task ID is required' });
     }
 
-    const task = await Task.findById(taskId).populate('assignedTo').populate('team');
+    const task = await Task.findById(taskId)
+      .populate('assignedTo')
+      .populate('team');
     if (!task) {
       return res.status(404).json({ error: 'Task not found' });
     }
@@ -56,7 +61,16 @@ const getTaskDetails = async (req, res) => {
 
 const updateTask = async (req, res) => {
   try {
-    const { taskId, title, description, category, status, assignedTo, team, dueDate } = req.body;
+    const {
+      taskId,
+      title,
+      description,
+      category,
+      status,
+      assignedTo,
+      team,
+      dueDate,
+    } = req.body;
     if (!taskId) {
       return res.status(400).json({ error: 'Task ID is required' });
     }
@@ -107,5 +121,5 @@ module.exports = {
   createTask,
   getTaskDetails,
   updateTask,
-  deleteTask
+  deleteTask,
 };

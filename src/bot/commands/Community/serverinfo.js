@@ -30,18 +30,21 @@ module.exports = {
       .setThumbnail(icon)
       .setAuthor({ name: name, iconURL: icon })
       .addFields(
-        { name: "Server Name", value: `${name}` },
-        { name: "Server Members", value: `${memberCount}` },
-        { name: "Server Emojis", value: `${emojis}` },
-        { name: "Server Roles", value: `${roles}` },
-        { name: "Server Verification", value: `${serverVerification}` },
-        { name: "Server Boosts", value: `${guild.premiumSubscriptionCount}` },
-        { name: "Server ID", value: `${id}` },
-        { name: "Server Owner", value: `${ownerName} (||${ownerId}||)` },
-        { name: "Server Creation Date", value: `<t:${parseInt(createdTimestamp / 1000)}:R>` }
+        { name: 'Server Name', value: `${name}` },
+        { name: 'Server Members', value: `${memberCount}` },
+        { name: 'Server Emojis', value: `${emojis}` },
+        { name: 'Server Roles', value: `${roles}` },
+        { name: 'Server Verification', value: `${serverVerification}` },
+        { name: 'Server Boosts', value: `${guild.premiumSubscriptionCount}` },
+        { name: 'Server ID', value: `${id}` },
+        { name: 'Server Owner', value: `${ownerName} (||${ownerId}||)` },
+        {
+          name: 'Server Creation Date',
+          value: `<t:${parseInt(createdTimestamp / 1000)}:R>`,
+        }
       )
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
-  }
-}
+  },
+};

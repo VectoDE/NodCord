@@ -22,7 +22,7 @@ const createTeam = async (req, res) => {
       description,
       members,
       type,
-      logo
+      logo,
     });
 
     await newTeam.save();
@@ -104,5 +104,5 @@ module.exports = {
   createTeam,
   getTeamDetails,
   updateTeam,
-  deleteTeam
+  deleteTeam,
 };

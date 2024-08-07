@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const loggerLogPath = path.join(__dirname, '..', '..', '..' ,'logs', 'app.log');
+const loggerLogPath = path.join(__dirname, '..', '..', '..', 'logs', 'app.log');
 
 const readLogFile = (filePath) => {
   try {

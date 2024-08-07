@@ -3,22 +3,22 @@ const mongoose = require('mongoose');
 const commentSchema = new mongoose.Schema({
   content: {
     type: String,
-    required: true
+    required: true,
   },
   author: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Verweist auf das User-Modell
-    required: true
+    required: true,
   },
   blog: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Blog', // Verweist auf das Blog-Modell
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model('Comment', commentSchema);

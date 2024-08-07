@@ -5,34 +5,34 @@ const issueSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
     enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
-    default: 'Open'
+    default: 'Open',
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Aktualisiere `updatedAt` bei Änderungen
-issueSchema.pre('save', function(next) {
+issueSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

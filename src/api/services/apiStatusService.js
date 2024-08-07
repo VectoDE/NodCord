@@ -1,7 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const statusFilePath = path.join(__dirname, '..', '..', 'public', 'json', 'apiStatus.json');
+const statusFilePath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'public',
+  'json',
+  'apiStatus.json'
+);
 
 let apiStatus = 'online';
 
@@ -14,7 +21,11 @@ if (fs.existsSync(statusFilePath)) {
   }
 } else {
   apiStatus = 'online';
-  fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+  fs.writeFileSync(
+    statusFilePath,
+    JSON.stringify({ status: apiStatus }),
+    'utf8'
+  );
 }
 
 exports.setStatus = (status) => {
@@ -31,7 +42,11 @@ exports.getStatus = () => apiStatus;
 exports.startApi = () => {
   if (apiStatus === 'offline') {
     apiStatus = 'online';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: apiStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('API ist bereits online oder im Wartungsmodus');
   }
@@ -40,7 +55,11 @@ exports.startApi = () => {
 exports.stopApi = () => {
   if (apiStatus === 'online') {
     apiStatus = 'offline';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: apiStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('API ist bereits offline oder im Wartungsmodus');
   }
@@ -49,10 +68,18 @@ exports.stopApi = () => {
 exports.restartApi = () => {
   if (apiStatus === 'online') {
     apiStatus = 'offline';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: apiStatus }),
+      'utf8'
+    );
     setTimeout(() => {
       apiStatus = 'online';
-      fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+      fs.writeFileSync(
+        statusFilePath,
+        JSON.stringify({ status: apiStatus }),
+        'utf8'
+      );
     }, 5000);
   } else {
     throw new Error('API ist bereits offline oder im Wartungsmodus');
@@ -62,7 +89,11 @@ exports.restartApi = () => {
 exports.setMaintenance = () => {
   if (apiStatus !== 'maintenance') {
     apiStatus = 'maintenance';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: apiStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('API ist bereits im Wartungsmodus');
   }
@@ -71,7 +102,11 @@ exports.setMaintenance = () => {
 exports.removeMaintenance = () => {
   if (apiStatus === 'maintenance') {
     apiStatus = 'online';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: apiStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: apiStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('API ist nicht im Wartungsmodus');
   }

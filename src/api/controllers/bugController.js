@@ -83,5 +83,5 @@ module.exports = {
   getAllBugs,
   getBugById,
   updateBug,
-  deleteBug
+  deleteBug,
 };

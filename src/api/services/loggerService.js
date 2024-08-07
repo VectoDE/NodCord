@@ -13,10 +13,10 @@ const logger = winston.createLogger({
       format: winston.format.combine(
         winston.format.colorize(),
         winston.format.simple()
-      )
+      ),
     }),
-    new winston.transports.File({ filename: './logs/app.log' })
-  ]
+    new winston.transports.File({ filename: './logs/app.log' }),
+  ],
 });
 
 const logInfo = (message) => logger.info(message);
@@ -26,5 +26,5 @@ const logError = (message) => logger.error(message);
 module.exports = {
   logInfo,
   logWarn,
-  logError
+  logError,
 };

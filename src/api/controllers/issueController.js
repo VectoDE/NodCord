@@ -8,7 +8,9 @@ const createIssue = async (req, res) => {
     const newIssue = new Issue({ title, description, status, project });
     await newIssue.save();
 
-    res.status(201).json({ message: 'Issue created successfully.', issue: newIssue });
+    res
+      .status(201)
+      .json({ message: 'Issue created successfully.', issue: newIssue });
   } catch (error) {
     console.error('Error creating issue:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -83,5 +85,5 @@ module.exports = {
   getAllIssues,
   getIssueById,
   updateIssue,
-  deleteIssue
+  deleteIssue,
 };

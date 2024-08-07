@@ -20,7 +20,7 @@ async function getSystemInfo() {
     usedMemory,
     disk: diskInfo,
     systemName: os.hostname(),
-    systemManufacturer: 'N/A'
+    systemManufacturer: 'N/A',
   };
 }
 
@@ -28,7 +28,7 @@ async function getBotInfo() {
   try {
     const servers = await getServers();
     return {
-      guildsCount: servers.length
+      guildsCount: servers.length,
     };
   } catch (error) {
     console.error('Error fetching server info:', error);
@@ -39,7 +39,7 @@ async function getBotInfo() {
 async function getApiStatus() {
   try {
     return {
-      apiStatus: apiStatusService.getStatus()
+      apiStatus: apiStatusService.getStatus(),
     };
   } catch (error) {
     console.error('Error fetching API status:', error);
@@ -50,7 +50,7 @@ async function getApiStatus() {
 async function getBotStatus() {
   try {
     return {
-      botStatus: botStatusService.getStatus()
+      botStatus: botStatusService.getStatus(),
     };
   } catch (error) {
     console.error('Error fetching bot status:', error);
@@ -62,5 +62,5 @@ module.exports = {
   getSystemInfo,
   getBotInfo,
   getApiStatus,
-  getBotStatus
+  getBotStatus,
 };

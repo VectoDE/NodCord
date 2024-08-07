@@ -6,8 +6,8 @@ const transporter = nodemailer.createTransport({
   secure: process.env.SMTP_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS
-  }
+    pass: process.env.SMTP_PASS,
+  },
 });
 
 const sendMail = async (to, subject, text, html) => {
@@ -17,7 +17,7 @@ const sendMail = async (to, subject, text, html) => {
       to,
       subject,
       text,
-      html
+      html,
     };
 
     await transporter.sendMail(mailOptions);
@@ -40,6 +40,13 @@ const sendVerificationSuccessEmail = async (to, username) => {
   const subject = 'Email Verification Successful';
   const text = `Hello ${username},\n\nYour email address has been successfully verified. You can now log in to your account.\n\nThank you!`;
   const html = `<p>Hello ${username},</p><p>Your email address has been successfully verified. You can now log in to your account.</p><p>Thank you!</p>`;
+  await sendMail(to, subject, text, html);
+};
+
+const sendSubscriptionConfirmation = async (to, name) => {
+  const subject = 'Subscription Confirmation';
+  const text = `Dear ${name},\n\nThank you for subscribing to our newsletter! We're excited to keep you updated with the latest news and offers.\n\nBest regards,\nYour Company`;
+  const html = `<p>Dear ${name},</p><p>Thank you for subscribing to our newsletter! We're excited to keep you updated with the latest news and offers.</p><p>Best regards,<br>Your Company</p>`;
   await sendMail(to, subject, text, html);
 };
 
@@ -99,10 +106,17 @@ const sendProjectStatusUpdateEmail = async (to, projectUpdateDetails) => {
   await sendMail(to, subject, text, html);
 };
 
-const sendSubscriptionConfirmation = async (to, name) => {
-  const subject = 'Subscription Confirmation';
-  const text = `Dear ${name},\n\nThank you for subscribing to our newsletter! We're excited to keep you updated with the latest news and offers.\n\nBest regards,\nYour Company`;
-  const html = `<p>Dear ${name},</p><p>Thank you for subscribing to our newsletter! We're excited to keep you updated with the latest news and offers.</p><p>Best regards,<br>Your Company</p>`;
+const sendDeveloperProgramJoinEmail = async (to, username) => {
+  const subject = 'Developer Program Confirmation';
+  const text = `Hello ${username},\n\nYou have successfully joined the developer program. You can now generate and use API keys for your projects.\n\nThank you!`;
+  const html = `<p>Hello ${username},</p><p>You have successfully joined the developer program. You can now generate and use API keys for your projects.</p><p>Thank you!</p>`;
+  await sendMail(to, subject, text, html);
+};
+
+const sendDeveloperProgramLeaveEmail = async (to, username) => {
+  const subject = 'Developer Program Exit Confirmation';
+  const text = `Hello ${username},\n\nYou have successfully left the developer program. Your API keys will no longer be valid.\n\nThank you!`;
+  const html = `<p>Hello ${username},</p><p>You have successfully left the developer program. Your API keys will no longer be valid.</p><p>Thank you!</p>`;
   await sendMail(to, subject, text, html);
 };
 
@@ -117,5 +131,7 @@ module.exports = {
   sendTicketClosedEmail,
   sendTicketReplyEmail,
   sendProjectStatusUpdateEmail,
-  sendSubscriptionConfirmation
+  sendSubscriptionConfirmation,
+  sendDeveloperProgramJoinEmail,
+  sendDeveloperProgramLeaveEmail
 };

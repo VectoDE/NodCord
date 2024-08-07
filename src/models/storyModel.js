@@ -5,39 +5,39 @@ const storySchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
     enum: ['Backlog', 'In Progress', 'Completed'],
-    default: 'Backlog'
+    default: 'Backlog',
   },
   priority: {
     type: String,
     enum: ['Low', 'Medium', 'High'],
-    default: 'Medium'
+    default: 'Medium',
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   project: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Project',
-    required: true
-  }
+    required: true,
+  },
 });
 
 // Aktualisiere `updatedAt` bei Änderungen
-storySchema.pre('save', function(next) {
+storySchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

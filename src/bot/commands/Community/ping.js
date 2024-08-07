@@ -3,7 +3,7 @@ const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Displays the bot\'s ping and latency.'),
+    .setDescription("Displays the bot's ping and latency."),
   async execute(interaction) {
     const startTime = Date.now();
 
@@ -19,5 +19,5 @@ module.exports = {
       .setTimestamp();
 
     await interaction.editReply({ embeds: [pingEmbed] });
-  }
-}
+  },
+};

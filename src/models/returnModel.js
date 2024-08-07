@@ -5,51 +5,51 @@ const returnSchema = new mongoose.Schema({
   orderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CustomerOrder',
-    required: true
+    required: true,
   },
   returnNumber: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   returnDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   reason: {
     type: String,
-    required: true
+    required: true,
   },
   status: {
     type: String,
     enum: ['Requested', 'Approved', 'Rejected', 'Completed'],
-    default: 'Requested'
+    default: 'Requested',
   },
   items: [
     {
       productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        required: true
+        required: true,
       },
       quantity: {
         type: Number,
-        required: true
-      }
-    }
+        required: true,
+      },
+    },
   ],
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Aktualisiere `updatedAt` bei Änderungen
-returnSchema.pre('save', function(next) {
+returnSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

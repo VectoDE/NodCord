@@ -9,12 +9,16 @@ exports.register = async (req, res) => {
     const { username, email, password, confirmPassword, fullname } = req.body;
 
     if (password !== confirmPassword) {
-      return res.status(400).json({ success: false, message: 'Passwords do not match' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Passwords do not match' });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.status(400).json({ success: false, message: 'User already exists' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'User already exists' });
     }
 
     const user = new User({
@@ -22,12 +26,16 @@ exports.register = async (req, res) => {
       email,
       password,
       fullname,
-      verificationToken: crypto.randomBytes(32).toString('hex')
+      verificationToken: crypto.randomBytes(32).toString('hex'),
     });
     await user.save();
 
     const verificationLink = `${user.verificationToken}`;
-    await nodemailerService.sendRegistrationVerificationEmail(user.email, user.username, verificationLink);
+    await nodemailerService.sendRegistrationVerificationEmail(
+      user.email,
+      user.username,
+      verificationLink
+    );
 
     res.redirect('/login');
   } catch (err) {
@@ -42,16 +50,25 @@ exports.verifyEmail = async (req, res) => {
     const user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid verification token' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'Invalid verification token' });
     }
 
     user.isVerified = true;
     user.verificationToken = null;
     await user.save();
 
-    res.status(200).render('email-verified', { message: 'Your email has been verified. You can now log in.' });
+    res
+      .status(200)
+      .render('email-verified', {
+        message: 'Your email has been verified. You can now log in.',
+      });
 
-    await nodemailerService.sendVerificationSuccessEmail(user.email, user.username);
+    await nodemailerService.sendVerificationSuccessEmail(
+      user.email,
+      user.username
+    );
   } catch (error) {
     console.error('Verification error:', error);
     res.status(500).send('Internal Server Error');
@@ -61,28 +78,32 @@ exports.verifyEmail = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { emailOrUsername, password } = req.body;
-    const user = await User.findOne({ $or: [{ email: emailOrUsername }, { username: emailOrUsername }] });
+    const user = await User.findOne({
+      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
+    });
 
-    if (!user || !await user.comparePassword(password)) {
+    if (!user || !(await user.comparePassword(password))) {
       return res.status(400).render('auth/login', {
         isAuthenticated: false,
-        errorMessage: 'Invalid credentials'
+        errorMessage: 'Invalid credentials',
       });
     }
 
     if (!user.isVerified) {
       return res.status(400).render('auth/login', {
         isAuthenticated: false,
-        errorMessage: 'Email not verified'
+        errorMessage: 'Email not verified',
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
 
     user.isAuthenticated = true;
     await user.save();
 
-    res.cookie("token", token, {
+    res.cookie('token', token, {
       httpOnly: true,
       //secure: true,
       //maxAge: 100,

@@ -25,7 +25,7 @@ exports.createChat = async (req, res) => {
   const chat = new Chat({
     participants: req.body.participants,
     messages: req.body.messages,
-    type: req.body.type
+    type: req.body.type,
   });
 
   try {

@@ -16,7 +16,9 @@ const generateApiKey = (req, res) => {
     logger.logInfo(`Neuer API-Schlüssel erstellt: ${apiKey}`);
     res.status(201).json({ apiKey });
   } catch (error) {
-    logger.logError(`Fehler beim Erstellen eines neuen API-Schlüssels: ${error.message}`);
+    logger.logError(
+      `Fehler beim Erstellen eines neuen API-Schlüssels: ${error.message}`
+    );
     res.status(500).json({ error: error.message });
   }
 };
@@ -36,7 +38,9 @@ const verifyApiKey = (req, res, next) => {
       res.status(403).json({ message: 'Ungültiger API-Schlüssel' });
     }
   } catch (error) {
-    logger.logError(`Fehler bei der Überprüfung des API-Schlüssels: ${error.message}`);
+    logger.logError(
+      `Fehler bei der Überprüfung des API-Schlüssels: ${error.message}`
+    );
     res.status(500).json({ error: error.message });
   }
 };
@@ -51,5 +55,5 @@ const manageBotPermissions = (req, res) => {
 module.exports = {
   generateApiKey,
   verifyApiKey,
-  manageBotPermissions
+  manageBotPermissions,
 };

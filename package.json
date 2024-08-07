@@ -1,6 +1,6 @@
 {
   "name": "nodcord",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Eine Node.js-API mit Express.js und einem integrierten Discord-Bot",
   "main": "src/app.js",
   "scripts": {
@@ -9,7 +9,6 @@
     "build": "node build.js",
     "start:prod": "node build/start.js",
     "test": "jest",
-    "lint": "eslint .",
     "prettify": "prettier --write ."
   },
   "repository": {
@@ -99,6 +98,7 @@
     "stripe": "^16.6.0",
     "swagger-ui-express": "^4.3.0",
     "systeminformation": "^5.23.2",
+    "uuid": "^10.0.0",
     "validator": "^13.7.0",
     "winston": "^3.13.1"
   },

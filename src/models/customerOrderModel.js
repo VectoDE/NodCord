@@ -5,63 +5,63 @@ const customerOrderSchema = new mongoose.Schema({
   customerId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer',
-    required: true
+    required: true,
   },
   orderNumber: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   orderDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   status: {
     type: String,
     enum: ['Pending', 'Shipped', 'Delivered', 'Cancelled'],
-    default: 'Pending'
+    default: 'Pending',
   },
   items: [
     {
       productId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        required: true
+        required: true,
       },
       quantity: {
         type: Number,
-        required: true
+        required: true,
       },
       price: {
         type: Number,
-        required: true
-      }
-    }
+        required: true,
+      },
+    },
   ],
   totalAmount: {
     type: Number,
-    required: true
+    required: true,
   },
   shippingAddress: {
     type: String,
-    required: true
+    required: true,
   },
   billingAddress: {
     type: String,
-    required: true
+    required: true,
   },
   createdAt: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   updatedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Aktualisiere `updatedAt` bei Änderungen
-customerOrderSchema.pre('save', function(next) {
+customerOrderSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

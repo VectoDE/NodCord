@@ -1,6 +1,5 @@
 ![NodCord Logo with Text](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
 
-
 NodCord ist eine Node.js API mit Express.js, die einen integrierten Discord Bot beinhaltet. Die API enthält einen Discord Service mit Controller und Router, um den Bot auch über die API steuern zu können.
 
 ## Inhaltsverzeichnis
@@ -21,24 +20,25 @@ NodCord ist eine Node.js API mit Express.js, die einen integrierten Discord Bot 
 ## Installation
 
 1. Klone das Repository:
-    ```sh
-    git clone https://github.com/deinbenutzername/NodCord.git
-    ```
+   ```sh
+   git clone https://github.com/deinbenutzername/NodCord.git
+   ```
 2. Navigiere in das Projektverzeichnis:
-    ```sh
-    cd NodCord
-    ```
+   ```sh
+   cd NodCord
+   ```
 3. Installiere die Abhängigkeiten:
-    ```sh
-    npm install
-    ```
+   ```sh
+   npm install
+   ```
 
 ## Verwendung
 
 1. Starte den Server:
-    ```sh
-    npm start
-    ```
+
+   ```sh
+   npm start
+   ```
 
 2. Der Server läuft nun auf `http://localhost:3000`.
 
@@ -53,6 +53,7 @@ Gibt den aktuellen Status des Discord Bots zurück.
 Sendet eine Nachricht an einen bestimmten Discord Channel.
 
 **Request Body:**
+
 ```json
 {
   "channelId": "123456789012345678",

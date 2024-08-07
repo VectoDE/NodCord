@@ -19,12 +19,14 @@ const storage = multer.diskStorage({
     const basename = path.basename(file.originalname, ext);
     const filename = `${basename}-${Date.now()}${ext}`;
     cb(null, filename);
-  }
+  },
 });
 
 const fileFilter = (req, file, cb) => {
   const allowedTypes = /jpeg|jpg|png|gif/;
-  const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const extname = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
   const mimetype = allowedTypes.test(file.mimetype);
 
   if (extname && mimetype) {
@@ -37,8 +39,8 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB
-  }
+    fileSize: 10 * 1024 * 1024, // 10MB
+  },
 }).single('file');
 
 const checkDiskSpaceMiddleware = async (req, res, next) => {
@@ -60,5 +62,5 @@ const checkDiskSpaceMiddleware = async (req, res, next) => {
 
 module.exports = {
   upload,
-  checkDiskSpaceMiddleware
+  checkDiskSpaceMiddleware,
 };

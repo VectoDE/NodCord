@@ -3,20 +3,20 @@ const mongoose = require('mongoose');
 const logSchema = new mongoose.Schema({
   message: {
     type: String,
-    required: true
+    required: true,
   },
   level: {
     type: String,
     enum: ['info', 'warn', 'error'],
-    default: 'info'
+    default: 'info',
   },
   timestamp: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   additionalData: {
-    type: mongoose.Schema.Types.Mixed
-  }
+    type: mongoose.Schema.Types.Mixed,
+  },
 });
 
 module.exports = mongoose.model('Log', logSchema);

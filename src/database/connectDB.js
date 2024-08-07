@@ -3,7 +3,7 @@ const serverConfig = require('../config/serverConfig');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(serverConfig.mongoURI, { });
+    await mongoose.connect(serverConfig.mongoURI, {});
     console.log(`Database connected successfully to ${serverConfig.mongoURI}`);
   } catch (err) {
     console.error('Fehler bei der Datenbankverbindung:', err.message);

@@ -8,20 +8,22 @@ const messageSchema = new mongoose.Schema({
   },
   content: {
     type: String,
-    required: true
+    required: true,
   },
   timestamp: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
 });
 
 // Schema für einen Chat
 const chatSchema = new mongoose.Schema({
-  participants: [{
-    type: String,
-    required: true
-  }], // Array von Teilnehmer-IDs
+  participants: [
+    {
+      type: String,
+      required: true,
+    },
+  ], // Array von Teilnehmer-IDs
   messages: [messageSchema], // Array von Nachrichten
   type: {
     type: String,

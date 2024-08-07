@@ -4,7 +4,14 @@ const nodemailerService = require('../services/nodemailerService');
 
 const createOrder = async (req, res) => {
   try {
-    const { customerId, orderNumber, items, totalAmount, shippingAddress, billingAddress } = req.body;
+    const {
+      customerId,
+      orderNumber,
+      items,
+      totalAmount,
+      shippingAddress,
+      billingAddress,
+    } = req.body;
 
     const newOrder = new CustomerOrder({
       customerId,
@@ -12,16 +19,21 @@ const createOrder = async (req, res) => {
       items,
       totalAmount,
       shippingAddress,
-      billingAddress
+      billingAddress,
     });
 
     await newOrder.save();
 
     const customer = await Customer.findById(customerId);
     const orderDetails = `Order Number: ${orderNumber}\nTotal Amount: ${totalAmount}\nShipping Address: ${shippingAddress}`;
-    await nodemailerService.sendOrderConfirmationEmail(customer.email, orderDetails);
+    await nodemailerService.sendOrderConfirmationEmail(
+      customer.email,
+      orderDetails
+    );
 
-    res.status(201).json({ message: 'Order created successfully.', order: newOrder });
+    res
+      .status(201)
+      .json({ message: 'Order created successfully.', order: newOrder });
   } catch (error) {
     console.error('Error creating order:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -30,7 +42,9 @@ const createOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await CustomerOrder.find().populate('customerId').populate('items.productId');
+    const orders = await CustomerOrder.find()
+      .populate('customerId')
+      .populate('items.productId');
     res.status(200).json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
@@ -40,7 +54,9 @@ const getAllOrders = async (req, res) => {
 
 const getOrderById = async (req, res) => {
   try {
-    const order = await CustomerOrder.findById(req.params.id).populate('customerId').populate('items.productId');
+    const order = await CustomerOrder.findById(req.params.id)
+      .populate('customerId')
+      .populate('items.productId');
     if (!order) {
       return res.status(404).json({ message: 'Order not found.' });
     }
@@ -67,7 +83,10 @@ const updateOrder = async (req, res) => {
     if (status === 'Shipped') {
       const customer = await Customer.findById(updatedOrder.customerId);
       const trackingNumber = 'TRACK12345';
-      await nodemailerService.sendShippingNotificationEmail(customer.email, trackingNumber);
+      await nodemailerService.sendShippingNotificationEmail(
+        customer.email,
+        trackingNumber
+      );
     }
 
     res.status(200).json(updatedOrder);
@@ -95,5 +114,5 @@ module.exports = {
   getAllOrders,
   getOrderById,
   updateOrder,
-  deleteOrder
+  deleteOrder,
 };

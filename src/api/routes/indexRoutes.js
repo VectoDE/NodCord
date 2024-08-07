@@ -15,24 +15,32 @@ router.get('/', (req, res) => {
 });
 
 router.get('/docs', (req, res) => {
-  res.render('index/documentation', { isAuthenticated: res.locals.isAuthenticated });
+  res.render('index/documentation', {
+    isAuthenticated: res.locals.isAuthenticated,
+  });
 });
 
 router.get('/status', async (req, res) => {
   try {
     const apiStatus = apiStatusService.getStatus();
-    const apiStatusMessage = apiStatus === 'online' ? 'API ist online' :
-      apiStatus === 'maintenance' ? 'API im Wartungsmodus' :
-        'API ist offline';
+    const apiStatusMessage =
+      apiStatus === 'online'
+        ? 'API ist online'
+        : apiStatus === 'maintenance'
+        ? 'API im Wartungsmodus'
+        : 'API ist offline';
 
     const botStatus = botStatusService.getStatus();
-    const botStatusMessage = botStatus === 'online' ? 'Bot ist online' :
-      botStatus === 'maintenance' ? 'Bot im Wartungsmodus' :
-        'Bot ist offline';
+    const botStatusMessage =
+      botStatus === 'online'
+        ? 'Bot ist online'
+        : botStatus === 'maintenance'
+        ? 'Bot im Wartungsmodus'
+        : 'Bot ist offline';
 
     const dbStatus = dbStatusService.getStatus();
-    const dbStatusMessage = dbStatus === 'online' ? 'Datenbank ist online' :
-      'Datenbank ist offline';
+    const dbStatusMessage =
+      dbStatus === 'online' ? 'Datenbank ist online' : 'Datenbank ist offline';
 
     res.render('index/status', {
       apiStatus,
@@ -41,7 +49,7 @@ router.get('/status', async (req, res) => {
       botStatusMessage,
       dbStatus,
       dbStatusMessage,
-      isAuthenticated: res.locals.isAuthenticated
+      isAuthenticated: res.locals.isAuthenticated,
     });
   } catch (error) {
     console.error('Error fetching status:', error);
@@ -57,12 +65,17 @@ router.get('/info', async (req, res) => {
       version: serverConfig.version || 'N/A',
       baseUrl: apiConfig.baseURL || 'N/A',
       environment: serverConfig.environment || 'N/A',
-      apiStatus: apiStatusService.getStatus() || 'N/A'
+      apiStatus: apiStatusService.getStatus() || 'N/A',
     };
 
     const systemInfo = await infoService.getSystemInfo();
 
-    res.render('index/info', { bot: botInfo, api: apiInfo, system: systemInfo, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/info', {
+      bot: botInfo,
+      api: apiInfo,
+      system: systemInfo,
+      isAuthenticated: res.locals.isAuthenticated,
+    });
   } catch (error) {
     console.error('Error fetching info:', error);
     res.status(500).send('Internal Server Error');
@@ -72,7 +85,10 @@ router.get('/info', async (req, res) => {
 router.get('/discord-members', async (req, res) => {
   try {
     const servers = await bot.getServers();
-    res.render('index/discordmembers', { servers, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/discordmembers', {
+      servers,
+      isAuthenticated: res.locals.isAuthenticated,
+    });
   } catch (error) {
     console.error('Error fetching servers:', error);
     res.status(500).send('Internal Server Error');
@@ -83,7 +99,11 @@ router.get('/discord-servers', async (req, res) => {
   try {
     const servers = await bot.getServers();
     const serverCount = servers.length;
-    res.render('index/discordservers', { servers, serverCount, isAuthenticated: res.locals.isAuthenticated });
+    res.render('index/discordservers', {
+      servers,
+      serverCount,
+      isAuthenticated: res.locals.isAuthenticated,
+    });
   } catch (error) {
     console.error('Error fetching servers:', error);
     res.status(500).send('Internal Server Error');
@@ -99,7 +119,7 @@ router.get('/login', (req, res) => {
 
   res.render('auth/login', {
     isAuthenticated: res.locals.isAuthenticated,
-    errorMessage: errorMessage
+    errorMessage: errorMessage,
   });
 });
 

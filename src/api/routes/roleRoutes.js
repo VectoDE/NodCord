@@ -4,8 +4,18 @@ const roleController = require('../controllers/roleController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const checkRole = require('../middlewares/roleMiddleware');
 
-router.get('/', authMiddleware, checkRole(['admin']), roleController.getAllRoles);
+router.get(
+  '/',
+  authMiddleware,
+  checkRole(['admin']),
+  roleController.getAllRoles
+);
 
-router.post('/', authMiddleware, checkRole(['admin']), roleController.createRole);
+router.post(
+  '/',
+  authMiddleware,
+  checkRole(['admin']),
+  roleController.createRole
+);
 
 module.exports = router;

@@ -11,7 +11,9 @@ const createOrder = async (req, res) => {
     const customerEmail = orderData.customer.email;
     await nodemailerService.sendOrderConfirmationEmail(
       customerEmail,
-      `Order ID: ${newOrder._id}\nTotal Amount: ${newOrder.totalAmount}\nDetails: ${JSON.stringify(orderData.products)}`
+      `Order ID: ${newOrder._id}\nTotal Amount: ${
+        newOrder.totalAmount
+      }\nDetails: ${JSON.stringify(orderData.products)}`
     );
 
     res.status(201).json(newOrder);
@@ -54,7 +56,9 @@ const updateOrderStatus = async (req, res) => {
 const getOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
-    const order = await Order.findById(orderId).populate('customer').populate('products.product');
+    const order = await Order.findById(orderId)
+      .populate('customer')
+      .populate('products.product');
 
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
@@ -69,7 +73,9 @@ const getOrder = async (req, res) => {
 
 const getAllOrders = async (req, res) => {
   try {
-    const orders = await Order.find().populate('customer').populate('products.product');
+    const orders = await Order.find()
+      .populate('customer')
+      .populate('products.product');
     res.status(200).json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
@@ -81,5 +87,5 @@ module.exports = {
   createOrder,
   updateOrderStatus,
   getOrder,
-  getAllOrders
+  getAllOrders,
 };

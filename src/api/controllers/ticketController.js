@@ -21,14 +21,16 @@ const createTicket = async (req, res) => {
   try {
     const { guildId, userId, title, description } = req.body;
     if (!guildId || !userId || !title) {
-      return res.status(400).json({ error: 'Guild ID, User ID, and Title are required' });
+      return res
+        .status(400)
+        .json({ error: 'Guild ID, User ID, and Title are required' });
     }
 
     const newTicket = new Ticket({
       guildId,
       userId,
       title,
-      description
+      description,
     });
 
     await newTicket.save();
@@ -112,7 +114,9 @@ const addTicketResponse = async (req, res) => {
   try {
     const { ticketId, userId, response } = req.body;
     if (!ticketId || !userId || !response) {
-      return res.status(400).json({ error: 'Ticket ID, User ID, and Response are required' });
+      return res
+        .status(400)
+        .json({ error: 'Ticket ID, User ID, and Response are required' });
     }
 
     const ticket = await Ticket.findById(ticketId);
@@ -121,13 +125,15 @@ const addTicketResponse = async (req, res) => {
     }
 
     if (ticket.status === 'closed') {
-      return res.status(400).json({ error: 'Cannot add response to a closed ticket' });
+      return res
+        .status(400)
+        .json({ error: 'Cannot add response to a closed ticket' });
     }
 
     const newResponse = new TicketResponse({
       ticketId,
       userId,
-      response
+      response,
     });
 
     await newResponse.save();
@@ -145,5 +151,5 @@ module.exports = {
   closeTicket,
   getTicketDetails,
   updateTicket,
-  addTicketResponse
+  addTicketResponse,
 };

@@ -4,20 +4,22 @@ const organizationSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
   },
   description: {
     type: String,
-    trim: true
+    trim: true,
   },
   foundedDate: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
-  members: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'  // Assuming there's a User model
-  }]
+  members: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User', // Assuming there's a User model
+    },
+  ],
 });
 
 module.exports = mongoose.model('Organization', organizationSchema);

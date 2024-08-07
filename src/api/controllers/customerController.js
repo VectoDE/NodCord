@@ -7,7 +7,12 @@ const createCustomer = async (req, res) => {
     const newCustomer = new Customer({ name, email, phone, address });
     await newCustomer.save();
 
-    res.status(201).json({ message: 'Customer created successfully.', customer: newCustomer });
+    res
+      .status(201)
+      .json({
+        message: 'Customer created successfully.',
+        customer: newCustomer,
+      });
   } catch (error) {
     console.error('Error creating customer:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -75,5 +80,5 @@ module.exports = {
   getAllCustomers,
   getCustomerById,
   updateCustomer,
-  deleteCustomer
+  deleteCustomer,
 };

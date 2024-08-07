@@ -5,10 +5,18 @@ const createFeature = async (req, res) => {
   try {
     const { title, description, status, priority, project } = req.body;
 
-    const newFeature = new Feature({ title, description, status, priority, project });
+    const newFeature = new Feature({
+      title,
+      description,
+      status,
+      priority,
+      project,
+    });
     await newFeature.save();
 
-    res.status(201).json({ message: 'Feature created successfully.', feature: newFeature });
+    res
+      .status(201)
+      .json({ message: 'Feature created successfully.', feature: newFeature });
   } catch (error) {
     console.error('Error creating feature:', error);
     res.status(500).json({ message: 'Internal Server Error' });
@@ -83,5 +91,5 @@ module.exports = {
   getAllFeatures,
   getFeatureById,
   updateFeature,
-  deleteFeature
+  deleteFeature,
 };

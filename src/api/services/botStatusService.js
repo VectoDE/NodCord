@@ -1,7 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const statusFilePath = path.join(__dirname, '..', '..', 'public', 'json', 'botStatus.json');
+const statusFilePath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'public',
+  'json',
+  'botStatus.json'
+);
 
 let botStatus = 'offline';
 
@@ -14,7 +21,11 @@ if (fs.existsSync(statusFilePath)) {
   }
 } else {
   botStatus = 'offline';
-  fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+  fs.writeFileSync(
+    statusFilePath,
+    JSON.stringify({ status: botStatus }),
+    'utf8'
+  );
 }
 
 exports.setStatus = (status) => {
@@ -31,7 +42,11 @@ exports.getStatus = () => botStatus;
 exports.startBot = () => {
   if (botStatus === 'offline') {
     botStatus = 'online';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: botStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('Bot ist bereits online oder im Wartungsmodus');
   }
@@ -40,7 +55,11 @@ exports.startBot = () => {
 exports.stopBot = () => {
   if (botStatus === 'online') {
     botStatus = 'offline';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: botStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('Bot ist bereits offline oder im Wartungsmodus');
   }
@@ -49,10 +68,18 @@ exports.stopBot = () => {
 exports.restartBot = () => {
   if (botStatus === 'online') {
     botStatus = 'offline';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: botStatus }),
+      'utf8'
+    );
     setTimeout(() => {
       botStatus = 'online';
-      fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+      fs.writeFileSync(
+        statusFilePath,
+        JSON.stringify({ status: botStatus }),
+        'utf8'
+      );
     }, 5000);
   } else {
     throw new Error('Bot ist bereits offline oder im Wartungsmodus');
@@ -62,7 +89,11 @@ exports.restartBot = () => {
 exports.setMaintenance = () => {
   if (botStatus !== 'maintenance') {
     botStatus = 'maintenance';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: botStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('Bot ist bereits im Wartungsmodus');
   }
@@ -71,7 +102,11 @@ exports.setMaintenance = () => {
 exports.removeMaintenance = () => {
   if (botStatus === 'maintenance') {
     botStatus = 'online';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: botStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: botStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('Bot ist nicht im Wartungsmodus');
   }

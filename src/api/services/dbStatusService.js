@@ -1,7 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-const statusFilePath = path.join(__dirname, '..', '..', 'public', 'json', 'dbStatus.json');
+const statusFilePath = path.join(
+  __dirname,
+  '..',
+  '..',
+  'public',
+  'json',
+  'dbStatus.json'
+);
 
 let dbStatus = 'online';
 
@@ -14,7 +21,11 @@ if (fs.existsSync(statusFilePath)) {
   }
 } else {
   dbStatus = 'online';
-  fs.writeFileSync(statusFilePath, JSON.stringify({ status: dbStatus }), 'utf8');
+  fs.writeFileSync(
+    statusFilePath,
+    JSON.stringify({ status: dbStatus }),
+    'utf8'
+  );
 }
 
 exports.setStatus = (status) => {
@@ -31,7 +42,11 @@ exports.getStatus = () => dbStatus;
 exports.startDb = () => {
   if (dbStatus === 'offline') {
     dbStatus = 'online';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: dbStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: dbStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('Datenbank ist bereits online oder im Wartungsmodus');
   }
@@ -40,7 +55,11 @@ exports.startDb = () => {
 exports.stopDb = () => {
   if (dbStatus === 'online') {
     dbStatus = 'offline';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: dbStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: dbStatus }),
+      'utf8'
+    );
   } else {
     throw new Error('Datenbank ist bereits offline oder im Wartungsmodus');
   }
@@ -49,10 +68,18 @@ exports.stopDb = () => {
 exports.restartDb = () => {
   if (dbStatus === 'online') {
     dbStatus = 'offline';
-    fs.writeFileSync(statusFilePath, JSON.stringify({ status: dbStatus }), 'utf8');
+    fs.writeFileSync(
+      statusFilePath,
+      JSON.stringify({ status: dbStatus }),
+      'utf8'
+    );
     setTimeout(() => {
       dbStatus = 'online';
-      fs.writeFileSync(statusFilePath, JSON.stringify({ status: dbStatus }), 'utf8');
+      fs.writeFileSync(
+        statusFilePath,
+        JSON.stringify({ status: dbStatus }),
+        'utf8'
+      );
     }, 5000);
   } else {
     throw new Error('Datenbank ist bereits offline oder im Wartungsmodus');
