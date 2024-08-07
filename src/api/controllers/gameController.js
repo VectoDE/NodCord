@@ -1,4 +1,5 @@
 const Game = require('../../models/gameModel');
+const logger = require('../services/loggerService');
 
 exports.getAllGames = async (req, res) => {
   try {

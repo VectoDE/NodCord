@@ -1,5 +1,6 @@
 const Story = require('../../models/storyModel');
 const nodemailerService = require('../services/nodemailerService');
+const logger = require('../services/loggerService');
 
 const createStory = async (req, res) => {
   try {
@@ -18,7 +19,7 @@ const createStory = async (req, res) => {
       .status(201)
       .json({ message: 'Story created successfully.', story: newStory });
   } catch (error) {
-    console.error('Error creating story:', error);
+    logger.error('Error creating story:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -28,7 +29,7 @@ const getAllStories = async (req, res) => {
     const stories = await Story.find().populate('project');
     res.status(200).json(stories);
   } catch (error) {
-    console.error('Error fetching stories:', error);
+    logger.error('Error fetching stories:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -41,7 +42,7 @@ const getStoryById = async (req, res) => {
     }
     res.status(200).json(story);
   } catch (error) {
-    console.error('Error fetching story:', error);
+    logger.error('Error fetching story:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -59,7 +60,6 @@ const updateStory = async (req, res) => {
       return res.status(404).json({ message: 'Story not found.' });
     }
 
-    // Optional: Sende E-Mail-Benachrichtigung bei Statusänderung
     if (status === 'Completed') {
       await nodemailerService.sendProjectStatusUpdateEmail(
         'project-manager@example.com',
@@ -69,7 +69,7 @@ const updateStory = async (req, res) => {
 
     res.status(200).json(updatedStory);
   } catch (error) {
-    console.error('Error updating story:', error);
+    logger.error('Error updating story:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -82,7 +82,7 @@ const deleteStory = async (req, res) => {
     }
     res.status(200).json({ message: 'Story deleted successfully.' });
   } catch (error) {
-    console.error('Error deleting story:', error);
+    logger.error('Error deleting story:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

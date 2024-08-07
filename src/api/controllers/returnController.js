@@ -1,6 +1,7 @@
 const Return = require('../../models/returnModel');
 const nodemailerService = require('../services/nodemailerService');
 const CustomerOrder = require('../../models/customerOrderModel');
+const logger = require('../services/loggerService');
 
 const createReturn = async (req, res) => {
   try {
@@ -28,7 +29,7 @@ const createReturn = async (req, res) => {
       .status(201)
       .json({ message: 'Return created successfully.', return: newReturn });
   } catch (error) {
-    console.error('Error creating return:', error);
+    logger.error('Error creating return:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -40,7 +41,7 @@ const getAllReturns = async (req, res) => {
       .populate('items.productId');
     res.status(200).json(returns);
   } catch (error) {
-    console.error('Error fetching returns:', error);
+    logger.error('Error fetching returns:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -55,7 +56,7 @@ const getReturnById = async (req, res) => {
     }
     res.status(200).json(returnItem);
   } catch (error) {
-    console.error('Error fetching return:', error);
+    logger.error('Error fetching return:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -75,7 +76,7 @@ const updateReturn = async (req, res) => {
 
     res.status(200).json(updatedReturn);
   } catch (error) {
-    console.error('Error updating return:', error);
+    logger.error('Error updating return:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -88,7 +89,7 @@ const deleteReturn = async (req, res) => {
     }
     res.status(200).json({ message: 'Return deleted successfully.' });
   } catch (error) {
-    console.error('Error deleting return:', error);
+    logger.error('Error deleting return:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

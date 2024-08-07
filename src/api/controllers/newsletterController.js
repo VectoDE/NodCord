@@ -1,5 +1,6 @@
 const Newsletter = require('../../models/newsletterModel');
 const nodemailerService = require('../services/nodemailerService');
+const logger = require('../services/loggerService');
 
 const addSubscriber = async (req, res) => {
   try {
@@ -17,7 +18,7 @@ const addSubscriber = async (req, res) => {
 
     res.status(201).json(newSubscriber);
   } catch (error) {
-    console.error('Error adding subscriber:', error);
+    logger.error('Error adding subscriber:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -27,7 +28,7 @@ const getSubscribers = async (req, res) => {
     const subscribers = await Newsletter.find();
     res.status(200).json(subscribers);
   } catch (error) {
-    console.error('Error fetching subscribers:', error);
+    logger.error('Error fetching subscribers:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -44,7 +45,7 @@ const removeSubscriber = async (req, res) => {
 
     res.status(200).json({ message: 'Subscriber removed successfully' });
   } catch (error) {
-    console.error('Error removing subscriber:', error);
+    logger.error('Error removing subscriber:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

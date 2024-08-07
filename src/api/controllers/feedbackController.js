@@ -1,4 +1,5 @@
 const Feedback = require('../../models/feedbackModel');
+const logger = require('../services/loggerService');
 
 exports.createFeedback = async (req, res) => {
   try {
@@ -22,7 +23,7 @@ exports.createFeedback = async (req, res) => {
       .status(201)
       .json({ message: 'Feedback erfolgreich erstellt!', feedback });
   } catch (error) {
-    console.error('Fehler beim Erstellen des Feedbacks:', error);
+    logger.error('Fehler beim Erstellen des Feedbacks:', error);
     res
       .status(500)
       .json({
@@ -36,7 +37,7 @@ exports.getAllFeedbacks = async (req, res) => {
     const feedbacks = await Feedback.find().sort({ createdAt: -1 });
     res.status(200).json(feedbacks);
   } catch (error) {
-    console.error('Fehler beim Abrufen des Feedbacks:', error);
+    logger.error('Fehler beim Abrufen des Feedbacks:', error);
     res
       .status(500)
       .json({

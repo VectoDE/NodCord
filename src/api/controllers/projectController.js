@@ -1,11 +1,12 @@
 const Project = require('../../models/projectModel');
+const logger = require('../services/loggerService');
 
 const listProjects = async (req, res) => {
   try {
     const projects = await Project.find().populate('members').populate('tags');
     res.status(200).json(projects);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -31,7 +32,7 @@ const createProject = async (req, res) => {
     await newProject.save();
     res.status(201).json(newProject);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -52,7 +53,7 @@ const getProjectDetails = async (req, res) => {
 
     res.status(200).json(project);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -89,7 +90,7 @@ const updateProject = async (req, res) => {
     await project.save();
     res.status(200).json(project);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -109,7 +110,7 @@ const deleteProject = async (req, res) => {
     await project.remove();
     res.status(200).json({ message: 'Project deleted successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

@@ -1,5 +1,6 @@
 const ApiKey = require('../../models/apiKeyModel');
 const { v4: uuidv4 } = require('uuid');
+const logger = require('../services/loggerService');
 
 exports.createApiKey = async (req, res) => {
   try {
@@ -16,7 +17,7 @@ exports.createApiKey = async (req, res) => {
 
     res.status(201).json({ message: 'API key created', apiKey });
   } catch (error) {
-    console.error('Error creating API key:', error);
+    logger.error('Error creating API key:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -33,7 +34,7 @@ exports.deleteApiKey = async (req, res) => {
 
     res.status(200).json({ message: 'API key deleted' });
   } catch (error) {
-    console.error('Error deleting API key:', error);
+    logger.error('Error deleting API key:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -44,7 +45,7 @@ exports.getApiKeys = async (req, res) => {
 
     res.status(200).json(apiKeys);
   } catch (error) {
-    console.error('Error fetching API keys:', error);
+    logger.error('Error fetching API keys:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

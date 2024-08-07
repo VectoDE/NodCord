@@ -13,10 +13,10 @@ const generateApiKey = (req, res) => {
     keys.push(apiKey);
     fs.writeFileSync(API_KEYS_FILE, JSON.stringify(keys, null, 2), 'utf8');
 
-    logger.logInfo(`Neuer API-Schlüssel erstellt: ${apiKey}`);
+    logger.info(`Neuer API-Schlüssel erstellt: ${apiKey}`);
     res.status(201).json({ apiKey });
   } catch (error) {
-    logger.logError(
+    logger.error(
       `Fehler beim Erstellen eines neuen API-Schlüssels: ${error.message}`
     );
     res.status(500).json({ error: error.message });
@@ -38,7 +38,7 @@ const verifyApiKey = (req, res, next) => {
       res.status(403).json({ message: 'Ungültiger API-Schlüssel' });
     }
   } catch (error) {
-    logger.logError(
+    logger.error(
       `Fehler bei der Überprüfung des API-Schlüssels: ${error.message}`
     );
     res.status(500).json({ error: error.message });

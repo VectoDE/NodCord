@@ -1,5 +1,6 @@
 const Feature = require('../../models/featureModel');
 const nodemailerService = require('../services/nodemailerService');
+const logger = require('../services/loggerService');
 
 const createFeature = async (req, res) => {
   try {
@@ -18,7 +19,7 @@ const createFeature = async (req, res) => {
       .status(201)
       .json({ message: 'Feature created successfully.', feature: newFeature });
   } catch (error) {
-    console.error('Error creating feature:', error);
+    logger.error('Error creating feature:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -28,7 +29,7 @@ const getAllFeatures = async (req, res) => {
     const features = await Feature.find().populate('project');
     res.status(200).json(features);
   } catch (error) {
-    console.error('Error fetching features:', error);
+    logger.error('Error fetching features:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -41,7 +42,7 @@ const getFeatureById = async (req, res) => {
     }
     res.status(200).json(feature);
   } catch (error) {
-    console.error('Error fetching feature:', error);
+    logger.error('Error fetching feature:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -68,7 +69,7 @@ const updateFeature = async (req, res) => {
 
     res.status(200).json(updatedFeature);
   } catch (error) {
-    console.error('Error updating feature:', error);
+    logger.error('Error updating feature:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -81,7 +82,7 @@ const deleteFeature = async (req, res) => {
     }
     res.status(200).json({ message: 'Feature deleted successfully.' });
   } catch (error) {
-    console.error('Error deleting feature:', error);
+    logger.error('Error deleting feature:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

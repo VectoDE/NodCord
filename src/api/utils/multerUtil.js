@@ -1,7 +1,8 @@
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { checkDiskSpace } = require('check-disk-space');
+const checkDiskSpace = require('check-disk-space').default;
+const logger = require('../services/loggerService');
 
 const uploadDirectory = path.join(__dirname, '../../public/uploads');
 const maxDiskSpacePercentage = 80;

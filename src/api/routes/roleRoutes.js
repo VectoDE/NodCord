@@ -2,20 +2,12 @@ const express = require('express');
 const router = express.Router();
 const roleController = require('../controllers/roleController');
 const authMiddleware = require('../middlewares/authMiddleware');
-const checkRole = require('../middlewares/roleMiddleware');
+const roleMiddleware = require('../middlewares/roleMiddleware');
 
-router.get(
-  '/',
-  authMiddleware,
-  checkRole(['admin']),
-  roleController.getAllRoles
-);
+router.use(authMiddleware(true));
 
-router.post(
-  '/',
-  authMiddleware,
-  checkRole(['admin']),
-  roleController.createRole
-);
+router.get('/', roleMiddleware(['admin']), roleController.getAllRoles);
+
+router.post('/', roleMiddleware(['admin']), roleController.createRole);
 
 module.exports = router;

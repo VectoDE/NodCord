@@ -1,4 +1,5 @@
 const Share = require('../../models/shareModel');
+const logger = require('../services/loggerService');
 
 exports.createShare = async (req, res) => {
   try {

@@ -1,4 +1,5 @@
 const Organization = require('../../models/organizationModel');
+const logger = require('../services/loggerService');
 
 exports.getAllOrganizations = async (req, res) => {
   try {

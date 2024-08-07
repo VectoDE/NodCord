@@ -1,4 +1,5 @@
 const Chat = require('../../models/chatModel');
+const logger = require('../services/loggerService');
 
 exports.getAllChats = async (req, res) => {
   try {

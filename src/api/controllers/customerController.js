@@ -1,4 +1,5 @@
 const Customer = require('../../models/customerModel');
+const logger = require('../services/loggerService');
 
 const createCustomer = async (req, res) => {
   try {
@@ -14,7 +15,7 @@ const createCustomer = async (req, res) => {
         customer: newCustomer,
       });
   } catch (error) {
-    console.error('Error creating customer:', error);
+    logger.error('Error creating customer:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -24,7 +25,7 @@ const getAllCustomers = async (req, res) => {
     const customers = await Customer.find();
     res.status(200).json(customers);
   } catch (error) {
-    console.error('Error fetching customers:', error);
+    logger.error('Error fetching customers:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -37,7 +38,7 @@ const getCustomerById = async (req, res) => {
     }
     res.status(200).json(customer);
   } catch (error) {
-    console.error('Error fetching customer:', error);
+    logger.error('Error fetching customer:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -57,7 +58,7 @@ const updateCustomer = async (req, res) => {
 
     res.status(200).json(updatedCustomer);
   } catch (error) {
-    console.error('Error updating customer:', error);
+    logger.error('Error updating customer:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -70,7 +71,7 @@ const deleteCustomer = async (req, res) => {
     }
     res.status(200).json({ message: 'Customer deleted successfully.' });
   } catch (error) {
-    console.error('Error deleting customer:', error);
+    logger.error('Error deleting customer:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

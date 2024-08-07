@@ -1,9 +1,12 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
+const flash = require('connect-flash');
 const appConfig = require('../config/apiConfig');
+const logger = require('./services/loggerService');
 
 const corsMiddleware = require('./middlewares/corsMiddleware');
 const compressionMiddleware = require('./middlewares/compressionMiddleware');
@@ -71,6 +74,15 @@ app.use(
   })
 );
 
+app.use(session({
+  secret: 'hauknetz',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { maxAge: 600000 }, // 10 minutes
+}))
+
+app.use(flash());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
@@ -84,6 +96,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(rateLimiter);
+
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash('successMessage');
+  next();
+});
 
 app.use('/', indexRoutes);
 app.use('/dashboard', dashRoutes);
@@ -173,7 +190,10 @@ const getAllRoutes = () => {
 
   const routeDefinitions = [
     { path: '', router: indexRoutes },
+    { path: '/dashboard', router: dashRoutes },
     { path: '/api/auth', router: authRoutes },
+    { path: '/api/developerprogram', router: developerProgramRoutes},
+    { path: '/api/apikeys', router: apiKeyRoutes},
     { path: '/api/infos', router: infoRoutes },
     { path: '/api/users', router: userRoutes },
     { path: '/api/roles', router: roleRoutes },
@@ -227,7 +247,7 @@ app.get('/routes', (req, res) => {
       isAuthenticated: res.locals.isAuthenticated,
     });
   } catch (error) {
-    console.error('Error fetching routes:', error);
+    logger.error('Error fetching routes:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -255,7 +275,7 @@ app.use((err, req, res, next) => {
 
 const startApp = () => {
   app.listen(port, () => {
-    console.log(`API is running on http://${baseURL}:${port}`);
+    logger.info(`API is running on http://${baseURL}:${port}`);
   });
 };
 

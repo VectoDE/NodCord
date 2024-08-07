@@ -1,5 +1,6 @@
 const os = require('os');
 const checkDiskSpace = require('check-disk-space').default;
+const logger = require('../services/loggerService');
 
 const getSystemInfo = async (req, res) => {
   try {

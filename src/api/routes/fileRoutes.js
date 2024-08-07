@@ -1,14 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { upload, checkDiskSpaceMiddleware } = require('../utils/multerUtil');
+const file = require('../utils/multerUtil');
 const fileController = require('../controllers/fileController');
 
-router.post(
-  '/upload',
-  checkDiskSpaceMiddleware,
-  upload,
-  fileController.uploadFile
-);
+router.post('/upload', file.checkDiskSpaceMiddleware, file.upload, fileController.uploadFile);
 
 router.get('/:id', fileController.getFile);
 

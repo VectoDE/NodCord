@@ -1,4 +1,5 @@
 const Category = require('../../models/categoryModel');
+const logger = require('../services/loggerService');
 
 exports.createCategory = async (req, res) => {
   try {

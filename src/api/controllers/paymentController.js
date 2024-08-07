@@ -1,6 +1,7 @@
 const Payment = require('../../models/paymentModel');
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const paypal = require('paypal-rest-sdk');
+const logger = require('../services/loggerService');
 
 paypal.configure({
   mode: 'sandbox', // 'sandbox' or 'live'
@@ -18,7 +19,7 @@ const listPayments = async (req, res) => {
     const payments = await Payment.find({ userId });
     res.status(200).json(payments);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -68,7 +69,7 @@ const createPayment = async (req, res) => {
 
       paypal.payment.create(create_payment_json, function (error, payment) {
         if (error) {
-          console.error(error);
+          logger.error(error);
           return res.status(500).json({ error: error.message });
         } else {
           transactionId = payment.id;
@@ -103,7 +104,7 @@ const createPayment = async (req, res) => {
     await newPayment.save();
     res.status(201).json(newPayment);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -129,7 +130,7 @@ const paypalSuccess = async (req, res) => {
       execute_payment_json,
       async function (error, payment) {
         if (error) {
-          console.error(error);
+          logger.error(error);
           res.status(500).json({ error: error.message });
         } else {
           const newPayment = new Payment({
@@ -146,7 +147,7 @@ const paypalSuccess = async (req, res) => {
       }
     );
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

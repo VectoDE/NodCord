@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const logger = require('./loggerService');
 
 const statusFilePath = path.join(
   __dirname,
@@ -10,14 +11,14 @@ const statusFilePath = path.join(
   'dbStatus.json'
 );
 
-let dbStatus = 'online';
+let dbStatus = 'offline';
 
 if (fs.existsSync(statusFilePath)) {
   try {
     const data = fs.readFileSync(statusFilePath, 'utf8');
     dbStatus = JSON.parse(data).status;
   } catch (err) {
-    console.error('Fehler beim Lesen der Statusdatei:', err);
+    logger.error('Fehler beim Lesen der Statusdatei:', err);
   }
 } else {
   dbStatus = 'online';

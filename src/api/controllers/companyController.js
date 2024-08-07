@@ -1,11 +1,12 @@
 const Company = require('../../models/companyModel');
+const logger = require('../services/loggerService');
 
 const listCompanies = async (req, res) => {
   try {
     const companies = await Company.find();
     res.status(200).json(companies);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -38,7 +39,7 @@ const createCompany = async (req, res) => {
     await newCompany.save();
     res.status(201).json(newCompany);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -57,7 +58,7 @@ const getCompanyDetails = async (req, res) => {
 
     res.status(200).json(company);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -96,7 +97,7 @@ const updateCompany = async (req, res) => {
     await company.save();
     res.status(200).json(company);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -116,7 +117,7 @@ const deleteCompany = async (req, res) => {
     await company.remove();
     res.status(200).json({ message: 'Company deleted successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

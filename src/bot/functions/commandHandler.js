@@ -2,6 +2,7 @@ const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const fs = require('fs');
 const botConfig = require('../../config/botConfig');
+const logger = require('../../api/services/loggerService');
 
 const clientId = botConfig.clientId;
 const guildId = botConfig.devGuild;
@@ -26,15 +27,15 @@ module.exports = (client) => {
 
     (async () => {
       try {
-        console.log('Started refreshing application (/) commands.');
+        logger.info('Started refreshing application (/) commands.');
 
         await rest.put(Routes.applicationCommands(clientId), {
           body: client.commandArray,
         });
 
-        console.log('Successfully reloaded application (/) commands.');
+        logger.info('Successfully reloaded application (/) commands.');
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       }
     })();
   };

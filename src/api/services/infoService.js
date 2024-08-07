@@ -2,6 +2,7 @@ const os = require('os');
 const { getServers } = require('../../bot/index');
 const apiStatusService = require('../services/apiStatusService');
 const botStatusService = require('../services/botStatusService');
+const logger = require('./loggerService');
 
 async function getSystemInfo() {
   const cpuCores = os.cpus().length;
@@ -31,7 +32,7 @@ async function getBotInfo() {
       guildsCount: servers.length,
     };
   } catch (error) {
-    console.error('Error fetching server info:', error);
+    logger.error('Error fetching server info:', error);
     return { guildsCount: 'N/A' };
   }
 }
@@ -42,7 +43,7 @@ async function getApiStatus() {
       apiStatus: apiStatusService.getStatus(),
     };
   } catch (error) {
-    console.error('Error fetching API status:', error);
+    logger.error('Error fetching API status:', error);
     return { apiStatus: 'N/A' };
   }
 }
@@ -53,7 +54,7 @@ async function getBotStatus() {
       botStatus: botStatusService.getStatus(),
     };
   } catch (error) {
-    console.error('Error fetching bot status:', error);
+    logger.error('Error fetching bot status:', error);
     return { botStatus: 'N/A' };
   }
 }

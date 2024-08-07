@@ -2,10 +2,14 @@ const mongoose = require('mongoose');
 
 const roleSchema = new mongoose.Schema(
   {
-    name: {
+    roleName: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
+    },
+    displayName: {
+      type: String,
+      required: true
     },
     description: {
       type: String,

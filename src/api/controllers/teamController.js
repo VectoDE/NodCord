@@ -1,11 +1,12 @@
 const Team = require('../../models/teamModel');
+const logger = require('../services/loggerService');
 
 const listTeams = async (req, res) => {
   try {
     const teams = await Team.find();
     res.status(200).json(teams);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -28,7 +29,7 @@ const createTeam = async (req, res) => {
     await newTeam.save();
     res.status(201).json(newTeam);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -47,7 +48,7 @@ const getTeamDetails = async (req, res) => {
 
     res.status(200).json(team);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -74,7 +75,7 @@ const updateTeam = async (req, res) => {
     await team.save();
     res.status(200).json(team);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -94,7 +95,7 @@ const deleteTeam = async (req, res) => {
     await team.remove();
     res.status(200).json({ message: 'Team deleted successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

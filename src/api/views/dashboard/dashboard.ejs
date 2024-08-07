@@ -82,6 +82,32 @@
       color: #333;
     }
 
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+    }
+
+    .grid-item {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .grid-item h4 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #333;
+    }
+
+    .grid-item p {
+      margin: 5px 0 0;
+      font-size: 1rem;
+      color: #555;
+    }
+
     form {
       display: flex;
       gap: 10px;
@@ -171,7 +197,46 @@
     </nav>
   </header>
   <main>
-    <h2>Dashboard Übersicht</h2>
+    <!-- Overview Section -->
+    <section>
+      <h3>Übersicht</h3>
+      <div class="grid-container">
+        <div class="grid-item">
+          <h4>Users</h4>
+          <p>Anzahl: <%= users.length %></p>
+        </div>
+        <div class="grid-item">
+          <h4>Roles</h4>
+          <p>Anzahl: <%= roles.length %></p>
+        </div>
+        <div class="grid-item">
+          <h4>Categories</h4>
+          <p>Anzahl: <%= categories.length %></p>
+        </div>
+        <div class="grid-item">
+          <h4>Tickets</h4>
+          <p>Anzahl: <%= tickets.length %></p>
+        </div>
+        <div class="grid-item">
+          <h4>Discord Servers</h4>
+          <p>Anzahl: <%= discordServers.length %></p>
+        </div>
+        <div class="grid-item">
+          <h4>Discord Members</h4>
+          <p>Anzahl: <%= discordMembers.length %></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Status Section -->
+    <section>
+      <h3>System Status</h3>
+      <p>API Status: <strong><%= apiStatus %></strong></p>
+      <p>Bot Status: <strong><%= botStatus %></strong></p>
+      <p>Database Status: <strong><%= dbStatus %></strong></p>
+    </section>
+
+    <!-- API Control Section -->
     <section>
       <h3>API Steuerung</h3>
       <div class="loading-container">
@@ -205,10 +270,8 @@
         <div id="remove-maintenance-api-loading" class="loading"></div>
       </div>
     </section>
-    <section>
-      <h3>Status des Discord Bots</h3>
-      <p>Der Bot ist aktuell <strong><%= botStatus %></strong>.</p>
-    </section>
+
+    <!-- Bot Control Section -->
     <section>
       <h3>Bot Steuerung</h3>
       <div class="loading-container">
@@ -242,29 +305,39 @@
         <div id="remove-maintenance-loading" class="loading"></div>
       </div>
     </section>
-    <section>
-      <h3>System Logs</h3>
-      <div>
-        <a href="/logs" target="_blank">Logs anzeigen</a>
-      </div>
-    </section>
+
+    <!-- File Upload Section -->
     <section>
       <h3>Datei-Uploads</h3>
       <form action="/api/files/upload" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" required>
         <button type="submit">Datei hochladen</button>
       </form>
+      <% if (successMessage) { %>
+        <div class="alert-success">
+          <%= successMessage %>
+        </div>
+      <% } %>
+    </section>
+
+    <!-- System Logs Section -->
+    <section>
+      <h3>System Logs</h3>
+      <div>
+        <a href="/logs" target="_blank">Logs anzeigen</a>
+      </div>
     </section>
   </main>
   <footer>
     <p>&copy; <%= new Date().getFullYear() %> NodCord. Alle Rechte vorbehalten.</p>
   </footer>
   <script>
-    // JavaScript für das Handling von Loading-Spinnern
-    document.querySelectorAll('form').forEach(form => {
-      form.addEventListener('submit', (event) => {
-        const formId = event.target.id;
-        document.getElementById(`${formId}-loading`).style.display = 'inline-block';
+    document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', (event) => {
+          const formId = event.target.id;
+          document.getElementById(`${formId}-loading`).style.display = 'inline-block';
+        });
       });
     });
   </script>

@@ -1,6 +1,6 @@
 {
   "name": "nodcord",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Eine Node.js-API mit Express.js und einem integrierten Discord-Bot",
   "main": "src/app.js",
   "scripts": {
@@ -64,11 +64,13 @@
     "cli-table3": "^0.6.5",
     "cluster": "^0.7.7",
     "compression": "^1.7.4",
+    "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "discord-player": "^6.7.1",
     "discord.js": "^14.7.1",
+    "diskspace": "^2.0.0",
     "dotenv": "^16.0.1",
     "ejs": "^3.1.8",
     "express": "^4.19.2",
@@ -102,6 +104,7 @@
     "winston": "^3.13.1"
   },
   "devDependencies": {
+    "@types/connect-flash": "^0.0.40",
     "eslint": "^8.15.0",
     "jest": "^28.1.0",
     "nodemon": "^2.0.19",

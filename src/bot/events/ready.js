@@ -1,8 +1,10 @@
+const logger = require('../../api/services/loggerService');
+
 module.exports = {
   name: 'ready',
   once: true,
   async execute(client) {
-    console.log(`Logged in as ${client.user.username}`);
+    logger.info(`Logged in as ${client.user.username}`);
 
     const activity = [
       'coming soon...',
@@ -31,7 +33,7 @@ module.exports = {
           status: statusArray[option].status,
         });
       } catch (error) {
-        console.error(error);
+        logger.error(error);
       }
     }
   },

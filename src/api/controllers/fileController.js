@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const File = require('../../models/fileModel');
+const logger = require('../services/loggerService');
 
 const uploadFile = async (req, res) => {
   try {
@@ -17,10 +18,8 @@ const uploadFile = async (req, res) => {
 
     await fileData.save();
 
-    res.status(200).json({
-      message: 'File uploaded successfully',
-      file: fileData,
-    });
+    req.flash('successMessage', 'File uploaded successfully');
+    res.redirect(req.header('Referer') || '/');
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

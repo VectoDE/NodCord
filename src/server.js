@@ -1,14 +1,27 @@
 const http = require('http');
 const mongoose = require('mongoose');
+const package = require('../package.json');
 const { app, startApp } = require('./api/app');
 const bot = require('./bot/index');
-
-// Verbinde mit der Datenbank
 const connectDB = require('./database/connectDB');
-connectDB();
+const { seedRolesIfNotExist } = require('./seeds/rolesSeed');
+const logger = require('./api/services/loggerService');
 
-// Starte die API und den Server
-startApp();
+const startServer = async () => {
+  try {
+    await connectDB();
 
-// Starte den Bot
-bot.start(); // Sicherstellen, dass der Bot korrekt gestartet wird
+    await seedRolesIfNotExist();
+
+    await startApp();
+
+    bot.start();
+
+  } catch (err) {
+    logger.error('Error starting server:', err);
+    process.exit(1);
+  }
+};
+
+startServer();
+logger.info(`Starting server: ${package.name}`);

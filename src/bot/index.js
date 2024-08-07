@@ -24,6 +24,7 @@ client.prefix = new Map();
 
 require('dotenv').config();
 const botConfig = require('../config/botConfig');
+const logger = require('../api/services/loggerService');
 
 const functions = fs
   .readdirSync('./src/bot/functions')
@@ -65,11 +66,12 @@ const getMembers = async () => {
           avatar: member.user.displayAvatarURL(),
           badges: member.user.flags.toArray(),
           hashname: member.user.id,
+          memberCount: members.size,
         });
       });
     }
   } catch (error) {
-    console.error('Error fetching members:', error);
+    logger.error('Error fetching members:', error);
   }
   return memberData;
 };
@@ -97,10 +99,11 @@ const getServers = async () => {
         owner: owner ? owner.username : 'Unknown',
         createdAt: guild.createdAt,
         members: memberData,
+        memberCount: guild.memberCount,
       });
     }
   } catch (error) {
-    console.error('Error fetching servers:', error);
+    logger.error('Error fetching servers:', error);
   }
 
   return serverData;

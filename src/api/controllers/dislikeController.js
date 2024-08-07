@@ -1,4 +1,5 @@
 const Dislike = require('../../models/dislikeModel');
+const logger = require('../services/loggerService');
 
 exports.createDislike = async (req, res) => {
   try {

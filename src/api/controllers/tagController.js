@@ -1,11 +1,12 @@
 const Tag = require('../../models/tagModel');
+const logger = require('../services/loggerService');
 
 const listTags = async (req, res) => {
   try {
     const tags = await Tag.find();
     res.status(200).json(tags);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -25,7 +26,7 @@ const createTag = async (req, res) => {
     await newTag.save();
     res.status(201).json(newTag);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -44,7 +45,7 @@ const getTagDetails = async (req, res) => {
 
     res.status(200).json(tag);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -67,7 +68,7 @@ const updateTag = async (req, res) => {
     await tag.save();
     res.status(200).json(tag);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -87,7 +88,7 @@ const deleteTag = async (req, res) => {
     await tag.remove();
     res.status(200).json({ message: 'Tag deleted successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

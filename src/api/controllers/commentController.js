@@ -1,4 +1,5 @@
 const Comment = require('../../models/commentModel');
+const logger = require('../services/loggerService');
 
 exports.createComment = async (req, res) => {
   try {

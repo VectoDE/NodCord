@@ -1,4 +1,5 @@
 const Blog = require('../../models/blogModel');
+const logger = require('../services/loggerService');
 
 const createBlog = async (req, res) => {
   try {

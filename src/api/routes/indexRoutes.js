@@ -9,6 +9,9 @@ const infoService = require('../services/infoService');
 const botStatusService = require('../services/botStatusService');
 const dbStatusService = require('../services/dbStatusService');
 const authController = require('../controllers/authController');
+const authMiddleware = require('../middlewares/authMiddleware');
+
+router.use(authMiddleware(false));
 
 router.get('/', (req, res) => {
   res.render('index/index', { isAuthenticated: res.locals.isAuthenticated });
@@ -124,7 +127,7 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-  if (res.locals.isAuthenticated) {
+  if (!res.locals.isAuthenticated) {
     return res.redirect('/login');
   }
   res.render('auth/register', { isAuthenticated: res.locals.isAuthenticated });

@@ -1,5 +1,6 @@
 const DeveloperProgram = require('../../models/developerProgramModel');
 const nodemailerService = require('../services/nodemailerService');
+const logger = require('../services/loggerService');
 
 exports.joinDeveloperProgram = async (req, res) => {
   try {
@@ -21,7 +22,7 @@ exports.joinDeveloperProgram = async (req, res) => {
 
     res.json({ message: 'Successfully joined developer program' });
   } catch (error) {
-    console.error('Error joining developer program:', error);
+    logger.error('Error joining developer program:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -46,7 +47,7 @@ exports.leaveDeveloperProgram = async (req, res) => {
 
     res.json({ message: 'Successfully left developer program' });
   } catch (error) {
-    console.error('Error leaving developer program:', error);
+    logger.error('Error leaving developer program:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

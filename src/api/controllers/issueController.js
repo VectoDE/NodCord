@@ -1,5 +1,6 @@
 const Issue = require('../../models/issueModel');
 const nodemailerService = require('../services/nodemailerService');
+const logger = require('../services/loggerService');
 
 const createIssue = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ const createIssue = async (req, res) => {
       .status(201)
       .json({ message: 'Issue created successfully.', issue: newIssue });
   } catch (error) {
-    console.error('Error creating issue:', error);
+    logger.error('Error creating issue:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -22,7 +23,7 @@ const getAllIssues = async (req, res) => {
     const issues = await Issue.find().populate('project');
     res.status(200).json(issues);
   } catch (error) {
-    console.error('Error fetching issues:', error);
+    logger.error('Error fetching issues:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -35,7 +36,7 @@ const getIssueById = async (req, res) => {
     }
     res.status(200).json(issue);
   } catch (error) {
-    console.error('Error fetching issue:', error);
+    logger.error('Error fetching issue:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -62,7 +63,7 @@ const updateIssue = async (req, res) => {
 
     res.status(200).json(updatedIssue);
   } catch (error) {
-    console.error('Error updating issue:', error);
+    logger.error('Error updating issue:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -75,7 +76,7 @@ const deleteIssue = async (req, res) => {
     }
     res.status(200).json({ message: 'Issue deleted successfully.' });
   } catch (error) {
-    console.error('Error deleting issue:', error);
+    logger.error('Error deleting issue:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

@@ -1,13 +1,15 @@
 const mongoose = require('mongoose');
 const serverConfig = require('../config/serverConfig');
+const logger = require('../api/services/loggerService');
 
 const connectDB = async () => {
   try {
+    mongoose.set('strictQuery', true);
     await mongoose.connect(serverConfig.mongoURI, {});
-    console.log(`Database connected successfully to ${serverConfig.mongoURI}`);
+    logger.info(`Database connected successfully to ${serverConfig.mongoURI}`);
   } catch (err) {
-    console.error('Fehler bei der Datenbankverbindung:', err.message);
-    throw err; // Fehler weitergeben, um den Prozess im Primärprozess zu beenden
+    logger.error('Fehler bei der Datenbankverbindung:', err.message);
+    throw err;
   }
 };
 

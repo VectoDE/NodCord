@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const ApiKeySchema = new Schema({
+const ApiKeySchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',

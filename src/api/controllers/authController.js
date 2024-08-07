@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const session = require('express-session');
 const nodemailerService = require('../services/nodemailerService');
+const logger = require('../services/loggerService');
 
 exports.register = async (req, res) => {
   try {
@@ -39,7 +40,7 @@ exports.register = async (req, res) => {
 
     res.redirect('/login');
   } catch (err) {
-    console.error('Error during registration:', err.message);
+    logger.error('Error during registration:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
@@ -70,7 +71,7 @@ exports.verifyEmail = async (req, res) => {
       user.username
     );
   } catch (error) {
-    console.error('Verification error:', error);
+    logger.error('Verification error:', error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -96,9 +97,7 @@ exports.login = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
     user.isAuthenticated = true;
     await user.save();
@@ -112,7 +111,7 @@ exports.login = async (req, res) => {
 
     res.redirect('/dashboard');
   } catch (err) {
-    console.error('Login error:', err.message);
+    logger.error('Login error:', err.message);
     res.status(500).send('Internal Server Error');
   }
 };

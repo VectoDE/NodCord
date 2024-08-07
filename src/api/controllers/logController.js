@@ -1,4 +1,5 @@
 const Log = require('../../models/logModel');
+const logger = require('../services/loggerService');
 
 const createLog = async (req, res) => {
   try {
@@ -9,7 +10,7 @@ const createLog = async (req, res) => {
 
     res.status(201).json(newLog);
   } catch (error) {
-    console.error('Error creating log:', error);
+    logger.error('Error creating log:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -25,7 +26,7 @@ const getLog = async (req, res) => {
 
     res.status(200).json(logItem);
   } catch (error) {
-    console.error('Error fetching log:', error);
+    logger.error('Error fetching log:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -35,7 +36,7 @@ const getAllLogs = async (req, res) => {
     const logs = await Log.find();
     res.status(200).json(logs);
   } catch (error) {
-    console.error('Error fetching logs:', error);
+    logger.error('Error fetching logs:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -51,7 +52,7 @@ const deleteLog = async (req, res) => {
 
     res.status(200).json({ message: 'Log deleted successfully' });
   } catch (error) {
-    console.error('Error deleting log:', error);
+    logger.error('Error deleting log:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

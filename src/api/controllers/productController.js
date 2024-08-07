@@ -1,11 +1,12 @@
 const Product = require('../../models/productModel');
+const logger = require('../services/loggerService');
 
 const listProducts = async (req, res) => {
   try {
     const products = await Product.find();
     res.status(200).json(products);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -28,7 +29,7 @@ const createProduct = async (req, res) => {
     await newProduct.save();
     res.status(201).json(newProduct);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -47,7 +48,7 @@ const getProductDetails = async (req, res) => {
 
     res.status(200).json(product);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -75,7 +76,7 @@ const updateProduct = async (req, res) => {
     await product.save();
     res.status(200).json(product);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -95,7 +96,7 @@ const deleteProduct = async (req, res) => {
     await product.remove();
     res.status(200).json({ message: 'Product deleted successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

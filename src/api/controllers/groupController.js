@@ -1,4 +1,5 @@
 const Group = require('../../models/groupModel');
+const logger = require('../services/loggerService');
 
 exports.getAllGroups = async (req, res) => {
   try {

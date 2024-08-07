@@ -1,4 +1,5 @@
 const DeveloperProgram = require('../../models/developerProgramModel');
+const logger = require('../services/loggerService');
 
 const developerProgramMiddleware = async (req, res, next) => {
   try {
@@ -10,7 +11,7 @@ const developerProgramMiddleware = async (req, res, next) => {
 
     return res.status(403).json({ message: 'User not enrolled in developer program' });
   } catch (error) {
-    console.error('Developer program access error:', error);
+    logger.error('Developer program access error:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

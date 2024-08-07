@@ -19,7 +19,7 @@ const createSubscriber = async (req, res) => {
       .status(201)
       .json({ message: 'Subscriber created and confirmation email sent.' });
   } catch (error) {
-    console.error('Error creating subscriber:', error);
+    logger.error('Error creating subscriber:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -29,7 +29,7 @@ const getAllSubscribers = async (req, res) => {
     const subscribers = await Subscriber.find();
     res.status(200).json(subscribers);
   } catch (error) {
-    console.error('Error fetching subscribers:', error);
+    logger.error('Error fetching subscribers:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -62,7 +62,7 @@ const updateSubscriber = async (req, res) => {
 
     res.status(200).json(updatedSubscriber);
   } catch (error) {
-    console.error('Error updating subscriber:', error);
+    logger.error('Error updating subscriber:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -75,7 +75,7 @@ const deleteSubscriber = async (req, res) => {
     }
     res.status(200).json({ message: 'Subscriber deleted.' });
   } catch (error) {
-    console.error('Error deleting subscriber:', error);
+    logger.error('Error deleting subscriber:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

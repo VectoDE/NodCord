@@ -1,4 +1,5 @@
 const ApiKey = require('../../models/apiKeyModel');
+const logger = require('../services/loggerService');
 
 const apiKeyMiddleware = async (req, res, next) => {
   try {
@@ -16,7 +17,7 @@ const apiKeyMiddleware = async (req, res, next) => {
     req.apiKey = keyDoc;
     next();
   } catch (error) {
-    console.error('API key validation error:', error);
+    logger.error('API key validation error:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

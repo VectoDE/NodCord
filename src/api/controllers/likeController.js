@@ -1,4 +1,5 @@
 const Like = require('../../models/likeModel');
+const logger = require('../services/loggerService');
 
 exports.createLike = async (req, res) => {
   try {

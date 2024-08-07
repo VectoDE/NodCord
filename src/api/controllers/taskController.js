@@ -1,11 +1,12 @@
 const Task = require('../../models/taskModel');
+const logger = require('../services/loggerService');
 
 const listTasks = async (req, res) => {
   try {
     const tasks = await Task.find().populate('assignedTo').populate('team');
     res.status(200).json(tasks);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -33,7 +34,7 @@ const createTask = async (req, res) => {
     await newTask.save();
     res.status(201).json(newTask);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -54,7 +55,7 @@ const getTaskDetails = async (req, res) => {
 
     res.status(200).json(task);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -91,7 +92,7 @@ const updateTask = async (req, res) => {
     await task.save();
     res.status(200).json(task);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -111,7 +112,7 @@ const deleteTask = async (req, res) => {
     await task.remove();
     res.status(200).json({ message: 'Task deleted successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

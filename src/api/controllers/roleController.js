@@ -1,4 +1,5 @@
 const Role = require('../../models/roleModel');
+const logger = require('../services/loggerService');
 
 exports.getAllRoles = async (req, res) => {
   try {

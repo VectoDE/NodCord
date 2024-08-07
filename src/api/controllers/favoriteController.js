@@ -1,4 +1,5 @@
 const Favorite = require('../../models/favoriteModel');
+const logger = require('../services/loggerService');
 
 const listFavorites = async (req, res) => {
   try {
@@ -10,7 +11,7 @@ const listFavorites = async (req, res) => {
     const favorites = await Favorite.find({ userId });
     res.status(200).json(favorites);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -33,7 +34,7 @@ const createFavorite = async (req, res) => {
     await newFavorite.save();
     res.status(201).json(newFavorite);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -53,7 +54,7 @@ const deleteFavorite = async (req, res) => {
     await favorite.remove();
     res.status(200).json({ message: 'Favorite removed successfully' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

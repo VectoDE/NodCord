@@ -1,5 +1,6 @@
 const Ticket = require('../../models/ticketModel');
 const TicketResponse = require('../../models/ticketResponseModel');
+const logger = require('../services/loggerService');
 
 const listTickets = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ const listTickets = async (req, res) => {
 
     res.status(200).json(tickets);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -37,7 +38,7 @@ const createTicket = async (req, res) => {
 
     res.status(201).json(newTicket);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -59,7 +60,7 @@ const closeTicket = async (req, res) => {
 
     res.status(200).json(ticket);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -80,7 +81,7 @@ const getTicketDetails = async (req, res) => {
 
     res.status(200).json({ ticket, responses });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -105,7 +106,7 @@ const updateTicket = async (req, res) => {
 
     res.status(200).json(ticket);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -140,7 +141,7 @@ const addTicketResponse = async (req, res) => {
 
     res.status(201).json(newResponse);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: error.message });
   }
 };

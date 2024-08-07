@@ -1,4 +1,5 @@
 const { Interaction } = require('discord.js');
+const logger = require('../../api/services/loggerService');
 
 module.exports = {
   name: 'interactionCreate',
@@ -12,7 +13,7 @@ module.exports = {
     try {
       await command.execute(interaction, client);
     } catch (error) {
-      console.log(error);
+      logger.error(error);
       await interaction.reply({
         content: 'There was an error while executing this command!',
         ephemeral: true,
