@@ -127,7 +127,7 @@ router.get('/login', (req, res) => {
 });
 
 router.get('/register', (req, res) => {
-  if (!res.locals.isAuthenticated) {
+  if (res.locals.isAuthenticated) {
     return res.redirect('/login');
   }
   res.render('auth/register', { isAuthenticated: res.locals.isAuthenticated });

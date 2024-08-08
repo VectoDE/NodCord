@@ -5,6 +5,7 @@ const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const fs = require('fs');
 const flash = require('connect-flash');
+const morgan = require('morgan');
 const appConfig = require('../config/apiConfig');
 const logger = require('./services/loggerService');
 
@@ -96,6 +97,22 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '../public')));
 
 app.use(rateLimiter);
+
+morgan.token('remote-addr', function (req) {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+});
+
+morgan.token('url', function (req) {
+  return req.originalUrl;
+});
+
+const logFormat = ':remote-addr - :method :url :status :response-time ms - :res[content-length]';
+
+app.use(morgan(logFormat, {
+  stream: {
+    write: (message) => logger.info(message.trim())
+  }
+}));
 
 app.use((req, res, next) => {
   res.locals.successMessage = req.flash('successMessage');
