@@ -1,19 +1,24 @@
+require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const bot = require('../../bot/index');
 const authMiddleware = require('../middlewares/authMiddleware');
 const roleMiddleware = require('../middlewares/roleMiddleware');
 const apiStatusService = require('../services/apiStatusService');
 const botStatusService = require('../services/botStatusService');
 const dbStatusService = require('../services/dbStatusService');
 const logService = require('../services/logService');
+const bot = require('../../bot/index');
 const UserModel = require('../../models/userModel');
 const RoleModel = require('../../models/roleModel');
 const CategoryModel = require('../../models/categoryModel');
 const TicketModel = require('../../models/ticketModel');
+const BetaKey = require('../../models/betaKeyModel');
+const BetaSystem = require('../../models/betaSystemModel');
 
+// Auth Middleware
 router.use(authMiddleware(true));
 
+// Dashboard-Route
 router.get('/', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   try {
     const botStatus = await botStatusService.getStatus();
@@ -46,12 +51,35 @@ router.get('/', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   }
 });
 
-router.get('/logs', roleMiddleware(['admin']), (req, res) => {
-  const loggerLogs = logService.getLoggerLogs();
-  res.render('dashboard/logging/logs', {
-    loggerLogs,
-    isAuthenticated: res.locals.isAuthenticated,
-  });
+// Logs-Route
+router.get('/logs', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const loggerLogs = await logService.getLoggerLogs();
+    res.render('dashboard/logging/logs', {
+      loggerLogs,
+      isAuthenticated: res.locals.isAuthenticated,
+    });
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Logs:', error);
+    res.status(500).send('Fehler beim Abrufen der Logs');
+  }
+});
+
+// Beta Management-Route
+router.get('/beta-management', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const betaKeys = await BetaKey.find().populate('user');
+    const betaSystem = await BetaSystem.findOne();
+
+    res.render('dashboard/beta/beta-management', {
+      betaKeys,
+      betaSystem,
+      isAuthenticated: res.locals.isAuthenticated,
+    });
+  } catch (error) {
+    console.error('Fehler beim Abrufen der Beta Keys:', error);
+    res.status(500).send('Fehler beim Abrufen der Beta Keys');
+  }
 });
 
 module.exports = router;

@@ -17,6 +17,7 @@ const indexRoutes = require('./routes/indexRoutes');
 const dashRoutes = require('./routes/dashboardRoutes');
 
 const authRoutes = require('./routes/authRoutes');
+const betaRoutes = require('./routes/betaRoutes');
 
 const developerProgramRoutes = require('./routes/developerProgramRoutes');
 const apiKeyRoutes = require('./routes/apiKeyRoutes');
@@ -63,7 +64,19 @@ const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 
+const proxmoxRoutes = require('./routes/proxmoxRoutes');
+const plexRoutes = require('./routes/plexRoutes');
+const faceitRoutes = require('./routes/faceitRoutes');
+const steamRoutes = require('./routes/steamRoutes');
+const eslRoutes = require('./routes/eslRoutes');
+const cloudNetRoutes = require('./routes/cloudNetRoutes');
+const microsoftRoutes = require('./routes/microsoftRoutes');
+const tournamentRoutes = require('./routes/tournamentRoutes');
+const googleRoutes = require('./routes/googleRoutes');
+
 const logRoutes = require('./routes/logRoutes');
+
+const passport = require('./utils/passportUtil');
 
 const app = express();
 const baseURL = appConfig.baseURL;
@@ -87,6 +100,9 @@ app.use(flash());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(corsMiddleware);
 app.use(compressionMiddleware);
@@ -123,6 +139,7 @@ app.use('/', indexRoutes);
 app.use('/dashboard', dashRoutes);
 
 app.use('/api/auth', authRoutes);
+app.use('/api/beta', betaRoutes);
 
 app.use('/api/developerprogram', developerProgramRoutes);
 app.use('/api/apikeys', apiKeyRoutes);
@@ -168,6 +185,16 @@ app.use('/api/feedback', feedbackRoutes);
 app.use('/api/controls', controlRoutes);
 app.use('/api/securities', securityRoutes);
 app.use('/api/logs', logRoutes);
+
+app.use('/api/proxmox', proxmoxRoutes);
+app.use('/api/plex', plexRoutes);
+app.use('/api/faceit', faceitRoutes);
+app.use('/api/steam', steamRoutes);
+app.use('/api/esl', eslRoutes);
+app.use('/api/cloudnet', cloudNetRoutes);
+app.use('/api/microsoft', microsoftRoutes);
+app.use('/api/tournaments', tournamentRoutes);
+app.use('/api/google', googleRoutes);
 
 app.use('/api/files', fileRoutes);
 

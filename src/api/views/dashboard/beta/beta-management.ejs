@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Beta Management</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    .modal-body {
+      padding: 2rem;
+    }
+    .table th, .table td {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5">Beta Management</h1>
+
+    <!-- Beta System Status -->
+    <div class="alert alert-info" role="alert">
+      Beta-System Status: <strong><%= betaSystem.isActive ? 'Aktiv' : 'Inaktiv' %></strong>
+    </div>
+
+    <!-- Button to Toggle Beta System -->
+    <form id="betaSystemForm" method="POST" action="/api/beta/toggle">
+      <div class="form-group">
+        <label for="betaSystemStatus">Beta-System Status</label>
+        <select id="betaSystemStatus" name="isActive" class="form-control">
+          <option value="true" <%= betaSystem.isActive ? 'selected' : '' %>>Aktiv</option>
+          <option value="false" <%= !betaSystem.isActive ? 'selected' : '' %>>Inaktiv</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Status ändern</button>
+    </form>
+
+    <!-- Button to Create New Beta Key -->
+    <button class="btn btn-primary my-4" data-toggle="modal" data-target="#createKeyModal">Neuen Beta Key erstellen</button>
+
+    <!-- Modal for Creating New Beta Key -->
+    <div class="modal fade" id="createKeyModal" tabindex="-1" role="dialog" aria-labelledby="createKeyModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="createKeyModalLabel">Neuen Beta Key erstellen</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="createKeyForm">
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="keyName">Name des Beta Keys</label>
+                <input type="text" class="form-control" id="keyName" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Schließen</button>
+              <button type="submit" class="btn btn-primary">Erstellen</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table for Displaying Beta Keys -->
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Key</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Benutzer</th>
+          <th>Aktionen</th>
+        </tr>
+      </thead>
+      <tbody id="betaKeysTable">
+        <% betaKeys.forEach(key => { %>
+          <tr>
+            <td><%= key.key %></td>
+            <td><%= key.name %></td>
+            <td><%= key.isActive ? 'Aktiv' : 'Inaktiv' %></td>
+            <td><%= key.user ? key.user.username : 'Kein Benutzer' %></td>
+            <td>
+              <!-- Buttons for Edit and Delete -->
+              <button class="btn btn-warning btn-sm" onclick="editKey('<%= key._id %>')">Bearbeiten</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteKey('<%= key._id %>')">Löschen</button>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Bootstrap and jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('createKeyForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const name = document.getElementById('keyName').value;
+
+      fetch('/api/beta/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.key) {
+          // Add new key to the table
+          const tableBody = document.getElementById('betaKeysTable');
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${data.key.key}</td>
+            <td>${data.key.name}</td>
+            <td>${data.key.isActive ? 'Aktiv' : 'Inaktiv'}</td>
+            <td>Kein Benutzer</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editKey('${data.key._id}')">Bearbeiten</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteKey('${data.key._id}')">Löschen</button>
+            </td>
+          `;
+          tableBody.appendChild(row);
+          $('#createKeyModal').modal('hide');
+        }
+      })
+      .catch(error => console.error('Fehler:', error));
+    });
+
+    document.getElementById('betaSystemForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const isActive = document.getElementById('betaSystemStatus').value;
+
+      fetch('/api/beta/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.message === 'Systemstatus geändert') {
+          location.reload();
+        }
+      })
+      .catch(error => console.error('Fehler:', error));
+    });
+
+    function deleteKey(id) {
+      fetch(`/api/beta/delete/${id}`, { method: 'DELETE' })
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          if (data.message === 'Beta Key gelöscht') {
+            // Remove row from table
+            document.querySelector(`tr[data-id='${id}']`).remove();
+          }
+        })
+        .catch(error => console.error('Fehler:', error));
+    }
+
+    function editKey(id) {
+      // Implement the edit functionality
+      alert('Edit Key: ' + id);
+    }
+  </script>
+</body>
+</html>

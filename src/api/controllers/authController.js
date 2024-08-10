@@ -7,7 +7,7 @@ const logger = require('../services/loggerService');
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword, fullname } = req.body;
+    const { fullname, username, email, password, confirmPassword } = req.body;
 
     if (password !== confirmPassword) {
       return res
@@ -23,10 +23,10 @@ exports.register = async (req, res) => {
     }
 
     const user = new User({
+      fullname,
       username,
       email,
       password,
-      fullname,
       verificationToken: crypto.randomBytes(32).toString('hex'),
     });
     await user.save();
