@@ -6,6 +6,13 @@ const createFeature = async (req, res) => {
   try {
     const { title, description, status, priority, project } = req.body;
 
+    if (!title || !description || !status || !priority || !project) {
+      return res.status(400).json({
+        success: false,
+        message: 'Missing required fields.',
+      });
+    }
+
     const newFeature = new Feature({
       title,
       description,
@@ -13,24 +20,36 @@ const createFeature = async (req, res) => {
       priority,
       project,
     });
+
     await newFeature.save();
 
-    res
-      .status(201)
-      .json({ message: 'Feature created successfully.', feature: newFeature });
+    res.status(201).json({
+      success: true,
+      message: 'Feature created successfully.',
+      feature: newFeature,
+    });
   } catch (error) {
     logger.error('Error creating feature:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
   }
 };
 
 const getAllFeatures = async (req, res) => {
   try {
     const features = await Feature.find().populate('project');
-    res.status(200).json(features);
+    res.status(200).json({
+      success: true,
+      data: features,
+    });
   } catch (error) {
     logger.error('Error fetching features:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
   }
 };
 
@@ -38,18 +57,35 @@ const getFeatureById = async (req, res) => {
   try {
     const feature = await Feature.findById(req.params.id).populate('project');
     if (!feature) {
-      return res.status(404).json({ message: 'Feature not found.' });
+      return res.status(404).json({
+        success: false,
+        message: 'Feature not found.',
+      });
     }
-    res.status(200).json(feature);
+    res.status(200).json({
+      success: true,
+      data: feature,
+    });
   } catch (error) {
     logger.error('Error fetching feature:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
   }
 };
 
 const updateFeature = async (req, res) => {
   try {
     const { title, description, status, priority } = req.body;
+
+    if (!title && !description && !status && !priority) {
+      return res.status(400).json({
+        success: false,
+        message: 'No fields to update.',
+      });
+    }
+
     const updatedFeature = await Feature.findByIdAndUpdate(
       req.params.id,
       { title, description, status, priority },
@@ -57,7 +93,10 @@ const updateFeature = async (req, res) => {
     );
 
     if (!updatedFeature) {
-      return res.status(404).json({ message: 'Feature not found.' });
+      return res.status(404).json({
+        success: false,
+        message: 'Feature not found.',
+      });
     }
 
     if (status === 'Completed') {
@@ -67,10 +106,16 @@ const updateFeature = async (req, res) => {
       );
     }
 
-    res.status(200).json(updatedFeature);
+    res.status(200).json({
+      success: true,
+      data: updatedFeature,
+    });
   } catch (error) {
     logger.error('Error updating feature:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
   }
 };
 
@@ -78,12 +123,21 @@ const deleteFeature = async (req, res) => {
   try {
     const deletedFeature = await Feature.findByIdAndDelete(req.params.id);
     if (!deletedFeature) {
-      return res.status(404).json({ message: 'Feature not found.' });
+      return res.status(404).json({
+        success: false,
+        message: 'Feature not found.',
+      });
     }
-    res.status(200).json({ message: 'Feature deleted successfully.' });
+    res.status(200).json({
+      success: true,
+      message: 'Feature deleted successfully.',
+    });
   } catch (error) {
     logger.error('Error deleting feature:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
   }
 };
 

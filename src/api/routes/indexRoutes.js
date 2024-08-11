@@ -10,7 +10,6 @@ const botStatusService = require('../services/botStatusService');
 const dbStatusService = require('../services/dbStatusService');
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middlewares/authMiddleware');
-const betaKeyController = require('../controllers/betaController');
 
 router.use(authMiddleware(false));
 
@@ -136,28 +135,11 @@ router.get('/register', (req, res) => {
 
 router.get('/verify-email/:token', authController.verifyEmail);
 
-router.get('/beta-verify', (req, res) => {
-  res.render('beta-verify', { isAuthenticated: res.locals.isAuthenticated, error: req.query.error || null });
-});
-
-router.post('/beta/verify', async (req, res) => {
-  try {
-    const { key } = req.body;
-    const response = await fetch('/api/beta-verify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key })
-    });
-    const result = await response.json();
-    if (result.message === 'Beta Key erfolgreich verifiziert') {
-      res.redirect('/success-page'); // Hier solltest du zur Erfolg-Seite weiterleiten
-    } else {
-      res.redirect('/beta-verify?error=' + encodeURIComponent(result.message));
-    }
-  } catch (error) {
-    console.error('Fehler bei der Verifizierung des Beta Keys:', error);
-    res.redirect('/beta-verify?error=Fehler bei der Verifizierung');
-  }
+router.get('/beta-verify', authMiddleware(true), (req, res) => {
+  res.render('beta-verify', {
+    isAuthenticated: res.locals.isAuthenticated,
+    error: req.query.error || null,
+  });
 });
 
 router.get('/logout', authController.logout, (req, res) => {

@@ -6,7 +6,10 @@ router.get('/user/:userId', microsoftController.getUserInfo);
 
 router.get('/services', microsoftController.getServices);
 
-router.get('/minecraft/profile/:minecraftUsername', microsoftController.getMinecraftProfile);
+router.get(
+  '/minecraft/profile/:minecraftUsername',
+  microsoftController.getMinecraftProfile
+);
 
 router.get('/azure/vms/:subscriptionId', microsoftController.getAzureVMs);
 

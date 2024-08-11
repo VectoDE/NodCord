@@ -4,8 +4,17 @@ const developerProgramController = require('../controllers/developerProgramContr
 const authMiddleware = require('../middlewares/authMiddleware');
 const DeveloperProgramMiddleware = require('../middlewares/developerProgramMiddleware');
 
-router.post('/join', authMiddleware, developerProgramController.joinDeveloperProgram);
+router.post(
+  '/join',
+  authMiddleware,
+  developerProgramController.joinDeveloperProgram
+);
 
-router.post('/leave', authMiddleware, DeveloperProgramMiddleware, developerProgramController.leaveDeveloperProgram);
+router.post(
+  '/leave',
+  authMiddleware,
+  DeveloperProgramMiddleware,
+  developerProgramController.leaveDeveloperProgram
+);
 
 module.exports = router;

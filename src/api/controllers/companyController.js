@@ -6,8 +6,8 @@ const listCompanies = async (req, res) => {
     const companies = await Company.find();
     res.status(200).json(companies);
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error listing companies:', error);
+    res.status(500).json({ error: 'Failed to fetch companies' });
   }
 };
 
@@ -22,6 +22,7 @@ const createCompany = async (req, res) => {
       employees,
       website,
     } = req.body;
+
     if (!name) {
       return res.status(400).json({ error: 'Name is required' });
     }
@@ -37,16 +38,19 @@ const createCompany = async (req, res) => {
     });
 
     await newCompany.save();
-    res.status(201).json(newCompany);
+    res
+      .status(201)
+      .json({ message: 'Company created successfully', company: newCompany });
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error creating company:', error);
+    res.status(500).json({ error: 'Failed to create company' });
   }
 };
 
 const getCompanyDetails = async (req, res) => {
   try {
     const { companyId } = req.params;
+
     if (!companyId) {
       return res.status(400).json({ error: 'Company ID is required' });
     }
@@ -58,8 +62,8 @@ const getCompanyDetails = async (req, res) => {
 
     res.status(200).json(company);
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error fetching company details:', error);
+    res.status(500).json({ error: 'Failed to fetch company details' });
   }
 };
 
@@ -75,6 +79,7 @@ const updateCompany = async (req, res) => {
       employees,
       website,
     } = req.body;
+
     if (!companyId) {
       return res.status(400).json({ error: 'Company ID is required' });
     }
@@ -95,16 +100,17 @@ const updateCompany = async (req, res) => {
     company.updatedDate = Date.now();
 
     await company.save();
-    res.status(200).json(company);
+    res.status(200).json({ message: 'Company updated successfully', company });
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error updating company:', error);
+    res.status(500).json({ error: 'Failed to update company' });
   }
 };
 
 const deleteCompany = async (req, res) => {
   try {
     const { companyId } = req.body;
+
     if (!companyId) {
       return res.status(400).json({ error: 'Company ID is required' });
     }
@@ -117,8 +123,8 @@ const deleteCompany = async (req, res) => {
     await company.remove();
     res.status(200).json({ message: 'Company deleted successfully' });
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error deleting company:', error);
+    res.status(500).json({ error: 'Failed to delete company' });
   }
 };
 

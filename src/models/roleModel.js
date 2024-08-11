@@ -5,11 +5,11 @@ const roleSchema = new mongoose.Schema(
     roleName: {
       type: String,
       required: true,
-      unique: true
+      unique: true,
     },
     displayName: {
       type: String,
-      required: true
+      required: true,
     },
     description: {
       type: String,

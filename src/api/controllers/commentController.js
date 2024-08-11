@@ -5,6 +5,12 @@ exports.createComment = async (req, res) => {
   try {
     const { content, author, blog } = req.body;
 
+    if (!content || !author || !blog) {
+      return res
+        .status(400)
+        .json({ error: 'Content, author, and blog are required' });
+    }
+
     const newComment = new Comment({
       content,
       author,
@@ -18,9 +24,10 @@ exports.createComment = async (req, res) => {
       comment: savedComment,
     });
   } catch (error) {
+    logger.error('Error creating comment:', error);
     res.status(500).json({
-      message: 'Error creating comment',
-      error,
+      message: 'Failed to create comment',
+      error: error.message,
     });
   }
 };
@@ -28,6 +35,10 @@ exports.createComment = async (req, res) => {
 exports.getCommentsByBlog = async (req, res) => {
   try {
     const { blogId } = req.params;
+
+    if (!blogId) {
+      return res.status(400).json({ error: 'Blog ID is required' });
+    }
 
     const comments = await Comment.find({ blog: blogId })
       .populate('author', 'name')
@@ -37,9 +48,10 @@ exports.getCommentsByBlog = async (req, res) => {
       comments,
     });
   } catch (error) {
+    logger.error('Error fetching comments:', error);
     res.status(500).json({
-      message: 'Error fetching comments',
-      error,
+      message: 'Failed to fetch comments',
+      error: error.message,
     });
   }
 };
@@ -47,6 +59,10 @@ exports.getCommentsByBlog = async (req, res) => {
 exports.getCommentById = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'Comment ID is required' });
+    }
 
     const comment = await Comment.findById(id)
       .populate('author', 'name')
@@ -62,9 +78,10 @@ exports.getCommentById = async (req, res) => {
       comment,
     });
   } catch (error) {
+    logger.error('Error fetching comment:', error);
     res.status(500).json({
-      message: 'Error fetching comment',
-      error,
+      message: 'Failed to fetch comment',
+      error: error.message,
     });
   }
 };
@@ -74,10 +91,14 @@ exports.updateComment = async (req, res) => {
     const { id } = req.params;
     const { content } = req.body;
 
+    if (!id) {
+      return res.status(400).json({ error: 'Comment ID is required' });
+    }
+
     const updatedComment = await Comment.findByIdAndUpdate(
       id,
       { content },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!updatedComment) {
@@ -91,9 +112,10 @@ exports.updateComment = async (req, res) => {
       comment: updatedComment,
     });
   } catch (error) {
+    logger.error('Error updating comment:', error);
     res.status(500).json({
-      message: 'Error updating comment',
-      error,
+      message: 'Failed to update comment',
+      error: error.message,
     });
   }
 };
@@ -101,6 +123,10 @@ exports.updateComment = async (req, res) => {
 exports.deleteComment = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'Comment ID is required' });
+    }
 
     const deletedComment = await Comment.findByIdAndDelete(id);
 
@@ -114,9 +140,10 @@ exports.deleteComment = async (req, res) => {
       message: 'Comment deleted successfully',
     });
   } catch (error) {
+    logger.error('Error deleting comment:', error);
     res.status(500).json({
-      message: 'Error deleting comment',
-      error,
+      message: 'Failed to delete comment',
+      error: error.message,
     });
   }
 };

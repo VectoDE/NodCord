@@ -1,25 +1,54 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Beta Key Verifizierung</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <title>Beta Key Verifizierung | NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
-  <div class="container">
-    <h1 class="mt-5">Beta Key Verifizierung</h1>
+  <header>
+    <div class="logo">
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <span>NodCord</span>
+    </div>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/docs">Documentation</a>
+      <a href="/status">Status</a>
+      <a href="/info">Info</a>
+      <a href="/routes">Routes</a>
+      <a href="/discord-members">Discord Members</a>
+      <a href="/discord-servers">Discord Servers</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login">Login</a>
+        <a href="/register">Register</a>
+      <% } else { %>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      <% } %>
+    </nav>
+  </header>
+  <main>
+    <div class="container">
+      <h1 class="mt-5">Beta Key Verifizierung</h1>
 
-    <form method="POST" action="/api/beta/verify">
-      <div class="form-group">
-        <label for="key">Beta Key</label>
-        <input type="text" class="form-control" id="key" name="key" required>
-        <% if (error) { %>
-          <div class="alert alert-danger mt-2" role="alert">
-            <%= error %>
-          </div>
-        <% } %>
-      </div>
-      <button type="submit" class="btn btn-primary">Verifizieren</button>
-    </form>
-  </div>
+      <form method="POST" action="/api/beta/verify">
+        <div class="form-group">
+          <label for="key">Beta Key</label>
+          <input type="text" class="form-control" id="key" name="key" required>
+          <% if (error) { %>
+            <div class="alert alert-danger mt-2" role="alert">
+              <%= error %>
+            </div>
+          <% } %>
+        </div>
+        <button type="submit" class="btn btn-primary">Verifizieren</button>
+      </form>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2024 <a href="/">NodCord</a>. All rights reserved.</p>
+  </footer>
 </body>
 </html>

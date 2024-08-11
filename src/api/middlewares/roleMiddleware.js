@@ -8,29 +8,53 @@ const checkRole = (roles) => {
     try {
       const token = req.cookies.token;
       if (!token) {
-        return res.status(401).json({ success: false, message: 'No token provided' });
+        logger.warn('Kein Token bereitgestellt.');
+        return res
+          .status(401)
+          .json({ success: false, message: 'No token provided' });
       }
 
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const user = await User.findById(decoded.id);
 
       if (!user) {
-        return res.status(401).json({ success: false, message: 'User not found' });
+        logger.warn(`Benutzer mit ID ${decoded.id} nicht gefunden.`);
+        return res
+          .status(401)
+          .json({ success: false, message: 'User not found' });
       }
 
       const userRole = await Role.findOne({ roleName: user.role });
       if (!userRole) {
-        return res.status(403).json({ success: false, message: 'Role not found' });
+        logger.warn(
+          `Rolle ${user.role} für Benutzer mit ID ${user._id} nicht gefunden.`
+        );
+        return res
+          .status(403)
+          .json({ success: false, message: 'Role not found' });
       }
 
       if (!roles.includes(user.role)) {
-        return res.status(403).json({ success: false, message: 'Forbidden: insufficient role' });
+        logger.warn(
+          `Benutzer mit ID ${
+            user._id
+          } hat nicht die erforderliche Rolle. Erforderliche Rollen: ${roles.join(
+            ', '
+          )}, Benutzerrolle: ${user.role}`
+        );
+        return res
+          .status(403)
+          .json({ success: false, message: 'Forbidden: insufficient role' });
       }
 
       req.user = user;
       req.userRole = userRole;
+      logger.info(
+        `Benutzer mit ID ${user._id} und Rolle ${user.role} autorisiert. Weiterleitung zur nächsten Middleware.`
+      );
       next();
     } catch (err) {
+      logger.error('Fehler beim Überprüfen der Rolle:', err);
       res.status(401).json({ success: false, message: 'Invalid token' });
     }
   };

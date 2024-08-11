@@ -1,7 +1,6 @@
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const session = require('express-session');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
 
@@ -22,16 +21,17 @@ exports.register = async (req, res) => {
         .json({ success: false, message: 'User already exists' });
     }
 
+    const verificationToken = crypto.randomBytes(32).toString('hex');
     const user = new User({
       fullname,
       username,
       email,
       password,
-      verificationToken: crypto.randomBytes(32).toString('hex'),
+      verificationToken,
     });
     await user.save();
 
-    const verificationLink = `${user.verificationToken}`;
+    const verificationLink = `${process.env.BASE_URL}/verify-email/${verificationToken}`;
     await nodemailerService.sendRegistrationVerificationEmail(
       user.email,
       user.username,
@@ -60,18 +60,16 @@ exports.verifyEmail = async (req, res) => {
     user.verificationToken = null;
     await user.save();
 
-    res
-      .status(200)
-      .render('email-verified', {
-        message: 'Your email has been verified. You can now log in.',
-      });
-
     await nodemailerService.sendVerificationSuccessEmail(
       user.email,
       user.username
     );
+
+    res.status(200).render('email-verified', {
+      message: 'Your email has been verified. You can now log in.',
+    });
   } catch (error) {
-    logger.error('Verification error:', error);
+    logger.error('Verification error:', error.message);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -84,6 +82,7 @@ exports.login = async (req, res) => {
     });
 
     if (!user || !(await user.comparePassword(password))) {
+      logger.warn('Login failed: Invalid credentials');
       return res.status(400).render('auth/login', {
         isAuthenticated: false,
         errorMessage: 'Invalid credentials',
@@ -91,24 +90,25 @@ exports.login = async (req, res) => {
     }
 
     if (!user.isVerified) {
+      logger.warn('Login failed: Email not verified');
       return res.status(400).render('auth/login', {
         isAuthenticated: false,
         errorMessage: 'Email not verified',
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: '1h',
+    });
     user.isAuthenticated = true;
     await user.save();
 
     res.cookie('token', token, {
       httpOnly: true,
-      //secure: true,
-      //maxAge: 100,
-      //signed: true,
+      secure: process.env.NODE_ENV === 'production',
     });
 
+    logger.info(`User ${user.username} successfully logged in.`);
     res.redirect('/dashboard');
   } catch (err) {
     logger.error('Login error:', err.message);
@@ -136,6 +136,7 @@ exports.logout = async (req, res) => {
     res.clearCookie('token');
     res.redirect('/');
   } catch (err) {
+    logger.error('Logout error:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };

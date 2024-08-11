@@ -6,6 +6,12 @@ const createIssue = async (req, res) => {
   try {
     const { title, description, status, project } = req.body;
 
+    if (!title || !description || !project) {
+      return res
+        .status(400)
+        .json({ message: 'Title, description, and project are required.' });
+    }
+
     const newIssue = new Issue({ title, description, status, project });
     await newIssue.save();
 
@@ -14,7 +20,9 @@ const createIssue = async (req, res) => {
       .json({ message: 'Issue created successfully.', issue: newIssue });
   } catch (error) {
     logger.error('Error creating issue:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 };
 
@@ -24,7 +32,9 @@ const getAllIssues = async (req, res) => {
     res.status(200).json(issues);
   } catch (error) {
     logger.error('Error fetching issues:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 };
 
@@ -36,14 +46,26 @@ const getIssueById = async (req, res) => {
     }
     res.status(200).json(issue);
   } catch (error) {
-    logger.error('Error fetching issue:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    logger.error(`Error fetching issue with ID ${req.params.id}:`, error);
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 };
 
 const updateIssue = async (req, res) => {
   try {
     const { title, description, status } = req.body;
+
+    if (!title && !description && !status) {
+      return res
+        .status(400)
+        .json({
+          message:
+            'At least one field (title, description, status) is required for update.',
+        });
+    }
+
     const updatedIssue = await Issue.findByIdAndUpdate(
       req.params.id,
       { title, description, status },
@@ -63,8 +85,10 @@ const updateIssue = async (req, res) => {
 
     res.status(200).json(updatedIssue);
   } catch (error) {
-    logger.error('Error updating issue:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    logger.error(`Error updating issue with ID ${req.params.id}:`, error);
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 };
 
@@ -76,8 +100,10 @@ const deleteIssue = async (req, res) => {
     }
     res.status(200).json({ message: 'Issue deleted successfully.' });
   } catch (error) {
-    logger.error('Error deleting issue:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    logger.error(`Error deleting issue with ID ${req.params.id}:`, error);
+    res
+      .status(500)
+      .json({ message: 'Internal Server Error', error: error.message });
   }
 };
 

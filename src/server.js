@@ -16,7 +16,6 @@ const startServer = async () => {
     await startApp();
 
     bot.start();
-
   } catch (err) {
     logger.error('Error starting server:', err);
     process.exit(1);

@@ -5,6 +5,12 @@ const createLog = async (req, res) => {
   try {
     const logData = req.body;
 
+    if (!logData.message || !logData.level) {
+      return res
+        .status(400)
+        .json({ message: 'Message and level are required' });
+    }
+
     const newLog = new Log(logData);
     await newLog.save();
 
@@ -16,8 +22,13 @@ const createLog = async (req, res) => {
 };
 
 const getLog = async (req, res) => {
+  const { logId } = req.params;
+
+  if (!logId) {
+    return res.status(400).json({ message: 'Log ID is required' });
+  }
+
   try {
-    const { logId } = req.params;
     const logItem = await Log.findById(logId);
 
     if (!logItem) {
@@ -26,7 +37,7 @@ const getLog = async (req, res) => {
 
     res.status(200).json(logItem);
   } catch (error) {
-    logger.error('Error fetching log:', error);
+    logger.error(`Error fetching log with ID ${logId}:`, error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
@@ -42,8 +53,13 @@ const getAllLogs = async (req, res) => {
 };
 
 const deleteLog = async (req, res) => {
+  const { logId } = req.params;
+
+  if (!logId) {
+    return res.status(400).json({ message: 'Log ID is required' });
+  }
+
   try {
-    const { logId } = req.params;
     const deletedLog = await Log.findByIdAndDelete(logId);
 
     if (!deletedLog) {
@@ -52,7 +68,7 @@ const deleteLog = async (req, res) => {
 
     res.status(200).json({ message: 'Log deleted successfully' });
   } catch (error) {
-    logger.error('Error deleting log:', error);
+    logger.error(`Error deleting log with ID ${logId}:`, error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

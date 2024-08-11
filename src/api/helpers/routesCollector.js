@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
+const logger = require('../services/loggerService');
 
 const getRoutes = (router, basePath = '') => {
   const stack = router.stack || [];
@@ -8,9 +9,12 @@ const getRoutes = (router, basePath = '') => {
 
   stack.forEach((middleware) => {
     if (middleware.route) {
+      const method = Object.keys(middleware.route.methods)[0].toUpperCase();
+      const routePath = basePath + middleware.route.path;
+      logger.info(`Route found: ${method} ${routePath}`);
       routes.push({
-        method: Object.keys(middleware.route.methods)[0].toUpperCase(),
-        path: basePath + middleware.route.path,
+        method: method,
+        path: routePath,
       });
     } else if (middleware.name === 'router' && middleware.handle.stack) {
       routes.push(
@@ -35,10 +39,17 @@ const collectRoutes = (routesPath) => {
     .readdirSync(routesPath)
     .filter((file) => file.endsWith('.js'));
 
+  logger.info(`Loading routes from: ${routesPath}`);
+
   routesFiles.forEach((file) => {
     const routePath = path.join(routesPath, file);
-    const route = require(routePath);
-    router.use(route);
+    try {
+      const route = require(routePath);
+      router.use(route);
+      logger.info(`Route file loaded: ${file}`);
+    } catch (error) {
+      logger.error(`Failed to load route file ${file}:`, error);
+    }
   });
 
   return getRoutes(router);

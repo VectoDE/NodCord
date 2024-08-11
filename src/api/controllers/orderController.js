@@ -6,6 +6,10 @@ const createOrder = async (req, res) => {
   try {
     const orderData = req.body;
 
+    if (!orderData.customer || !orderData.totalAmount || !orderData.products) {
+      return res.status(400).json({ message: 'Invalid order data' });
+    }
+
     const newOrder = new Order(orderData);
     await newOrder.save();
 
@@ -17,6 +21,7 @@ const createOrder = async (req, res) => {
       }\nDetails: ${JSON.stringify(orderData.products)}`
     );
 
+    logger.info(`Order created successfully: ${newOrder._id}`);
     res.status(201).json(newOrder);
   } catch (error) {
     logger.error('Error creating order:', error);
@@ -32,10 +37,11 @@ const updateOrderStatus = async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { status, trackingNumber },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!updatedOrder) {
+      logger.warn(`Order not found for ID: ${orderId}`);
       return res.status(404).json({ message: 'Order not found' });
     }
 
@@ -47,6 +53,7 @@ const updateOrderStatus = async (req, res) => {
       );
     }
 
+    logger.info(`Order status updated successfully: ${orderId}`);
     res.status(200).json(updatedOrder);
   } catch (error) {
     logger.error('Error updating order status:', error);
@@ -62,9 +69,11 @@ const getOrder = async (req, res) => {
       .populate('products.product');
 
     if (!order) {
+      logger.warn(`Order not found for ID: ${orderId}`);
       return res.status(404).json({ message: 'Order not found' });
     }
 
+    logger.info(`Fetched order details: ${orderId}`);
     res.status(200).json(order);
   } catch (error) {
     logger.error('Error fetching order:', error);
@@ -77,6 +86,8 @@ const getAllOrders = async (req, res) => {
     const orders = await Order.find()
       .populate('customer')
       .populate('products.product');
+
+    logger.info('Fetched all orders successfully');
     res.status(200).json(orders);
   } catch (error) {
     logger.error('Error fetching orders:', error);

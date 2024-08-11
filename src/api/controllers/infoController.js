@@ -27,7 +27,7 @@ const getSystemInfo = async (req, res) => {
       disk: {
         total: disk.size,
         free: disk.free,
-        available: disk.free,
+        available: disk.size - disk.used,
       },
       uptime: uptime,
       platform: platform,
@@ -36,7 +36,10 @@ const getSystemInfo = async (req, res) => {
 
     res.status(200).json(systemInfo);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Error retrieving system information:', error);
+    res
+      .status(500)
+      .json({ error: 'Internal Server Error', details: error.message });
   }
 };
 

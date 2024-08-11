@@ -10,7 +10,7 @@ const roles = [
   { roleName: 'supporter', displayName: 'Supporter' },
   { roleName: 'premium', displayName: 'Premium Member' },
   { roleName: 'vip', displayName: 'VIP Member' },
-  { roleName: 'user', displayName: 'User' }
+  { roleName: 'user', displayName: 'User' },
 ];
 
 const seedRolesIfNotExist = async () => {
@@ -28,5 +28,5 @@ const seedRolesIfNotExist = async () => {
 };
 
 module.exports = {
-  seedRolesIfNotExist
+  seedRolesIfNotExist,
 };

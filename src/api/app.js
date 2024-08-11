@@ -88,12 +88,14 @@ app.use(
   })
 );
 
-app.use(session({
-  secret: 'hauknetz',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 600000 }, // 10 minutes
-}))
+app.use(
+  session({
+    secret: 'hauknetz',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 600000 }, // 10 minutes
+  })
+);
 
 app.use(flash());
 
@@ -104,14 +106,13 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use(corsMiddleware);
-app.use(compressionMiddleware);
-
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, '../public')));
 
+app.use(corsMiddleware);
+app.use(compressionMiddleware);
 app.use(rateLimiter);
 
 morgan.token('remote-addr', function (req) {
@@ -122,13 +123,16 @@ morgan.token('url', function (req) {
   return req.originalUrl;
 });
 
-const logFormat = ':remote-addr - :method :url :status :response-time ms - :res[content-length]';
+const logFormat =
+  ':remote-addr - :method :url :status :response-time ms - :res[content-length]';
 
-app.use(morgan(logFormat, {
-  stream: {
-    write: (message) => logger.info(message.trim())
-  }
-}));
+app.use(
+  morgan(logFormat, {
+    stream: {
+      write: (message) => logger.info(message.trim()),
+    },
+  })
+);
 
 app.use((req, res, next) => {
   res.locals.successMessage = req.flash('successMessage');
@@ -236,8 +240,8 @@ const getAllRoutes = () => {
     { path: '', router: indexRoutes },
     { path: '/dashboard', router: dashRoutes },
     { path: '/api/auth', router: authRoutes },
-    { path: '/api/developerprogram', router: developerProgramRoutes},
-    { path: '/api/apikeys', router: apiKeyRoutes},
+    { path: '/api/developerprogram', router: developerProgramRoutes },
+    { path: '/api/apikeys', router: apiKeyRoutes },
     { path: '/api/infos', router: infoRoutes },
     { path: '/api/users', router: userRoutes },
     { path: '/api/roles', router: roleRoutes },

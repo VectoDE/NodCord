@@ -13,14 +13,16 @@ const listPayments = async (req, res) => {
   try {
     const { userId } = req.query;
     if (!userId) {
+      logger.warn('User ID is required');
       return res.status(400).json({ error: 'User ID is required' });
     }
 
     const payments = await Payment.find({ userId });
+    logger.info(`Fetched ${payments.length} payments for user ${userId}`);
     res.status(200).json(payments);
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error listing payments:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -29,6 +31,7 @@ const createPayment = async (req, res) => {
     const { userId, amount, method, token, payerId, returnUrl, cancelUrl } =
       req.body;
     if (!userId || !amount || !method) {
+      logger.warn('User ID, Amount, and Method are required');
       return res
         .status(400)
         .json({ error: 'User ID, Amount, and Method are required' });
@@ -37,60 +40,66 @@ const createPayment = async (req, res) => {
     let transactionId;
     let paymentStatus;
 
-    if (method === 'credit_card') {
-      const charge = await stripe.charges.create({
-        amount: amount * 100,
-        currency: 'usd',
-        source: token,
-        description: 'Payment for your order',
-      });
-      transactionId = charge.id;
-      paymentStatus = charge.status;
-    } else if (method === 'paypal') {
-      const create_payment_json = {
-        intent: 'sale',
-        payer: {
-          payment_method: 'paypal',
-        },
-        transactions: [
-          {
-            amount: {
-              total: amount,
-              currency: 'USD',
-            },
-            description: 'Payment for your order',
+    switch (method) {
+      case 'credit_card':
+        const charge = await stripe.charges.create({
+          amount: amount * 100,
+          currency: 'usd',
+          source: token,
+          description: 'Payment for your order',
+        });
+        transactionId = charge.id;
+        paymentStatus = charge.status;
+        logger.info(`Credit card payment created: ${transactionId}`);
+        break;
+
+      case 'paypal':
+        const create_payment_json = {
+          intent: 'sale',
+          payer: {
+            payment_method: 'paypal',
           },
-        ],
-        redirect_urls: {
-          return_url: returnUrl,
-          cancel_url: cancelUrl,
-        },
-      };
+          transactions: [
+            {
+              amount: {
+                total: amount,
+                currency: 'USD',
+              },
+              description: 'Payment for your order',
+            },
+          ],
+          redirect_urls: {
+            return_url: returnUrl,
+            cancel_url: cancelUrl,
+          },
+        };
 
-      paypal.payment.create(create_payment_json, function (error, payment) {
-        if (error) {
-          logger.error(error);
-          return res.status(500).json({ error: error.message });
-        } else {
-          transactionId = payment.id;
-          paymentStatus = payment.state;
-          res.json({ payment });
-        }
-      });
+        paypal.payment.create(create_payment_json, (error, payment) => {
+          if (error) {
+            logger.error('PayPal payment creation error:', error);
+            return res.status(500).json({ error: error.message });
+          } else {
+            transactionId = payment.id;
+            paymentStatus = payment.state;
+            logger.info(`PayPal payment created: ${transactionId}`);
+            res.json({ payment });
+          }
+        });
 
-      return;
-    } else if (
-      method === 'apple_pay' ||
-      method === 'google_pay' ||
-      method === 'amazon_pay'
-    ) {
-      transactionId = 'mock_transaction_id';
-      paymentStatus = 'completed';
-    } else if (method === 'bank_transfer') {
-      transactionId = 'mock_transaction_id';
-      paymentStatus = 'completed';
-    } else {
-      return res.status(400).json({ error: 'Invalid payment method' });
+        return;
+
+      case 'apple_pay':
+      case 'google_pay':
+      case 'amazon_pay':
+      case 'bank_transfer':
+        transactionId = 'mock_transaction_id';
+        paymentStatus = 'completed';
+        logger.info(`Mock payment created with method ${method}`);
+        break;
+
+      default:
+        logger.warn('Invalid payment method');
+        return res.status(400).json({ error: 'Invalid payment method' });
     }
 
     const newPayment = new Payment({
@@ -104,8 +113,8 @@ const createPayment = async (req, res) => {
     await newPayment.save();
     res.status(201).json(newPayment);
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error creating payment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -128,10 +137,10 @@ const paypalSuccess = async (req, res) => {
     paypal.payment.execute(
       paymentId,
       execute_payment_json,
-      async function (error, payment) {
+      async (error, payment) => {
         if (error) {
-          logger.error(error);
-          res.status(500).json({ error: error.message });
+          logger.error('PayPal payment execution error:', error);
+          return res.status(500).json({ error: error.message });
         } else {
           const newPayment = new Payment({
             userId: payment.payer.payer_info.payer_id,
@@ -142,17 +151,19 @@ const paypalSuccess = async (req, res) => {
           });
 
           await newPayment.save();
+          logger.info(`PayPal payment executed successfully: ${payment.id}`);
           res.status(200).json(newPayment);
         }
       }
     );
   } catch (error) {
-    logger.error(error);
-    res.status(500).json({ error: error.message });
+    logger.error('Error handling PayPal success:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
 const paypalCancel = (req, res) => {
+  logger.info('PayPal payment canceled');
   res.status(400).json({ message: 'Payment canceled' });
 };
 

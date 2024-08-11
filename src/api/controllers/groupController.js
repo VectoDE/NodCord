@@ -6,7 +6,8 @@ exports.getAllGroups = async (req, res) => {
     const groups = await Group.find().populate('members');
     res.status(200).json({ success: true, data: groups });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error('Error fetching all groups:', err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -20,7 +21,8 @@ exports.getGroupById = async (req, res) => {
     }
     res.status(200).json({ success: true, data: group });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error('Error fetching group by ID:', err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -30,7 +32,10 @@ exports.createGroup = async (req, res) => {
     await group.save();
     res.status(201).json({ success: true, data: group });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    logger.error('Error creating group:', err);
+    res
+      .status(400)
+      .json({ success: false, message: 'Bad Request', details: err.message });
   }
 };
 
@@ -47,7 +52,10 @@ exports.updateGroup = async (req, res) => {
     }
     res.status(200).json({ success: true, data: group });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    logger.error('Error updating group:', err);
+    res
+      .status(400)
+      .json({ success: false, message: 'Bad Request', details: err.message });
   }
 };
 
@@ -63,6 +71,7 @@ exports.deleteGroup = async (req, res) => {
       .status(200)
       .json({ success: true, message: 'Group deleted successfully' });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error('Error deleting group:', err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };

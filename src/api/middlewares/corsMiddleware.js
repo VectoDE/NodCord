@@ -1,4 +1,5 @@
 const cors = require('cors');
+const logger = require('../services/loggerService');
 
 const corsOptions = {
   origin: '*', // z.B. ['http://example.com']
@@ -6,6 +7,17 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
-const corsMiddleware = cors(corsOptions);
+const corsMiddleware = (req, res, next) => {
+  logger.info(
+    `CORS Middleware: Incoming request from ${req.headers.origin} for ${req.method} ${req.url}`
+  );
+  cors(corsOptions)(req, res, (err) => {
+    if (err) {
+      logger.error('CORS Middleware error:', err);
+      return res.status(500).json({ message: 'CORS error' });
+    }
+    next();
+  });
+};
 
 module.exports = corsMiddleware;

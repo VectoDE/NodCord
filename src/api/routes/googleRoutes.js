@@ -7,7 +7,11 @@ const upload = multer({ dest: '../../public/uploads/' });
 
 router.get('/google/files', googleController.listFiles);
 
-router.post('/google/upload', upload.single('file'), googleController.uploadFile);
+router.post(
+  '/google/upload',
+  upload.single('file'),
+  googleController.uploadFile
+);
 
 router.delete('/google/files/:fileId', googleController.deleteFile);
 

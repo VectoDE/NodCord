@@ -8,7 +8,7 @@ exports.createFeedback = async (req, res) => {
     if (!userId || !username || !feedbackText) {
       return res
         .status(400)
-        .json({ message: 'Fehlende erforderliche Felder.' });
+        .json({ success: false, message: 'Missing required fields.' });
     }
 
     const feedback = new Feedback({
@@ -21,27 +21,33 @@ exports.createFeedback = async (req, res) => {
 
     res
       .status(201)
-      .json({ message: 'Feedback erfolgreich erstellt!', feedback });
+      .json({
+        success: true,
+        message: 'Feedback successfully created!',
+        feedback,
+      });
   } catch (error) {
-    logger.error('Fehler beim Erstellen des Feedbacks:', error);
+    logger.error('Error creating feedback:', error);
     res
       .status(500)
       .json({
-        message: 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.',
+        success: false,
+        message: 'An error occurred. Please try again later.',
       });
   }
 };
 
 exports.getAllFeedbacks = async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
-    res.status(200).json(feedbacks);
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 }).exec();
+    res.status(200).json({ success: true, feedbacks });
   } catch (error) {
-    logger.error('Fehler beim Abrufen des Feedbacks:', error);
+    logger.error('Error retrieving feedbacks:', error);
     res
       .status(500)
       .json({
-        message: 'Ein Fehler ist aufgetreten. Bitte versuche es später erneut.',
+        success: false,
+        message: 'An error occurred. Please try again later.',
       });
   }
 };

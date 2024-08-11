@@ -3,7 +3,12 @@ const router = express.Router();
 const file = require('../utils/multerUtil');
 const fileController = require('../controllers/fileController');
 
-router.post('/upload', file.checkDiskSpaceMiddleware, file.upload, fileController.uploadFile);
+router.post(
+  '/upload',
+  file.checkDiskSpaceMiddleware,
+  file.upload,
+  fileController.uploadFile
+);
 
 router.get('/:id', fileController.getFile);
 

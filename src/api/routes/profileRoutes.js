@@ -7,7 +7,7 @@ app.use(authMiddleware(true));
 router.get('/profile', (req, res) => {
   res.json({
     username: req.user.username,
-    role: req.userRole.displayName
+    role: req.userRole.displayName,
   });
 });
 

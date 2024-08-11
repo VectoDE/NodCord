@@ -1,14 +1,19 @@
 const mongoose = require('mongoose');
 
-const teamsSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true
+const teamsSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    players: [
+      {
+        name: String,
+        email: String,
+      },
+    ],
   },
-  players: [{
-    name: String,
-    email: String
-  }]
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('Teams', teamsSchema);

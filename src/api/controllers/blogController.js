@@ -5,6 +5,12 @@ const createBlog = async (req, res) => {
   try {
     const { title, content, author, tags } = req.body;
 
+    if (!title || !content || !author) {
+      return res
+        .status(400)
+        .json({ error: 'Title, content, and author are required' });
+    }
+
     const newBlog = new Blog({
       title,
       content,
@@ -12,10 +18,17 @@ const createBlog = async (req, res) => {
       tags,
     });
 
-    await newBlog.save();
-    res.status(201).json(newBlog);
+    const savedBlog = await newBlog.save();
+    res.status(201).json({
+      message: 'Blog created successfully.',
+      blog: savedBlog,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Error creating blog:', error);
+    res.status(500).json({
+      message: 'Internal Server Error',
+      details: error.message,
+    });
   }
 };
 
@@ -24,51 +37,85 @@ const getAllBlogs = async (req, res) => {
     const blogs = await Blog.find();
     res.status(200).json(blogs);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Error fetching blogs:', error);
+    res.status(500).json({
+      message: 'Internal Server Error',
+      details: error.message,
+    });
   }
 };
 
 const getBlogById = async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const blog = await Blog.findById(req.params.id);
+    const blog = await Blog.findById(id);
 
     if (!blog) {
-      return res.status(404).json({ message: 'Blog not found' });
+      return res.status(404).json({
+        message: 'Blog not found',
+      });
     }
 
     res.status(200).json(blog);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error(`Error fetching blog with ID ${id}:`, error);
+    res.status(500).json({
+      message: 'Internal Server Error',
+      details: error.message,
+    });
   }
 };
 
 const updateBlog = async (req, res) => {
-  try {
-    const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+  const { id } = req.params;
+  const { title, content, author, tags } = req.body;
 
-    if (!blog) {
-      return res.status(404).json({ message: 'Blog not found' });
+  try {
+    const updatedBlog = await Blog.findByIdAndUpdate(
+      id,
+      { title, content, author, tags },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedBlog) {
+      return res.status(404).json({
+        message: 'Blog not found',
+      });
     }
 
-    res.status(200).json(blog);
+    res.status(200).json({
+      message: 'Blog updated successfully.',
+      blog: updatedBlog,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error(`Error updating blog with ID ${id}:`, error);
+    res.status(500).json({
+      message: 'Internal Server Error',
+      details: error.message,
+    });
   }
 };
 
 const deleteBlog = async (req, res) => {
-  try {
-    const blog = await Blog.findByIdAndDelete(req.params.id);
+  const { id } = req.params;
 
-    if (!blog) {
-      return res.status(404).json({ message: 'Blog not found' });
+  try {
+    const deletedBlog = await Blog.findByIdAndDelete(id);
+
+    if (!deletedBlog) {
+      return res.status(404).json({
+        message: 'Blog not found',
+      });
     }
 
     res.status(204).send();
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error(`Error deleting blog with ID ${id}:`, error);
+    res.status(500).json({
+      message: 'Internal Server Error',
+      details: error.message,
+    });
   }
 };
 

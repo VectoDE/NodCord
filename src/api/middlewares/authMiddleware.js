@@ -1,5 +1,6 @@
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
+const logger = require('../services/loggerService');
 
 const authMiddleware = (requireAuth = true) => {
   return async (req, res, next) => {
@@ -8,10 +9,12 @@ const authMiddleware = (requireAuth = true) => {
 
       if (!token) {
         if (requireAuth) {
+          logger.warn('Unauthorized access attempt: No token provided');
           const err = new Error('Unauthorized');
           err.status = 401;
           return next(err);
         } else {
+          logger.info('No token provided, but authentication not required');
           return next();
         }
       }
@@ -21,19 +24,26 @@ const authMiddleware = (requireAuth = true) => {
 
       if (!user || !user.isAuthenticated) {
         if (requireAuth) {
+          logger.warn(
+            'Unauthorized access attempt: User not authenticated or not found'
+          );
           const err = new Error('Unauthorized');
           err.status = 401;
           return next(err);
         } else {
+          logger.info(
+            'User not authenticated, but authentication not required'
+          );
           return next();
         }
       }
 
       res.locals.isAuthenticated = true;
       req.user = user;
+      logger.info(`User '${user._id}' authenticated successfully`);
       next();
     } catch (error) {
-      console.error('Authentication error:', error);
+      logger.error('Authentication error:', error);
       if (requireAuth) {
         const err = new Error('Unauthorized');
         err.status = 401;

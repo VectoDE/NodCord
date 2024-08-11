@@ -6,7 +6,8 @@ exports.getAllGames = async (req, res) => {
     const games = await Game.find();
     res.status(200).json({ success: true, data: games });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error('Error fetching all games:', err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -20,7 +21,8 @@ exports.getGameById = async (req, res) => {
     }
     res.status(200).json({ success: true, data: game });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error(`Error fetching game with ID ${req.params.id}:`, err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -30,7 +32,10 @@ exports.createGame = async (req, res) => {
     await game.save();
     res.status(201).json({ success: true, data: game });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    logger.error('Error creating new game:', err);
+    res
+      .status(400)
+      .json({ success: false, message: 'Bad Request: Invalid data' });
   }
 };
 
@@ -47,7 +52,10 @@ exports.updateGame = async (req, res) => {
     }
     res.status(200).json({ success: true, data: game });
   } catch (err) {
-    res.status(400).json({ success: false, message: err.message });
+    logger.error(`Error updating game with ID ${req.params.id}:`, err);
+    res
+      .status(400)
+      .json({ success: false, message: 'Bad Request: Invalid data' });
   }
 };
 
@@ -63,6 +71,7 @@ exports.deleteGame = async (req, res) => {
       .status(200)
       .json({ success: true, message: 'Game deleted successfully' });
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    logger.error(`Error deleting game with ID ${req.params.id}:`, err);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };

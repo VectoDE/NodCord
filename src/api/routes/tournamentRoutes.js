@@ -6,10 +6,16 @@ const tournamentController = require('../controllers/tournamentController');
 router.post('/tournament', tournamentController.createTournament);
 
 // Team registrieren
-router.post('/tournament/:tournamentId/team', tournamentController.registerTeam);
+router.post(
+  '/tournament/:tournamentId/team',
+  tournamentController.registerTeam
+);
 
 // Match erstellen
-router.post('/tournament/:tournamentId/match', tournamentController.createMatch);
+router.post(
+  '/tournament/:tournamentId/match',
+  tournamentController.createMatch
+);
 
 // Ein einzelnes Turnier anzeigen
 router.get('/tournament/:tournamentId', tournamentController.getTournament);
@@ -21,6 +27,9 @@ router.get('/tournaments', tournamentController.listTournaments);
 router.put('/tournament/:tournamentId', tournamentController.updateTournament);
 
 // Turnier löschen
-router.delete('/tournament/:tournamentId', tournamentController.deleteTournament);
+router.delete(
+  '/tournament/:tournamentId',
+  tournamentController.deleteTournament
+);
 
 module.exports = router;

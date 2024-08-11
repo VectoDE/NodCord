@@ -6,7 +6,9 @@ const logger = require('../services/loggerService');
 const uploadFile = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      return res
+        .status(400)
+        .json({ success: false, message: 'No file uploaded' });
     }
 
     const fileData = new File({
@@ -18,10 +20,16 @@ const uploadFile = async (req, res) => {
 
     await fileData.save();
 
-    req.flash('successMessage', 'File uploaded successfully');
-    res.redirect(req.header('Referer') || '/');
+    res
+      .status(201)
+      .json({
+        success: true,
+        message: 'File uploaded successfully',
+        file: fileData,
+      });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Error uploading file:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -31,12 +39,15 @@ const getFile = async (req, res) => {
 
     const file = await File.findById(fileId);
     if (!file) {
-      return res.status(404).json({ error: 'File not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'File not found' });
     }
 
-    res.status(200).json(file);
+    res.status(200).json({ success: true, file });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Error fetching file metadata:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 
@@ -46,12 +57,22 @@ const downloadFile = async (req, res) => {
 
     const file = await File.findById(fileId);
     if (!file) {
-      return res.status(404).json({ error: 'File not found' });
+      return res
+        .status(404)
+        .json({ success: false, message: 'File not found' });
     }
 
-    res.download(file.path, file.filename);
+    res.download(file.path, file.filename, (err) => {
+      if (err) {
+        logger.error('Error downloading file:', err);
+        res
+          .status(500)
+          .json({ success: false, message: 'Internal Server Error' });
+      }
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    logger.error('Error downloading file:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
 

@@ -22,7 +22,7 @@ const ApiKeySchema = new mongoose.Schema({
   expiresAt: {
     type: Date,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model('ApiKey', ApiKeySchema);
