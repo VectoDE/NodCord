@@ -1,6 +1,6 @@
-const Tournament = require('../../models/tournamentModel');
-const Team = require('../../models/teamModel');
-const Match = require('../../models/matchModel');
+const Tournament = require('../../models/ttournamentModel');
+const Team = require('../../models/tteamModel');
+const Match = require('../../models/tmatchModel');
 const logger = require('./loggerService');
 
 class TournamentService {
