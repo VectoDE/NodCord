@@ -6,7 +6,7 @@ const logger = require('../services/loggerService');
 
 exports.register = async (req, res) => {
   try {
-    const { fullname, username, email, password, confirmPassword } = req.body;
+    const { username, email, password, confirmPassword, fullname } = req.body;
 
     if (password !== confirmPassword) {
       return res
@@ -23,10 +23,10 @@ exports.register = async (req, res) => {
 
     const verificationToken = crypto.randomBytes(32).toString('hex');
     const user = new User({
-      fullname,
       username,
       email,
       password,
+      fullname,
       verificationToken,
     });
     await user.save();
@@ -65,7 +65,7 @@ exports.verifyEmail = async (req, res) => {
       user.username
     );
 
-    res.status(200).render('email-verified', {
+    res.status(200).render('verification/email-verified', {
       message: 'Your email has been verified. You can now log in.',
     });
   } catch (error) {

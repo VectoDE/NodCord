@@ -14,11 +14,11 @@ const authMiddleware = require('../middlewares/authMiddleware');
 router.use(authMiddleware(false));
 
 router.get('/', (req, res) => {
-  res.render('index/index', { isAuthenticated: res.locals.isAuthenticated });
+  res.render('index', { isAuthenticated: res.locals.isAuthenticated });
 });
 
 router.get('/docs', (req, res) => {
-  res.render('index/documentation', {
+  res.render('documentation', {
     isAuthenticated: res.locals.isAuthenticated,
   });
 });
@@ -45,7 +45,7 @@ router.get('/status', async (req, res) => {
     const dbStatusMessage =
       dbStatus === 'online' ? 'Datenbank ist online' : 'Datenbank ist offline';
 
-    res.render('index/status', {
+    res.render('status', {
       apiStatus,
       apiStatusMessage,
       botStatus,
@@ -73,7 +73,7 @@ router.get('/info', async (req, res) => {
 
     const systemInfo = await infoService.getSystemInfo();
 
-    res.render('index/info', {
+    res.render('info', {
       bot: botInfo,
       api: apiInfo,
       system: systemInfo,
@@ -88,7 +88,7 @@ router.get('/info', async (req, res) => {
 router.get('/discord-members', async (req, res) => {
   try {
     const servers = await bot.getServers();
-    res.render('index/discordmembers', {
+    res.render('discordmembers', {
       servers,
       isAuthenticated: res.locals.isAuthenticated,
     });
@@ -102,7 +102,7 @@ router.get('/discord-servers', async (req, res) => {
   try {
     const servers = await bot.getServers();
     const serverCount = servers.length;
-    res.render('index/discordservers', {
+    res.render('discordservers', {
       servers,
       serverCount,
       isAuthenticated: res.locals.isAuthenticated,
@@ -136,7 +136,7 @@ router.get('/register', (req, res) => {
 router.get('/verify-email/:token', authController.verifyEmail);
 
 router.get('/beta-verify', authMiddleware(true), (req, res) => {
-  res.render('beta-verify', {
+  res.render('verification/beta-verify', {
     isAuthenticated: res.locals.isAuthenticated,
     error: req.query.error || null,
   });

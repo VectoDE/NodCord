@@ -23,7 +23,7 @@ router.use(authMiddleware(true));
 // Dashboard-Route
 router.get(
   '/',
-  roleMiddleware(['admin', 'moderator', 'user']),
+  roleMiddleware(['admin', 'moderator']),
   betaMiddleware.checkBetaSystemStatus,
   betaMiddleware.checkBetaKeyValidity,
   async (req, res) => {

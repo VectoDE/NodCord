@@ -1,11 +1,11 @@
 require('dotenv').config();
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const flash = require('connect-flash');
 const morgan = require('morgan');
-const helmet = require('helmet');
 const appConfig = require('../config/apiConfig');
 const logger = require('./services/loggerService');
 
@@ -15,10 +15,13 @@ const rateLimiter = require('./middlewares/rateLimiterMiddleware');
 
 const indexRoutes = require('./routes/indexRoutes');
 const dashRoutes = require('./routes/dashboardRoutes');
+
 const authRoutes = require('./routes/authRoutes');
 const betaRoutes = require('./routes/betaRoutes');
+
 const developerProgramRoutes = require('./routes/developerProgramRoutes');
 const apiKeyRoutes = require('./routes/apiKeyRoutes');
+
 const infoRoutes = require('./routes/infoRoutes');
 const userRoutes = require('./routes/userRoutes');
 const roleRoutes = require('./routes/roleRoutes');
@@ -26,13 +29,16 @@ const tagRoutes = require('./routes/tagRoutes');
 const categoryRoutes = require('./routes/categoryRoutes');
 const blogRoutes = require('./routes/blogRoutes');
 const gameRoutes = require('./routes/gameRoutes');
+
 const favoriteRoutes = require('./routes/favoriteRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const likeRoutes = require('./routes/likeRoutes');
 const dislikeRoutes = require('./routes/dislikeRoutes');
 const shareRoutes = require('./routes/shareRoutes');
+
 const newsletterRoutes = require('./routes/newsletterRoutes');
 const subscriberRoutes = require('./routes/subscriberRoutes');
+
 const companyRoutes = require('./routes/companyRoutes');
 const organizationRoutes = require('./routes/organizationRoutes');
 const groupRoutes = require('./routes/groupRoutes');
@@ -43,62 +49,99 @@ const issueRoutes = require('./routes/issueRoutes');
 const bugRoutes = require('./routes/bugRoutes');
 const featureRoutes = require('./routes/featureRoutes');
 const storyRoutes = require('./routes/storyRoutes');
+
 const customerRoutes = require('./routes/customerRoutes');
 const customerOrderRoutes = require('./routes/customerOrderRoutes');
+
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const returnRoutes = require('./routes/returnRoutes');
+
 const ticketRoutes = require('./routes/ticketRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
+
 const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const fileRoutes = require('./routes/fileRoutes');
+
 const proxmoxRoutes = require('./routes/proxmoxRoutes');
 const plexRoutes = require('./routes/plexRoutes');
 const faceitRoutes = require('./routes/faceitRoutes');
 const steamRoutes = require('./routes/steamRoutes');
 const cloudNetRoutes = require('./routes/cloudnetRoutes');
 const tournamentRoutes = require('./routes/tournamentRoutes');
+
 const logRoutes = require('./routes/logRoutes');
 
 const app = express();
 const baseURL = appConfig.baseURL;
 const port = appConfig.port;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cookieParser());
-app.use(flash());
-app.use(session({
-  secret: 'hauknetz',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 600000 }, // 10 minutes
-}));
-app.use(helmet());
-app.use(compressionMiddleware);
-app.use(rateLimiter);
-app.use(corsMiddleware);
+app.use(
+  express.urlencoded({
+    extended: true,
+  })
+);
 
-morgan.token('remote-addr', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-morgan.token('url', (req) => req.originalUrl);
-const logFormat = ':remote-addr - :method :url :status :response-time ms - :res[content-length]';
-app.use(morgan(logFormat, {
-  stream: {
-    write: (message) => logger.info(message.trim()),
-  },
-}));
+app.use(
+  session({
+    secret: 'hauknetz',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 600000 }, // 10 minutes
+  })
+);
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, '../public')));
 
+app.use(flash());
+
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
+
+app.use(corsMiddleware);
+app.use(compressionMiddleware);
+app.use(rateLimiter);
+
+morgan.token('remote-addr', function (req) {
+  return req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+});
+
+morgan.token('url', function (req) {
+  return req.originalUrl;
+});
+
+const logFormat =
+  ':remote-addr - :method :url :status :response-time ms - :res[content-length]';
+
+app.use(
+  morgan(logFormat, {
+    stream: {
+      write: (message) => logger.info(message.trim()),
+    },
+  })
+);
+
+app.use((req, res, next) => {
+  res.locals.successMessage = req.flash('successMessage');
+  //res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+  //res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+  //res.setHeader('Origin-Agent-Cluster', '?1');
+  next();
+});
+
 app.use('/', indexRoutes);
 app.use('/dashboard', dashRoutes);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/beta', betaRoutes);
+
 app.use('/api/developerprogram', developerProgramRoutes);
 app.use('/api/apikeys', apiKeyRoutes);
+
 app.use('/api/infos', infoRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
@@ -106,13 +149,16 @@ app.use('/api/tags', tagRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/games', gameRoutes);
+
 app.use('/api/favorites', favoriteRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/likes', likeRoutes);
 app.use('/api/dislikes', dislikeRoutes);
 app.use('/api/shares', shareRoutes);
+
 app.use('/api/newsletters', newsletterRoutes);
 app.use('/api/subscribers', subscriberRoutes);
+
 app.use('/api/companies', companyRoutes);
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/groups', groupRoutes);
@@ -123,23 +169,29 @@ app.use('/api/issues', issueRoutes);
 app.use('/api/bugs', bugRoutes);
 app.use('/api/features', featureRoutes);
 app.use('/api/stories', storyRoutes);
+
 app.use('/api/customers', customerRoutes);
 app.use('/api/customers/orders', customerOrderRoutes);
+
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/returns', returnRoutes);
+
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/feedback', feedbackRoutes);
+
 app.use('/api/controls', controlRoutes);
 app.use('/api/securities', securityRoutes);
 app.use('/api/logs', logRoutes);
-app.use('/api/files', fileRoutes);
+
 app.use('/api/proxmox', proxmoxRoutes);
 app.use('/api/plex', plexRoutes);
 app.use('/api/faceit', faceitRoutes);
 app.use('/api/steam', steamRoutes);
 app.use('/api/cloudnet', cloudNetRoutes);
 app.use('/api/tournaments', tournamentRoutes);
+
+app.use('/api/files', fileRoutes);
 
 const getRoutes = (router, basePath = '') => {
   const stack = router.stack || [];
@@ -229,7 +281,7 @@ const getAllRoutes = () => {
 app.get('/routes', (req, res) => {
   try {
     const routes = getAllRoutes();
-    res.render('index/routes', {
+    res.render('routes', {
       routes,
       isAuthenticated: res.locals.isAuthenticated,
     });
@@ -248,18 +300,21 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   res.status(statusCode).render('error', {
-    errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
+    errortitle:
+      statusCode === 401
+        ? 'Unauthorized'
+        : statusCode === 404
+        ? 'Not Found'
+        : 'Error',
     errormessage: err.message,
     errorstatus: statusCode,
     errorstack: app.get('env') === 'development' ? err.stack : null,
   });
 });
 
-const server = require('http').createServer(app);
-
 const startApp = () => {
-  server.listen(port, () => {
-    logger.info(`API is running on http://${baseURL}:${port}`);
+  app.listen(port, () => {
+    logger.info(`API is running on https://${baseURL}:${port}`);
   });
 };
 
