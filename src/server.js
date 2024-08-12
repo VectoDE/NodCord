@@ -1,7 +1,6 @@
 const http = require('http');
-const mongoose = require('mongoose');
-const package = require('../package.json');
-const { app, startApp } = require('./api/app');
+const packageInfo = require('../package.json');
+const { api } = require('./api/app');
 const bot = require('./bot/index');
 const connectDB = require('./database/connectDB');
 const { seedRolesIfNotExist } = require('./seeds/rolesSeed');
@@ -13,9 +12,14 @@ const startServer = async () => {
 
     await seedRolesIfNotExist();
 
-    await startApp();
+    const port = process.env.PORT || 3000;
+    const baseURL = process.env.BASE_URL || 'localhost';
+    http.createServer(api).listen(port, () => {
+      logger.info(`Server is running on https://${baseURL}:${port}`);
+    });
 
     bot.start();
+
   } catch (err) {
     logger.error('Error starting server:', err);
     process.exit(1);
@@ -23,4 +27,4 @@ const startServer = async () => {
 };
 
 startServer();
-logger.info(`Starting server: ${package.name}`);
+logger.info(`Starting server: ${packageInfo.name}`);
