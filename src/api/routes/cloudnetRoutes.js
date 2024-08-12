@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const cloudNetController = require('../controllers/cloudNetController');
+const cloudNetController = require('../controllers/cloudnetController');
 
 router.get('/status', cloudNetController.getStatus);
 

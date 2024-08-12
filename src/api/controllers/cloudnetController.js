@@ -1,4 +1,4 @@
-const CloudNetService = require('../services/cloudNetService');
+const CloudNetService = require('../services/cloudnetService');
 
 const cloudNetService = new CloudNetService(
   'http://localhost:8080',

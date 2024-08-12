@@ -1,7 +1,6 @@
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const passport = require('../utils/passportUtil');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
 
@@ -115,27 +114,6 @@ exports.login = async (req, res) => {
     logger.error('Login error:', err.message);
     res.status(500).send('Internal Server Error');
   }
-};
-
-exports.googleAuth = passport.authenticate('google', { scope: ['profile', 'email'] });
-exports.googleAuthCallback = passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
-  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie('token', token, { httpOnly: true });
-  res.redirect('/dashboard');
-};
-
-exports.githubAuth = passport.authenticate('github', { scope: ['user:email'] });
-exports.githubAuthCallback = passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
-  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie('token', token, { httpOnly: true });
-  res.redirect('/dashboard');
-};
-
-exports.appleAuth = passport.authenticate('apple');
-exports.appleAuthCallback = passport.authenticate('apple', { failureRedirect: '/login' }), (req, res) => {
-  const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  res.cookie('token', token, { httpOnly: true });
-  res.redirect('/dashboard');
 };
 
 exports.logout = async (req, res) => {
