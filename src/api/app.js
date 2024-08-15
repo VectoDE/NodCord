@@ -142,7 +142,7 @@ api.use((err, req, res, next) => {
     errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
     errormessage: err.message,
     errorstatus: statusCode,
-    errorstack: app.get('env') === 'development' ? err.stack : null,
+    errorstack: api.get('env') === 'development' ? err.stack : null,
   });
 });
 
