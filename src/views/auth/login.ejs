@@ -8,58 +8,9 @@
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      background-color: #333;
-      color: #fff;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-    }
-
-    .logo img {
-      height: 40px;
-      margin-right: 10px;
-    }
-
-    nav {
-      display: flex;
-    }
-
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      padding: 10px 15px;
-      margin: 0 5px;
-      border-radius: 4px;
-      transition: background-color 0.3s;
-    }
-
-    nav a:hover {
-      background-color: #575757;
-    }
-
     .form-container {
       max-width: 400px;
-      margin: 0 auto;
+      margin: 11rem auto;
       padding: 2rem;
       background: #fff;
       border-radius: 8px;
@@ -89,6 +40,7 @@
     .form-container button {
       width: 100%;
       padding: 0.75rem;
+      margin-bottom: 1rem;
       border: none;
       border-radius: 4px;
       background-color: #333;
@@ -100,21 +52,15 @@
 
     .form-container button:hover {
       background-color: #575757;
+      color: #fc9702;
     }
 
-    footer {
-      background-color: #333;
-      color: #fff;
-      text-align: center;
-      padding: 10px 20px;
-    }
-
-    footer p a {
-      color: #2fddfe;
+    .form-container .account-link {
       text-decoration: none;
+      color: #2fddfe;
     }
 
-    footer p a:hover {
+    .form-container .account-link:hover {
       color: #fc9702;
     }
   </style>
@@ -131,7 +77,6 @@
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
-      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
       <% if (!isAuthenticated) { %>
@@ -157,7 +102,7 @@
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
             <button type="submit">Login</button>
-            <a href="/register">Du hast noch keinen Account?</a>
+            <a class="account-link" href="/register">Du hast noch keinen Account?</a>
           </form>
     </div>
   </main>

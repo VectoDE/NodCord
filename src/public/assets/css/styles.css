@@ -13,3 +13,7 @@ body {
   display: flex;
   flex-direction: column;
 }
+
+main {
+  flex: 1; /* Dieser flex-Wert sorgt dafür, dass der Hauptinhalt den verfügbaren Platz einnimmt */
+}

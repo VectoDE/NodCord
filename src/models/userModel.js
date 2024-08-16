@@ -23,9 +23,12 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: 'user', // standardmäßig 'user', kann aber auf 'admin' oder andere Rollen gesetzt werden
+    default: 'user',
   },
-  verificationToken: String,
+  verificationToken: {
+    type: String,
+    default: '',
+  },
   isVerified: {
     type: Boolean,
     default: false,
@@ -58,16 +61,24 @@ const userSchema = new mongoose.Schema({
   },
   apiKey: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'ApiKey',
-    unique: true,
+    ref: 'ApiKeySchema',
+    sparse: true,
   },
   betaKey: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'BetaKey',
+    sparse: true,
   },
   isBetaTester: {
     type: Boolean,
     default: false,
+  },
+  termsAccepted: {
+    type: Boolean,
+    default: false,
+  },
+  termsAcceptedAt: {
+    type: Date,
   },
   createdAt: {
     type: Date,

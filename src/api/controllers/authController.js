@@ -6,32 +6,49 @@ const logger = require('../services/loggerService');
 
 exports.register = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword, fullname } = req.body;
+    const { username, email, password, confirmPassword, fullname, terms } = req.body;
+
+    if (!username || !email || !password || !confirmPassword || !fullname || !terms) {
+      return res.render('register', {
+        errorMessage: 'All fields are required, including accepting the terms and conditions.',
+      });
+    }
 
     if (password !== confirmPassword) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Passwords do not match' });
+      return res.render('register', {
+        errorMessage: 'Passwords do not match',
+      });
+    }
+
+    if (!terms) {
+      return res.render('register', {
+        errorMessage: 'You must accept the Terms of Service',
+      });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'User already exists' });
+      return res.render('register', {
+        errorMessage: 'User already exists',
+      });
     }
 
     const verificationToken = crypto.randomBytes(32).toString('hex');
+
     const user = new User({
       username,
       email,
       password,
       fullname,
       verificationToken,
+      termsAccepted: true,
+      termsAcceptedAt: new Date()
     });
+
     await user.save();
 
     const verificationLink = `${process.env.BASE_URL}/verify-email/${verificationToken}`;
+
     await nodemailerService.sendRegistrationVerificationEmail(
       user.email,
       user.username,
@@ -41,9 +58,10 @@ exports.register = async (req, res) => {
     res.redirect('/login');
   } catch (err) {
     logger.error('Error during registration:', err.message);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
   }
 };
+
 
 exports.verifyEmail = async (req, res) => {
   try {

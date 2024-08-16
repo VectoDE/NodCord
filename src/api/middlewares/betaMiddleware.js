@@ -12,9 +12,7 @@ exports.checkBetaSystemStatus = async (req, res, next) => {
       return next();
     } else {
       logger.warn('Beta System ist momentan deaktiviert.');
-      return res
-        .status(403)
-        .json({ message: 'Beta System ist momentan deaktiviert.' });
+      return next();
     }
   } catch (error) {
     logger.error('Fehler beim Überprüfen des Beta System Status:', error);

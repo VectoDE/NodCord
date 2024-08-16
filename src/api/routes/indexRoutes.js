@@ -130,7 +130,10 @@ router.get('/register', (req, res) => {
   if (res.locals.isAuthenticated) {
     return res.redirect('/login');
   }
-  res.render('auth/register', { isAuthenticated: res.locals.isAuthenticated });
+
+  const errorMessage = req.query.errorMessage || null;
+
+  res.render('auth/register', { isAuthenticated: res.locals.isAuthenticated, errorMessage: errorMessage });
 });
 
 router.get('/verify-email/:token', authController.verifyEmail);

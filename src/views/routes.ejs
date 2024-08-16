@@ -47,23 +47,28 @@
 <body>
   <header>
     <div class="logo">
-      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo" /></a>
       <span>NodCord</span>
     </div>
+    <div class="burger">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <nav>
+      <div class="close-btn"></div>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
-      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
       <% if (!isAuthenticated) { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
       <% } else { %>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout">Logout</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/logout">Logout</a>
       <% } %>
     </nav>
   </header>
@@ -80,7 +85,8 @@
         </div>
     </main>
     <footer>
-        <p>&copy; 2024 NodCord. All rights reserved.</p>
+      <p>&copy; <%= new Date().getFullYear() %> <a href="/">NodCord</a>. Alle Rechte vorbehalten.</p>
     </footer>
 </body>
+<script src="assets/js/script.js"></script>
 </html>

@@ -25,4 +25,4 @@ const ApiKeySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('ApiKey', ApiKeySchema);
+module.exports = mongoose.model('ApiKeySchema', ApiKeySchema);

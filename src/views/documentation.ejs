@@ -101,23 +101,28 @@
 <body>
   <header>
     <div class="logo">
-      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
+      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo" /></a>
       <span>NodCord</span>
     </div>
+    <div class="burger">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
     <nav>
+      <div class="close-btn"></div>
       <a href="/">Home</a>
       <a href="/docs">Documentation</a>
       <a href="/status">Status</a>
       <a href="/info">Info</a>
-      <a href="/routes">Routes</a>
       <a href="/discord-members">Discord Members</a>
       <a href="/discord-servers">Discord Servers</a>
       <% if (!isAuthenticated) { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
       <% } else { %>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout">Logout</a>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/logout">Logout</a>
       <% } %>
     </nav>
   </header>
@@ -183,34 +188,8 @@ client.login(process.env.DISCORD_TOKEN);</code></pre>
     </main>
   </div>
   <footer>
-    <p>&copy; 2024 NodCord Project. All rights reserved. <a href="mailto:support@nodcord.com">Contact Us</a></p>
+    <p>&copy; <%= new Date().getFullYear() %> <a href="/">NodCord</a>. Alle Rechte vorbehalten.</p>
   </footer>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const sections = document.querySelectorAll("main section");
-      const navLinks = document.querySelectorAll(".sidebar a");
-
-      function onScroll() {
-        let currentSection = sections[0];
-
-        sections.forEach(section => {
-          const sectionTop = section.offsetTop;
-          if (window.scrollY >= sectionTop - 60) {
-            currentSection = section;
-          }
-        });
-
-        navLinks.forEach(link => {
-          link.classList.remove("active");
-          if (link.getAttribute("href").substring(1) === currentSection.getAttribute("id")) {
-            link.classList.add("active");
-          }
-        });
-      }
-
-      window.addEventListener("scroll", onScroll);
-    });
-  </script>
 </body>
-
+<script src="assets/js/script.js"></script>
 </html>
