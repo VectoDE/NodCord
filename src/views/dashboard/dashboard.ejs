@@ -110,27 +110,7 @@
 </head>
 
 <body>
-  <header>
-    <div class="logo">
-      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>NodCord</span>
-    </div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/docs">Documentation</a>
-      <a href="/status">Status</a>
-      <a href="/info">Info</a>
-      <a href="/discord-members">Discord Members</a>
-      <a href="/discord-servers">Discord Servers</a>
-      <% if (!isAuthenticated) { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-      <% } else { %>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout">Logout</a>
-      <% } %>
-    </nav>
-  </header>
+  <%- include('../partials/header'); %>
   <main>
     <!-- Overview Section -->
     <section>
@@ -167,6 +147,10 @@
         <div class="grid-item">
           <h4>Discord Members</h4>
           <p>Anzahl: <%= discordMembers.length %></p>
+        </div>
+        <div class="grid-item">
+          <h4>Bugs</h4>
+          <p>Anzahl: <%= bugs.length %></p>
         </div>
       </div>
     </section>

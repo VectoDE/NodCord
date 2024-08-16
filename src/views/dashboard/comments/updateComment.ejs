@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Comment</title>
+    <title>Edit Comment</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -20,7 +20,6 @@
         display: block;
         margin-bottom: 5px;
       }
-      input[type='text'],
       textarea {
         width: 100%;
         padding: 10px;
@@ -41,30 +40,13 @@
   <body>
     <%- include('../../partials/header'); %>
     <main>
-      <h1>Create Comment for Blog: <%= blogTitle %></h1>
-      <form action="/api/comments/create" method="POST">
-        <input type="hidden" name="blog" value="<%= blogId %>" />
-        <div>
-          <label for="author">Author Name</label>
-          <input
-            type="text"
-            id="author"
-            name="author"
-            placeholder="Enter your name"
-            required
-          />
-        </div>
+      <h1>Edit Comment for Blog: <%= blogTitle %></h1>
+      <form action="/api/comments/update/<%= comment._id %>" method="POST">
         <div>
           <label for="content">Comment</label>
-          <textarea
-            id="content"
-            name="content"
-            rows="5"
-            placeholder="Enter your comment"
-            required
-          ></textarea>
+          <textarea id="content" name="content" rows="5" required><%= comment.content %></textarea>
         </div>
-        <button type="submit">Submit</button>
+        <button type="submit">Update</button>
       </form>
     </main>
   </body>

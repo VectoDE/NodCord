@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Overview Controls</title>
+    <link rel="stylesheet" href="/path/to/your/styles.css" />
+  </head>
+  <body>
+    <%- include('../../partials/header'); %>
+    <main>
+      <div class="container">
+        <h1>System Overview</h1>
+
+        <div class="status-section">
+          <h2>Bot Status</h2>
+          <p id="bot-status">Loading...</p>
+          <div class="controls">
+            <button onclick="controlBot('start')">Start Bot</button>
+            <button onclick="controlBot('stop')">Stop Bot</button>
+            <button onclick="controlBot('restart')">Restart Bot</button>
+            <button onclick="controlBot('setMaintenance')">
+              Enable Maintenance
+            </button>
+            <button onclick="controlBot('removeMaintenance')">
+              Disable Maintenance
+            </button>
+          </div>
+        </div>
+
+        <div class="status-section">
+          <h2>API Status</h2>
+          <p id="api-status">Loading...</p>
+          <div class="controls">
+            <button onclick="controlApi('start')">Start API</button>
+            <button onclick="controlApi('stop')">Stop API</button>
+            <button onclick="controlApi('restart')">Restart API</button>
+            <button onclick="controlApi('setMaintenance')">
+              Enable Maintenance
+            </button>
+            <button onclick="controlApi('removeMaintenance')">
+              Disable Maintenance
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // Fetch Bot Status
+      fetch('/api/controls/bot/status')
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById(
+            'bot-status'
+          ).textContent = `Bot Status: ${data.status}`;
+        })
+        .catch((error) => {
+          console.error('Error fetching bot status:', error);
+          document.getElementById('bot-status').textContent =
+            'Error fetching bot status';
+        });
+
+      // Fetch API Status
+      fetch('/api/controls/api/status')
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById(
+            'api-status'
+          ).textContent = `API Status: ${data.status}`;
+        })
+        .catch((error) => {
+          console.error('Error fetching API status:', error);
+          document.getElementById('api-status').textContent =
+            'Error fetching API status';
+        });
+
+      // Bot Control Actions
+      function controlBot(action) {
+        fetch(`/api/controls/bot/${action}`, {
+          method: 'POST',
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            location.reload(); // Refresh the page to update the status
+          })
+          .catch((error) => {
+            console.error(`Error performing ${action} on bot:`, error);
+            alert(`Failed to ${action} bot`);
+          });
+      }
+
+      // API Control Actions
+      function controlApi(action) {
+        fetch(`/api/controls/api/${action}`, {
+          method: 'POST',
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            alert(data.message);
+            location.reload(); // Refresh the page to update the status
+          })
+          .catch((error) => {
+            console.error(`Error performing ${action} on API:`, error);
+            alert(`Failed to ${action} API`);
+          });
+      }
+    </script>
+  </body>
+</html>

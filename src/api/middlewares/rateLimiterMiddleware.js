@@ -3,7 +3,7 @@ const logger = require('../services/loggerService');
 
 const rateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 450,
   message: 'Zu viele Anfragen von dieser IP, bitte versuche es später erneut.',
   headers: true,
   handler: (req, res, next, options) => {

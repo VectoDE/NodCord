@@ -6,10 +6,10 @@ router.get('/', organizationController.getAllOrganizations);
 
 router.get('/:id', organizationController.getOrganizationById);
 
-router.post('/', organizationController.createOrganization);
+router.post('/create', organizationController.createOrganization);
 
-router.put('/:id', organizationController.updateOrganization);
+router.put('/update/:id', organizationController.updateOrganization);
 
-router.delete('/:id', organizationController.deleteOrganization);
+router.delete('/delete/:id', organizationController.deleteOrganization);
 
 module.exports = router;

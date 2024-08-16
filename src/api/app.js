@@ -113,7 +113,7 @@ api.use('/api/products', productRoutes);
 api.use('/api/orders', orderRoutes);
 api.use('/api/returns', returnRoutes);
 api.use('/api/tickets', ticketRoutes);
-api.use('/api/feedback', feedbackRoutes);
+api.use('/api/feedbacks', feedbackRoutes);
 api.use('/api/controls', controlRoutes);
 api.use('/api/securities', securityRoutes);
 api.use('/api/logs', logRoutes);
@@ -140,7 +140,8 @@ api.use((req, res, next) => {
 
 api.use((err, req, res, next) => {
   const statusCode = err.status || 500;
-  res.status(statusCode).json({
+  res.status(statusCode);
+  res.render('error', {
     errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
     errormessage: err.message,
     errorstatus: statusCode,

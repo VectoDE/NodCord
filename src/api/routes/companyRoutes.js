@@ -4,12 +4,12 @@ const companyController = require('../controllers/companyController');
 
 router.get('/', companyController.listCompanies);
 
-router.post('/', companyController.createCompany);
+router.post('/create', companyController.createCompany);
 
 router.get('/:companyId', companyController.getCompanyDetails);
 
-router.put('/update', companyController.updateCompany);
+router.put('/update/:id', companyController.updateCompany);
 
-router.delete('/delete', companyController.deleteCompany);
+router.delete('/delete/:id', companyController.deleteCompany);
 
 module.exports = router;

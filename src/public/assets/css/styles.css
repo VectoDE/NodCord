@@ -15,5 +15,5 @@ body {
 }
 
 main {
-  flex: 1; /* Dieser flex-Wert sorgt dafür, dass der Hauptinhalt den verfügbaren Platz einnimmt */
+  flex: 1;
 }

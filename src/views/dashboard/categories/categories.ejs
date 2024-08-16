@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Categories</title>
+</head>
+<body>
+  <%- include('../../partials/header'); %>
+  <main>
+    <h1>Categories</h1>
+    <a href="/dashboard/categories/create">Create New Category</a>
+    <ul>
+        <% categories.forEach(category => { %>
+            <li>
+                <strong><%= category.name %></strong> - <%= category.description %>
+                <a href="/dashboard/categories/update/<%= category._id %>">Edit</a>
+                <form action="/api/categories/delete/<%= category._id %>" method="POST" style="display:inline;">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+  </main>
+</body>
+</html>

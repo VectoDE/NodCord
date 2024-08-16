@@ -4,7 +4,7 @@ const logger = require('../services/loggerService');
 const compressionMiddleware = (req, res, next) => {
   const compressionOptions = {
     level: 6, // 0 (keine Komprimierung) bis 9 (maximale Komprimierung)
-    threshold: 1000, // > 1000 Bytes
+    threshold: 10000, // > 1000 Bytes
   };
 
   logger.info(

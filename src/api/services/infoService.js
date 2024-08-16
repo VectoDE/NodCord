@@ -28,7 +28,7 @@ async function getSystemInfo() {
     };
   } catch (error) {
     logger.error('Error fetching system information:', error);
-    throw error; // Optional: Re-throw the error if needed
+    throw error;
   }
 }
 

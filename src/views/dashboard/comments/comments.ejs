@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comments</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+      }
+      h1 {
+        text-align: center;
+      }
+      .comment-list {
+        margin: 20px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
+      }
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+      th {
+        background-color: #f4f4f4;
+      }
+      .actions a {
+        margin-right: 10px;
+        text-decoration: none;
+        color: #007bff;
+      }
+    </style>
+  </head>
+  <body>
+    <%- include('../../partials/header'); %>
+    <main>
+      <h1>Comments for Blog: <%= blogTitle %></h1>
+      <div class="comment-list">
+        <% if (comments.length > 0) { %>
+        <table>
+          <thead>
+            <tr>
+              <th>Author</th>
+              <th>Content</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% comments.forEach(comment => { %>
+            <tr>
+              <td><%= comment.author.name %></td>
+              <td><%= comment.content %></td>
+              <td class="actions">
+                <a href="/dashboard/comments/<%= comment._id %>/edit">Edit</a>
+                <a href="/api/comments/delete/<%= comment._id %>">Delete</a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p>No comments available.</p>
+        <% } %>
+      </div>
+      <a href="/dashboard/comments/create?blogId=<%= blogId %>"
+        >Create New Comment</a
+      >
+    </main>
+  </body>
+</html>

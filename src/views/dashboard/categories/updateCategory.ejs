@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Category</title>
+    <title>Update Category</title>
 </head>
 <body>
   <%- include('../../partials/header'); %>
   <main>
-    <h1>Create New Category</h1>
-    <form action="/api/categories/create" method="POST">
+    <h1>Update Category</h1>
+    <form action="/api/categories/update/<%= category._id %>" method="POST">
         <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+        <input type="text" id="name" name="name" value="<%= category.name %>" required><br>
         <label for="description">Description:</label>
-        <input type="text" id="description" name="description"><br>
-        <button type="submit">Create Category</button>
+        <input type="text" id="description" name="description" value="<%= category.description %>"><br>
+        <button type="submit">Update Category</button>
     </form>
     <a href="/dashboard/categories">Back to Categories</a>
   </main>

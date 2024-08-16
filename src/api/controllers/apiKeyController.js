@@ -54,3 +54,23 @@ exports.getApiKeys = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
+exports.updateApiKey = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name } = req.body;
+
+    const apiKey = await ApiKey.findByIdAndUpdate(id, { name }, { new: true });
+
+    if (!apiKey) {
+      logger.warn('API key not found for update:', { apiKeyId: id });
+      return res.status(404).json({ message: 'API key not found' });
+    }
+
+    logger.info('API key updated successfully:', { apiKeyId: apiKey._id });
+    res.status(200).json({ message: 'API key updated', apiKey });
+  } catch (error) {
+    logger.error('Error updating API key:', error.message);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};

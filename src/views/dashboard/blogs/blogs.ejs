@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Übersicht</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+  </head>
+  <body>
+    <%- include('../../partials/header'); %>
+    <main>
+      <div class="container">
+        <h1 class="mt-5">Blog Übersicht</h1>
+        <a href="/dashboard/blogs/create" class="btn btn-primary mb-3"
+          >Neuen Blog erstellen</a
+        >
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Tags</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% blogs.forEach(blog => { %>
+            <tr>
+              <td><%= blog.title %></td>
+              <td><%= blog.author %></td>
+              <td><%= blog.tags.join(', ') %></td>
+              <td>
+                <a
+                  href="/dashboard/blogs/update/<%= blog._id %>"
+                  class="btn btn-warning btn-sm"
+                  >Bearbeiten</a
+                >
+                <form
+                  action="/api/blogs/delete/<%= blog._id %>"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    Löschen
+                  </button>
+                </form>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </main>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
+</html>

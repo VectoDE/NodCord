@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Update API Key - NodCord</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <%- include('../../partials/header'); %>
+    <main>
+      <div class="container">
+        <h1>Update API Key</h1>
+        <form action="/api/apikeys/update/<%= apiKey._id %>" method="POST">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value="<%= apiKey.name %>"
+              class="form-control"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Update</button>
+          <a href="/dashboard/apiKeys" class="btn btn-secondary"
+            >Back to API Keys</a
+          >
+        </form>
+      </div>
+    </main>
+  </body>
+  <script src="/assets/js/script.js"></script>
+</html>

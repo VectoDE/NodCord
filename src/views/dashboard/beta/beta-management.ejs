@@ -15,34 +15,20 @@
   </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo"></a>
-      <span>NodCord</span>
-    </div>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/docs">Documentation</a>
-      <a href="/status">Status</a>
-      <a href="/info">Info</a>
-      <a href="/routes">Routes</a>
-      <a href="/discord-members">Discord Members</a>
-      <a href="/discord-servers">Discord Servers</a>
-      <% if (!isAuthenticated) { %>
-        <a href="/login">Login</a>
-        <a href="/register">Register</a>
-      <% } else { %>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout">Logout</a>
-      <% } %>
-    </nav>
-  </header>
+  <%- include('../../partials/header'); %>
   <main>
     <div class="container">
       <h1 class="mt-5">Beta Management</h1>
 
       <div class="alert alert-info" role="alert">
-        Beta-System Status: <strong><%= betaSystem.isActive ? 'Aktiv' : 'Inaktiv' %></strong>
+        Beta-System Status:
+        <strong>
+          <% if (betaSystem) { %>
+            <%= betaSystem.isActive ? 'Aktiv' : 'Inaktiv' %>
+          <% } else { %>
+            Nicht verfügbar
+          <% } %>
+        </strong>
       </div>
 
       <form id="betaSystemForm" method="POST" action="/api/beta/toggle">

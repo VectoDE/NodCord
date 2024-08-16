@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Users</title>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <%- include('../../partials/header'); %>
+    <main>
+      <div class="container">
+        <h1>Users</h1>
+        <table>
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (users && users.length > 0) { %> <% users.forEach(user => { %>
+            <tr>
+              <td><%= user.username %></td>
+              <td><%= user.email %></td>
+              <td>
+                <a href="/dashboard/users/<%= user._id %>/edit">Edit</a>
+                <form
+                  action="/api/users/delete/<%= user._id %>"
+                  method="POST"
+                  style="display: inline"
+                >
+                  <button type="submit">Delete</button>
+                </form>
+              </td>
+            </tr>
+            <% }) %> <% } else { %>
+            <tr>
+              <td colspan="3">No users found.</td>
+            </tr>
+            <% } %>
+          </tbody>
+        </table>
+        <a href="/dashboard/users/create">Create New User</a>
+      </div>
+    </main>
+  </body>
+</html>

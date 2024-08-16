@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Company</title>
+    <title>Edit Company</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -42,26 +42,23 @@
   <body>
     <%- include('../../partials/header'); %>
     <main>
-      <h1>Create New Company</h1>
-      <form action="/api/companies/create" method="POST">
+      <h1>Edit Company</h1>
+      <form action="/api/companies/update/<%= company._id %>" method="POST">
+        <input type="hidden" name="companyId" value="<%= company._id %>" />
         <div>
           <label for="name">Name</label>
           <input
             type="text"
             id="name"
             name="name"
-            placeholder="Company Name"
+            value="<%= company.name %>"
             required
           />
         </div>
         <div>
           <label for="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            rows="5"
-            placeholder="Company Description"
-          ></textarea>
+          <textarea id="description" name="description" rows="5"><%= company.description %></textarea
+          >
         </div>
         <div>
           <label for="industry">Industry</label>
@@ -69,7 +66,7 @@
             type="text"
             id="industry"
             name="industry"
-            placeholder="Industry"
+            value="<%= company.industry %>"
           />
         </div>
         <div>
@@ -78,12 +75,17 @@
             type="text"
             id="headquarters"
             name="headquarters"
-            placeholder="Headquarters Location"
+            value="<%= company.headquarters %>"
           />
         </div>
         <div>
           <label for="foundedDate">Founded Date</label>
-          <input type="date" id="foundedDate" name="foundedDate" />
+          <input
+            type="date"
+            id="foundedDate"
+            name="foundedDate"
+            value="<%= company.foundedDate %>"
+          />
         </div>
         <div>
           <label for="employees">Number of Employees</label>
@@ -91,7 +93,7 @@
             type="number"
             id="employees"
             name="employees"
-            placeholder="Number of Employees"
+            value="<%= company.employees %>"
           />
         </div>
         <div>
@@ -100,10 +102,10 @@
             type="url"
             id="website"
             name="website"
-            placeholder="Website URL"
+            value="<%= company.website %>"
           />
         </div>
-        <button type="submit">Create Company</button>
+        <button type="submit">Update Company</button>
       </form>
     </main>
   </body>

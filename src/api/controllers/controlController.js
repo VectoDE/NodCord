@@ -52,6 +52,16 @@ exports.removeBotMaintenance = (req, res) => {
   }
 };
 
+exports.getBotStatus = (req, res) => {
+  try {
+    const status = botStatusService.getStatus();
+    res.status(200).json({ status });
+  } catch (error) {
+    logger.error('Error fetching bot status:', error);
+    res.status(500).json({ error: 'Failed to fetch bot status' });
+  }
+};
+
 exports.startApi = (req, res) => {
   try {
     apiStatusService.startApi();
@@ -99,5 +109,15 @@ exports.removeAPIMaintenance = (req, res) => {
   } catch (error) {
     logger.error('Error removing API maintenance mode:', error);
     res.status(500).json({ error: 'Failed to remove API maintenance mode' });
+  }
+};
+
+exports.getApiStatus = (req, res) => {
+  try {
+    const status = apiStatusService.getStatus();
+    res.status(200).json({ status });
+  } catch (error) {
+    logger.error('Error fetching API status:', error);
+    res.status(500).json({ error: 'Failed to fetch API status' });
   }
 };

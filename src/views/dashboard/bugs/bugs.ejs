@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bug Tracker</title>
+  </head>
+  <body>
+    <%- include('../../partials/header'); %>
+    <main>
+      <h1>All Bugs</h1>
+      <a href="/dashboard/bugs/create">Create New Bug</a>
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Severity</th>
+            <th>Status</th>
+            <th>Project</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (bugs && bugs.length > 0) { %> <% bugs.forEach(function(bug) {
+          %>
+          <tr>
+            <td><%= bug.title %></td>
+            <td><%= bug.description %></td>
+            <td><%= bug.severity %></td>
+            <td><%= bug.status %></td>
+            <td><%= bug.project.name %></td>
+            <td>
+              <a href="/dashboard/bugs/update/<%= bug._id %>">Edit</a>
+              <form
+                action="/api/bugs/delete/<%= bug._id %>"
+                method="POST"
+                style="display: inline"
+              >
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }); %> <% } else { %>
+          <tr>
+            <td colspan="6">No bugs found.</td>
+          </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
