@@ -76,6 +76,7 @@ const faceitRoutes = require('./routes/faceitRoutes');
 const steamRoutes = require('./routes/steamRoutes');
 const cloudNetRoutes = require('./routes/cloudnetRoutes');
 const tournamentRoutes = require('./routes/tournamentRoutes');
+const teamspeakRoutes = require('./routes/teamspeakRoutes');
 const logRoutes = require('./routes/logRoutes');
 
 api.use('/api/auth', authRoutes);
@@ -122,6 +123,7 @@ api.use('/api/faceit', faceitRoutes);
 api.use('/api/steam', steamRoutes);
 api.use('/api/cloudnet', cloudNetRoutes);
 api.use('/api/tournaments', tournamentRoutes);
+api.use('/api/teamspeak', teamspeakRoutes);
 api.use('/api/files', fileRoutes);
 
 const indexRoutes = require('./routes/indexRoutes');

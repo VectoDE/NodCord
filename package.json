@@ -5,23 +5,12 @@
   "main": "src/app.js",
   "scripts": {
     "start": "node src/server.js",
-    "start-frontend": "react-scripts start",
     "dev": "nodemon src/server.js",
     "build-complete": "node build.js",
-    "build-frontend": "webpack --config webpack.config.js",
     "build-backend": "",
     "start:prod": "node build/start.js",
     "test": "jest",
-    "test-frontend": "react-scripts test",
-    "prettify": "prettier --write .",
-    "build": "react-scripts build",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "prettify": "prettier --write ."
   },
   "browserslist": {
     "production": [
@@ -112,6 +101,8 @@
     "morgan": "^1.10.0",
     "msal-node": "^0.0.1-security",
     "multer": "^1.4.4",
+    "net-tools": "^1.0.1",
+    "node-teamspeak": "^1.0.10",
     "nodemailer": "^6.9.14",
     "os": "^0.1.2",
     "passport": "^0.6.0",
@@ -124,8 +115,6 @@
     "paypal-rest-sdk": "^1.8.1",
     "pm2": "^5.1.2",
     "rate-limiter-flexible": "^2.3.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
     "redis": "^4.7.0",
     "redis-server": "^1.2.2",
     "sharp": "^0.33.4",
@@ -137,17 +126,12 @@
     "systeminformation": "^5.23.2",
     "uuid": "^10.0.0",
     "validator": "^13.7.0",
-    "winston": "^3.13.1",
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "winston": "^3.13.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/preset-env": "^7.25.3",
-    "@babel/preset-react": "^7.24.7",
     "@types/connect-flash": "^0.0.40",
     "babel-loader": "^8.3.0",
     "css-loader": "^6.11.0",
