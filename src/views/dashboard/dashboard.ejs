@@ -269,16 +269,7 @@
   <footer>
     <p>&copy; <%= new Date().getFullYear() %> <a href="/">NodCord</a>. Alle Rechte vorbehalten.</p>
   </footer>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', (event) => {
-          const formId = event.target.id;
-          document.getElementById(`${formId}-loading`).style.display = 'inline-block';
-        });
-      });
-    });
-  </script>
 </body>
-
+<script src="/assets/js/dashboard.js"></script>
+<script src="/assets/js/script.js"></script>
 </html>

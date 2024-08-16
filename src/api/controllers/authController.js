@@ -47,7 +47,7 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    const verificationLink = `${process.env.BASE_URL}/verify-email/${verificationToken}`;
+    const verificationLink = `${verificationToken}`;
 
     await nodemailerService.sendRegistrationVerificationEmail(
       user.email,
