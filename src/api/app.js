@@ -13,6 +13,8 @@ const rateLimiter = require('./middlewares/rateLimiterMiddleware');
 
 const api = express();
 
+api.set('trust proxy', 1);
+
 api.use(express.urlencoded({ extended: true }));
 api.use(express.json());
 api.use(cookieParser());
@@ -141,9 +143,10 @@ api.use((req, res, next) => {
 api.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   res.status(statusCode);
+  logger.error(`Error ${statusCode}: ${err.message}`, { stack: err.stack });
 
   if (req.xhr || req.headers.accept.includes('application/json')) {
-    res.json({
+    res.status(statusCode).json({
       error: {
         title: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
         message: err.message,
@@ -152,7 +155,7 @@ api.use((err, req, res, next) => {
       },
     });
   } else {
-    res.render('error', {
+    res.status(statusCode).render('error', {
       errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
       errormessage: err.message,
       errorstatus: statusCode,

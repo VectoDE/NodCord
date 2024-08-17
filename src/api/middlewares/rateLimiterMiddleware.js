@@ -6,6 +6,7 @@ const rateLimiter = rateLimit({
   max: 450,
   message: 'Zu viele Anfragen von dieser IP, bitte versuche es später erneut.',
   headers: true,
+  trustProxy: 1,
   handler: (req, res, next, options) => {
     logger.warn(`Rate limit exceeded for IP: ${req.ip}. ${options.message}`);
     res.status(options.statusCode || 429).send(options.message);
