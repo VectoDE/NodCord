@@ -97,14 +97,41 @@
     }
 
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
     }
 
     .loading-container {
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    /* Logs Section Styling */
+    .logs-container {
+      background-color: #f1f1f1;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+
+    .logs-container pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    .logs-site {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #555;
     }
   </style>
 </head>
@@ -118,39 +145,68 @@
       <div class="grid-container">
         <div class="grid-item">
           <h4>Beta Keys</h4>
-          <p>Anzahl: <%= betaKey.length %></p>
+          <p>Anzahl: <%= betaKey.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>API Keys</h4>
-          <p>Anzahl: <%= apiKey.length %></p>
+          <p>Anzahl: <%= apiKey.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Users</h4>
-          <p>Anzahl: <%= users.length %></p>
+          <p>Anzahl: <%= users.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Roles</h4>
-          <p>Anzahl: <%= roles.length %></p>
+          <p>Anzahl: <%= roles.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Categories</h4>
-          <p>Anzahl: <%= categories.length %></p>
+          <p>Anzahl: <%= categories.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Tickets</h4>
-          <p>Anzahl: <%= tickets.length %></p>
+          <p>Anzahl: <%= tickets.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Discord Servers</h4>
-          <p>Anzahl: <%= discordServers.length %></p>
+          <p>Anzahl: <%= discordServers.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Discord Members</h4>
-          <p>Anzahl: <%= discordMembers.length %></p>
+          <p>Anzahl: <%= discordMembers.length %>
+          </p>
         </div>
         <div class="grid-item">
           <h4>Bugs</h4>
-          <p>Anzahl: <%= bugs.length %></p>
+          <p>Anzahl: <%= bugs.length %>
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4>Blogs</h4>
+          <p>Anzahl: <%= blogs.length %>
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4>Comments</h4>
+          <p>Anzahl: <%= comments.length %>
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4>Companies</h4>
+          <p>Anzahl: <%= companies.length %>
+          </p>
+        </div>
+        <div class="grid-item">
+          <h4>Organizations</h4>
+          <p>Anzahl: <%= organizations.length %>
+          </p>
         </div>
       </div>
     </section>
@@ -158,9 +214,15 @@
     <!-- Status Section -->
     <section>
       <h3>System Status</h3>
-      <p>API Status: <strong><%= apiStatus %></strong></p>
-      <p>Bot Status: <strong><%= botStatus %></strong></p>
-      <p>Database Status: <strong><%= dbStatus %></strong></p>
+      <p>API Status: <strong>
+          <%= apiStatus %>
+        </strong></p>
+      <p>Bot Status: <strong>
+          <%= botStatus %>
+        </strong></p>
+      <p>Database Status: <strong>
+          <%= dbStatus %>
+        </strong></p>
     </section>
 
     <!-- API Control Section -->
@@ -168,31 +230,33 @@
       <h3>API Steuerung</h3>
       <div class="loading-container">
         <form id="start-api-form" action="/api/controls/api/start" method="POST">
-          <button type="submit" <% if (apiStatus === 'online') { %> disabled <% } %>>API starten</button>
+          <button type="submit" <% if (apiStatus==='online' ) { %> disabled <% } %>>API starten</button>
         </form>
         <div id="start-api-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="stop-api-form" action="/api/controls/api/stop" method="POST">
-          <button type="submit" <% if (apiStatus === 'offline') { %> disabled <% } %>>API stoppen</button>
+          <button type="submit" <% if (apiStatus==='offline' ) { %> disabled <% } %>>API stoppen</button>
         </form>
         <div id="stop-api-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="restart-api-form" action="/api/controls/api/restart" method="POST">
-          <button type="submit" <% if (apiStatus === 'offline') { %> disabled <% } %>>API neu starten</button>
+          <button type="submit" <% if (apiStatus==='offline' ) { %> disabled <% } %>>API neu starten</button>
         </form>
         <div id="restart-api-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="maintenance-api-form" action="/api/controls/api/maintenance" method="POST">
-          <button type="submit" <% if (apiStatus === 'maintenance') { %> disabled <% } %>>API Wartungsmodus aktivieren</button>
+          <button type="submit" <% if (apiStatus==='maintenance' ) { %> disabled <% } %>>API Wartungsmodus
+              aktivieren</button>
         </form>
         <div id="maintenance-api-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="remove-maintenance-api-form" action="/api/controls/api/remove-maintenance" method="POST">
-          <button type="submit" <% if (apiStatus !== 'maintenance') { %> disabled <% } %>>API Wartungsmodus deaktivieren</button>
+          <button type="submit" <% if (apiStatus !=='maintenance' ) { %> disabled <% } %>>API Wartungsmodus
+              deaktivieren</button>
         </form>
         <div id="remove-maintenance-api-loading" class="loading"></div>
       </div>
@@ -203,31 +267,36 @@
       <h3>Bot Steuerung</h3>
       <div class="loading-container">
         <form id="start-form" action="/api/controls/bot/start" method="POST">
-          <button type="submit" <% if (botStatus === 'online' || botStatus === 'maintenance') { %> disabled <% } %>>Bot starten</button>
+          <button type="submit" <% if (botStatus==='online' || botStatus==='maintenance' ) { %> disabled <% } %>>Bot
+              starten</button>
         </form>
         <div id="start-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="stop-form" action="/api/controls/bot/stop" method="POST">
-          <button type="submit" <% if (botStatus === 'offline' || botStatus === 'maintenance') { %> disabled <% } %>>Bot stoppen</button>
+          <button type="submit" <% if (botStatus==='offline' || botStatus==='maintenance' ) { %> disabled <% } %>>Bot
+              stoppen</button>
         </form>
         <div id="stop-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="restart-form" action="/api/controls/bot/restart" method="POST">
-          <button type="submit" <% if (botStatus === 'offline' || botStatus === 'maintenance') { %> disabled <% } %>>Bot neu starten</button>
+          <button type="submit" <% if (botStatus==='offline' || botStatus==='maintenance' ) { %> disabled <% } %>>Bot
+              neu starten</button>
         </form>
         <div id="restart-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="maintenance-form" action="/api/controls/bot/maintenance" method="POST">
-          <button type="submit" <% if (botStatus === 'maintenance') { %> disabled <% } %>>Wartungsmodus aktivieren</button>
+          <button type="submit" <% if (botStatus==='maintenance' ) { %> disabled <% } %>>Wartungsmodus
+              aktivieren</button>
         </form>
         <div id="maintenance-loading" class="loading"></div>
       </div>
       <div class="loading-container">
         <form id="remove-maintenance-form" action="/api/controls/bot/remove-maintenance" method="POST">
-          <button type="submit" <% if (botStatus !== 'maintenance') { %> disabled <% } %>>Wartungsmodus deaktivieren</button>
+          <button type="submit" <% if (botStatus !=='maintenance' ) { %> disabled <% } %>>Wartungsmodus
+              deaktivieren</button>
         </form>
         <div id="remove-maintenance-loading" class="loading"></div>
       </div>
@@ -240,20 +309,43 @@
         <input type="file" name="file" required>
         <button type="submit">Datei hochladen</button>
       </form>
+      <h4>Hochgeladene Dateien:</h4>
+      <ul>
+        <% files.forEach(file=> { %>
+          <li>
+            <!-- Bildanzeige -->
+            <img src="<%= file.url %>" alt="<%= file.name %>" style="max-width: 200px; max-height: 200px;">
+            <br>
+            <!-- Dateiname -->
+            <strong>Name:</strong>
+            <%= file.name %> <br>
+              <!-- Erstellungsdatum -->
+              <strong>Erstellt am:</strong>
+              <%= file.createdAt %> <br>
+          </li>
+          <% }) %>
+      </ul>
     </section>
 
     <!-- System Logs Section -->
     <section>
       <h3>System Logs</h3>
-      <div>
+      <div class="logs-container">
+        <pre>
+          <% loggerLogs.forEach((log) => { %>
+            <%= log %>
+          <% }); %>
+        </pre>
+      </div>
+      <div class="logs-site">
         <a href="/dashboard/logs" target="_blank">Logs anzeigen</a>
       </div>
     </section>
+
   </main>
-  <footer>
-    <p>&copy; <%= new Date().getFullYear() %> <a href="/">NodCord</a>. Alle Rechte vorbehalten.</p>
-  </footer>
+  <%- include('../partials/footer'); %>
 </body>
 <script src="/assets/js/dashboard.js"></script>
 <script src="/assets/js/script.js"></script>
+
 </html>

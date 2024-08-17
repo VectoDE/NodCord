@@ -20,13 +20,7 @@ const uploadFile = async (req, res) => {
 
     await fileData.save();
 
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: 'File uploaded successfully',
-        file: fileData,
-      });
+    res.redirect('/dashboard');
   } catch (error) {
     logger.error('Error uploading file:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });

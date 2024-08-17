@@ -11,6 +11,7 @@ const logService = require('../services/logService');
 const bot = require('../../bot/index');
 const overviewControl = require('../helpers/overviewControl');
 const cloudnetController = require('../controllers/cloudnetController');
+
 const User = require('../../models/userModel');
 const Role = require('../../models/roleModel');
 const Category = require('../../models/categoryModel');
@@ -21,13 +22,13 @@ const ApiKey = require('../../models/apiKeyModel');
 const Blog = require('../../models/blogModel');
 const Bug = require('../../models/bugModel');
 const Company = require('../../models/companyModel');
-
 const Organization = require('../../models/organizationModel');
+const Comment = require('../../models/commentModel');
+const FileUpload = require('../../models/fileModel');
 
-// Auth Middleware
 router.use(authMiddleware(true));
 
-// Dashboard-Route
+// Dashboard Overview
 router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBetaSystemStatus, betaMiddleware.checkBetaKeyValidity, async (req, res) => {
   try {
     const botStatus = await botStatusService.getStatus();
@@ -41,9 +42,16 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
     const categories = await Category.find();
     const tickets = await Ticket.find();
     const bugs = await Bug.find();
-
+    const blogs = await Blog.find();
+    const comments = await Comment.find();
+    const companies = await Company.find();
+    const organizations = await Organization.find();
     const discordServers = await bot.getServers();
     const discordMembers = await bot.getMembers();
+
+    const files = await FileUpload.find();
+
+    const loggerLogs = await logService.getRecentLoggerLogs(20);
 
     res.render('dashboard/dashboard', {
       botStatus,
@@ -56,16 +64,21 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       categories,
       tickets,
       bugs,
+      blogs,
+      comments,
+      companies,
+      organizations,
       discordServers,
       discordMembers,
+      files,
+      loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
     });
   } catch (error) {
     console.error('Fehler beim Abrufen des Status:', error);
     res.status(500).send('Fehler beim Abrufen des Status');
   }
-}
-);
+});
 
 // Api Key CRUD
 router.get('/apiKeys', roleMiddleware(['admin', 'moderator']), async (req, res) => {

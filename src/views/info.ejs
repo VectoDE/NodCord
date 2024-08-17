@@ -64,16 +64,16 @@
       <h1>NodCord Information</h1>
       <div class="info-item">
         <h2>Bot Information</h2>
-        <p><strong>Bot Name:</strong> <%= bot.name || 'N/A' %></p>
-        <p><strong>Bot Username:</strong> <%= bot.username || 'N/A' %></p>
-        <p><strong>Bot ID:</strong> <%= bot.id || 'N/A' %></p>
-        <p><strong>Bot Token:</strong> <%= bot.token ? '*****' : 'N/A' %></p>
+        <p><strong>Name:</strong> <%= bot.name || 'N/A' %></p>
+        <p><strong>Username:</strong> <%= bot.username || 'N/A' %></p>
+        <p><strong>Token:</strong> <%= bot.token ? '*****' : 'N/A' %></p> <!-- Masked for security -->
         <p><strong>Connected Servers:</strong> <%= bot.guildsCount || 'N/A' %></p>
       </div>
       <div class="info-item">
         <h2>API Information</h2>
-        <p><strong>API Version:</strong> <%= api.version || 'N/A' %></p>
-        <p><strong>API Base URL:</strong> <%= api.baseUrl || 'N/A' %></p>
+        <p><strong>Version:</strong> <%= api.version || 'N/A' %></p>
+        <p><strong>Status:</strong> <%= api.apiStatus || 'N/A' %></p>
+        <p><strong>Base URL:</strong> <%= api.baseUrl || 'N/A' %></p>
         <p><strong>Environment:</strong> <%= api.environment || 'N/A' %></p>
         <p><strong>Database Status:</strong> <%= api.dbStatus || 'N/A' %></p>
       </div>
@@ -103,9 +103,7 @@
       </div>
     </div>
   </main>
-  <footer>
-    <p>&copy; <%= new Date().getFullYear() %> <a href="/">NodCord</a>. Alle Rechte vorbehalten.</p>
-  </footer>
+  <%- include('./partials/footer'); %>
 </body>
 <script src="assets/js/script.js"></script>
 </html>

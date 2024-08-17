@@ -7,7 +7,7 @@
     <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
     <link rel="stylesheet" href="/assets/css/styles.css" />
     <style>
-      body {
+      main {
         font-family: Arial, sans-serif;
         background-color: #f2f2f2;
         color: #333;
@@ -64,17 +64,20 @@
   </head>
 
   <body>
-    <div class="container">
-      <h1><%= errortitle %></h1>
-      <p>Oops! Something went wrong.</p>
-      <div class="error-message"><%= errormessage %></div>
-      <% if (errorstatus) { %>
-      <p>Status: <%= errorstatus %></p>
-      <% } %> <% if (errorstack) { %>
-      <pre><%= errorstack %></pre>
-      <% } %>
-      <a href="/">Go Back to Home</a>
-    </div>
-    <script src="/assets/js/script.js"></script>
+    <main>
+      <div class="container">
+        <h1><%= errortitle %></h1>
+        <p>Oops! Something went wrong.</p>
+        <div class="error-message"><%= errormessage %></div>
+        <% if (errorstatus) { %>
+        <p>Status: <%= errorstatus %></p>
+        <% } %> <% if (errorstack) { %>
+        <pre><%= errorstack %></pre>
+        <% } %>
+        <a href="/">Go Back to Home</a>
+      </div>
+    </main>
+    <%- include('./partials/footer'); %>
   </body>
+  <script src="/assets/js/script.js"></script>
 </html>

@@ -141,12 +141,24 @@ api.use((req, res, next) => {
 api.use((err, req, res, next) => {
   const statusCode = err.status || 500;
   res.status(statusCode);
-  res.render('error', {
-    errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
-    errormessage: err.message,
-    errorstatus: statusCode,
-    errorstack: api.get('env') === 'development' ? err.stack : null,
-  });
+
+  if (req.xhr || req.headers.accept.includes('application/json')) {
+    res.json({
+      error: {
+        title: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
+        message: err.message,
+        status: statusCode,
+        stack: api.get('env') === 'development' ? err.stack : null,
+      },
+    });
+  } else {
+    res.render('error', {
+      errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
+      errormessage: err.message,
+      errorstatus: statusCode,
+      errorstack: api.get('env') === 'development' ? err.stack : null,
+    });
+  }
 });
 
 const startApp = () => {

@@ -68,6 +68,7 @@ router.get('/info', async (req, res) => {
       version: serverConfig.version || 'N/A',
       baseUrl: apiConfig.baseURL || 'N/A',
       environment: serverConfig.environment || 'N/A',
+      dbStatus: dbStatusService.getStatus() || 'N/A',
       apiStatus: apiStatusService.getStatus() || 'N/A',
     };
 

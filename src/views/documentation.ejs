@@ -114,21 +114,24 @@
       <section id="overview">
         <h1>Overview</h1>
         <p>Welcome to the NodCord documentation. NodCord is a versatile and powerful Discord bot framework that simplifies the process of creating and managing your own Discord bots.</p>
+        <p>With NodCord, you can easily set up, configure, and deploy bots that interact with Discord servers, providing a seamless integration experience. This documentation will guide you through the installation, configuration, and usage of NodCord, along with detailed information about its API.</p>
       </section>
       <section id="installation">
         <h2>Installation</h2>
-        <p>To install NodCord, you need to have Node.js and npm installed on your system. Run the following command to install NodCord:</p>
+        <p>To install NodCord, ensure you have Node.js and npm installed on your system. Run the following command to install NodCord:</p>
         <pre><code>npm install nodcord</code></pre>
+        <p>Once installed, you can start building your bot with ease using the features provided by NodCord.</p>
       </section>
       <section id="configuration">
         <h2>Configuration</h2>
-        <p>After installation, you need to configure NodCord. Create a <code>.env</code> file in your project directory and add the following:</p>
+        <p>After installation, you need to configure NodCord to work with your Discord bot. Create a <code>.env</code> file in your project directory and add the following environment variables:</p>
         <pre><code>DISCORD_TOKEN=your_discord_token_here
 BOT_PREFIX=!</code></pre>
+        <p>These variables will be used by NodCord to authenticate your bot with Discord and to set the command prefix for the bot's interactions.</p>
       </section>
       <section id="usage">
         <h2>Usage</h2>
-        <p>To start using NodCord, create an <code>index.js</code> file and add the following code:</p>
+        <p>To start using NodCord, create an <code>index.js</code> file and add the following code to initialize your bot:</p>
         <pre><code>const { Client, GatewayIntentBits } = require('nodcord');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
 
@@ -137,6 +140,7 @@ client.on('ready', () => {
 });
 
 client.login(process.env.DISCORD_TOKEN);</code></pre>
+        <p>This script sets up a basic bot that logs in to Discord using the token you provided and outputs a message when it is successfully connected.</p>
       </section>
       <section id="api">
         <h2>API Reference</h2>
@@ -145,25 +149,32 @@ client.login(process.env.DISCORD_TOKEN);</code></pre>
           <li><code>client.on(event, listener)</code> - Listens for a specific event.</li>
           <li><code>client.login(token)</code> - Logs in to Discord with the provided token.</li>
           <li><code>client.user.setActivity(activity)</code> - Sets the bot's activity status.</li>
+          <li><code>client.guilds.cache</code> - Accesses the cache of guilds (servers) the bot is part of.</li>
+          <li><code>client.channels.cache</code> - Accesses the cache of channels within the bot's guilds.</li>
+          <li><code>client.users.cache</code> - Accesses the cache of users that the bot has interacted with.</li>
         </ul>
+        <p>For more detailed information, refer to the full API documentation included in the NodCord package or visit the official NodCord GitHub repository.</p>
       </section>
       <section id="faq">
         <h2>FAQ</h2>
         <p>Here are some frequently asked questions about NodCord:</p>
         <h3>What is NodCord?</h3>
-        <p>NodCord is a framework for creating Discord bots with ease.</p>
+        <p>NodCord is a framework for creating Discord bots with ease. It provides a robust API and tools to help developers build and manage bots quickly.</p>
         <h3>How do I install NodCord?</h3>
-        <p>Run <code>npm install nodcord</code> to install NodCord.</p>
+        <p>To install NodCord, run the command <code>npm install nodcord</code> in your Node.js project.</p>
+        <h3>Where can I find more information about the API?</h3>
+        <p>The API reference is included in this documentation and can also be found in the NodCord GitHub repository, where you can access the full list of available methods and features.</p>
+        <h3>How do I configure my bot?</h3>
+        <p>Configuration is done using a <code>.env</code> file where you define your Discord token and bot prefix. This file should be placed in the root directory of your project.</p>
       </section>
       <section id="contact">
         <h2>Contact</h2>
-        <p>If you have any questions, feel free to reach out to us at <a href="mailto:support@nodcord.com">support@nodcord.com</a>.</p>
+        <p>If you have any questions or need support, feel free to reach out to us at <a href="mailto:support@nodcord.com">support@nodcord.com</a>. We are here to help you with any issues you might encounter while using NodCord.</p>
+        <p>You can also contribute to the development of NodCord by visiting our GitHub repository and submitting issues or pull requests. We appreciate all contributions!</p>
       </section>
     </main>
   </div>
-  <footer>
-    <p>&copy; <%= new Date().getFullYear() %> <a href="/">NodCord</a>. Alle Rechte vorbehalten.</p>
-  </footer>
+  <%- include('./partials/footer'); %>
 </body>
 <script src="assets/js/script.js"></script>
 </html>
