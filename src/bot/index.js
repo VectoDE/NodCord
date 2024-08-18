@@ -22,10 +22,12 @@ const client = new Client({
 client.commands = new Collection();
 client.prefix = new Map();
 
+// Services & Config
 require('dotenv').config();
 const botConfig = require('../config/botConfig');
 const logger = require('../api/services/loggerService');
 
+// Handle functions
 const functions = fs
   .readdirSync('./src/bot/functions')
   .filter((file) => file.endsWith('.js'));
@@ -42,6 +44,7 @@ for (arx of prefixFolders) {
   client.prefix.set(Cmd.name, Cmd);
 }
 
+// Handle start
 const start = () => {
   (async () => {
     for (file of functions) {
@@ -55,6 +58,7 @@ const start = () => {
   })();
 };
 
+// Get informations to frontend
 const getBots = async () => {
   let botData = [];
   try {
@@ -136,6 +140,7 @@ const getServers = async () => {
   return serverData;
 };
 
+// Prefix Command Handler
 client.on('messageCreate', async (message) => {
   const prefix = process.env.BOT_PREFIX;
 
@@ -148,6 +153,7 @@ client.on('messageCreate', async (message) => {
   }
 });
 
+// Join Role System
 const joinrole = require('../models/joinroleModel');
 client.on(Events.GuildMemberAdd, async (member, guild) => {
   const role = await joinrole.findOne({ Guild: member.guild.id });
@@ -156,6 +162,7 @@ client.on(Events.GuildMemberAdd, async (member, guild) => {
   member.roles.add(giverole);
 });
 
+// Anti Link System
 const linkSchema = require('../models/linkModel');
 client.on(Events.MessageCreate, async (message) => {
   if (
@@ -185,6 +192,90 @@ client.on(Events.MessageCreate, async (message) => {
     }
   }
 });
+
+// AFK System
+const afkSchema = require('../models/afkModel');
+client.on(Events.MessageCreate, async message => {
+  if(message.author.bot) return;
+  const check = await afkSchema.findOne({ Guild: message.guild.id, User: message.author.id });
+  if(check) {
+    await afkSchema.deleteMany({ Guild: message.guild.id, User: message.author.id });
+    const m1 = await message.reply({ content: `Welcome back, ${message.author}! I have removed your AFK.` });
+  } else {
+    const members = message.mentions.users.first();
+    if(!members) return;
+    const Data = await afkSchema.findOne({ Guild: message.guild.id, User: members.id });
+    if(!Data) return;
+
+    const member = message.guild.members.cache.get(members.id);
+    const msg = Data.Message || "I'm AFK!";
+    if(message.content.includes(members)) {
+      const m = await message.reply({ content: `${member.user.tag} is currently AFK - Reason: **${msg}**.` })
+    }
+  }
+});
+
+// Embed Builder
+client.on(Events.InteractionCreate, async (interaction) => {
+  if(!interaction.isModalSubmit()) return;
+
+  if(interaction.customId == 'modal') {
+    const title = interaction.fields.getTextInputValue('title');
+    const description = interaction.fields.getTextInputValue('description');
+    const color = interaction.fields.getTextInputValue('color');
+    const image = interaction.fields.getTextInputValue('image_link');
+    const thumbnail_link = interaction.fields.getTextInputValue('thumbnail_link');
+
+    const embed = new EmbedBuilder()
+    .setTitle(`${title}`)
+    .setDescription(`${description}`)
+    .setColor(`${color}`)
+    .setImage(`${image}`)
+    .setThumbnail(`${thumbnail_link}`);
+
+    await interaction.reply({ embeds: [embed] });
+  }
+});
+
+// Autoresponder System
+const responderSchema = require('../models/autoresponderModel');
+client.on('messageCreate', async (message) => {
+  const data = await responderSchema.findOne({ guildId: message.guild.id });
+  if(!data) return;
+  if(message.author.bot) return;
+
+  const msg = message.content;
+  for (const d of data.autoresponses) {
+    const trigger = d.trigger;
+    const response = d.response;
+
+    if(msg === trigger) {
+      message.reply(response)
+      break;
+    }
+  }
+});
+
+// Bad Words System
+const WordSchema = require('../models/wordSchema');
+client.on('messageCreate', async (message) => {
+  if(message.author.bot || !message.guild) return;
+
+  const guildId = message.guild.id;
+  const content = message.content.toLowerCase();
+
+  try {
+    const bannedWords = await WordSchema.find({ guildId });
+    const foundBannedWord = bannedWords.some(wordObj => content.includes(wordObj.word.toLowerCase()));
+
+    if(foundBannedWord) {
+      await message.delete();
+      await message.author.send('Your message contained a banned word and has been deleted.')
+    }
+  } catch (error) {
+    console.error('Error checking banned words:', error);
+  }
+})
 
 module.exports = {
   start,
