@@ -1,10 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
   .setName('membercount')
   .setDescription('Shows number of members in the server.')
-  .setDefaultMemberPermissions(PermissionsFlagsBits.SendMessages),
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.SendMessages),
   async execute(interaction, client) {
     const embed = new EmbedBuilder()
     .setTitle(`${interaction.guild.name}`)

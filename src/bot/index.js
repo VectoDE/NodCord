@@ -163,7 +163,7 @@ client.on(Events.GuildMemberAdd, async (member, guild) => {
 });
 
 // Anti Link System
-const linkSchema = require('../models/linkModel');
+const linkSchema = require('../models/antilinkModel');
 client.on(Events.MessageCreate, async (message) => {
   if (
     message.content.startsWith('http') ||
@@ -257,7 +257,7 @@ client.on('messageCreate', async (message) => {
 });
 
 // Bad Words System
-const WordSchema = require('../models/wordSchema');
+const WordSchema = require('../models/wordModel');
 client.on('messageCreate', async (message) => {
   if(message.author.bot || !message.guild) return;
 

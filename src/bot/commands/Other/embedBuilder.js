@@ -1,9 +1,9 @@
-const { SlashCommandBuilder, PermissionsFlagsBits, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionsBitField, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
   .setName('embed-builder')
-  .setDefaultMemberPermissions(PermissionsFlagsBits.Administrator)
+  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
   .setDescription('Build your embeds using modals.'),
   async execute(interaction) {
     const modal = new ModalBuilder()
