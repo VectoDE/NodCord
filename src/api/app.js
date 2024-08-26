@@ -6,7 +6,6 @@ const morgan = require('morgan');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
 const logger = require('./services/loggerService');
-
 const corsMiddleware = require('./middlewares/corsMiddleware');
 const compressionMiddleware = require('./middlewares/compressionMiddleware');
 const rateLimiter = require('./middlewares/rateLimiterMiddleware');
@@ -73,6 +72,7 @@ const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 const proxmoxRoutes = require('./routes/proxmoxRoutes');
+const appleRoutes = require('./routes/appleRoutes');
 const plexRoutes = require('./routes/plexRoutes');
 const faceitRoutes = require('./routes/faceitRoutes');
 const steamRoutes = require('./routes/steamRoutes');
@@ -120,6 +120,7 @@ api.use('/api/controls', controlRoutes);
 api.use('/api/securities', securityRoutes);
 api.use('/api/logs', logRoutes);
 api.use('/api/proxmox', proxmoxRoutes);
+api.use('/api/apple', appleRoutes);
 api.use('/api/plex', plexRoutes);
 api.use('/api/faceit', faceitRoutes);
 api.use('/api/steam', steamRoutes);
@@ -128,10 +129,17 @@ api.use('/api/tournaments', tournamentRoutes);
 api.use('/api/teamspeak', teamspeakRoutes);
 api.use('/api/files', fileRoutes);
 
+const maintenanceRoutes = require('./routes/maintenanceRoutes');
+api.use('/', maintenanceRoutes);
+
 const indexRoutes = require('./routes/indexRoutes');
+const legalRoutes = require('./routes/legalRoutes');
+const userProfileRoutes = require('./routes/userprofileRoutes');
 const dashRoutes = require('./routes/dashboardRoutes');
 
 api.use('/', indexRoutes);
+api.use('/legal', legalRoutes);
+api.use('/user', userProfileRoutes);
 api.use('/dashboard', dashRoutes);
 
 api.use((req, res, next) => {

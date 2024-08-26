@@ -2,7 +2,35 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const findOrCreate = require('mongoose-findorcreate');
 
+const socialLinksSchema = new mongoose.Schema({
+  facebook: { type: String, default: '' },
+  twitter: { type: String, default: '' },
+  linkedin: { type: String, default: '' },
+  instagram: { type: String, default: '' },
+  github: { type: String, default: '' },
+  discord: { type: String, default: '' },
+});
+
+const oauthProvidersSchema = new mongoose.Schema({
+  apple: {
+    id: { type: String, default: '' },
+    token: { type: String, default: '' }
+  },
+  github: {
+    id: { type: String, default: '' },
+    token: { type: String, default: '' }
+  },
+  google: {
+    id: { type: String, default: '' },
+    token: { type: String, default: '' }
+  },
+});
+
 const userSchema = new mongoose.Schema({
+  profilePicture: {
+    type: String,
+    required: false,
+  },
   fullname: {
     type: String,
     required: true,
@@ -16,6 +44,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    lowercase: true,
+    trim: true,
   },
   password: {
     type: String,
@@ -24,6 +54,20 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'user',
+    enum: ['user', 'admin', 'moderator'], // Beispielrollen
+  },
+  bio: {
+    type: String,
+    default: '',
+    trim: true,
+  },
+  socialLinks: {
+    type: socialLinksSchema,
+    default: {},
+  },
+  recentActivity: {
+    type: Date,
+    default: Date.now,
   },
   verificationToken: {
     type: String,
@@ -38,26 +82,8 @@ const userSchema = new mongoose.Schema({
     default: false,
   },
   oauthProviders: {
-    apple: {
-      id: String,
-      token: String,
-    },
-    github: {
-      id: String,
-      token: String,
-    },
-    google: {
-      id: String,
-      token: String,
-    },
-    microsoft: {
-      id: String,
-      token: String,
-    },
-    faceit: {
-      id: String,
-      token: String,
-    },
+    type: oauthProvidersSchema,
+    default: {},
   },
   apiKey: {
     type: mongoose.Schema.Types.ObjectId,
@@ -98,9 +124,13 @@ userSchema.pre('save', async function (next) {
     return next();
   }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 userSchema.methods.comparePassword = function (candidatePassword) {

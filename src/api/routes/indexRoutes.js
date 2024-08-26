@@ -1,5 +1,7 @@
 const express = require('express');
 const router = express.Router();
+const bodyParser = require('body-parser');
+const nodemailer = require('nodemailer');
 const botConfig = require('../../config/botConfig');
 const apiConfig = require('../../config/apiConfig');
 const serverConfig = require('../../config/serverConfig');
@@ -11,15 +13,35 @@ const dbStatusService = require('../services/dbStatusService');
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middlewares/authMiddleware');
 
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(authMiddleware(false));
 
-router.get('/', (req, res) => {
-  res.render('index', { isAuthenticated: res.locals.isAuthenticated });
+const transporter = nodemailer.createTransport({
+  host: process.env.CONTACT_SMTP_HOST,
+  port: process.env.CONTACT_SMTP_PORT,
+  secure: process.env.CONTACT_SMTP_SECURE === 'true',
+  auth: {
+    user: process.env.CONTACT_SMTP_USER,
+    pass: process.env.CONTACT_SMTP_PASS,
+  },
+});
+
+router.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
+
+router.get('/', async (req, res) => {
+  res.render('index', {
+    isAuthenticated: res.locals.isAuthenticated,
+    errorstack: null
+  });
 });
 
 router.get('/docs', (req, res) => {
   res.render('documentation', {
     isAuthenticated: res.locals.isAuthenticated,
+    errorstack: null
   });
 });
 
@@ -30,16 +52,16 @@ router.get('/status', async (req, res) => {
       apiStatus === 'online'
         ? 'API ist online'
         : apiStatus === 'maintenance'
-        ? 'API im Wartungsmodus'
-        : 'API ist offline';
+          ? 'API im Wartungsmodus'
+          : 'API ist offline';
 
     const botStatus = botStatusService.getStatus();
     const botStatusMessage =
       botStatus === 'online'
         ? 'Bot ist online'
         : botStatus === 'maintenance'
-        ? 'Bot im Wartungsmodus'
-        : 'Bot ist offline';
+          ? 'Bot im Wartungsmodus'
+          : 'Bot ist offline';
 
     const dbStatus = dbStatusService.getStatus();
     const dbStatusMessage =
@@ -53,6 +75,7 @@ router.get('/status', async (req, res) => {
       dbStatus,
       dbStatusMessage,
       isAuthenticated: res.locals.isAuthenticated,
+      errorstack: null
     });
   } catch (error) {
     console.error('Error fetching status:', error);
@@ -79,6 +102,7 @@ router.get('/info', async (req, res) => {
       api: apiInfo,
       system: systemInfo,
       isAuthenticated: res.locals.isAuthenticated,
+      errorstack: null
     });
   } catch (error) {
     console.error('Error fetching info:', error);
@@ -92,6 +116,7 @@ router.get('/discord-members', async (req, res) => {
     res.render('discordmembers', {
       servers,
       isAuthenticated: res.locals.isAuthenticated,
+      errorstack: null
     });
   } catch (error) {
     console.error('Error fetching servers:', error);
@@ -107,11 +132,50 @@ router.get('/discord-servers', async (req, res) => {
       servers,
       serverCount,
       isAuthenticated: res.locals.isAuthenticated,
+      errorstack: null
     });
   } catch (error) {
     console.error('Error fetching servers:', error);
     res.status(500).send('Internal Server Error');
   }
+});
+
+router.post('/contact', async (req, res) => {
+  const { name, email, message } = req.body;
+
+  const mailOptions = {
+    from: process.env.CONTACT_SMTP_USER,
+    to: process.env.CONTACT_EMAIL,
+    subject: `Kontaktanfrage von ${name}`,
+    text: `Name: ${name}\nE-Mail: ${email}\nNachricht:\n${message}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.redirect('/contact?success=true');
+  } catch (error) {
+    console.error('Fehler beim Senden der Nachricht:', error);
+    res.redirect('/contact?error=true');
+  }
+});
+
+router.get('/contact', async (req, res) => {
+  const successMessage = req.query.success === 'true' ? 'Vielen Dank für Ihre Nachricht. Wir werden uns bald bei Ihnen melden.' : null;
+  const errorMessage = req.query.error === 'true' ? 'Es gab ein Problem beim Senden Ihrer Nachricht. Bitte versuchen Sie es später erneut.' : null;
+
+  res.render('contact', {
+    isAuthenticated: res.locals.isAuthenticated,
+    successMessage,
+    errorMessage,
+    errorstack: null
+  });
+});
+
+router.get('/about', async (req, res) => {
+  res.render('about', {
+    isAuthenticated: res.locals.isAuthenticated,
+    errorstack: null
+  });
 });
 
 router.get('/login', (req, res) => {
@@ -124,6 +188,7 @@ router.get('/login', (req, res) => {
   res.render('auth/login', {
     isAuthenticated: res.locals.isAuthenticated,
     errorMessage: errorMessage,
+    errorstack: null
   });
 });
 
@@ -134,7 +199,11 @@ router.get('/register', (req, res) => {
 
   const errorMessage = req.query.errorMessage || null;
 
-  res.render('auth/register', { isAuthenticated: res.locals.isAuthenticated, errorMessage: errorMessage });
+  res.render('auth/register', {
+    isAuthenticated: res.locals.isAuthenticated,
+    errorMessage: errorMessage,
+    errorstack: null
+  });
 });
 
 router.get('/verify-email/:token', authController.verifyEmail);
@@ -143,6 +212,7 @@ router.get('/beta-verify', authMiddleware(true), (req, res) => {
   res.render('verification/beta-verify', {
     isAuthenticated: res.locals.isAuthenticated,
     error: req.query.error || null,
+    errorstack: null
   });
 });
 

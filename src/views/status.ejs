@@ -5,99 +5,71 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Status ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    main {
-      flex: 1;
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    section {
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      width: 100%;
-      max-width: 800px;
-    }
-
-    h2 {
-      border-bottom: 2px solid #eee;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-      font-size: 24px;
-      color: #333;
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      font-size: 18px;
-      margin: 20px 0;
-    }
-
     .status-dot {
       width: 30px;
       height: 30px;
       border-radius: 50%;
-      margin-right: 15px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-      position: relative;
-    }
-
-    .status-dot::after {
-      content: attr(data-status);
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      color: #fff;
-      font-size: 12px;
-      font-weight: bold;
-    }
-
-    .online {
-      background-color: green;
-    }
-
-    .maintenance {
-      background-color: yellow;
-    }
-
-    .offline {
-      background-color: red;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
 
-<body>
+<body class="bg-gray-100">
   <%- include('./partials/header'); %>
-  <main>
-    <section>
-      <h2>API Status</h2>
-      <div class="status">
-        <div class="status-dot <%= apiStatus %>" data-status="<%= apiStatusMessage || 'Unknown' %>"></div>
-        <span><%= apiStatusMessage || 'Unknown' %></span>
+  <main class="flex-1 p-8 flex flex-col items-center">
+    <section class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full">
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">API Status</h2>
+      <div class="flex items-center mb-6">
+        <div class="status-dot <%= apiStatus %> bg-gray-500 mr-4">
+          <% if (apiStatus === 'online') { %>
+            <i class="bi bi-check-circle text-white"></i>
+          <% } else if (apiStatus === 'maintenance') { %>
+            <i class="bi bi-exclamation-circle text-white"></i>
+          <% } else if (apiStatus === 'offline') { %>
+            <i class="bi bi-x-circle text-white"></i>
+          <% } %>
+        </div>
+        <span class="text-lg"><%= apiStatusMessage || 'Unknown' %></span>
       </div>
 
-      <h2>Database Status</h2>
-      <div class="status">
-        <div class="status-dot <%= dbStatus %>" data-status="<%= dbStatusMessage || 'Unknown' %>"></div>
-        <span><%= dbStatusMessage || 'Unknown' %></span>
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">Database Status</h2>
+      <div class="flex items-center mb-6">
+        <div class="status-dot <%= dbStatus %> bg-gray-500 mr-4">
+          <% if (dbStatus === 'online') { %>
+            <i class="bi bi-check-circle text-white"></i>
+          <% } else if (dbStatus === 'maintenance') { %>
+            <i class="bi bi-exclamation-circle text-white"></i>
+          <% } else if (dbStatus === 'offline') { %>
+            <i class="bi bi-x-circle text-white"></i>
+          <% } %>
+        </div>
+        <span class="text-lg"><%= dbStatusMessage || 'Unknown' %></span>
       </div>
 
-      <h2>Discord Bot Status</h2>
-      <div class="status">
-        <div class="status-dot <%= botStatus %>" data-status="<%= botStatusMessage || 'Unknown' %>"></div>
-        <span><%= botStatusMessage || 'Unknown' %></span>
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">Discord Bot Status</h2>
+      <div class="flex items-center mb-6">
+        <div class="status-dot <%= botStatus %> bg-gray-500 mr-4">
+          <% if (botStatus === 'online') { %>
+            <i class="bi bi-check-circle text-white"></i>
+          <% } else if (botStatus === 'maintenance') { %>
+            <i class="bi bi-exclamation-circle text-white"></i>
+          <% } else if (botStatus === 'offline') { %>
+            <i class="bi bi-x-circle text-white"></i>
+          <% } %>
+        </div>
+        <span class="text-lg"><%= botStatusMessage || 'Unknown' %></span>
       </div>
     </section>
   </main>
   <%- include('./partials/footer'); %>
+  <script src="/assets/js/script.js"></script>
 </body>
-<script src="/assets/js/script.js"></script>
+
 </html>

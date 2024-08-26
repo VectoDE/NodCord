@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile - <%= user.username %></title>
+  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <%- include('../partials/header'); %>
+  <main class="flex justify-center items-center min-h-screen">
+    <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit Profile</h1>
+
+      <form action="/user/profile/<%= user.username %>/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
+
+        <!-- Profile Picture Upload -->
+        <div>
+          <label for="profilePicture" class="block text-gray-700">Profile Picture</label>
+          <div class="flex items-center space-x-4 mt-2">
+            <img src="<%= user.profilePicture %>" alt="<%= user.fullName %>'s Profile Picture" class="w-16 h-16 rounded-full object-cover">
+            <input type="file" name="profilePicture" id="profilePicture" accept="image/*" class="w-full p-2 border border-gray-300 rounded">
+          </div>
+        </div>
+
+        <div>
+          <label for="fullname" class="block text-gray-700">Full Name</label>
+          <input type="text" name="fullname" id="fullname" value="<%= user.fullName %>" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+        </div>
+
+        <div>
+          <label for="email" class="block text-gray-700">Email</label>
+          <input type="email" name="email" id="email" value="<%= user.email %>" class="w-full p-2 border border-gray-300 rounded mt-1" required>
+        </div>
+
+        <div>
+          <label for="bio" class="block text-gray-700">Bio</label>
+          <textarea name="bio" id="bio" rows="4" class="w-full p-2 border border-gray-300 rounded mt-1"><%= user.bio %></textarea>
+        </div>
+
+        <div>
+          <label for="socialLinks" class="block text-gray-700">Social Links</label>
+          <div class="space-y-2">
+            <% const platforms = ['twitter', 'facebook', 'instagram', 'linkedin']; %>
+            <% platforms.forEach(platform => { %>
+              <div class="flex items-center space-x-2">
+                <i class="bi bi-<%= platform %>"></i>
+                <input type="url" name="socialLinks[<%= platform %>]" placeholder="<%= platform.charAt(0).toUpperCase() + platform.slice(1) %> URL" value="<%= user.socialLinks[platform] || '' %>" class="w-full p-2 border border-gray-300 rounded mt-1">
+              </div>
+            <% }); %>
+          </div>
+        </div>
+
+        <div>
+          <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+
+</html>

@@ -1,27 +1,84 @@
-<header>
-  <div class="logo">
-    <a href="/"><img src="/assets/img/logo.png" alt="NodCord Logo" /></a>
-    <span>NodCord</span>
+<header class="bg-gray-800 text-white shadow-md">
+  <div class="container mx-auto flex justify-between items-center p-4">
+    <!-- Logo Section -->
+    <div class="flex items-center">
+      <a href="/" class="flex items-center">
+        <img src="/assets/img/logo.png" alt="NodCord Logo" class="h-8 w-8 mr-2">
+        <span class="text-lg font-bold">NodCord</span>
+      </a>
+    </div>
+    <!-- Burger Icon -->
+    <div class="lg:hidden cursor-pointer" id="burger">
+      <div class="bg-white w-6 h-0.5 my-1"></div>
+      <div class="bg-white w-6 h-0.5 my-1"></div>
+      <div class="bg-white w-6 h-0.5 my-1"></div>
+    </div>
+    <!-- Navigation Menu -->
+    <nav class="hidden lg:flex space-x-4 items-center" id="navMenu">
+      <a href="/" class="hover:text-yellow-400 transition duration-300">Home</a>
+      <a href="/docs" class="hover:text-yellow-400 transition duration-300">Documentation</a>
+      <a href="/status" class="hover:text-yellow-400 transition duration-300">Status</a>
+      <a href="/info" class="hover:text-yellow-400 transition duration-300">Info</a>
+      <a href="/discord-members" class="hover:text-yellow-400 transition duration-300">Discord Members</a>
+      <a href="/discord-servers" class="hover:text-yellow-400 transition duration-300">Discord Servers</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/login" class="hover:text-yellow-400 transition duration-300">Login</a>
+        <a href="/register" class="hover:text-yellow-400 transition duration-300">Register</a>
+      <% } else { %>
+        <div class="relative">
+          <button id="userMenuBtn" class="hover:text-yellow-400 transition duration-300">
+            <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>" class="w-8 h-8 rounded-full inline-block">
+            <span class="ml-2"><%= user.username %></span>
+          </button>
+          <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden">
+            <% if (user.role === 'admin' || user.role === 'moderator') { %>
+              <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600">Dashboard</a>
+            <% } %>
+            <% if (isAuthenticated && user) { %>
+              <a href="/user/profile/<%= user.username %>" class="block px-4 py-2 hover:bg-gray-600">Profile</a>
+            <% } %>
+            <a href="/settings" class="block px-4 py-2 hover:bg-gray-600">Settings</a>
+            <a href="/logout" class="block px-4 py-2 hover:bg-gray-600">Logout</a>
+          </div>
+        </div>
+      <% } %>
+    </nav>
   </div>
-  <div class="burger">
-    <div></div>
-    <div></div>
-    <div></div>
-  </div>
-  <nav>
-    <div class="close-btn"></div>
-    <a href="/">Home</a>
-    <a href="/docs">Documentation</a>
-    <a href="/status">Status</a>
-    <a href="/info">Info</a>
-    <a href="/discord-members">Discord Members</a>
-    <a href="/discord-servers">Discord Servers</a>
+  <!-- Mobile Navigation Menu -->
+  <nav class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center space-y-4 hidden" id="mobileMenu">
+    <button class="absolute top-4 right-4 text-white text-2xl" id="closeBtn">&times;</button>
+    <a href="/" class="text-white text-lg hover:text-yellow-400 transition duration-300">Home</a>
+    <a href="/docs" class="text-white text-lg hover:text-yellow-400 transition duration-300">Documentation</a>
+    <a href="/status" class="text-white text-lg hover:text-yellow-400 transition duration-300">Status</a>
+    <a href="/info" class="text-white text-lg hover:text-yellow-400 transition duration-300">Info</a>
+    <a href="/discord-members" class="text-white text-lg hover:text-yellow-400 transition duration-300">Discord Members</a>
+    <a href="/discord-servers" class="text-white text-lg hover:text-yellow-400 transition duration-300">Discord Servers</a>
     <% if (!isAuthenticated) { %>
-    <a href="/login">Login</a>
-    <a href="/register">Register</a>
+      <a href="/login" class="text-white text-lg hover:text-yellow-400 transition duration-300">Login</a>
+      <a href="/register" class="text-white text-lg hover:text-yellow-400 transition duration-300">Register</a>
     <% } else { %>
-    <a href="/dashboard">Dashboard</a>
-    <a href="/logout">Logout</a>
+      <a href="/dashboard" class="text-white text-lg hover:text-yellow-400 transition duration-300">Dashboard</a>
+      <a href="/logout" class="text-white text-lg hover:text-yellow-400 transition duration-300">Logout</a>
     <% } %>
   </nav>
 </header>
+
+<script>
+  const burger = document.getElementById('burger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  const closeBtn = document.getElementById('closeBtn');
+  const userMenuBtn = document.getElementById('userMenuBtn');
+  const userDropdown = document.getElementById('userDropdown');
+
+  burger.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+  });
+
+  closeBtn.addEventListener('click', () => {
+    mobileMenu.classList.add('hidden');
+  });
+
+  userMenuBtn.addEventListener('click', () => {
+    userDropdown.classList.toggle('hidden');
+  });
+</script>

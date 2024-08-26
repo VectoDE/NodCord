@@ -46,12 +46,12 @@ const startServer = async () => {
       next();
     });
 
-    api.use((err, req, res, next) => {
-      if (err) {
-        errorMeter.inc();
-      }
-      next(err);
-    });
+    //api.use((err, req, res, next) => {
+    //  if (err) {
+    //    errorMeter.inc();
+    //  }
+    //  next(err);
+    //});
 
     await connectDB();
 

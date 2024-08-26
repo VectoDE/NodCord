@@ -73,6 +73,7 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       files,
       loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
+      errorstack: null
     });
   } catch (error) {
     console.error('Fehler beim Abrufen des Status:', error);
@@ -83,33 +84,33 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
 // Api Key CRUD
 router.get('/apiKeys', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKeys = await ApiKey.find();
-  res.render('dashboard/apiKey/apiKeys', { apiKeys });
+  res.render('dashboard/apiKey/apiKeys', { apiKeys, errorstack: null });
 });
 router.get('/apiKeys/create', roleMiddleware(['admin', 'moderator']), (req, res) => {
   res.render('dashboard/apiKey/createApiKey');
 });
 router.get('/apiKeys/update/:id', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKey = await ApiKey.findById(req.params.id);
-  res.render('dashboard/apiKey/updateApiKey', { apiKey });
+  res.render('dashboard/apiKey/updateApiKey', { apiKey, errorstack: null });
 });
 
 // Blog CRUD
 router.get('/blogs', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blogs = await Blog.find();
-    res.render('dashboard/blogs/blogs', { blogs });
+    res.render('dashboard/blogs/blogs', { blogs, errorstack: null });
   } catch (error) {
     res.status(500).send('Error retrieving blogs');
   }
 });
 router.get('/blogs/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/blogs/createBlog');
+  res.render('dashboard/blogs/createBlog', { errorstack: null });
 });
 router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blog = await Blog.findById(req, res);
     if (blog) {
-      res.render('dashboard/blogs/updateBlog', { blog });
+      res.render('dashboard/blogs/updateBlog', { blog, errorstack: null });
     } else {
       res.status(404).send('Blog not found');
     }
@@ -122,7 +123,7 @@ router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
 router.get('/bugs', roleMiddleware(['admin']), async (req, res) => {
   try {
     const bugs = await Bug.find().populate('project');
-    res.render('dashboard/bugs/bugs', { bugs });
+    res.render('dashboard/bugs/bugs', { bugs, errorstack: null });
   } catch (error) {
     console.error('Error fetching bugs:', error);
     res.status(500).send('Internal Server Error');

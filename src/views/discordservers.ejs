@@ -5,83 +5,38 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Discord Servers ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    .section {
-      padding: 20px;
-    }
-
-    .server-count {
-      margin: 20px 0;
-      font-size: 18px;
-    }
-
-    .server-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-    }
-
-    .server-card {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      flex: 1 1 calc(25% - 20px);
-      box-sizing: border-box;
-    }
-
-    .server-card img {
-      max-width: 100%;
-      border-radius: 8px;
-    }
-
-    .server-info {
-      margin-top: 10px;
-    }
-
-    .server-info h2 {
-      margin: 10px 0;
-    }
-
-    .server-info p {
-      margin: 5px 0;
-    }
-
-    .server-info ul {
-      padding-left: 20px;
-    }
-  </style>
+  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-900">
   <%- include('./partials/header'); %>
-  <main>
-    <div class="section">
-      <h1>Discord Servers</h1>
-      <div class="server-count">
-        <span>Total Servers:</span>
+  <main class="p-6">
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+      <h1 class="text-3xl font-bold mb-4">Discord Servers</h1>
+      <div class="mb-6 text-lg">
+        <span class="font-semibold">Total Servers:</span>
         <span><%= serverCount %></span>
       </div>
-      <div class="server-container">
+      <div class="flex flex-wrap gap-6">
         <% if (servers.length > 0) { %>
           <% servers.forEach(server => { %>
-            <div class="server-card">
-              <img src="<%= server.icon %>" alt="<%= server.name %>">
-              <div class="server-info">
-                <h2><%= server.name %></h2>
-                <p><strong>ID:</strong> <%= server.id %></p>
-                <p><strong>Owner:</strong> <%= server.owner %></p>
-                <p><strong>Created At:</strong> <%= server.createdAt.toDateString() %></p>
-                <h3>Members:</h3>
-                <ul>
+            <div class="bg-white border border-gray-300 rounded-lg shadow-md p-4 flex flex-col flex-grow basis-1/4">
+              <img src="<%= server.icon %>" alt="<%= server.name %>" class="w-full h-32 object-cover rounded-lg mb-4">
+              <div>
+                <h2 class="text-xl font-semibold mb-2"><%= server.name %></h2>
+                <p class="text-base mb-1"><strong>ID:</strong> <%= server.id %></p>
+                <p class="text-base mb-1"><strong>Owner:</strong> <%= server.owner %></p>
+                <p class="text-base mb-1"><strong>Created At:</strong> <%= server.createdAt.toDateString() %></p>
+                <h3 class="text-lg font-semibold mt-4 mb-2">Members:</h3>
+                <ul class="list-disc pl-5">
                   <% server.members.forEach(member => { %>
-                    <li>
-                      <img src="<%= member.avatar %>" alt="<%= member.displayName %>" style="width: 30px; height: 30px; border-radius: 50%; vertical-align: middle;">
-                      <strong><%= member.displayName %></strong> (<%= member.username %>) - <%= member.hashname %>
-                      <ul>
+                    <li class="mb-2 flex items-center">
+                      <img src="<%= member.avatar %>" alt="<%= member.displayName %>" class="w-8 h-8 rounded-full mr-2">
+                      <span class="font-semibold"><%= member.displayName %></span> (<%= member.username %>) - <%= member.hashname %>
+                      <ul class="list-disc pl-5 mt-1">
                         <% member.badges.forEach(badge => { %>
                           <li><%= badge %></li>
                         <% }) %>
@@ -93,12 +48,13 @@
             </div>
           <% }) %>
         <% } else { %>
-          <p>No servers found.</p>
+          <p class="text-lg">No servers found.</p>
         <% } %>
       </div>
     </div>
   </main>
   <%- include('./partials/footer'); %>
 </body>
-<script src="assets/js/script.js"></script>
+
+<script src="/assets/js/script.js"></script>
 </html>

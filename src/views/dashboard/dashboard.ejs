@@ -5,340 +5,189 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NodCord - Dashboard</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    main {
-      flex: 1;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    h2 {
-      margin-top: 0;
-      font-size: 2rem;
-      color: #333;
-    }
-
-    section {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-    }
-
-    h3 {
-      margin-top: 0;
-      font-size: 1.5rem;
-      color: #333;
-    }
-
-    .grid-container {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 20px;
-    }
-
-    .grid-item {
-      background: #f9f9f9;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-    }
-
-    .grid-item h4 {
-      margin: 0;
-      font-size: 1.2rem;
-      color: #333;
-    }
-
-    .grid-item p {
-      margin: 5px 0 0;
-      font-size: 1rem;
-      color: #555;
-    }
-
-    form {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-
-    button {
-      background-color: #007bff;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    input[type="file"] {
-      margin-right: 10px;
-    }
-
-    /* Loading Spinner */
-    .loading {
-      display: none;
-      border: 4px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 4px solid #007bff;
-      width: 24px;
-      height: 24px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    .loading-container {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* Logs Section Styling */
-    .logs-container {
-      background-color: #f1f1f1;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 20px;
-      max-height: 300px;
-      overflow-y: auto;
-      font-family: monospace;
-    }
-
-    .logs-container pre {
-      margin: 0;
-      white-space: pre-wrap;
-    }
-
-    .logs-site {
-      margin-top: 20px;
-      font-size: 1.2rem;
-      color: #555;
-    }
-  </style>
+  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-900">
   <%- include('../partials/header'); %>
-  <main>
+  <main class="p-5 space-y-8">
     <!-- Overview Section -->
-    <section>
-      <h3>Übersicht</h3>
-      <div class="grid-container">
-        <div class="grid-item">
-          <h4>Beta Keys</h4>
-          <p>Anzahl: <%= betaKey.length %>
-          </p>
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">Übersicht</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Beta Keys</h4>
+          <p>Anzahl: <%= betaKey.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>API Keys</h4>
-          <p>Anzahl: <%= apiKey.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">API Keys</h4>
+          <p>Anzahl: <%= apiKey.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Users</h4>
-          <p>Anzahl: <%= users.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Users</h4>
+          <p>Anzahl: <%= users.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Roles</h4>
-          <p>Anzahl: <%= roles.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Roles</h4>
+          <p>Anzahl: <%= roles.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Categories</h4>
-          <p>Anzahl: <%= categories.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Categories</h4>
+          <p>Anzahl: <%= categories.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Tickets</h4>
-          <p>Anzahl: <%= tickets.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Tickets</h4>
+          <p>Anzahl: <%= tickets.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Discord Servers</h4>
-          <p>Anzahl: <%= discordServers.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Discord Servers</h4>
+          <p>Anzahl: <%= discordServers.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Discord Members</h4>
-          <p>Anzahl: <%= discordMembers.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Discord Members</h4>
+          <p>Anzahl: <%= discordMembers.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Bugs</h4>
-          <p>Anzahl: <%= bugs.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Bugs</h4>
+          <p>Anzahl: <%= bugs.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Blogs</h4>
-          <p>Anzahl: <%= blogs.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Blogs</h4>
+          <p>Anzahl: <%= blogs.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Comments</h4>
-          <p>Anzahl: <%= comments.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Comments</h4>
+          <p>Anzahl: <%= comments.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Companies</h4>
-          <p>Anzahl: <%= companies.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Companies</h4>
+          <p>Anzahl: <%= companies.length %></p>
         </div>
-        <div class="grid-item">
-          <h4>Organizations</h4>
-          <p>Anzahl: <%= organizations.length %>
-          </p>
+        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+          <h4 class="text-lg font-medium">Organizations</h4>
+          <p>Anzahl: <%= organizations.length %></p>
         </div>
       </div>
     </section>
 
     <!-- Status Section -->
-    <section>
-      <h3>System Status</h3>
-      <p>API Status: <strong>
-          <%= apiStatus %>
-        </strong></p>
-      <p>Bot Status: <strong>
-          <%= botStatus %>
-        </strong></p>
-      <p>Database Status: <strong>
-          <%= dbStatus %>
-        </strong></p>
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">System Status</h3>
+      <p class="mb-2">API Status: <strong><%= apiStatus %></strong></p>
+      <p class="mb-2">Bot Status: <strong><%= botStatus %></strong></p>
+      <p>Database Status: <strong><%= dbStatus %></strong></p>
     </section>
 
     <!-- API Control Section -->
-    <section>
-      <h3>API Steuerung</h3>
-      <div class="loading-container">
-        <form id="start-api-form" action="/api/controls/api/start" method="POST">
-          <button type="submit" <% if (apiStatus==='online' ) { %> disabled <% } %>>API starten</button>
-        </form>
-        <div id="start-api-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="stop-api-form" action="/api/controls/api/stop" method="POST">
-          <button type="submit" <% if (apiStatus==='offline' ) { %> disabled <% } %>>API stoppen</button>
-        </form>
-        <div id="stop-api-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="restart-api-form" action="/api/controls/api/restart" method="POST">
-          <button type="submit" <% if (apiStatus==='offline' ) { %> disabled <% } %>>API neu starten</button>
-        </form>
-        <div id="restart-api-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="maintenance-api-form" action="/api/controls/api/maintenance" method="POST">
-          <button type="submit" <% if (apiStatus==='maintenance' ) { %> disabled <% } %>>API Wartungsmodus
-              aktivieren</button>
-        </form>
-        <div id="maintenance-api-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="remove-maintenance-api-form" action="/api/controls/api/remove-maintenance" method="POST">
-          <button type="submit" <% if (apiStatus !=='maintenance' ) { %> disabled <% } %>>API Wartungsmodus
-              deaktivieren</button>
-        </form>
-        <div id="remove-maintenance-api-loading" class="loading"></div>
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">API Steuerung</h3>
+      <div class="space-y-4">
+        <div class="flex items-center space-x-4">
+          <form id="start-api-form" action="/api/controls/api/start" method="POST">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300" <% if (apiStatus==='online') { %> disabled <% } %>>API starten</button>
+          </form>
+          <div id="start-api-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="stop-api-form" action="/api/controls/api/stop" method="POST">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300" <% if (apiStatus==='offline') { %> disabled <% } %>>API stoppen</button>
+          </form>
+          <div id="stop-api-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="restart-api-form" action="/api/controls/api/restart" method="POST">
+            <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition duration-300" <% if (apiStatus==='offline') { %> disabled <% } %>>API neu starten</button>
+          </form>
+          <div id="restart-api-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="maintenance-api-form" action="/api/controls/api/maintenance" method="POST">
+            <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300" <% if (apiStatus==='maintenance') { %> disabled <% } %>>API Wartungsmodus aktivieren</button>
+          </form>
+          <div id="maintenance-api-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="remove-maintenance-api-form" action="/api/controls/api/remove-maintenance" method="POST">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300" <% if (apiStatus !=='maintenance') { %> disabled <% } %>>API Wartungsmodus deaktivieren</button>
+          </form>
+          <div id="remove-maintenance-api-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
       </div>
     </section>
 
     <!-- Bot Control Section -->
-    <section>
-      <h3>Bot Steuerung</h3>
-      <div class="loading-container">
-        <form id="start-form" action="/api/controls/bot/start" method="POST">
-          <button type="submit" <% if (botStatus==='online' || botStatus==='maintenance' ) { %> disabled <% } %>>Bot
-              starten</button>
-        </form>
-        <div id="start-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="stop-form" action="/api/controls/bot/stop" method="POST">
-          <button type="submit" <% if (botStatus==='offline' || botStatus==='maintenance' ) { %> disabled <% } %>>Bot
-              stoppen</button>
-        </form>
-        <div id="stop-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="restart-form" action="/api/controls/bot/restart" method="POST">
-          <button type="submit" <% if (botStatus==='offline' || botStatus==='maintenance' ) { %> disabled <% } %>>Bot
-              neu starten</button>
-        </form>
-        <div id="restart-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="maintenance-form" action="/api/controls/bot/maintenance" method="POST">
-          <button type="submit" <% if (botStatus==='maintenance' ) { %> disabled <% } %>>Wartungsmodus
-              aktivieren</button>
-        </form>
-        <div id="maintenance-loading" class="loading"></div>
-      </div>
-      <div class="loading-container">
-        <form id="remove-maintenance-form" action="/api/controls/bot/remove-maintenance" method="POST">
-          <button type="submit" <% if (botStatus !=='maintenance' ) { %> disabled <% } %>>Wartungsmodus
-              deaktivieren</button>
-        </form>
-        <div id="remove-maintenance-loading" class="loading"></div>
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">Bot Steuerung</h3>
+      <div class="space-y-4">
+        <div class="flex items-center space-x-4">
+          <form id="start-form" action="/api/controls/bot/start" method="POST">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300" <% if (botStatus==='online' || botStatus==='maintenance') { %> disabled <% } %>>Bot starten</button>
+          </form>
+          <div id="start-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="stop-form" action="/api/controls/bot/stop" method="POST">
+            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-300" <% if (botStatus==='offline' || botStatus==='maintenance') { %> disabled <% } %>>Bot stoppen</button>
+          </form>
+          <div id="stop-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="restart-form" action="/api/controls/bot/restart" method="POST">
+            <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition duration-300" <% if (botStatus==='offline' || botStatus==='maintenance') { %> disabled <% } %>>Bot neu starten</button>
+          </form>
+          <div id="restart-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="maintenance-form" action="/api/controls/bot/maintenance" method="POST">
+            <button type="submit" class="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition duration-300" <% if (botStatus==='maintenance') { %> disabled <% } %>>Wartungsmodus aktivieren</button>
+          </form>
+          <div id="maintenance-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
+        <div class="flex items-center space-x-4">
+          <form id="remove-maintenance-form" action="/api/controls/bot/remove-maintenance" method="POST">
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition duration-300" <% if (botStatus !=='maintenance') { %> disabled <% } %>>Wartungsmodus deaktivieren</button>
+          </form>
+          <div id="remove-maintenance-loading" class="loading border-4 border-gray-200 border-t-4 border-blue-500 rounded-full w-6 h-6 animate-spin"></div>
+        </div>
       </div>
     </section>
 
     <!-- File Upload Section -->
-    <section>
-      <h3>Datei-Uploads</h3>
-      <form action="/api/files/upload" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" required>
-        <button type="submit">Datei hochladen</button>
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">Datei-Uploads</h3>
+      <form action="/api/files/upload" method="POST" enctype="multipart/form-data" class="flex items-center space-x-4">
+        <input type="file" name="file" required class="bg-gray-50 rounded-md p-2">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">Datei hochladen</button>
       </form>
-      <h4>Hochgeladene Dateien:</h4>
-      <ul>
-        <% files.forEach(file=> { %>
-          <li>
-            <!-- Bildanzeige -->
-            <img src="<%= file.url %>" alt="<%= file.name %>" style="max-width: 200px; max-height: 200px;">
-            <br>
-            <!-- Dateiname -->
-            <strong>Name:</strong>
-            <%= file.name %> <br>
-              <!-- Erstellungsdatum -->
-              <strong>Erstellt am:</strong>
-              <%= file.createdAt %> <br>
-          </li>
-          <% }) %>
+      <h4 class="text-lg font-medium mt-4">Hochgeladene Dateien:</h4>
+      <ul class="mt-2 space-y-2">
+        <% files.forEach(file => { %>
+        <li class="flex items-start space-x-4">
+          <img src="<%= file.url %>" alt="<%= file.name %>" class="max-w-xs max-h-xs rounded-md shadow-md">
+          <div>
+            <strong>Name:</strong> <%= file.name %><br>
+            <strong>Erstellt am:</strong> <%= file.createdAt %>
+          </div>
+        </li>
+        <% }) %>
       </ul>
     </section>
 
     <!-- System Logs Section -->
-    <section>
-      <h3>System Logs</h3>
-      <div class="logs-container">
+    <section class="bg-white p-6 rounded-lg shadow-md">
+      <h3 class="text-2xl font-semibold mb-4">System Logs</h3>
+      <div class="bg-gray-50 p-4 rounded-md shadow-inner max-h-72 overflow-y-auto font-mono text-sm">
         <pre>
           <% loggerLogs.forEach((log) => { %>
             <%= log %>
           <% }); %>
         </pre>
       </div>
-      <div class="logs-site">
-        <a href="/dashboard/logs" target="_blank">Logs anzeigen</a>
+      <div class="mt-4">
+        <a href="/dashboard/logs" target="_blank" class="text-blue-500 hover:underline">Logs anzeigen</a>
       </div>
     </section>
 

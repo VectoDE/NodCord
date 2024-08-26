@@ -9,26 +9,26 @@ exports.register = async (req, res) => {
     const { username, email, password, confirmPassword, fullname, terms } = req.body;
 
     if (!username || !email || !password || !confirmPassword || !fullname || !terms) {
-      return res.render('register', {
+      return res.render('auth/register', {
         errorMessage: 'All fields are required, including accepting the terms and conditions.',
       });
     }
 
     if (password !== confirmPassword) {
-      return res.render('register', {
+      return res.render('auth/register', {
         errorMessage: 'Passwords do not match',
       });
     }
 
     if (!terms) {
-      return res.render('register', {
+      return res.render('auth/register', {
         errorMessage: 'You must accept the Terms of Service',
       });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.render('register', {
+      return res.render('auth/register', {
         errorMessage: 'User already exists',
       });
     }

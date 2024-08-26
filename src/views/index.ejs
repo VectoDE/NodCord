@@ -1,93 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home ~ NodCord</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-    <style>
-      main {
-        flex: 1;
-        padding: 20px;
-      }
 
-      .section {
-        margin-bottom: 20px;
-        padding: 20px;
-        background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home ~ NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-      .section h1 {
-        margin-top: 0;
-        font-size: 2em;
-      }
+<body class="bg-gray-100 text-gray-900">
+  <%- include('./partials/header'); %>
+  <main class="p-5">
+    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
+      <h1 class="text-3xl font-bold mb-4">Welcome to NodCord</h1>
+      <p class="text-base leading-relaxed mb-4">
+        NodCord is an integrated project combining a Node.js API with Express.js and a Discord bot. This project provides a comprehensive
+        API and a functional Discord bot for various use cases.
+      </p>
+      <p class="text-base leading-relaxed">
+        The API includes a Discord service that can be managed through controllers and routes. The Discord bot can also be controlled via the
+        API.
+      </p>
+    </div>
 
-      .section h2 {
-        margin-top: 0;
-        font-size: 1.5em;
-      }
+    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">About the Bot</h2>
+      <p class="text-base leading-relaxed">
+        The NodCord Discord bot is designed to interact with your Discord servers, providing commands for managing roles, users, and more. It's
+        integrated into the API for seamless management and configuration.
+      </p>
+    </div>
 
-      .section p {
-        font-size: 16px;
-        line-height: 1.5;
-      }
-    </style>
-  </head>
+    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">Features</h2>
+      <p class="text-base leading-relaxed">
+        - <strong>Node.js API</strong>: A robust API for interacting with the Discord bot and managing various services.
+        <br />
+        - <strong>Discord Bot</strong>: Control and interact with your Discord servers using various commands and features.
+        <br />
+        - <strong>Comprehensive Documentation</strong>: Detailed documentation to help you get started and make the most out of NodCord.
+      </p>
+    </div>
 
-  <body>
-    <%- include('./partials/header'); %>
-    <main>
-      <div class="section">
-        <h1>Welcome to NodCord</h1>
-        <p>
-          NodCord is an integrated project combining a Node.js API with
-          Express.js and a Discord bot. This project provides a comprehensive
-          API and a functional Discord bot for various use cases.
-        </p>
-        <p>
-          The API includes a Discord service that can be managed through
-          controllers and routes. The Discord bot can also be controlled via the
-          API.
-        </p>
-      </div>
-
-      <div class="section">
-        <h2>About the Bot</h2>
-        <p>
-          The NodCord Discord bot is designed to interact with your Discord
-          servers, providing commands for managing roles, users, and more. It's
-          integrated into the API for seamless management and configuration.
-        </p>
-      </div>
-
-      <div class="section">
-        <h2>Features</h2>
-        <p>
-          - **Node.js API**: A robust API for interacting with the Discord bot
-          and managing various services.
-          <br />
-          - **Discord Bot**: Control and interact with your Discord servers
-          using various commands and features.
-          <br />
-          - **Comprehensive Documentation**: Detailed documentation to help you
-          get started and make the most out of NodCord.
-        </p>
-      </div>
-
-      <div class="section">
-        <h2>Get Started</h2>
-        <p>
-          To get started with NodCord, check out our
-          <a href="/docs">documentation</a> or visit the
-          <a href="/dashboard">dashboard</a> to manage your settings.
-        </p>
-      </div>
-    </main>
-    <%- include('./partials/footer'); %>
-  </body>
-
+    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
+      <h2 class="text-2xl font-semibold mb-4">Get Started</h2>
+      <p class="text-base leading-relaxed">
+        To get started with NodCord, check out our <a href="/docs" class="text-blue-500 hover:text-blue-700">documentation</a> or visit the
+        <a href="/dashboard" class="text-blue-500 hover:text-blue-700">dashboard</a> to manage your settings.
+      </p>
+    </div>
+  </main>
+  <%- include('./partials/footer'); %>
   <script src="/assets/js/script.js"></script>
+</body>
+
 </html>

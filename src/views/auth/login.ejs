@@ -4,91 +4,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - NodCord</title>
+  <title>Login ~ NodCord</title>
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    .form-container {
-      max-width: 400px;
-      margin: 11rem auto;
-      padding: 2rem;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-container h1 {
-      margin-top: 0;
-      font-size: 2rem;
-      color: #333;
-    }
-
-    .form-container label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
-
-    .form-container input {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-    }
-
-    .form-container button {
-      width: 100%;
-      padding: 0.75rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 4px;
-      background-color: #333;
-      color: #fff;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-
-    .form-container button:hover {
-      background-color: #575757;
-      color: #fc9702;
-    }
-
-    .form-container .account-link {
-      text-decoration: none;
-      color: #2fddfe;
-    }
-
-    .form-container .account-link:hover {
-      color: #fc9702;
-    }
-  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100">
   <%- include('../partials/header'); %>
-  <main>
-    <div class="form-container">
-      <h1>Login</h1>
+  <main class="flex justify-center items-center min-h-screen">
+    <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">Login</h1>
       <% if (errorMessage) { %>
-        <p style="color: red;">
+        <p class="text-red-500 mb-4">
           <%= errorMessage %>
         </p>
-        <% } %>
-          <form action="/api/auth/login" method="POST">
-            <label for="emailOrUsername">Username or Email</label>
-            <input type="text" id="emailOrUsername" name="emailOrUsername" required>
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
-            <button type="submit">Login</button>
-            <a class="account-link" href="/register">Du hast noch keinen Account?</a>
-          </form>
+      <% } %>
+      <form action="/api/auth/login" method="POST" class="space-y-6">
+        <div>
+          <label for="emailOrUsername" class="block text-sm font-medium text-gray-700">Username or Email</label>
+          <input type="text" id="emailOrUsername" name="emailOrUsername" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">Login</button>
+        </div>
+      </form>
+
+      <div class="text-center my-6">
+        <p class="text-gray-600">---- OR ----</p>
+      </div>
+
+      <!-- Social Login Buttons -->
+      <div class="flex flex-col gap-4 mb-6">
+        <a href="/auth/google" class="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">
+          <i class="bi bi-google mr-2"></i> Login with Google
+        </a>
+        <a href="/auth/github" class="flex items-center justify-center bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-300">
+          <i class="bi bi-github mr-2"></i> Login with GitHub
+        </a>
+        <a href="/auth/apple" class="flex items-center justify-center bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition duration-300">
+          <i class="bi bi-apple mr-2"></i> Login with Apple
+        </a>
+      </div>
+      <div class="text-center">
+        <a href="/register" class="text-sm text-indigo-600 hover:text-indigo-500">Du hast noch keinen Account?</a>
+      </div>
     </div>
   </main>
-  <footer>
-    <p>&copy; 2024 <a href="/">NodCord</a>. All rights reserved.</p>
-  </footer>
+  <%- include('../partials/footer'); %>
+  <script src="/assets/js/script.js"></script>
 </body>
-<script src="assets/js/script.js"></script>
+
 </html>

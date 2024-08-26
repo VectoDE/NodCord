@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wartungsupdate</title>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+  <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 flex items-center">
+      <i class="bi bi-tools text-blue-600 mr-3"></i>
+      Wartungsupdate
+    </h1>
+    <p class="text-lg mb-4">
+      <strong>Aktuelle Updates:</strong>
+    </p>
+    <p class="text-base mb-4">
+      Wir führen derzeit Wartungsarbeiten durch, um die Leistung und Sicherheit unserer Website zu verbessern.
+    </p>
+    <p class="text-base mb-6">
+      Die Website wird voraussichtlich bis <%= endDate %> um <%= endTime %> nicht verfügbar sein.
+    </p>
+
+    <div class="text-center">
+      <p class="font-semibold text-gray-800 mb-4">Bleiben Sie auf dem Laufenden:</p>
+      <div class="flex justify-center gap-4">
+        <% if (discord) { %>
+          <a href="<%= discord %>" target="_blank" class="text-blue-500 text-xl hover:text-blue-700">
+            <i class="bi bi-discord"></i> Discord
+          </a>
+        <% } %>
+        <% if (twitter) { %>
+          <a href="<%= twitter %>" target="_blank" class="text-blue-400 text-xl hover:text-blue-600">
+            <i class="bi bi-twitter"></i> Twitter
+          </a>
+        <% } %>
+        <% if (facebook) { %>
+          <a href="<%= facebook %>" target="_blank" class="text-blue-600 text-xl hover:text-blue-800">
+            <i class="bi bi-facebook"></i> Facebook
+          </a>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About ~ NodCord</title>
+  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+  <%- include('./partials/header'); %>
+
+  <main class="py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+      <h1 class="text-4xl font-bold mb-6">Über uns</h1>
+      <p class="mb-4">
+        Willkommen bei NodCord! Wir sind ein engagiertes Team von Entwicklern, das sich auf die Erstellung innovativer
+        Lösungen im Bereich der Discord-Bots und -Integration spezialisiert hat. Unser Ziel ist es, qualitativ hochwertige
+        Software zu entwickeln, die den Bedürfnissen unserer Benutzer gerecht wird und ihnen hilft, das Beste aus ihren
+        Discord-Servern herauszuholen.
+      </p>
+
+      <h2 class="text-3xl font-semibold mb-4">Unsere Mission</h2>
+      <p class="mb-4">
+        Unsere Mission ist es, leistungsstarke, benutzerfreundliche und zuverlässige Tools und Bots für die Discord-Community
+        bereitzustellen. Wir streben danach, unsere Benutzer durch kontinuierliche Verbesserung und Innovation zu unterstützen
+        und ihnen die besten Funktionen und das beste Erlebnis zu bieten.
+      </p>
+
+      <h2 class="text-3xl font-semibold mb-4">Unser Team</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="p-4 bg-white rounded-lg shadow-md">
+          <img src="/assets/img/team-member-1.jpg" alt="Teammitglied 1" class="w-full h-40 object-cover rounded-lg mb-4">
+          <h3 class="text-xl font-semibold mb-2">Max Mustermann</h3>
+          <p class="text-gray-600">Leitender Entwickler</p>
+        </div>
+        <div class="p-4 bg-white rounded-lg shadow-md">
+          <img src="/assets/img/team-member-2.jpg" alt="Teammitglied 2" class="w-full h-40 object-cover rounded-lg mb-4">
+          <h3 class="text-xl font-semibold mb-2">Erika Musterfrau</h3>
+          <p class="text-gray-600">Designerin</p>
+        </div>
+        <div class="p-4 bg-white rounded-lg shadow-md">
+          <img src="/assets/img/team-member-3.jpg" alt="Teammitglied 3" class="w-full h-40 object-cover rounded-lg mb-4">
+          <h3 class="text-xl font-semibold mb-2">John Doe</h3>
+          <p class="text-gray-600">Marketing Spezialist</p>
+        </div>
+      </div>
+
+      <h2 class="text-3xl font-semibold mb-4 mt-4">Kontaktieren Sie uns</h2>
+      <p class="mb-4">
+        Wenn Sie Fragen oder Anregungen haben, zögern Sie nicht, uns zu kontaktieren. Sie erreichen uns per E-Mail unter
+        <a href="mailto:support@nodcord.com" class="text-blue-600 hover:underline">support@nodcord.com</a>.
+      </p>
+    </div>
+  </main>
+
+  <%- include('./partials/footer'); %>
+</body>
+</html>

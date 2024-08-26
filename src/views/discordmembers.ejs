@@ -6,121 +6,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Discord Members ~ NodCord</title>
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    .section {
-      padding: 20px;
-    }
-
-    .server-section {
-      margin-bottom: 20px;
-      padding: 20px;
-      background-color: #fff;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .server-section h2 {
-      margin-top: 0;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 20px;
-    }
-
-    th, td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-
-    th {
-      background-color: #f4f4f4;
-    }
-
-    img.avatar {
-      height: 40px;
-      width: 40px;
-      border-radius: 50%;
-    }
-
-    .btn {
-      padding: 5px 10px;
-      margin: 0 5px;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      background-color: #007bff;
-      cursor: pointer;
-      font-size: 14px;
-      transition: background-color 0.3s;
-    }
-
-    .btn:hover {
-      background-color: #0056b3;
-    }
-
-    .btn-add {
-      background-color: #28a745;
-    }
-
-    .btn-add:hover {
-      background-color: #218838;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-900">
   <%- include('./partials/header'); %>
-  <main>
-    <div class="section">
-      <h1>Discord Members</h1>
+  <main class="p-6">
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+      <h1 class="text-3xl font-bold mb-4">Discord Members</h1>
       <% if (servers && servers.length > 0) { %>
         <% servers.forEach(server => { %>
-          <div class="server-section">
-            <h2><%= server.name %></h2>
-            <img class="avatar" src="<%= server.icon %>" alt="<%= server.name %>">
+          <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <h2 class="text-2xl font-semibold mb-2"><%= server.name %></h2>
+            <img class="w-16 h-16 rounded-full mb-4" src="<%= server.icon %>" alt="<%= server.name %>">
             <% if (server.members && server.members.length > 0) { %>
-              <table>
-                <thead>
-                  <tr>
-                    <th>Avatar</th>
-                    <th>Username</th>
-                    <th>Display Name</th>
-                    <th>Badges</th>
-                    <th>Hashname</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% server.members.forEach(member => { %>
-                    <tr>
-                      <td><img class="avatar" src="<%= member.avatar %>" alt="<%= member.username %>'s Avatar"></td>
-                      <td><%= member.username %></td>
-                      <td><%= member.displayName %></td>
-                      <td><%= member.badges.join(', ') %></td>
-                      <td><%= member.hashname %></td>
-                      <td>
-                        <a class="btn" href="https://discord.com/users/<%= member.hashname %>" target="_blank">Show</a>
-                        <a class="btn btn-add" href="https://discord.com/users/@me" target="_blank" onclick="addFriend('<%= member.username %>', '<%= member.hashname %>')">Add Friend</a>
-                      </td>
+              <div class="overflow-x-auto">
+                <table class="w-full border-collapse mb-4">
+                  <thead>
+                    <tr class="bg-gray-200 text-gray-800">
+                      <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Avatar</th>
+                      <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Username</th>
+                      <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Display Name</th>
+                      <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Badges</th>
+                      <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Hashname</th>
+                      <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Actions</th>
                     </tr>
-                  <% }) %>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <% server.members.forEach(member => { %>
+                      <tr>
+                        <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center">
+                          <img class="w-10 h-10 rounded-full" src="<%= member.avatar %>" alt="<%= member.username %>'s Avatar">
+                        </td>
+                        <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.username %></td>
+                        <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.displayName %></td>
+                        <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.badges.join(', ') %></td>
+                        <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.hashname %></td>
+                        <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center">
+                          <a class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 text-sm" href="https://discord.com/users/<%= member.hashname %>" target="_blank">Show</a>
+                          <a class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 ml-2 text-sm" href="https://discord.com/users/@me" target="_blank" onclick="addFriend('<%= member.username %>', '<%= member.hashname %>')">Add Friend</a>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+                </table>
+              </div>
             <% } else { %>
-              <p>Keine Mitglieder gefunden.</p>
+              <p class="text-lg">Keine Mitglieder gefunden.</p>
             <% } %>
           </div>
         <% }) %>
       <% } else { %>
-        <p>Keine Server gefunden.</p>
+        <p class="text-lg">Keine Server gefunden.</p>
       <% } %>
     </div>
   </main>
   <%- include('./partials/footer'); %>
 </body>
-<script src="assets/js/script.js"></script>
+
+<script src="/assets/js/script.js"></script>
 </html>

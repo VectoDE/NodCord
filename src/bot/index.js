@@ -58,6 +58,19 @@ const start = () => {
   })();
 };
 
+// Prefix Command Handler
+client.on('messageCreate', async (message) => {
+  const prefix = process.env.BOT_PREFIX;
+
+  if (!message.content.startsWith(prefix) || message.author.bot) return;
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const command = args.shift().toLowerCase();
+  const prefixcmd = client.prefix.get(command);
+  if (prefixcmd) {
+    prefixcmd.run(client, message, args);
+  }
+});
+
 // Get informations to frontend
 const getBots = async () => {
   let botData = [];
@@ -139,19 +152,6 @@ const getServers = async () => {
 
   return serverData;
 };
-
-// Prefix Command Handler
-client.on('messageCreate', async (message) => {
-  const prefix = process.env.BOT_PREFIX;
-
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
-  const args = message.content.slice(prefix.length).trim().split(/ +/);
-  const command = args.shift().toLowerCase();
-  const prefixcmd = client.prefix.get(command);
-  if (prefixcmd) {
-    prefixcmd.run(client, message, args);
-  }
-});
 
 // Join Role System
 const joinrole = require('../models/joinroleModel');

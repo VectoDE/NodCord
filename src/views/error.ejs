@@ -1,83 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= errortitle %> ~ NodCord</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-    <style>
-      main {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-        color: #333;
-        text-align: center;
-        padding: 20px;
-        margin: 0;
-      }
-      .container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 20px;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-      }
-      h1 {
-        color: #d9534f; /* Rote Farbe für den Fehler */
-      }
-      p {
-        font-size: 18px;
-        margin: 10px 0;
-      }
-      .error-message {
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px;
-        font-family: 'Courier New', Courier, monospace;
-        white-space: pre-wrap; /* Erhält Zeilenumbrüche */
-        text-align: left;
-        margin-top: 20px;
-      }
-      pre {
-        display: block;
-        text-align: center; /* Zentriert den Text innerhalb des <pre>-Tags */
-        margin: 0 auto; /* Zentriert das <pre>-Element selbst innerhalb des Containers */
-        white-space: pre-wrap; /* Erhält Zeilenumbrüche */
-        width: fit-content; /* Passt die Breite des <pre>-Tags dem Inhalt an */
-        background-color: #f9f9f9; /* Hintergrundfarbe für den <pre>-Tag */
-        border: 1px solid #ddd; /* Rand für den <pre>-Tag */
-        padding: 10px; /* Innenabstand für den <pre>-Tag */
-        border-radius: 4px; /* Abgerundete Ecken für den <pre>-Tag */
-      }
-      a {
-        display: inline-block;
-        margin-top: 20px;
-        color: #0275d8;
-        text-decoration: none;
-      }
-      a:hover {
-        text-decoration: underline;
-      }
-    </style>
-  </head>
 
-  <body>
-    <main>
-      <div class="container">
-        <h1><%= errortitle %></h1>
-        <p>Oops! Something went wrong.</p>
-        <div class="error-message"><%= errormessage %></div>
-        <% if (errorstatus) { %>
-        <p>Status: <%= errorstatus %></p>
-        <% } %> <% if (errorstack) { %>
-        <pre><%= errorstack %></pre>
-        <% } %>
-        <a href="/">Go Back to Home</a>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= errortitle %> ~ NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+  <main class="flex items-center justify-center min-h-screen p-6">
+    <div class="max-w-md w-full bg-white p-6 rounded-lg shadow-lg text-center">
+      <h1 class="text-3xl font-bold text-red-600 mb-4"><%= errortitle %></h1>
+      <p class="text-lg mb-4">Oops! Something went wrong.</p>
+      <div class="bg-gray-100 border border-gray-300 rounded p-4 text-left font-mono whitespace-pre-wrap mb-4">
+        <%= errormessage %>
       </div>
-    </main>
-    <%- include('./partials/footer'); %>
-  </body>
+      <% if (errorstatus) { %>
+        <p class="text-base mb-4">Status: <%= errorstatus %></p>
+      <% } %>
+      <% if (errorstack) { %>
+        <pre class="bg-gray-100 border border-gray-300 rounded p-4 whitespace-pre-wrap mx-auto">
+          <%= errorstack %>
+        </pre>
+      <% } %>
+      <a href="/" class="text-blue-500 hover:text-blue-700 underline mt-4 inline-block">Go Back to Home</a>
+    </div>
+  </main>
+  <%- include('./partials/footer'); %>
   <script src="/assets/js/script.js"></script>
+</body>
+
 </html>

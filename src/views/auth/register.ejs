@@ -1,143 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Register - NodCord</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
-    <link rel="stylesheet" href="/assets/css/styles.css" />
-    <style>
-      .form-container {
-        max-width: 500px;
-        margin: 5rem auto;
-        padding: 2rem;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      }
 
-      .form-container h1 {
-        margin-top: 0;
-        font-size: 2rem;
-        color: #333;
-      }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register ~ NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-      .form-container label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        color: #333;
-      }
+<body class="bg-gray-100">
+  <%- include('../partials/header'); %>
+  <main class="flex justify-center items-center min-h-screen">
+    <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold text-gray-800 mb-6">Register</h1>
+      <% if (errorMessage) { %>
+        <div class="text-red-500 mb-4">
+          <%= errorMessage %>
+        </div>
+      <% } %>
 
-      .form-container input {
-        width: 100%;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      }
-
-      .form-container button {
-        width: 100%;
-        padding: 0.75rem;
-        margin-bottom: 1rem;
-        border: none;
-        border-radius: 4px;
-        background-color: #333;
-        color: #fff;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: background-color 0.3s;
-      }
-
-      .form-container button:hover {
-        background-color: #575757;
-        color: #fc9802a4;
-      }
-
-      .form-container .terms {
-        display: flex;
-        align-items: center;
-        margin: 0;
-      }
-
-      .form-container .terms input {
-        margin-top: 0.4rem;
-        margin-left: -15rem;
-        margin-right: -14.5rem;
-      }
-
-      .form-container .terms label {
-        font-weight: normal;
-        font-size: 0.9rem;
-        color: #666;
-        line-height: 1.5;
-      }
-
-      .form-container .terms label a {
-        text-decoration: none;
-        color: #2fddfe;
-      }
-
-      .form-container .terms label a:hover {
-        color: #fc9702;
-      }
-
-      .form-container .account-link {
-        text-decoration: none;
-        color: #2fddfe;
-      }
-
-      .form-container .account-link:hover {
-        color: #fc9702;
-      }
-    </style>
-  </head>
-
-  <body>
-    <%- include('../partials/header'); %>
-    <main>
-      <div class="form-container">
-        <h1>Register</h1>
-        <% if (errorMessage) { %>
-        <div class="error-message"><%= errorMessage %></div>
-        <% } %>
-        <form action="/api/auth/register" method="POST">
-          <label for="fullname">Full Name</label>
-          <input type="text" id="fullname" name="fullname" required />
-          <label for="username">Username</label>
-          <input type="text" id="username" name="username" required />
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required />
-          <label for="confirmPassword">Confirm Password</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            required
-          />
-          <div class="terms">
-            <input type="checkbox" id="terms" name="terms" required />
-            <label for="terms"
-              >I agree to the
-              <a href="/legal/terms-of-service" target="_blank"
-                >Terms of Service</a
-              >
-              and
-              <a href="/legal/privacy-policy" target="_blank">Privacy Policy</a
-              >.</label
-            >
+      <form action="/api/auth/register" method="POST" class="space-y-6">
+        <div>
+          <label for="fullname" class="block text-sm font-medium text-gray-700">Full Name</label>
+          <input type="text" id="fullname" name="fullname" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+          <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+          <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div class="flex items-start">
+          <div class="flex items-center h-5">
+            <input id="terms" name="terms" type="checkbox" required class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
           </div>
-          <button type="submit">Register</button>
-          <a href="/login" class="account-link">Du hast schon einen Account?</a>
-        </form>
+          <div class="ml-3 text-sm">
+            <label for="terms" class="font-medium text-gray-700">I agree to the <a href="/legal/terms-of-service" class="text-indigo-600 hover:text-indigo-500" target="_blank">Terms of Service</a> and <a href="/legal/privacy-policy" class="text-indigo-600 hover:text-indigo-500" target="_blank">Privacy Policy</a>.</label>
+          </div>
+        </div>
+        <div>
+          <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">Register</button>
+        </div>
+      </form>
+
+      <div class="text-center my-6">
+        <p class="text-gray-600">---- OR ----</p>
       </div>
-    </main>
-    <footer>
-      <p>&copy; 2024 <a href="/">NodCord</a>. All rights reserved.</p>
-    </footer>
-  </body>
-  <script src="assets/js/script.js"></script>
+
+      <!-- Social Login Buttons -->
+      <div class="flex flex-col gap-4 mb-6">
+        <a href="/auth/google" class="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">
+          <i class="bi bi-google mr-2"></i> Register with Google
+        </a>
+        <a href="/auth/github" class="flex items-center justify-center bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-300">
+          <i class="bi bi-github mr-2"></i> Register with GitHub
+        </a>
+        <a href="/auth/apple" class="flex items-center justify-center bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition duration-300">
+          <i class="bi bi-apple mr-2"></i> Register with Apple
+        </a>
+      </div>
+      <div class="text-center">
+        <a href="/login" class="text-sm text-indigo-600 hover:text-indigo-500">Du hast schon einen Account?</a>
+      </div>
+    </div>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+
 </html>

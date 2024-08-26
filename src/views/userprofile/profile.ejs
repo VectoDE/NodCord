@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= user.username %>'s Profile ~ NodCord</title>
+  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100">
+  <%- include('../partials/header'); %>
+  <main class="flex justify-center items-center min-h-screen">
+    <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
+      <!-- Profile Header -->
+      <div class="flex items-center space-x-6 mb-6">
+        <img src="<%= user.profilePicture %>" alt="<%= user.fullName %>'s Profile Picture" class="w-24 h-24 rounded-full object-cover">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800"><%= user.fullName %></h1>
+          <p class="text-lg text-gray-600">@<%= user.username %></p>
+          <% if (user.bio) { %>
+            <p class="mt-2 text-gray-700"><%= user.bio %></p>
+          <% } %>
+          <% if (user.isBetaTester) { %>
+            <span class="inline-flex items-center bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">
+              <i class="bi bi-star-fill mr-1"></i> Beta Tester
+            </span>
+          <% } %>
+        </div>
+      </div>
+
+      <!-- Profile Details -->
+      <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Details</h2>
+        <ul class="space-y-2">
+          <li><strong class="text-gray-600"><i class="bi bi-envelope-fill mr-1"></i> Email:</strong> <%= user.email %></li>
+          <li><strong class="text-gray-600"><i class="bi bi-person-fill mr-1"></i> Role:</strong> <%= user.role %></li>
+          <li><strong class="text-gray-600"><i class="bi bi-clock-fill mr-1"></i> Recent Activity:</strong> <%= user.recentActivity ? new Date(user.recentActivity).toLocaleDateString() : 'N/A' %></li>
+          <li><strong class="text-gray-600"><i class="bi bi-calendar-fill mr-1"></i> Joined:</strong> <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A' %></li>
+        </ul>
+      </div>
+
+      <!-- Social Links -->
+      <div class="mt-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">Social Links</h2>
+        <ul class="space-y-2">
+          <!-- Beispiel für unterstützte Social-Media-Plattformen -->
+          <% const platforms = ['twitter', 'facebook', 'instagram', 'linkedin']; %>
+          <% platforms.forEach(platform => { %>
+            <li>
+              <% if (user.socialLinks && user.socialLinks[platform]) { %>
+                <a href="<%= user.socialLinks[platform] %>" target="_blank" class="text-blue-600 hover:underline flex items-center">
+                  <i class="bi bi-<%= platform %> mr-2"></i> <%= platform.charAt(0).toUpperCase() + platform.slice(1) %>
+                </a>
+              <% } else { %>
+                <span class="text-gray-400 flex items-center">
+                  <i class="bi bi-<%= platform %> mr-2"></i> <%= platform.charAt(0).toUpperCase() + platform.slice(1) %>
+                </span>
+              <% } %>
+            </li>
+          <% }); %>
+        </ul>
+      </div>
+
+      <!-- Profile Actions -->
+      <% if (user._id && currentUser && user._id.toString() === currentUser._id.toString()) { %>
+        <div class="mt-6">
+          <a href="/user/profile/<%= user.username %>/edit" class="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 flex items-center">
+            <i class="bi bi-pencil-fill mr-2"></i>Edit Profile
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+
+</html>

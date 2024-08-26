@@ -4,106 +4,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Info - NodCord</title>
+  <title>Info ~ NodCord</title>
   <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <style>
-    main {
-      flex: 1;
-      padding: 2rem;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start; /* Oben ausrichten für besseren Platz */
-    }
-
-    .info-container {
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      max-width: 1000px;
-      width: 100%;
-    }
-
-    h1 {
-      margin-top: 0;
-      font-size: 2rem;
-      color: #333;
-    }
-
-    .info-item {
-      margin-bottom: 1.5rem;
-    }
-
-    .info-item h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #333;
-    }
-
-    .info-item p {
-      margin: 0.5rem 0;
-      font-size: 1rem;
-      color: #555;
-    }
-
-    .disk-info {
-      margin-top: 1rem;
-    }
-
-    .disk-info p {
-      margin: 0.5rem 0;
-    }
-  </style>
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body>
+<body class="bg-gray-100 text-gray-900">
   <%- include('./partials/header'); %>
-  <main>
-    <div class="info-container">
-      <h1>NodCord Information</h1>
-      <div class="info-item">
-        <h2>Bot Information</h2>
-        <p><strong>Name:</strong> <%= bot.name || 'N/A' %></p>
-        <p><strong>Username:</strong> <%= bot.username || 'N/A' %></p>
-        <p><strong>Token:</strong> <%= bot.token ? '*****' : 'N/A' %></p> <!-- Masked for security -->
-        <p><strong>Connected Servers:</strong> <%= bot.guildsCount || 'N/A' %></p>
+  <main class="flex flex-1 p-8 justify-center items-start">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-4xl w-full">
+      <h1 class="text-3xl font-bold mb-6 flex items-center">
+        <i class="bi bi-info-circle text-blue-500 mr-3"></i>
+        NodCord Information
+      </h1>
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2 flex items-center">
+          <i class="bi bi-robot text-green-500 mr-2"></i>
+          Bot Information
+        </h2>
+        <p class="mb-2"><i class="bi bi-person text-gray-500 mr-2"></i><strong>Name:</strong> <%= bot.name || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-person-bounding-box text-gray-500 mr-2"></i><strong>Username:</strong> <%= bot.username || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-key text-gray-500 mr-2"></i><strong>Token:</strong> <%= bot.token ? '*****' : 'N/A' %></p> <!-- Masked for security -->
+        <p class="mb-2"><i class="bi bi-server text-gray-500 mr-2"></i><strong>Connected Servers:</strong> <%= bot.guildsCount || 'N/A' %></p>
       </div>
-      <div class="info-item">
-        <h2>API Information</h2>
-        <p><strong>Version:</strong> <%= api.version || 'N/A' %></p>
-        <p><strong>Status:</strong> <%= api.apiStatus || 'N/A' %></p>
-        <p><strong>Base URL:</strong> <%= api.baseUrl || 'N/A' %></p>
-        <p><strong>Environment:</strong> <%= api.environment || 'N/A' %></p>
-        <p><strong>Database Status:</strong> <%= api.dbStatus || 'N/A' %></p>
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2 flex items-center">
+          <i class="bi bi-cpu text-blue-500 mr-2"></i>
+          API Information
+        </h2>
+        <p class="mb-2"><i class="bi bi-tag text-gray-500 mr-2"></i><strong>Version:</strong> <%= api.version || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-circle-fill text-gray-500 mr-2"></i><strong>Status:</strong> <%= api.apiStatus || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-link text-gray-500 mr-2"></i><strong>Base URL:</strong> <%= api.baseUrl || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-cloud text-gray-500 mr-2"></i><strong>Environment:</strong> <%= api.environment || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-database text-gray-500 mr-2"></i><strong>Database Status:</strong> <%= api.dbStatus || 'N/A' %></p>
       </div>
-      <div class="info-item">
-        <h2>System Information</h2>
-        <p><strong>CPU Cores:</strong> <%= system.cpuCores || 'N/A' %></p>
-        <p><strong>CPU Load:</strong> <%= system.cpuLoad !== 'N/A' ? system.cpuLoad.toFixed(2) + '%' : 'N/A' %></p>
-        <p><strong>Total Memory:</strong> <%= system.totalMemory ? (system.totalMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
-        <p><strong>Free Memory:</strong> <%= system.freeMemory ? (system.freeMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
-        <p><strong>Used Memory:</strong> <%= system.usedMemory ? (system.usedMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
-        <div class="disk-info">
-          <h3>Disk Information:</h3>
+      <div class="mb-6">
+        <h2 class="text-xl font-semibold mb-2 flex items-center">
+          <i class="bi bi-laptop text-purple-500 mr-2"></i>
+          System Information
+        </h2>
+        <p class="mb-2"><i class="bi bi-cpu text-gray-500 mr-2"></i><strong>CPU Cores:</strong> <%= system.cpuCores || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-speedometer text-gray-500 mr-2"></i><strong>CPU Load:</strong> <%= system.cpuLoad !== 'N/A' ? system.cpuLoad.toFixed(2) + '%' : 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-memory text-gray-500 mr-2"></i><strong>Total Memory:</strong> <%= system.totalMemory ? (system.totalMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-memory text-gray-500 mr-2"></i><strong>Free Memory:</strong> <%= system.freeMemory ? (system.freeMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-memory text-gray-500 mr-2"></i><strong>Used Memory:</strong> <%= system.usedMemory ? (system.usedMemory / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+        <div class="mt-4">
+          <h3 class="text-lg font-semibold mb-2 flex items-center">
+            <i class="bi bi-hdd text-orange-500 mr-2"></i>
+            Disk Information:
+          </h3>
           <% if (system.disk && system.disk.length > 0) { %>
             <% system.disk.forEach(disk => { %>
-              <p><strong>Device:</strong> <%= disk.device || 'N/A' %></p>
-              <p><strong>Size:</strong> <%= disk.size ? (disk.size / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
-              <p><strong>Used:</strong> <%= disk.used ? (disk.used / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
-              <p><strong>Available:</strong> <%= disk.available ? (disk.available / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
-              <hr>
+              <div class="mb-4">
+                <p class="mb-1"><i class="bi bi-hdd text-gray-500 mr-2"></i><strong>Device:</strong> <%= disk.device || 'N/A' %></p>
+                <p class="mb-1"><i class="bi bi-sd-card text-gray-500 mr-2"></i><strong>Size:</strong> <%= disk.size ? (disk.size / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+                <p class="mb-1"><i class="bi bi-sd-card text-gray-500 mr-2"></i><strong>Used:</strong> <%= disk.used ? (disk.used / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+                <p class="mb-1"><i class="bi bi-sd-card text-gray-500 mr-2"></i><strong>Available:</strong> <%= disk.available ? (disk.available / (1024 ** 3)).toFixed(2) + ' GB' : 'N/A' %></p>
+                <hr class="my-4">
+              </div>
             <% }); %>
           <% } else { %>
             <p>No disk information available.</p>
           <% } %>
         </div>
-        <p><strong>System Name:</strong> <%= system.systemName || 'N/A' %></p>
-        <p><strong>System Manufacturer:</strong> <%= system.systemManufacturer || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-window-desktop text-gray-500 mr-2"></i><strong>System Name:</strong> <%= system.systemName || 'N/A' %></p>
+        <p class="mb-2"><i class="bi bi-building text-gray-500 mr-2"></i><strong>System Manufacturer:</strong> <%= system.systemManufacturer || 'N/A' %></p>
       </div>
     </div>
   </main>
   <%- include('./partials/footer'); %>
+  <script src="/assets/js/script.js"></script>
 </body>
-<script src="/assets/js/script.js"></script>
+
 </html>
