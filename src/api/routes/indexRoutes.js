@@ -167,18 +167,17 @@ router.get('/info', async (req, res) => {
 router.get('/versions', (req, res) => {
   const versions = [
     {
-      name: "NodCord v1.0",
-      tag: "v1.0.0",
-      description: "Initial release with basic features.",
-      downloadLink: "/downloads/NodCord-v1.0.0.zip"
+      name: "NodCord v0.5 Beta",
+      tag: "v0.5.0 Alpha",
+      description: "Release the beta of nodcord with beta key access to nodcord features for users.",
+      downloadLink: "/downloads/NodCord-v0.5.0-alpha.zip"
     },
     {
-      name: "NodCord v1.1",
-      tag: "v1.1.0",
-      description: "Added new security features and improved performance.",
-      downloadLink: "/downloads/NodCord-v1.1.0.zip"
+      name: "NodCord v1.0 LTS",
+      tag: "v1.0.0 LTS",
+      description: "The official first version of nodcord with every feature to use and everything is set for production environment for the commercial use.",
+      downloadLink: "/downloads/NodCord-v1.0.0-lts.zip"
     },
-    // Weitere Versionen ...
   ];
 
   res.render('versionControl', {
