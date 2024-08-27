@@ -110,6 +110,30 @@ router.get('/info', async (req, res) => {
   }
 });
 
+router.get('/versions', (req, res) => {
+  const versions = [
+    {
+      name: "NodCord v1.0",
+      tag: "v1.0.0",
+      description: "Initial release with basic features.",
+      downloadLink: "/downloads/NodCord-v1.0.0.zip"
+    },
+    {
+      name: "NodCord v1.1",
+      tag: "v1.1.0",
+      description: "Added new security features and improved performance.",
+      downloadLink: "/downloads/NodCord-v1.1.0.zip"
+    },
+    // Weitere Versionen ...
+  ];
+
+  res.render('versionControl', { 
+    versions,
+    isAuthenticated: res.locals.isAuthenticated,
+    errorstack: null
+  });
+});
+
 router.get('/discord-members', async (req, res) => {
   try {
     const servers = await bot.getServers();

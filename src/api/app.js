@@ -174,7 +174,7 @@ api.use((err, req, res, next) => {
 
 const startApp = () => {
   api.listen(port, () => {
-    logger.info(`API is running on https://${baseURL}:${port}`);
+    logger.info(`API is running on https://${baseURL}`);
   });
 };
 

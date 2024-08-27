@@ -1,4 +1,4 @@
-<header class="bg-gray-800 text-white shadow-md">
+<header class="bg-gray-800 text-white shadow-md dark:bg-gray-900">
   <div class="container mx-auto flex justify-between items-center p-4">
     <!-- Logo Section -->
     <div class="flex items-center">
@@ -6,6 +6,17 @@
         <img src="/assets/img/logo.png" alt="NodCord Logo" class="h-8 w-8 mr-2">
         <span class="text-lg font-bold">NodCord</span>
       </a>
+    </div>
+    <!-- Light/Dark Mode Toggle -->
+    <div class="flex items-center">
+      <button id="themeToggle" class="focus:outline-none">
+        <svg id="sunIcon" class="w-6 h-6 hidden text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v2m6.364 1.636l-1.414 1.414M18 12h2m-1.636 6.364l-1.414-1.414M12 18v2m-6.364-1.636l1.414-1.414M6 12H4m1.636-6.364l1.414 1.414M12 6a6 6 0 110 12 6 6 0 010-12z"></path>
+        </svg>
+        <svg id="moonIcon" class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m6.364-1.636l-1.414 1.414M18 12h2m-1.636 6.364l-1.414-1.414M12 18v2m-6.364-1.636l1.414-1.414M6 12H4m1.636-6.364l1.414 1.414M21 12a9 9 0 11-9-9 9 9 0 019 9z"></path>
+        </svg>
+      </button>
     </div>
     <!-- Burger Icon -->
     <div class="lg:hidden cursor-pointer" id="burger">
@@ -19,6 +30,7 @@
       <a href="/docs" class="hover:text-yellow-400 transition duration-300">Documentation</a>
       <a href="/status" class="hover:text-yellow-400 transition duration-300">Status</a>
       <a href="/info" class="hover:text-yellow-400 transition duration-300">Info</a>
+      <a href="/versions" class="hover:text-yellow-400 transition duration-300">Versions</a>
       <a href="/discord-members" class="hover:text-yellow-400 transition duration-300">Discord Members</a>
       <a href="/discord-servers" class="hover:text-yellow-400 transition duration-300">Discord Servers</a>
       <% if (!isAuthenticated) { %>
@@ -30,37 +42,63 @@
             <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>" class="w-8 h-8 rounded-full inline-block">
             <span class="ml-2"><%= user.username %></span>
           </button>
-          <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden">
+          <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden dark:bg-gray-800">
             <% if (user.role === 'admin' || user.role === 'moderator') { %>
-              <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600">Dashboard</a>
+              <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Dashboard</a>
             <% } %>
             <% if (isAuthenticated && user) { %>
-              <a href="/user/profile/<%= user.username %>" class="block px-4 py-2 hover:bg-gray-600">Profile</a>
+              <a href="/user/profile/<%= user.username %>" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
             <% } %>
-            <a href="/settings" class="block px-4 py-2 hover:bg-gray-600">Settings</a>
-            <a href="/logout" class="block px-4 py-2 hover:bg-gray-600">Logout</a>
+            <a href="/settings" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
+            <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
           </div>
         </div>
       <% } %>
     </nav>
   </div>
   <!-- Mobile Navigation Menu -->
-  <nav class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center space-y-4 hidden" id="mobileMenu">
-    <button class="absolute top-4 right-4 text-white text-2xl" id="closeBtn">&times;</button>
-    <a href="/" class="text-white text-lg hover:text-yellow-400 transition duration-300">Home</a>
-    <a href="/docs" class="text-white text-lg hover:text-yellow-400 transition duration-300">Documentation</a>
-    <a href="/status" class="text-white text-lg hover:text-yellow-400 transition duration-300">Status</a>
-    <a href="/info" class="text-white text-lg hover:text-yellow-400 transition duration-300">Info</a>
-    <a href="/discord-members" class="text-white text-lg hover:text-yellow-400 transition duration-300">Discord Members</a>
-    <a href="/discord-servers" class="text-white text-lg hover:text-yellow-400 transition duration-300">Discord Servers</a>
-    <% if (!isAuthenticated) { %>
-      <a href="/login" class="text-white text-lg hover:text-yellow-400 transition duration-300">Login</a>
-      <a href="/register" class="text-white text-lg hover:text-yellow-400 transition duration-300">Register</a>
-    <% } else { %>
-      <a href="/dashboard" class="text-white text-lg hover:text-yellow-400 transition duration-300">Dashboard</a>
-      <a href="/logout" class="text-white text-lg hover:text-yellow-400 transition duration-300">Logout</a>
-    <% } %>
-  </nav>
+<nav class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center space-y-4 hidden dark:bg-gray-900" id="mobileMenu">
+  <button class="absolute top-4 right-4 text-white text-2xl" id="closeBtn">&times;</button>
+  <a href="/" class="text-white text-lg hover:text-yellow-400 transition duration-300">Home</a>
+  <a href="/docs" class="text-white text-lg hover:text-yellow-400 transition duration-300">Documentation</a>
+  <a href="/status" class="text-white text-lg hover:text-yellow-400 transition duration-300">Status</a>
+  <a href="/info" class="text-white text-lg hover:text-yellow-400 transition duration-300">Info</a>
+  <a href="/versions" class="text-white text-lg hover:text-yellow-400 transition duration-300">Versions</a>
+  <a href="/discord-members" class="text-white text-lg hover:text-yellow-400 transition duration-300">Discord Members</a>
+  <a href="/discord-servers" class="text-white text-lg hover:text-yellow-400 transition duration-300">Discord Servers</a>
+  
+  <!-- Light/Dark Mode Toggle -->
+  <div class="flex items-center mt-4">
+    <button id="themeToggleMobile" class="focus:outline-none">
+      <svg id="sunIconMobile" class="w-6 h-6 hidden text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2v2m6.364 1.636l-1.414 1.414M18 12h2m-1.636 6.364l-1.414-1.414M12 18v2m-6.364-1.636l1.414-1.414M6 12H4m1.636-6.364l1.414 1.414M12 6a6 6 0 110 12 6 6 0 010-12z"></path>
+      </svg>
+      <svg id="moonIconMobile" class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m6.364-1.636l-1.414 1.414M18 12h2m-1.636 6.364l-1.414-1.414M12 18v2m-6.364-1.636l1.414-1.414M6 12H4m1.636-6.364l1.414 1.414M21 12a9 9 0 11-9-9 9 9 0 019 9z"></path>
+      </svg>
+    </button>
+  </div>
+
+  <% if (!isAuthenticated) { %>
+    <a href="/login" class="text-white text-lg hover:text-yellow-400 transition duration-300">Login</a>
+    <a href="/register" class="text-white text-lg hover:text-yellow-400 transition duration-300">Register</a>
+  <% } else { %>
+    <div class="relative">
+      <button id="userMenuBtnMobile" class="text-white text-lg hover:text-yellow-400 transition duration-300">
+        <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>" class="w-8 h-8 rounded-full inline-block">
+        <span class="ml-2"><%= user.username %></span>
+      </button>
+      <div id="userDropdownMobile" class="mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden dark:bg-gray-800">
+        <% if (user.role === 'admin' || user.role === 'moderator') { %>
+          <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Dashboard</a>
+        <% } %>
+        <a href="/user/profile/<%= user.username %>" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
+        <a href="/settings" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
+        <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
+      </div>
+    </div>
+  <% } %>
+</nav>
 </header>
 
 <script>
@@ -69,7 +107,11 @@
   const closeBtn = document.getElementById('closeBtn');
   const userMenuBtn = document.getElementById('userMenuBtn');
   const userDropdown = document.getElementById('userDropdown');
+  const themeToggle = document.getElementById('themeToggle');
+  const sunIcon = document.getElementById('sunIcon');
+  const moonIcon = document.getElementById('moonIcon');
 
+   // Mobile menu toggle
   burger.addEventListener('click', () => {
     mobileMenu.classList.toggle('hidden');
   });
@@ -78,7 +120,26 @@
     mobileMenu.classList.add('hidden');
   });
 
-  userMenuBtn.addEventListener('click', () => {
-    userDropdown.classList.toggle('hidden');
+  userMenuBtnMobile.addEventListener('click', () => {
+    userDropdownMobile.classList.toggle('hidden');
   });
+
+  // Light/Dark mode toggle for mobile
+  themeToggleMobile.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    sunIconMobile.classList.toggle('hidden');
+    moonIconMobile.classList.toggle('hidden');
+    localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  });
+
+  // On page load, set the theme based on localStorage
+  if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+    sunIconMobile.classList.remove('hidden');
+    moonIconMobile.classList.add('hidden');
+  } else {
+    document.documentElement.classList.remove('dark');
+    sunIconMobile.classList.add('hidden');
+    moonIconMobile.classList.remove('hidden');
+  }
 </script>
