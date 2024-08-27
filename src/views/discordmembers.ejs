@@ -5,27 +5,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Discord Members ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('./partials/header'); %>
   <main class="p-6">
-    <div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 mb-6">
       <h1 class="text-3xl font-bold mb-4">Discord Members</h1>
       <% if (servers && servers.length > 0) { %>
         <% servers.forEach(server => { %>
-          <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+          <div class="bg-gray-200 dark:bg-gray-800 shadow-md rounded-lg p-6 mb-6">
             <h2 class="text-2xl font-semibold mb-2"><%= server.name %></h2>
             <img class="w-16 h-16 rounded-full mb-4" src="<%= server.icon %>" alt="<%= server.name %>">
             <% if (server.members && server.members.length > 0) { %>
               <div class="overflow-x-auto">
                 <table class="w-full border-collapse mb-4">
                   <thead>
-                    <tr class="bg-gray-200 text-gray-800">
+                    <tr class="bg-white dark:bg-gray-900">
                       <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Avatar</th>
                       <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Username</th>
                       <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Display Name</th>
@@ -34,7 +34,7 @@
                       <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="bg-white dark:bg-gray-900">
                     <% server.members.forEach(member => { %>
                       <tr>
                         <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center">

@@ -5,68 +5,68 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NodCord - Dashboard</title>
-  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('../partials/header'); %>
   <main class="p-5 space-y-8">
     <!-- Overview Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 class="text-2xl font-semibold mb-4">Übersicht</h3>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Beta Keys</h4>
           <p>Anzahl: <%= betaKey.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">API Keys</h4>
           <p>Anzahl: <%= apiKey.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Users</h4>
           <p>Anzahl: <%= users.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Roles</h4>
           <p>Anzahl: <%= roles.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Categories</h4>
           <p>Anzahl: <%= categories.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Tickets</h4>
           <p>Anzahl: <%= tickets.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Discord Servers</h4>
           <p>Anzahl: <%= discordServers.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Discord Members</h4>
           <p>Anzahl: <%= discordMembers.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Bugs</h4>
           <p>Anzahl: <%= bugs.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Blogs</h4>
           <p>Anzahl: <%= blogs.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Comments</h4>
           <p>Anzahl: <%= comments.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Companies</h4>
           <p>Anzahl: <%= companies.length %></p>
         </div>
-        <div class="bg-gray-50 p-4 rounded-lg shadow-sm text-center">
+        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
           <h4 class="text-lg font-medium">Organizations</h4>
           <p>Anzahl: <%= organizations.length %></p>
         </div>
@@ -74,7 +74,7 @@
     </section>
 
     <!-- Status Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 class="text-2xl font-semibold mb-4">System Status</h3>
       <p class="mb-2">API Status: <strong><%= apiStatus %></strong></p>
       <p class="mb-2">Bot Status: <strong><%= botStatus %></strong></p>
@@ -82,7 +82,7 @@
     </section>
 
     <!-- API Control Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 class="text-2xl font-semibold mb-4">API Steuerung</h3>
       <div class="space-y-4">
         <div class="flex items-center space-x-4">
@@ -119,7 +119,7 @@
     </section>
 
     <!-- Bot Control Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 class="text-2xl font-semibold mb-4">Bot Steuerung</h3>
       <div class="space-y-4">
         <div class="flex items-center space-x-4">
@@ -156,10 +156,10 @@
     </section>
 
     <!-- File Upload Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 class="text-2xl font-semibold mb-4">Datei-Uploads</h3>
       <form action="/api/files/upload" method="POST" enctype="multipart/form-data" class="flex items-center space-x-4">
-        <input type="file" name="file" required class="bg-gray-50 rounded-md p-2">
+        <input type="file" name="file" required class="bg-gray-200 dark:bg-gray-800 rounded-md p-2">
         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">Datei hochladen</button>
       </form>
       <h4 class="text-lg font-medium mt-4">Hochgeladene Dateien:</h4>
@@ -177,9 +177,9 @@
     </section>
 
     <!-- System Logs Section -->
-    <section class="bg-white p-6 rounded-lg shadow-md">
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h3 class="text-2xl font-semibold mb-4">System Logs</h3>
-      <div class="bg-gray-50 p-4 rounded-md shadow-inner max-h-72 overflow-y-auto font-mono text-sm">
+      <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-md shadow-inner max-h-72 overflow-y-auto font-mono text-sm">
         <pre>
           <% loggerLogs.forEach((log) => { %>
             <%= log %>
@@ -194,7 +194,7 @@
   </main>
   <%- include('../partials/footer'); %>
 </body>
-<script src="/assets/js/dashboard.js"></script>
-<script src="/assets/js/script.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/script.js"></script>
 
 </html>

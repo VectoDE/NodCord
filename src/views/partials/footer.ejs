@@ -1,18 +1,18 @@
-<footer class="bg-gray-800 text-white py-8">
+<footer class="bg-gray-900 text-white py-8">
   <div class="container mx-auto px-4">
     <div class="flex flex-wrap justify-between">
       <!-- Kontakt und Standort -->
       <div class="w-full md:w-1/3 mb-6 md:mb-0">
-        <h4 class="text-lg font-semibold mb-2">Kontakt & Standort</h4>
-        <p class="text-sm mb-2">Email: <a href="mailto:info@nodcord.com" class="text-gray-400 hover:text-gray-300">info@nodcord.com</a></p>
-        <p class="text-sm mb-2">Telefon: <a href="tel:+1234567890" class="text-gray-400 hover:text-gray-300">+123 456 7890</a></p>
-        <p class="text-sm">Standort: <span class="text-gray-400">123 Nodcord Street, Tech City, TC 12345</span></p>
+        <h4 class="text-lg font-semibold mb-4">Contact & Position</h4>
+        <p class="text-sm mb-2"><span class="font-semibold">Email:</span> <a href="mailto:info@nodcord.com" class="text-gray-400 hover:text-gray-300">nodcord@hauknetz.de</a></p>
+        <p class="text-sm mb-2"><span class="font-semibold">Telephone:</span> <a href="tel:+1234567890" class="text-gray-400 hover:text-gray-300">+49 157 51578216</a></p>
+        <p class="text-sm"><span class="font-semibold">Position:</span> <span class="text-gray-400">123 Nodcord Street, Tech City, TC 12345</span></p>
       </div>
 
       <!-- Social Media -->
       <div class="w-full md:w-1/3 mb-6 md:mb-0 flex flex-col items-center">
-        <h4 class="text-lg font-semibold mb-2">Folge uns</h4>
-        <div class="flex flex-wrap justify-center space-x-4">
+        <h4 class="text-lg font-semibold mb-4">Follow us</h4>
+        <div class="flex space-x-4">
           <a href="https://discord.com/" target="_blank" class="text-gray-400 hover:text-gray-300 text-xl">
             <i class="bi bi-discord"></i>
           </a>
@@ -42,30 +42,40 @@
 
       <!-- Wichtige Links -->
       <div class="w-full md:w-1/3 mb-6 md:mb-0">
-        <h4 class="text-lg font-semibold mb-2">Wichtige Links</h4>
-        <ul class="text-sm">
-          <li><a href="/about" class="text-gray-400 hover:text-gray-300">Über uns</a></li>
-          <li><a href="/contact" class="text-gray-400 hover:text-gray-300">Kontakt</a></li>
-          <li><a href="/legal/terms-of-service" class="text-gray-400 hover:text-gray-300">Nutzungsbedingungen</a></li>
-          <li><a href="/legal/privacy-policy" class="text-gray-400 hover:text-gray-300">Datenschutzrichtlinie</a></li>
+        <h4 class="text-lg font-semibold mb-4">Important Links</h4>
+        <ul class="text-sm space-y-2">
+          <li><a href="/docs" class="text-gray-400 hover:text-gray-300">Documentation</a></li>
+          <li><a href="/info" class="text-gray-400 hover:text-gray-300">Application Information</a></li>
+          <hr class="mt-4 mb-4 bg-gray-800">
+          <li><a href="/legal/terms-of-service" class="text-gray-400 hover:text-gray-300">Terms of Service</a></li>
+          <li><a href="/legal/privacy-policy" class="text-gray-400 hover:text-gray-300">Privacy Policy</a></li>
         </ul>
       </div>
     </div>
 
-    <!-- Discord Widget -->
-    <div class="flex flex-wrap justify-center mt-8">
-      <div class="w-full sm:w-1/2 mb-6 md:mb-0">
-        <h4 class="text-lg font-semibold mb-2 text-center">Unser Discord Server</h4>
-        <div class="flex justify-center">
-          <iframe src="https://discord.com/widget?id=1236424257383305297&theme=dark" width="350" height="500" allowtransparency="true" frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-        </div>
-      </div>
-    </div>
-
-    <div class="text-center mt-8">
+    <div class="text-center mt-12">
       <p class="text-sm text-gray-400">
-        &copy; <%= new Date().getFullYear() %> <a href="/" class="text-gray-200 hover:text-gray-400">NodCord</a>. Alle Rechte vorbehalten.
+        &copy; <%= new Date().getFullYear() %> <a href="/" class="text-gray-200 hover:text-gray-400">NodCord</a>. All rights reserved.
       </p>
     </div>
+
+    <!-- Discord Widget -->
+			<div class="flex flex-wrap justify-center mt-12 mb-1">
+				<div class="w-full sm:w-1/2 mb-6 md:mb-0">
+					<h4 class="text-lg font-semibold mb-4 text-center">
+						Our Discord Server
+					</h4>
+					<div class="flex justify-center">
+						<iframe
+							src="https://discord.com/widget?id=1236424257383305297&theme=dark"
+							width="350"
+							height="500"
+							allowtransparency="true"
+							frameborder="0"
+							sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+						></iframe>
+					</div>
+				</div>
+			</div>
   </div>
 </footer>

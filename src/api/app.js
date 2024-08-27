@@ -164,6 +164,9 @@ api.use((err, req, res, next) => {
     });
   } else {
     res.status(statusCode).render('error', {
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      logo404: '/assets/img/404.png',
       errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
       errormessage: err.message,
       errorstatus: statusCode,
@@ -174,7 +177,7 @@ api.use((err, req, res, next) => {
 
 const startApp = () => {
   api.listen(port, () => {
-    logger.info(`API is running on https://${baseURL}`);
+    logger.info(`API is running on https://${baseURL}:${port}`);
   });
 };
 

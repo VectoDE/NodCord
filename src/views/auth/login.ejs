@@ -5,17 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('../partials/header'); %>
   <main class="flex justify-center items-center min-h-screen">
-    <div class="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
-      <h1 class="text-2xl font-bold text-gray-800 mb-6">Login</h1>
+    <div class="max-w-md w-full bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold text-gray-200 mb-6">Login</h1>
       <% if (errorMessage) { %>
         <p class="text-red-500 mb-4">
           <%= errorMessage %>
@@ -23,11 +23,11 @@
       <% } %>
       <form action="/api/auth/login" method="POST" class="space-y-6">
         <div>
-          <label for="emailOrUsername" class="block text-sm font-medium text-gray-700">Username or Email</label>
+          <label for="emailOrUsername" class="block text-sm font-medium text-gray-200">Username or Email</label>
           <input type="text" id="emailOrUsername" name="emailOrUsername" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+          <label for="password" class="block text-sm font-medium text-gray-200">Password</label>
           <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
         </div>
         <div>

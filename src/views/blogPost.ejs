@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= blog.title %> - NodCord</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+  <%- include('./partials/header', ); %>
+
+  <main class="p-5 space-y-8">
+    <!-- Blog Detail Section -->
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+      <h1 class="text-3xl font-semibold text-gray-800 dark:text-white"><%= blog.title %></h1>
+      <div class="mt-4">
+        <img class="object-cover object-center w-full h-64 rounded-lg lg:h-80" src="<%= blog.picture ? blog.picture : 'default-image-url' %>" alt="Blog Image">
+      </div>
+      <p class="mt-4 text-gray-500 dark:text-gray-400"><%= blog.content %></p>
+      <div class="mt-4 text-gray-500 dark:text-gray-400">
+        <p>Written by: <%= blog.author %></p>
+        <p>Date: <%= blog.createdAt.toDateString() %></p>
+      </div>
+      <a href="/news" class="mt-4 inline-block text-blue-500 underline hover:text-blue-400">Back to Blog</a>
+    </section>
+  </main>
+
+  <%- include('./partials/footer'); %>
+</body>
+<script src="assets/js/script.js"></script>
+</html>

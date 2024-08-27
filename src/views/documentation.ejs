@@ -1,94 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Documentation ~ NodCord</title>
+		<link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon" />
+		<link rel="stylesheet" href="assets/css/styles.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
+		/>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentation ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+	<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+		<%- include('./partials/header'); %>
+		<div class="flex flex-col lg:flex-row">
+			<!-- Sidebar for mobile and larger screens -->
+			<aside
+				class="lg:w-64 dark:bg-gray-900 text-white h-full lg:h-screen sticky top-0 p-5 shadow-lg lg:block lg:static fixed inset-0 lg:relative lg:flex lg:flex-col z-10 transform -translate-x-full lg:translate-x-0 transition-transform duration-300"
+				id="sidebar"
+			>
+				<button class="lg:hidden text-2xl mb-4" id="closeSidebar">
+					&times;
+				</button>
+				<div class="space-y-2 lg:space-y-4">
+					<a
+						href="#overview"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>Overview</a
+					>
+					<a
+						href="#installation"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>Installation</a
+					>
+					<a
+						href="#configuration"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>Configuration</a
+					>
+					<a
+						href="#usage"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>Usage</a
+					>
+					<a
+						href="#api"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>API Reference</a
+					>
+					<a
+						href="#faq"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>FAQ</a
+					>
+					<a
+						href="#contact"
+						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
+						>Contact</a
+					>
+				</div>
+			</aside>
 
-<body class="bg-gray-200 text-gray-900">
-  <%- include('./partials/header'); %>
-  <div class="flex">
-    <aside class="w-64 bg-gray-800 text-white h-screen sticky top-0 p-5 shadow-lg">
-      <a href="#overview" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-overview">Overview</a>
-      <a href="#installation" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-installation">Installation</a>
-      <a href="#configuration" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-configuration">Configuration</a>
-      <a href="#usage" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-usage">Usage</a>
-      <a href="#api" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-api">API Reference</a>
-      <a href="#faq" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-faq">FAQ</a>
-      <a href="#contact" class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors" id="nav-contact">Contact</a>
-    </aside>
-    <main class="flex-1 p-6 m-5 bg-white shadow-lg rounded-lg">
-      <section id="overview">
-        <h1 class="text-3xl font-bold border-b-2 border-gray-700 pb-2 mb-4">Overview</h1>
-        <p class="text-base leading-relaxed mb-4">Welcome to the NodCord documentation. NodCord is a versatile and powerful Discord bot framework that simplifies the process of creating and managing your own Discord bots.</p>
-        <p class="text-base leading-relaxed">With NodCord, you can easily set up, configure, and deploy bots that interact with Discord servers, providing a seamless integration experience. This documentation will guide you through the installation, configuration, and usage of NodCord, along with detailed information about its API.</p>
-      </section>
-      <section id="installation" class="mt-10">
-        <h2 class="text-2xl font-semibold border-b border-gray-600 pb-1 mb-4">Installation</h2>
-        <p class="text-base leading-relaxed mb-4">To install NodCord, ensure you have Node.js and npm installed on your system. Run the following command to install NodCord:</p>
-        <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto"><code>npm install nodcord</code></pre>
-        <p class="text-base leading-relaxed mt-4">Once installed, you can start building your bot with ease using the features provided by NodCord.</p>
-      </section>
-      <section id="configuration" class="mt-10">
-        <h2 class="text-2xl font-semibold border-b border-gray-600 pb-1 mb-4">Configuration</h2>
-        <p class="text-base leading-relaxed mb-4">After installation, you need to configure NodCord to work with your Discord bot. Create a <code class="bg-gray-200 px-2 py-1 rounded">.env</code> file in your project directory and add the following environment variables:</p>
-        <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto"><code>DISCORD_TOKEN=your_discord_token_here
-BOT_PREFIX=!</code></pre>
-        <p class="text-base leading-relaxed mt-4">These variables will be used by NodCord to authenticate your bot with Discord and to set the command prefix for the bot's interactions.</p>
-      </section>
-      <section id="usage" class="mt-10">
-        <h2 class="text-2xl font-semibold border-b border-gray-600 pb-1 mb-4">Usage</h2>
-        <p class="text-base leading-relaxed mb-4">To start using NodCord, create an <code class="bg-gray-200 px-2 py-1 rounded">index.js</code> file and add the following code to initialize your bot:</p>
-        <pre class="bg-gray-100 p-4 rounded-lg overflow-x-auto"><code>const { Client, GatewayIntentBits } = require('nodcord');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+			<!-- Main content area -->
+			<main
+				class="flex-1 p-6 m-5 bg-white dark:bg-gray-900 shadow-lg rounded-lg"
+			>
+				<button class="lg:hidden text-2xl mb-4" id="openSidebar">
+					&#9776;
+					<!-- Burger Menu Icon -->
+				</button>
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
-});
+				<!-- Overview Section -->
+				<section id="overview">
+					<h1
+						class="text-3xl font-bold border-b-2 border-gray-700 dark:border-gray-600 pb-2 mb-4"
+					>
+						Overview
+					</h1>
+					<p class="text-base leading-relaxed mb-4">
+						Welcome to the NodCord documentation. NodCord is a versatile and
+						powerful Discord bot framework that simplifies the process of
+						creating and managing your own Discord bots.
+					</p>
+					<p class="text-base leading-relaxed">
+						With NodCord, you can easily set up, configure, and deploy bots that
+						interact with Discord servers, providing a seamless integration
+						experience. This documentation will guide you through the
+						installation, configuration, and usage of NodCord, along with
+						detailed information about its API.
+					</p>
+				</section>
 
-client.login(process.env.DISCORD_TOKEN);</code></pre>
-        <p class="text-base leading-relaxed mt-4">This script sets up a basic bot that logs in to Discord using the token you provided and outputs a message when it is successfully connected.</p>
-      </section>
-      <section id="api" class="mt-10">
-        <h2 class="text-2xl font-semibold border-b border-gray-600 pb-1 mb-4">API Reference</h2>
-        <p class="text-base leading-relaxed mb-4">NodCord provides a comprehensive API for interacting with Discord. Here are some of the main methods:</p>
-        <ul class="list-disc pl-5 mb-4">
-          <li><code class="bg-gray-200 px-2 py-1 rounded">client.on(event, listener)</code> - Listens for a specific event.</li>
-          <li><code class="bg-gray-200 px-2 py-1 rounded">client.login(token)</code> - Logs in to Discord with the provided token.</li>
-          <li><code class="bg-gray-200 px-2 py-1 rounded">client.user.setActivity(activity)</code> - Sets the bot's activity status.</li>
-          <li><code class="bg-gray-200 px-2 py-1 rounded">client.guilds.cache</code> - Accesses the cache of guilds (servers) the bot is part of.</li>
-          <li><code class="bg-gray-200 px-2 py-1 rounded">client.channels.cache</code> - Accesses the cache of channels within the bot's guilds.</li>
-          <li><code class="bg-gray-200 px-2 py-1 rounded">client.users.cache</code> - Accesses the cache of users that the bot has interacted with.</li>
-        </ul>
-        <p class="text-base leading-relaxed">For more detailed information, refer to the full API documentation included in the NodCord package or visit the official NodCord GitHub repository.</p>
-      </section>
-      <section id="faq" class="mt-10">
-        <h2 class="text-2xl font-semibold border-b border-gray-600 pb-1 mb-4">FAQ</h2>
-        <p class="text-base leading-relaxed mb-4">Here are some frequently asked questions about NodCord:</p>
-        <h3 class="text-xl font-semibold mt-6">What is NodCord?</h3>
-        <p class="text-base leading-relaxed">NodCord is a framework for creating Discord bots with ease. It provides a robust API and tools to help developers build and manage bots quickly.</p>
-        <h3 class="text-xl font-semibold mt-6">How do I install NodCord?</h3>
-        <p class="text-base leading-relaxed">To install NodCord, run the command <code class="bg-gray-200 px-2 py-1 rounded">npm install nodcord</code> in your Node.js project.</p>
-        <h3 class="text-xl font-semibold mt-6">Where can I find more information about the API?</h3>
-        <p class="text-base leading-relaxed">The API reference is included in this documentation and can also be found in the NodCord GitHub repository, where you can access the full list of available methods and features.</p>
-        <h3 class="text-xl font-semibold mt-6">How do I configure my bot?</h3>
-        <p class="text-base leading-relaxed">Configuration is done using a <code class="bg-gray-200 px-2 py-1 rounded">.env</code> file where you define your Discord token and bot prefix. This file should be placed in the root directory of your project.</p>
-      </section>
-      <section id="contact" class="mt-10">
-        <h2 class="text-2xl font-semibold border-b border-gray-600 pb-1 mb-4">Contact</h2>
-        <p class="text-base leading-relaxed mb-4">If you have any questions or need further assistance, please contact us:</p>
-        <p class="text-base leading-relaxed">Email: <a href="mailto:support@nodcord.com" class="text-blue-500 hover:text-blue-700">support@nodcord.com</a></p>
-        <p class="text-base leading-relaxed">GitHub: <a href="https://github.com/nodcord" class="text-blue-500 hover:text-blue-700" target="_blank">NodCord GitHub</a></p>
-      </section>
-    </main>
-  </div>
-  <%- include('./partials/footer'); %>
-</body>
+				<!-- Installation Section -->
+				<section id="installation" class="mt-10">
+					<h2
+						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
+					>
+						Installation
+					</h2>
+					<p class="text-base leading-relaxed mb-4">
+						To install NodCord, ensure you have Node.js and npm installed on
+						your system. Run the following command to install NodCord:
+					</p>
+					<pre
+						class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto"
+					><code>npm install nodcord</code></pre>
+					<p class="text-base leading-relaxed mt-4">
+						Once installed, you can start building your bot with ease using the
+						features provided by NodCord.
+					</p>
+				</section>
 
+				<!-- Configuration Section -->
+				<section id="configuration" class="mt-10">
+					<h2
+						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
+					>
+						Configuration
+					</h2>
+					<p class="text-base leading-relaxed mb-4">
+						After installation, you need to configure NodCord to work with your
+						Discord bot. Create a
+						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+							>.env</code
+						>
+						file in your project directory and add the following environment
+						variables:
+					</p>
+					<pre
+						class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto"
+					><code>DISCORD_TOKEN=your_discord_token_here
+      BOT_PREFIX=!</code></pre>
+					<p class="text-base leading-relaxed mt-4">
+						These variables will be used by NodCord to authenticate your bot
+						with Discord and to set the command prefix for the bot's
+						interactions.
+					</p>
+				</section>
+
+				<!-- Usage Section -->
+				<section id="usage" class="mt-10">
+					<h2
+						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
+					>
+						Usage
+					</h2>
+					<p class="text-base leading-relaxed mb-4">
+						To start using NodCord, create an
+						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+							>index.js</code
+						>
+						file and add the following code to initialize your bot:
+					</p>
+					<pre
+						class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto"
+					><code>const { Client, GatewayIntentBits } = require('nodcord');
+      const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+
+      client.on('ready', () => {
+        console.log(`Logged in as ${client.user.tag}!`);
+      });
+
+      client.login(process.env.DISCORD_TOKEN);</code></pre>
+					<p class="text-base leading-relaxed mt-4">
+						This script sets up a basic bot that logs in to Discord using the
+						token you provided and outputs a message when it is successfully
+						connected.
+					</p>
+				</section>
+
+				<!-- API Reference Section -->
+				<section id="api" class="mt-10">
+					<h2
+						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
+					>
+						API Reference
+					</h2>
+					<p class="text-base leading-relaxed mb-4">
+						NodCord provides a comprehensive API for interacting with Discord.
+						Here are some of the main methods:
+					</p>
+					<ul class="list-disc pl-5 mb-4">
+						<li>
+							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+								>client.on(event, listener)</code
+							>
+							- Listens for a specific event.
+						</li>
+						<li>
+							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+								>client.login(token)</code
+							>
+							- Logs in to Discord with the provided token.
+						</li>
+						<li>
+							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+								>client.user.setActivity(activity)</code
+							>
+							- Sets the bot's activity status.
+						</li>
+						<li>
+							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+								>client.guilds.cache</code
+							>
+							- Accesses the cache of guilds (servers) the bot is part of.
+						</li>
+						<li>
+							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+								>client.channels.cache</code
+							>
+							- Accesses the cache of channels within the bot's guilds.
+						</li>
+						<li>
+							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+								>client.users.cache</code
+							>
+							- Accesses the cache of users that the bot has interacted with.
+						</li>
+					</ul>
+					<p class="text-base leading-relaxed">
+						For more detailed information, refer to the full API documentation
+						included in the NodCord package or visit the official NodCord GitHub
+						repository.
+					</p>
+				</section>
+
+				<!-- FAQ Section -->
+				<section id="faq" class="mt-10">
+					<h2
+						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
+					>
+						FAQ
+					</h2>
+					<p class="text-base leading-relaxed mb-4">
+						Here are some frequently asked questions about NodCord:
+					</p>
+					<h3 class="text-xl font-semibold mt-6">What is NodCord?</h3>
+					<p class="text-base leading-relaxed">
+						NodCord is a framework for creating Discord bots with ease. It
+						provides a robust API and tools to help developers build and manage
+						bots quickly.
+					</p>
+					<h3 class="text-xl font-semibold mt-6">How do I install NodCord?</h3>
+					<p class="text-base leading-relaxed">
+						To install NodCord, run the command
+						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+							>npm install nodcord</code
+						>
+						in your Node.js project.
+					</p>
+					<h3 class="text-xl font-semibold mt-6">
+						Where can I find more information about the API?
+					</h3>
+					<p class="text-base leading-relaxed">
+						The API reference is included in this documentation and can also be
+						found in the NodCord GitHub repository, where you can access the
+						full list of available methods and features.
+					</p>
+					<h3 class="text-xl font-semibold mt-6">How do I configure my bot?</h3>
+					<p class="text-base leading-relaxed">
+						Configuration is done using a
+						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
+							>.env</code
+						>
+						file where you define your Discord token and bot prefix. This file
+						should be placed in the root directory of your project.
+					</p>
+				</section>
+
+				<!-- Contact Section -->
+				<section id="contact" class="mt-10">
+					<h2
+						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
+					>
+						Contact
+					</h2>
+					<p class="text-base leading-relaxed mb-4">
+						If you have any questions or need further assistance, please contact
+						us:
+					</p>
+					<p class="text-base leading-relaxed">
+						Email:
+						<a
+							href="mailto:support@nodcord.com"
+							class="text-blue-500 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-400"
+							>support@nodcord.com</a
+						>
+					</p>
+					<p class="text-base leading-relaxed">
+						GitHub:
+						<a
+							href="https://github.com/nodcord"
+							class="text-blue-500 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-400"
+							target="_blank"
+							>NodCord GitHub</a
+						>
+					</p>
+				</section>
+			</main>
+		</div>
+
+		<script>
+			// JavaScript for handling the sidebar toggle
+			document.addEventListener('DOMContentLoaded', () => {
+				const sidebarToggle = document.getElementById('openSidebar');
+				const closeSidebar = document.getElementById('closeSidebar');
+				const sidebar = document.getElementById('sidebar');
+
+				if (sidebarToggle) {
+					sidebarToggle.addEventListener('click', () => {
+						sidebar.classList.remove('-translate-x-full');
+						sidebar.classList.add('translate-x-0');
+					});
+				}
+
+				if (closeSidebar) {
+					closeSidebar.addEventListener('click', () => {
+						sidebar.classList.remove('translate-x-0');
+						sidebar.classList.add('-translate-x-full');
+					});
+				}
+			});
+		</script>
+
+		<%- include('./partials/footer'); %>
+	</body>
 </html>

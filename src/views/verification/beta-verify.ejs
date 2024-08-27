@@ -1,34 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
 <head>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Beta Key Verifizierung ~ NodCord</title>
-  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('../partials/header'); %>
-  <main>
-    <div class="container">
-      <h1 class="mt-5">Beta Key Verifizierung</h1>
 
-      <form method="POST" action="/api/beta/verify">
-        <div class="form-group">
-          <label for="key">Beta Key</label>
-          <input type="text" class="form-control" id="key" name="key" required>
-          <% if (error) { %>
-            <div class="alert alert-danger mt-2" role="alert">
-              <%= error %>
-            </div>
-          <% } %>
+  <main class="flex items-center justify-center min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+        <h1 class="text-3xl font-extrabold text-gray-900 dark:text-gray-200">Beta Key Verifizierung</h1>
+      </div>
+
+      <form class="mt-8 space-y-6" method="POST" action="/api/beta/verify">
+        <div class="rounded-md shadow-sm -space-y-px">
+          <div>
+            <label for="key" class="sr-only">Beta Key</label>
+            <input id="key" name="key" type="text" required
+              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400 dark:border-gray-600"
+              placeholder="Beta Key eingeben">
+          </div>
         </div>
-        <button type="submit" class="btn btn-primary">Verifizieren</button>
+
+        <% if (error) { %>
+          <div class="mt-2 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+            <strong class="font-bold">Fehler:</strong>
+            <span class="block sm:inline"><%= error %></span>
+          </div>
+        <% } %>
+
+        <div>
+          <button type="submit"
+            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Verifizieren
+          </button>
+        </div>
       </form>
     </div>
   </main>
+
   <%- include('../partials/footer'); %>
 </body>
-<script src="assets/js/script.js"></script>
 </html>

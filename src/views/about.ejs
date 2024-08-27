@@ -5,55 +5,60 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About ~ NodCord</title>
-  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 text-gray-900">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('./partials/header'); %>
 
   <main class="py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h1 class="text-4xl font-bold mb-6">Über uns</h1>
-      <p class="mb-4">
+    <div class="max-w-4xl mx-auto card bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md">
+      <h1 class="text-4xl font-bold mb-6 text-gray-800 dark:text-gray-200">Über uns</h1>
+      <p class="mb-6 text-lg text-gray-600 dark:text-gray-400">
         Willkommen bei NodCord! Wir sind ein engagiertes Team von Entwicklern, das sich auf die Erstellung innovativer
         Lösungen im Bereich der Discord-Bots und -Integration spezialisiert hat. Unser Ziel ist es, qualitativ hochwertige
         Software zu entwickeln, die den Bedürfnissen unserer Benutzer gerecht wird und ihnen hilft, das Beste aus ihren
         Discord-Servern herauszuholen.
       </p>
 
-      <h2 class="text-3xl font-semibold mb-4">Unsere Mission</h2>
-      <p class="mb-4">
+      <h2 class="text-3xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Unsere Mission</h2>
+      <p class="mb-6 text-lg text-gray-600 dark:text-gray-400">
         Unsere Mission ist es, leistungsstarke, benutzerfreundliche und zuverlässige Tools und Bots für die Discord-Community
         bereitzustellen. Wir streben danach, unsere Benutzer durch kontinuierliche Verbesserung und Innovation zu unterstützen
         und ihnen die besten Funktionen und das beste Erlebnis zu bieten.
       </p>
 
-      <h2 class="text-3xl font-semibold mb-4">Unser Team</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div class="p-4 bg-white rounded-lg shadow-md">
-          <img src="/assets/img/team-member-1.jpg" alt="Teammitglied 1" class="w-full h-40 object-cover rounded-lg mb-4">
-          <h3 class="text-xl font-semibold mb-2">Max Mustermann</h3>
-          <p class="text-gray-600">Leitender Entwickler</p>
+      <h2 class="text-3xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Unser Team</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="card bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+          <img src="/assets/img/team-member-1.jpg" alt="Teammitglied 1" class="card-img-top w-full h-40 object-cover rounded-t-lg">
+          <div class="card-body p-4">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Max Mustermann</h3>
+            <p class="text-gray-600 dark:text-gray-400">Leitender Entwickler</p>
+          </div>
         </div>
-        <div class="p-4 bg-white rounded-lg shadow-md">
-          <img src="/assets/img/team-member-2.jpg" alt="Teammitglied 2" class="w-full h-40 object-cover rounded-lg mb-4">
-          <h3 class="text-xl font-semibold mb-2">Erika Musterfrau</h3>
-          <p class="text-gray-600">Designerin</p>
+        <div class="card bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+          <img src="/assets/img/team-member-2.jpg" alt="Teammitglied 2" class="card-img-top w-full h-40 object-cover rounded-t-lg">
+          <div class="card-body p-4">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Erika Musterfrau</h3>
+            <p class="text-gray-600 dark:text-gray-400">Designerin</p>
+          </div>
         </div>
-        <div class="p-4 bg-white rounded-lg shadow-md">
-          <img src="/assets/img/team-member-3.jpg" alt="Teammitglied 3" class="w-full h-40 object-cover rounded-lg mb-4">
-          <h3 class="text-xl font-semibold mb-2">John Doe</h3>
-          <p class="text-gray-600">Marketing Spezialist</p>
+        <div class="card bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
+          <img src="/assets/img/team-member-3.jpg" alt="Teammitglied 3" class="card-img-top w-full h-40 object-cover rounded-t-lg">
+          <div class="card-body p-4">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">John Doe</h3>
+            <p class="text-gray-600 dark:text-gray-400">Marketing Spezialist</p>
+          </div>
         </div>
       </div>
 
-      <h2 class="text-3xl font-semibold mb-4 mt-4">Kontaktieren Sie uns</h2>
-      <p class="mb-4">
+      <h2 class="text-3xl font-semibold mb-4 mt-8 text-gray-800 dark:text-gray-200">Kontaktieren Sie uns</h2>
+      <p class="text-lg text-gray-600 dark:text-gray-400">
         Wenn Sie Fragen oder Anregungen haben, zögern Sie nicht, uns zu kontaktieren. Sie erreichen uns per E-Mail unter
-        <a href="mailto:support@nodcord.com" class="text-blue-600 hover:underline">support@nodcord.com</a>.
+        <a href="mailto:nodcord@hauknetz.de" class="text-blue-600 dark:text-blue-400 hover:underline">nodcord@hauknetz.de</a>.
       </p>
     </div>
   </main>

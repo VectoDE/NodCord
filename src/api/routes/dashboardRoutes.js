@@ -73,6 +73,7 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       files,
       loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
       errorstack: null
     });
   } catch (error) {
@@ -84,33 +85,33 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
 // Api Key CRUD
 router.get('/apiKeys', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKeys = await ApiKey.find();
-  res.render('dashboard/apiKey/apiKeys', { apiKeys, errorstack: null });
+  res.render('dashboard/apiKey/apiKeys', { apiKeys, errorstack: null, logoImage: '/assets/img/logo.png' });
 });
 router.get('/apiKeys/create', roleMiddleware(['admin', 'moderator']), (req, res) => {
-  res.render('dashboard/apiKey/createApiKey');
+  res.render('dashboard/apiKey/createApiKey', { errorstack: null, logoImage: '/assets/img/logo.png' });
 });
 router.get('/apiKeys/update/:id', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKey = await ApiKey.findById(req.params.id);
-  res.render('dashboard/apiKey/updateApiKey', { apiKey, errorstack: null });
+  res.render('dashboard/apiKey/updateApiKey', { apiKey, errorstack: null, logoImage: '/assets/img/logo.png' });
 });
 
 // Blog CRUD
 router.get('/blogs', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blogs = await Blog.find();
-    res.render('dashboard/blogs/blogs', { blogs, errorstack: null });
+    res.render('dashboard/blogs/blogs', { blogs, errorstack: null, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     res.status(500).send('Error retrieving blogs');
   }
 });
 router.get('/blogs/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/blogs/createBlog', { errorstack: null });
+  res.render('dashboard/blogs/createBlog', { errorstack: null, logoImage: '/assets/img/logo.png' });
 });
 router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blog = await Blog.findById(req, res);
     if (blog) {
-      res.render('dashboard/blogs/updateBlog', { blog, errorstack: null });
+      res.render('dashboard/blogs/updateBlog', { blog, errorstack: null, logoImage: '/assets/img/logo.png' });
     } else {
       res.status(404).send('Blog not found');
     }
@@ -123,14 +124,14 @@ router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
 router.get('/bugs', roleMiddleware(['admin']), async (req, res) => {
   try {
     const bugs = await Bug.find().populate('project');
-    res.render('dashboard/bugs/bugs', { bugs, errorstack: null });
+    res.render('dashboard/bugs/bugs', { bugs, errorstack: null, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error('Error fetching bugs:', error);
     res.status(500).send('Internal Server Error');
   }
 });
 router.get('/bugs/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/bugs/createBug');
+  res.render('dashboard/bugs/createBug', { logoImage: '/assets/img/logo.png' });
 });
 router.get('/bugs/update/:id', async (req, res) => {
   const { id } = req.params;
@@ -140,7 +141,7 @@ router.get('/bugs/update/:id', async (req, res) => {
     if (!bug) {
       return res.status(404).send('Bug not found');
     }
-    res.render('dashboard/bugs/updateBug', { bug });
+    res.render('dashboard/bugs/updateBug', { bug, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error(`Error fetching bug with ID ${id}:`, error);
     res.status(500).send('Internal Server Error');
@@ -151,7 +152,7 @@ router.get('/bugs/update/:id', async (req, res) => {
 router.get('/categories', roleMiddleware(['admin']), async (req, res) => {
   try {
     const categories = await Category.find();
-    res.render('dashboard/categories/categories', { categories });
+    res.render('dashboard/categories/categories', { categories, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error('Error fetching categories:', error);
     res.status(500).send('Internal Server Error');
@@ -168,7 +169,7 @@ router.get('/categories/update/:id', async (req, res) => {
     if (!category) {
       return res.status(404).send('Category not found');
     }
-    res.render('dashboard/categories/updateCategory', { category });
+    res.render('dashboard/categories/updateCategory', { category, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
     res.status(500).send('Internal Server Error');
@@ -188,6 +189,7 @@ router.get('/comments', roleMiddleware(['admin']), async (req, res) => {
       comments,
       blogTitle,
       blogId,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Error rendering comments:', error);
@@ -203,6 +205,7 @@ router.get('/comments/create', roleMiddleware(['admin']), async (req, res) => {
     res.render('dashboard/comments/createComment', {
       blogId,
       blogTitle,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Error rendering create comment form:', error);
@@ -219,6 +222,7 @@ router.get('/comments/:id/edit', roleMiddleware(['admin']), async (req, res) => 
     res.render('dashboard/comments/updateComment', {
       comment,
       blogTitle: comment.blog.title,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Error rendering edit comment form:', error);
@@ -233,6 +237,7 @@ router.get('/companies', roleMiddleware(['admin']), async (req, res) => {
 
     res.render('dashboard/companies/companies', {
       companies,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Error rendering companies:', error);
@@ -241,7 +246,7 @@ router.get('/companies', roleMiddleware(['admin']), async (req, res) => {
 });
 router.get('/companies/create', roleMiddleware(['admin']), (req, res) => {
   try {
-    res.render('dashboard/companies/createCompany');
+    res.render('dashboard/companies/createCompany', { logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error('Error rendering create company form:', error);
     res.status(500).send('Internal Server Error');
@@ -259,6 +264,7 @@ router.get('/companies/:companyId/edit', roleMiddleware(['admin']), async (req, 
 
     res.render('dashboard/companies/updateCompany', {
       company,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Error rendering edit company form:', error);
@@ -268,12 +274,12 @@ router.get('/companies/:companyId/edit', roleMiddleware(['admin']), async (req, 
 
 // User CRUD
 router.get('/users/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/users/createUser');
+  res.render('dashboard/users/createUser', { logoImage: '/assets/img/logo.png' });
 });
 router.get('/users', roleMiddleware(['admin']), async (req, res) => {
   try {
     const users = await User.find();
-    res.render('dashboard/users/users', { users });
+    res.render('dashboard/users/users', { users, logoImage: '/assets/img/logo.png' });
   } catch (err) {
     console.error('Error fetching users for EJS page:', err);
     res.status(500).send('Internal Server Error');
@@ -287,7 +293,7 @@ router.get('/users/:id/edit', roleMiddleware(['admin']), async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    res.render('dashboard/users/updateUser', { user });
+    res.render('dashboard/users/updateUser', { user, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error('Error displaying edit form:', error);
     res.status(500).send('Internal Server Error');
@@ -300,19 +306,19 @@ router.get('/users/:id/edit', roleMiddleware(['admin']), async (req, res) => {
 router.get('/organizations', async (req, res) => {
   try {
       const organizations = await Organization.find();
-      res.render('dashboard/organizations/organizations', { organizations: organizations.data });
+      res.render('dashboard/organizations/organizations', { organizations: organizations.data, logoImage: '/assets/img/logo.png' });
   } catch (error) {
       console.error('Error displaying organizations:', error);
       res.status(500).send('Internal Server Error');
   }
 });
 router.get('/organizations/create', (req, res) => {
-  res.render('dashboard/organizations/createOrganization');
+  res.render('dashboard/organizations/createOrganization', { logoImage: '/assets/img/logo.png' });
 });
 router.get('/organizations/:id/edit', async (req, res) => {
   try {
       const organization = await Organization.findById(req, res);
-      res.render('dashboard/organizations/updateOrganization', { organization: organization.data });
+      res.render('dashboard/organizations/updateOrganization', { organization: organization.data, logoImage: '/assets/img/logo.png' });
   } catch (error) {
       console.error('Error displaying edit form:', error);
       res.status(500).send('Internal Server Error');
@@ -342,6 +348,7 @@ router.get('/logs', roleMiddleware(['admin']), async (req, res) => {
     res.render('dashboard/logging/logs', {
       loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Fehler beim Abrufen der Logs:', error);
@@ -366,6 +373,7 @@ router.get('/beta-management', roleMiddleware(['admin']), async (req, res) => {
       betaKeys,
       betaSystem,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Fehler beim Abrufen der Beta Keys:', error);
@@ -381,7 +389,8 @@ router.get('/cloudnet/overview', roleMiddleware(['admin']), async (req, res) => 
 
     res.render('dashboard/cloudnet/overviewCloudNet', {
       status: status,
-      servers: servers
+      servers: servers,
+      logoImage: '/assets/img/logo.png'
     });
   } catch (error) {
     console.error('Error rendering CloudNet overview:', error);

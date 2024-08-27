@@ -61,7 +61,7 @@ const startServer = async () => {
     const baseURL = process.env.BASE_URL || 'localhost';
 
     http.createServer(api).listen(port, () => {
-      logger.info(`Server is running on https://${baseURL}`);
+      logger.info(`Server is running on https://${baseURL}:${port}`);
     });
 
     bot.start();

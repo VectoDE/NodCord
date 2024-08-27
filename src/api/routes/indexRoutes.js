@@ -12,6 +12,7 @@ const botStatusService = require('../services/botStatusService');
 const dbStatusService = require('../services/dbStatusService');
 const authController = require('../controllers/authController');
 const authMiddleware = require('../middlewares/authMiddleware');
+const blogService = require('../services/blogService');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(authMiddleware(false));
@@ -34,13 +35,64 @@ router.use((req, res, next) => {
 router.get('/', async (req, res) => {
   res.render('index', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     errorstack: null
   });
 });
 
+router.get('/news', async (req, res) => {
+  try {
+    const blogs = await blogService.getAllPosts();
+    res.render('blog', {
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      blogs,
+      errorstack: null
+    });
+  } catch (error) {
+    console.error('Error fetching blog posts:', error);
+    res.status(500).render('blog', {
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      blogs: [],
+      errorstack: 'Fehler beim Abrufen der Blog-Posts. Bitte versuchen Sie es später erneut.'
+    });
+  }
+});
+
+router.get('/news/:id', async (req, res) => {
+  try {
+    const blog = await blogService.getPostById(req.params.id);
+    if (!blog) {
+      return res.status(404).render('blogPost', {
+        isAuthenticated: res.locals.isAuthenticated,
+        logoImage: '/assets/img/logo.png',
+        blog: null,
+        errorstack: 'Blog-Post nicht gefunden.'
+      });
+    }
+    res.render('blogPost', {
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      blog,
+      errorstack: null
+    });
+  } catch (error) {
+    console.error('Error fetching blog post:', error);
+    res.status(500).render('blogPost', {
+      isAuthenticated: res.locals.isAuthenticated,
+      LogoImage: '/assets/img/logo.png',
+      blog: null,
+      errorstack: 'Fehler beim Abrufen des Blog-Posts. Bitte versuchen Sie es später erneut.'
+    });
+  }
+});
+
+
 router.get('/docs', (req, res) => {
   res.render('documentation', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     errorstack: null
   });
 });
@@ -75,6 +127,7 @@ router.get('/status', async (req, res) => {
       dbStatus,
       dbStatusMessage,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
       errorstack: null
     });
   } catch (error) {
@@ -102,6 +155,7 @@ router.get('/info', async (req, res) => {
       api: apiInfo,
       system: systemInfo,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
       errorstack: null
     });
   } catch (error) {
@@ -127,9 +181,10 @@ router.get('/versions', (req, res) => {
     // Weitere Versionen ...
   ];
 
-  res.render('versionControl', { 
+  res.render('versionControl', {
     versions,
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     errorstack: null
   });
 });
@@ -140,6 +195,7 @@ router.get('/discord-members', async (req, res) => {
     res.render('discordmembers', {
       servers,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
       errorstack: null
     });
   } catch (error) {
@@ -156,6 +212,7 @@ router.get('/discord-servers', async (req, res) => {
       servers,
       serverCount,
       isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
       errorstack: null
     });
   } catch (error) {
@@ -189,6 +246,7 @@ router.get('/contact', async (req, res) => {
 
   res.render('contact', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     successMessage,
     errorMessage,
     errorstack: null
@@ -198,6 +256,7 @@ router.get('/contact', async (req, res) => {
 router.get('/about', async (req, res) => {
   res.render('about', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     errorstack: null
   });
 });
@@ -208,9 +267,9 @@ router.get('/login', (req, res) => {
   }
 
   const errorMessage = req.query.errorMessage || null;
-
   res.render('auth/login', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     errorMessage: errorMessage,
     errorstack: null
   });
@@ -225,6 +284,7 @@ router.get('/register', (req, res) => {
 
   res.render('auth/register', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     errorMessage: errorMessage,
     errorstack: null
   });
@@ -235,6 +295,7 @@ router.get('/verify-email/:token', authController.verifyEmail);
 router.get('/beta-verify', authMiddleware(true), (req, res) => {
   res.render('verification/beta-verify', {
     isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
     error: req.query.error || null,
     errorstack: null
   });

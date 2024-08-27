@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Status ~ NodCord</title>
-  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -21,11 +21,11 @@
   </style>
 </head>
 
-<body class="bg-gray-100">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('./partials/header'); %>
   <main class="flex-1 p-8 flex flex-col items-center">
-    <section class="bg-white rounded-lg shadow-lg p-6 max-w-4xl w-full">
-      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">API Status</h2>
+    <section class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 max-w-4xl w-full">
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 dark:border-gray-800 pb-2">API Status</h2>
       <div class="flex items-center mb-6">
         <div class="status-dot <%= apiStatus %> bg-gray-500 mr-4">
           <% if (apiStatus === 'online') { %>
@@ -39,7 +39,7 @@
         <span class="text-lg"><%= apiStatusMessage || 'Unknown' %></span>
       </div>
 
-      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">Database Status</h2>
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 dark:border-gray-800 pb-2">Database Status</h2>
       <div class="flex items-center mb-6">
         <div class="status-dot <%= dbStatus %> bg-gray-500 mr-4">
           <% if (dbStatus === 'online') { %>
@@ -53,7 +53,7 @@
         <span class="text-lg"><%= dbStatusMessage || 'Unknown' %></span>
       </div>
 
-      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 pb-2">Discord Bot Status</h2>
+      <h2 class="text-2xl font-semibold mb-4 border-b-2 border-gray-200 dark:border-gray-800 pb-2">Discord Bot Status</h2>
       <div class="flex items-center mb-6">
         <div class="status-dot <%= botStatus %> bg-gray-500 mr-4">
           <% if (botStatus === 'online') { %>

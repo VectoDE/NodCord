@@ -1,60 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Home ~ NodCord</title>
+		<link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon" />
+		<link rel="stylesheet" href="assets/css/styles.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css"
+		/>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<style>
+			.hero-bg {
+				background-image: url('/assets/img/hero-bg.jpg');
+				background-size: cover;
+				background-position: center;
+			}
+			.cta-bg {
+				background-image: url('/assets/img/cta-bg.jpg');
+				background-size: cover;
+				background-position: center;
+			}
+		</style>
+	</head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+	<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+		<%- include('./partials/header'); %>
+		<main>
+			<!-- Hero Section -->
+			<section class="hero-bg text-white py-16 lg:py-24">
+				<div class="container mx-auto px-6 text-center">
+					<h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">
+						Welcome to NodCord
+					</h1>
+					<p class="mt-4 text-lg md:text-xl lg:text-2xl">
+						Connecting you with your Discord community like never before.
+					</p>
+					<a
+						href="/about"
+						class="mt-8 inline-block bg-white text-blue-500 dark:bg-gray-800 dark:text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600"
+						>Learn More</a
+					>
+				</div>
+			</section>
 
-<body class="bg-gray-100 text-gray-900">
-  <%- include('./partials/header'); %>
-  <main class="p-5">
-    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold mb-4">Welcome to NodCord</h1>
-      <p class="text-base leading-relaxed mb-4">
-        NodCord is an integrated project combining a Node.js API with Express.js and a Discord bot. This project provides a comprehensive
-        API and a functional Discord bot for various use cases.
-      </p>
-      <p class="text-base leading-relaxed">
-        The API includes a Discord service that can be managed through controllers and routes. The Discord bot can also be controlled via the
-        API.
-      </p>
-    </div>
+			<!-- Features Section -->
+			<section class="bg-white dark:bg-gray-900 text-white py-16 lg:py-24">
+				<div class="container mx-auto px-6">
+					<div class="text-center">
+						<h2 class="text-3xl font-bold">Features</h2>
+						<p class="mt-4 text-lg">
+							Discover the amazing features that make NodCord unique.
+						</p>
+					</div>
+					<div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+						<div
+							class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center"
+						>
+							<i class="bi bi-chat-dots text-4xl text-blue-500"></i>
+							<h3 class="mt-4 text-xl font-semibold">API <br />Discord Bot</h3>
+							<p class="mt-2">
+								Stay connected with real-time chat and notifications.
+							</p>
+						</div>
+						<div
+							class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center"
+						>
+							<i class="bi bi-people text-4xl text-blue-500"></i>
+							<h3 class="mt-4 text-xl font-semibold">
+								Open Source <br />Project
+							</h3>
+							<p class="mt-2">
+								Engage with your community effortlessly through our advanced
+								tools and features.
+							</p>
+						</div>
+						<div
+							class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center"
+						>
+							<i class="bi bi-gear text-4xl text-blue-500"></i>
+							<h3 class="mt-4 text-xl font-semibold">
+								Frontend <br />EJS & TailwindCSS
+							</h3>
+							<p class="mt-2">
+								Customize your experience with a wide range of settings and
+								preferences.
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold mb-4">About the Bot</h2>
-      <p class="text-base leading-relaxed">
-        The NodCord Discord bot is designed to interact with your Discord servers, providing commands for managing roles, users, and more. It's
-        integrated into the API for seamless management and configuration.
-      </p>
-    </div>
+      <!-- Call to Action Section -->
+			<section class="cta-bg text-white py-16 lg:py-24">
+				<div class="container mx-auto px-6 text-center">
+					<h2 class="text-3xl font-bold md:text-4xl lg:text-5xl">
+						Get Started Today
+					</h2>
+					<p class="mt-4 text-lg md:text-xl">
+						Become a part of nodcord and use it today for more useability.
+					</p>
+					<a
+						href="/register"
+						class="mt-8 inline-block bg-white text-blue-500 dark:bg-gray-800 dark:text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600"
+						>Get Started</a
+					>
+				</div>
+			</section>
 
-    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold mb-4">Features</h2>
-      <p class="text-base leading-relaxed">
-        - <strong>Node.js API</strong>: A robust API for interacting with the Discord bot and managing various services.
-        <br />
-        - <strong>Discord Bot</strong>: Control and interact with your Discord servers using various commands and features.
-        <br />
-        - <strong>Comprehensive Documentation</strong>: Detailed documentation to help you get started and make the most out of NodCord.
-      </p>
-    </div>
+			<!-- Testimonials Section -->
+			<section class="bg-white dark:bg-gray-900 py-16 lg:py-24">
+				<div class="container mx-auto px-6">
+					<div class="text-center">
+						<h2 class="text-3xl font-bold text-gray-800 dark:text-white">
+							What Our Users Say
+						</h2>
+						<p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+							Hear from some of our satisfied community members.
+						</p>
+					</div>
+					<div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+						<!-- Testimonial 1 -->
+						<div
+							class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center"
+						>
+							<img
+								class="w-16 h-16 rounded-full mx-auto"
+								src="/assets/img/user1.jpg"
+								alt="User 1"
+							/>
+							<h3
+								class="mt-4 text-xl font-semibold text-gray-800 dark:text-white"
+							>
+								Alex Johnson
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								"NodCord has completely transformed how I manage my community.
+								It's simply the best!"
+							</p>
+						</div>
+						<!-- Testimonial 2 -->
+						<div
+							class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center"
+						>
+							<img
+								class="w-16 h-16 rounded-full mx-auto"
+								src="/assets/img/user2.jpg"
+								alt="User 2"
+							/>
+							<h3
+								class="mt-4 text-xl font-semibold text-gray-800 dark:text-white"
+							>
+								Emily Davis
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								"The real-time chat feature keeps me connected with my community
+								at all times. I love it!"
+							</p>
+						</div>
+						<!-- Testimonial 3 -->
+						<div
+							class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center"
+						>
+							<img
+								class="w-16 h-16 rounded-full mx-auto"
+								src="/assets/img/user3.jpg"
+								alt="User 3"
+							/>
+							<h3
+								class="mt-4 text-xl font-semibold text-gray-800 dark:text-white"
+							>
+								Michael Brown
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								"Customizable settings make it easy to tailor the platform to
+								our community's needs."
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
 
-    <div class="bg-white p-6 mb-5 rounded-lg shadow-lg">
-      <h2 class="text-2xl font-semibold mb-4">Get Started</h2>
-      <p class="text-base leading-relaxed">
-        To get started with NodCord, check out our <a href="/docs" class="text-blue-500 hover:text-blue-700">documentation</a> or visit the
-        <a href="/dashboard" class="text-blue-500 hover:text-blue-700">dashboard</a> to manage your settings.
-      </p>
-    </div>
-  </main>
-  <%- include('./partials/footer'); %>
-  <script src="/assets/js/script.js"></script>
-</body>
+      <!-- Call to Action Section -->
+			<section class="cta-bg text-white py-16 lg:py-24">
+				<div class="container mx-auto px-6 text-center">
+					<h2 class="text-3xl font-bold md:text-4xl lg:text-5xl">
+						Join Us
+					</h2>
+					<p class="mt-4 text-lg md:text-xl">
+						Become a part of our growing community and enhance your Discord
+						experience.
+					</p>
+					<a
+						href="http://dc.hauknetz.de"
+						class="mt-8 inline-block bg-white text-blue-500 dark:bg-gray-800 dark:text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600"
+						>Join Discord</a
+					>
+				</div>
+			</section>
 
+			<!-- FAQ Section -->
+			<section class="bg-white dark:bg-gray-900 py-16 lg:py-24">
+				<div class="container mx-auto px-6">
+					<div class="text-center">
+						<h2 class="text-3xl font-bold text-gray-800 dark:text-white">
+							Frequently Asked Questions
+						</h2>
+						<p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+							Got questions? We've got answers.
+						</p>
+					</div>
+					<div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-2">
+						<!-- FAQ 1 -->
+						<div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+							<h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+								What is NodCord?
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								NodCord is a platform designed to enhance your Discord
+								experience by providing advanced tools and seamless community
+								management features.
+							</p>
+						</div>
+						<!-- FAQ 2 -->
+						<div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+							<h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+								How can I get started?
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								Simply sign up for an account and follow the onboarding process
+								to integrate NodCord with your Discord server.
+							</p>
+						</div>
+						<!-- FAQ 3 -->
+						<div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+							<h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+								Is there a free plan?
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								Yes, we offer a free plan with essential features. You can
+								upgrade anytime to access more advanced tools.
+							</p>
+						</div>
+						<!-- FAQ 4 -->
+						<div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+							<h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+								How can I contact support?
+							</h3>
+							<p class="mt-2 text-gray-600 dark:text-gray-400">
+								You can reach our support team via the contact form on our
+								website or by emailing support@nodcord.com.
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<%- include('./partials/footer'); %>
+		<script src="/assets/js/script.js"></script>
+	</body>
 </html>
