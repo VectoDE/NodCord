@@ -33,27 +33,16 @@ exports.register = async (req, res) => {
       });
     }
 
-    const verificationToken = crypto.randomBytes(32).toString('hex');
-
     const user = new User({
       username,
       email,
       password,
       fullname,
-      verificationToken,
       termsAccepted: true,
       termsAcceptedAt: new Date()
     });
 
     await user.save();
-
-    const verificationLink = `${verificationToken}`;
-
-    await nodemailerService.sendRegistrationVerificationEmail(
-      user.email,
-      user.username,
-      verificationLink
-    );
 
     res.redirect('/login');
   } catch (err) {
@@ -104,14 +93,6 @@ exports.login = async (req, res) => {
       return res.status(400).render('auth/login', {
         isAuthenticated: false,
         errorMessage: 'Invalid credentials',
-      });
-    }
-
-    if (!user.isVerified) {
-      logger.warn('Login failed: Email not verified');
-      return res.status(400).render('auth/login', {
-        isAuthenticated: false,
-        errorMessage: 'Email not verified',
       });
     }
 
