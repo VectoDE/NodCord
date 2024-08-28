@@ -63,6 +63,8 @@ const startServer = async () => {
     await connectDB();
 
     await seedRolesIfNotExist();
+    
+    await seedUsers();
 
     const port = process.env.PORT || 3000;
     const baseURL = process.env.BASE_URL || 'localhost';
