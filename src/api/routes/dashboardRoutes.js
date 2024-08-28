@@ -450,7 +450,7 @@ router.get('/beta', roleMiddleware(['admin']), async (req, res) => {
 });
 
 // CloudNet Service
-router.get('/cloudnet/overview', roleMiddleware(['admin']), async (req, res) => {
+router.get('/cloudnet', roleMiddleware(['admin']), async (req, res) => {
   try {
     const status = await cloudnetController.getStatus(req, res);
     const servers = await cloudnetController.getServers(req, res);
