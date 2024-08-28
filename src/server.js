@@ -2,6 +2,7 @@ const http = require('http');
 const pm2 = require('@pm2/io');
 
 const packageInfo = require('../package.json');
+const packagelockInfo = require('../package-lock.json');
 
 const { api } = require('./api/app');
 const bot = require('./bot/index');
@@ -9,7 +10,7 @@ const { client } = require('./frontend/client');
 
 const connectDB = require('./database/connectDB');
 const { seedRolesIfNotExist } = require('./seeds/rolesSeed');
-const {} = require('./seeds/usersSeed');
+const { seedUsers } = require('./seeds/usersSeed');
 
 const logger = require('./api/services/loggerService');
 
