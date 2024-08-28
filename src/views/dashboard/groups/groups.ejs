@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Groups Overview</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Groups Overview</h1>
+      <a href="/dashboard/groups/create" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-6 inline-block">Create New Group</a>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Available Groups</h2>
+        <% if (groups.length > 0) { %>
+        <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <thead>
+            <tr class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200">
+              <th class="py-3 px-4 border-b">ID</th>
+              <th class="py-3 px-4 border-b">Name</th>
+              <th class="py-3 px-4 border-b">Description</th>
+              <th class="py-3 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% groups.forEach(group => { %>
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-4 border-b"><%= group.id %></td>
+              <td class="py-3 px-4 border-b"><%= group.name %></td>
+              <td class="py-3 px-4 border-b"><%= group.description %></td>
+              <td class="py-3 px-4 border-b">
+                <a href="/dashboard/groups/edit/<%= group.id %>" class="text-blue-500 hover:underline">Edit</a> |
+                <a href="/api/groups/delete/<%= group.id %>" class="text-red-500 hover:underline">Delete</a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p class="text-gray-600 dark:text-gray-400">No groups available.</p>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

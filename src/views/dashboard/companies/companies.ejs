@@ -1,80 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Companies</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-      h1 {
-        text-align: center;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-      }
-      table,
-      th,
-      td {
-        border: 1px solid #ddd;
-      }
-      th,
-      td {
-        padding: 10px;
-        text-align: left;
-      }
-      th {
-        background-color: #f4f4f4;
-      }
-      .actions a {
-        margin-right: 10px;
-        text-decoration: none;
-        color: #007bff;
-      }
-      .create-button {
-        display: inline-block;
-        margin-bottom: 20px;
-        padding: 10px 15px;
-        background-color: #28a745;
-        color: #fff;
-        text-decoration: none;
-        border-radius: 5px;
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <h1>Companies</h1>
-      <a href="/dashboard/companies/create" class="create-button"
-        >Create New Company</a
-      >
-      <table>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Companies ~ NodCord</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .table-header {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Companies</h1>
+      <a href="/dashboard/companies/create" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md inline-block mb-4">
+        <i class="bi bi-plus-circle"></i> Create New Company
+      </a>
+      <table class="w-full bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-300">
         <thead>
-          <tr>
-            <th>Name</th>
-            <th>Industry</th>
-            <th>Headquarters</th>
-            <th>Actions</th>
+          <tr class="table-header">
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Name</th>
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Industry</th>
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Headquarters</th>
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Actions</th>
           </tr>
         </thead>
         <tbody>
           <% companies.forEach(company => { %>
           <tr>
-            <td><%= company.name %></td>
-            <td><%= company.industry %></td>
-            <td><%= company.headquarters %></td>
-            <td class="actions">
-              <a href="/dashboard/companies/<%= company._id %>/edit">Edit</a>
-              <a href="/api/companies/delete/<%= company._id %>">Delete</a>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= company.name %></td>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= company.industry %></td>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= company.headquarters %></td>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700 flex space-x-2">
+              <a href="/dashboard/companies/<%= company._id %>/edit" class="text-blue-500 hover:text-blue-600">Edit</a>
+              <form action="/api/companies/delete/<%= company._id %>" method="POST" style="display: inline;">
+                <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
+              </form>
             </td>
           </tr>
           <% }) %>
         </tbody>
       </table>
-    </main>
-    <%- include('../../partials/footer'); %>
-  </body>
+    </div>
+  </main>
+</body>
 </html>

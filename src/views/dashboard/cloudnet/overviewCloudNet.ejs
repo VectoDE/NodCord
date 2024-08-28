@@ -1,107 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CloudNet Overview</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-      h1 {
-        text-align: center;
-      }
-      .container {
-        width: 80%;
-        margin: 0 auto;
-      }
-      .status,
-      .server-list {
-        margin-bottom: 30px;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      table,
-      th,
-      td {
-        border: 1px solid #ddd;
-      }
-      th,
-      td {
-        padding: 8px;
-        text-align: left;
-      }
-      th {
-        background-color: #f4f4f4;
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <div class="container">
-        <h1>CloudNet Overview</h1>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudNet Overview</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6 text-center">CloudNet Overview</h1>
 
-        <!-- CloudNet Status -->
-        <div class="status">
-          <h2>General Status</h2>
-          <p><strong>CloudNet Version:</strong> <%= status.version %></p>
-          <p><strong>Servers Running:</strong> <%= status.serversRunning %></p>
-          <p>
-            <strong>Total Memory Usage:</strong> <%= status.totalMemoryUsage %>
-            MB
-          </p>
-          <p>
-            <strong>Total Disk Space Usage:</strong> <%= status.totalDiskUsage
-            %> GB
-          </p>
-        </div>
-
-        <!-- Servers List -->
-        <div class="server-list">
-          <h2>Active Servers</h2>
-          <% if (servers.length > 0) { %>
-          <table>
-            <thead>
-              <tr>
-                <th>Server ID</th>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Memory Usage (MB)</th>
-                <th>Disk Usage (GB)</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% servers.forEach(server => { %>
-              <tr>
-                <td><%= server.id %></td>
-                <td><%= server.name %></td>
-                <td><%= server.status %></td>
-                <td><%= server.memoryUsage %></td>
-                <td><%= server.diskUsage %></td>
-                <td>
-                  <a href="/dashboard/cloudnet/servers/<%= server.id %>"
-                    >Details</a
-                  >
-                  |
-                  <a href="/api/cloudnet/servers/<%= server.id %>/stop">Stop</a>
-                  |
-                  <a href="/api/cloudnet/servers/<%= server.id %>/delete"
-                    >Delete</a
-                  >
-                </td>
-              </tr>
-              <% }) %>
-            </tbody>
-          </table>
-          <% } else { %>
-          <p>No active servers available.</p>
-          <% } %>
-        </div>
+      <!-- CloudNet Status -->
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 mb-6">
+        <h2 class="text-xl font-semibold mb-4">General Status</h2>
+        <p><strong>CloudNet Version:</strong> <%= status.version %></p>
+        <p><strong>Servers Running:</strong> <%= status.serversRunning %></p>
+        <p><strong>Total Memory Usage:</strong> <%= status.totalMemoryUsage %> MB</p>
+        <p><strong>Total Disk Space Usage:</strong> <%= status.totalDiskUsage %> GB</p>
       </div>
-    </main>
-    <%- include('../../partials/footer'); %>
-  </body>
+
+      <!-- Servers List -->
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Active Servers</h2>
+        <% if (servers.length > 0) { %>
+        <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <thead>
+            <tr class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200">
+              <th class="py-3 px-4 border-b">Server ID</th>
+              <th class="py-3 px-4 border-b">Name</th>
+              <th class="py-3 px-4 border-b">Status</th>
+              <th class="py-3 px-4 border-b">Memory Usage (MB)</th>
+              <th class="py-3 px-4 border-b">Disk Usage (GB)</th>
+              <th class="py-3 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% servers.forEach(server => { %>
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-4 border-b"><%= server.id %></td>
+              <td class="py-3 px-4 border-b"><%= server.name %></td>
+              <td class="py-3 px-4 border-b"><%= server.status %></td>
+              <td class="py-3 px-4 border-b"><%= server.memoryUsage %></td>
+              <td class="py-3 px-4 border-b"><%= server.diskUsage %></td>
+              <td class="py-3 px-4 border-b">
+                <a href="/dashboard/cloudnet/servers/<%= server.id %>" class="text-blue-500 hover:underline">Details</a> |
+                <a href="/api/cloudnet/servers/<%= server.id %>/stop" class="text-red-500 hover:underline">Stop</a> |
+                <a href="/api/cloudnet/servers/<%= server.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p class="text-gray-600 dark:text-gray-400">No active servers available.</p>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
 </html>

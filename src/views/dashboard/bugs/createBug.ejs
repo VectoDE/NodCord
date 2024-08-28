@@ -1,45 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Bug</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <h1>Create New Bug</h1>
-      <form action="/api/bugs/create" method="POST">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" required />
-        <br />
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" required></textarea>
-        <br />
-        <label for="severity">Severity:</label>
-        <select id="severity" name="severity" required>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Bug</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <h1 class="text-3xl font-semibold mb-6">Create New Bug</h1>
+    <form action="/api/bugs/create" method="POST" class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md space-y-4 max-w-lg mx-auto">
+      <div>
+        <label for="title" class="block text-sm font-semibold mb-2">Title:</label>
+        <input type="text" id="title" name="title" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
+      </div>
+      <div>
+        <label for="description" class="block text-sm font-semibold mb-2">Description:</label>
+        <textarea id="description" name="description" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"></textarea>
+      </div>
+      <div>
+        <label for="severity" class="block text-sm font-semibold mb-2">Severity:</label>
+        <select id="severity" name="severity" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200">
           <option value="Low">Low</option>
           <option value="Medium">Medium</option>
           <option value="High">High</option>
           <option value="Critical">Critical</option>
         </select>
-        <br />
-        <label for="status">Status:</label>
-        <select id="status" name="status" required>
+      </div>
+      <div>
+        <label for="status" class="block text-sm font-semibold mb-2">Status:</label>
+        <select id="status" name="status" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200">
           <option value="Open">Open</option>
           <option value="In Progress">In Progress</option>
           <option value="Resolved">Resolved</option>
           <option value="Closed">Closed</option>
         </select>
-        <br />
-        <label for="project">Project:</label>
-        <input type="text" id="project" name="project" required />
-        <br />
-        <button type="submit">Create Bug</button>
-      </form>
-    </main>
-    <%- include('../../partials/footer'); %>
-  </body>
+      </div>
+      <div>
+        <label for="project" class="block text-sm font-semibold mb-2">Project:</label>
+        <input type="text" id="project" name="project" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
+      </div>
+      <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md transition duration-300">Create Bug</button>
+    </form>
+  </main>
+</body>
 </html>

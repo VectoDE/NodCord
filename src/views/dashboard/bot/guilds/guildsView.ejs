@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gilden Übersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Gilden Übersicht</h1>
+      <table class="min-w-full bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <thead>
+          <tr class="border-b">
+            <th class="py-3 px-6 text-left">ID</th>
+            <th class="py-3 px-6 text-left">Name</th>
+            <th class="py-3 px-6 text-left">Mitglieder</th>
+            <th class="py-3 px-6 text-left">Aktionen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% guilds.forEach(guild => { %>
+            <tr class="border-b hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-6"><%= guild.id %></td>
+              <td class="py-3 px-6"><%= guild.name %></td>
+              <td class="py-3 px-6"><%= guild.memberCount %></td>
+              <td class="py-3 px-6">
+                <a href="/dashboard/bot/guilds/<%= guild.id %>" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Details</a>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (guilds.length === 0) { %>
+            <tr>
+              <td colspan="4" class="py-3 px-6 text-center">Keine Gilden gefunden.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

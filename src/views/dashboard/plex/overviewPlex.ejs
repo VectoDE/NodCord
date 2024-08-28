@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plex Overview</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Plex Overview</h1>
+
+      <div class="section">
+        <h2 class="text-2xl font-semibold mb-4">General Information</h2>
+        <p><strong>Plex Version:</strong> <%= plexInfo.version %></p>
+        <p><strong>Series Count:</strong> <%= plexInfo.seriesCount %></p>
+        <p><strong>Movies Count:</strong> <%= plexInfo.moviesCount %></p>
+      </div>
+
+      <div class="section">
+        <h2 class="text-2xl font-semibold mb-4">Manage Media</h2>
+        <a href="/dashboard/plex/series" class="btn btn-primary mb-4">View Series</a>
+        <a href="/dashboard/plex/movies" class="btn btn-primary">View Movies</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

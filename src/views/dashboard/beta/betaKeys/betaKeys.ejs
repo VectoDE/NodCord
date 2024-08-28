@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Beta-Schlüssel Übersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Beta-Schlüssel Übersicht</h1>
+      <a href="/dashboard/beta/create" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-4">Neuen Beta-Schlüssel erstellen</a>
+      <table class="min-w-full bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <thead>
+          <tr class="border-b">
+            <th class="py-3 px-6 text-left">Key</th>
+            <th class="py-3 px-6 text-left">Name</th>
+            <th class="py-3 px-6 text-left">Beschreibung</th>
+            <th class="py-3 px-6 text-left">Benutzer</th>
+            <th class="py-3 px-6 text-left">Aktionen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% betaKeys.forEach(key => { %>
+            <tr class="border-b hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-6"><%= key.key %></td>
+              <td class="py-3 px-6"><%= key.name %></td>
+              <td class="py-3 px-6"><%= key.description %></td>
+              <td class="py-3 px-6"><%= key.user ? key.user.username : 'Kein Benutzer' %></td>
+              <td class="py-3 px-6">
+                <a href="/dashboard/beta/edit/<%= key._id %>" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Bearbeiten</a>
+                <form action="/api/beta/delete/<%= key._id %>" method="POST" style="display: inline;">
+                  <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Löschen</button>
+                </form>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (betaKeys.length === 0) { %>
+            <tr>
+              <td colspan="5" class="py-3 px-6 text-center">Keine Beta-Schlüssel gefunden.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Payments Overview</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Payments Overview</h1>
+      <a href="/dashboard/payments/create" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mb-6 inline-block">Create New Payment</a>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <h2 class="text-xl font-semibold mb-4">Available Payments</h2>
+        <% if (payments.length > 0) { %>
+        <table class="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <thead>
+            <tr class="bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200">
+              <th class="py-3 px-4 border-b">ID</th>
+              <th class="py-3 px-4 border-b">Amount</th>
+              <th class="py-3 px-4 border-b">Date</th>
+              <th class="py-3 px-4 border-b">Status</th>
+              <th class="py-3 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% payments.forEach(payment => { %>
+            <tr class="hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-4 border-b"><%= payment.id %></td>
+              <td class="py-3 px-4 border-b"><%= payment.amount %></td>
+              <td class="py-3 px-4 border-b"><%= payment.date %></td>
+              <td class="py-3 px-4 border-b"><%= payment.status %></td>
+              <td class="py-3 px-4 border-b">
+                <a href="/dashboard/payments/edit/<%= payment.id %>" class="text-blue-500 hover:underline">Edit</a> |
+                <a href="/api/payments/delete/<%= payment.id %>" class="text-red-500 hover:underline">Delete</a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p class="text-gray-600 dark:text-gray-400">No payments available.</p>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

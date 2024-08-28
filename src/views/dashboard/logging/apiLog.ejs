@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Logs ~ NodCord</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    main {
+      flex: 1;
+      padding: 2rem;
+      background-color: #fff;
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      margin-top: 0;
+      font-size: 2rem;
+      color: #333;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: #666;
+    }
+
+    pre {
+      background-color: #333;
+      color: #f4f4f4;
+      border: 1px solid #444;
+      padding: 10px;
+      overflow: auto;
+      white-space: pre-wrap;
+      border-radius: 4px;
+      max-height: 600px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">API Logs</h1>
+      <h2 class="text-2xl font-semibold mb-4">API Service Logs</h2>
+      <pre><%= apiLogs %></pre>
+      <a href="/dashboard" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-md transition duration-300 mt-4">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+  </main>
+</body>
+<script src="/assets/js/script.js"></script>
+</html>

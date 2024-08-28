@@ -22,7 +22,7 @@
           <h1 class="text-3xl font-bold text-gray-200"><%= user.fullName %></h1>
           <p class="text-lg text-gray-400">@<%= user.username %></p>
           <% if (user.bio) { %>
-            <p class="mt-2 text-gray-500 mb-2"><%= user.bio %></p>
+            <p class="text-gray-500 mb-2"><%= user.bio %></p>
           <% } %>
           <% if (user.isBetaTester) { %>
             <span class="inline-flex items-center bg-green-100 text-green-800 text-sm font-medium mr-2 px-2.5 py-0.5 rounded">

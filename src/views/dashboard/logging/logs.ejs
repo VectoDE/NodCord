@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Logs ~ NodCord</title>
-  <link rel="shortcut icon" href="assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     main {
@@ -43,15 +42,18 @@
     }
   </style>
 </head>
-
-<body>
-  <%- include('../../partials/header'); %>
-  <main>
-    <h1>Logs</h1>
-    <h2>Logger Service Logs</h2>
-    <pre><%= loggerLogs %></pre>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Logs</h1>
+      <h2 class="text-2xl font-semibold mb-4">Logger Service Logs</h2>
+      <pre class="mb-6"><%= loggerLogs %></pre>
+      <a href="/dashboard" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-md transition duration-300 mt-4">
+        <i class="bi bi-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
   </main>
-  <%- include('../../partials/footer'); %>
 </body>
 <script src="/assets/js/script.js"></script>
 </html>

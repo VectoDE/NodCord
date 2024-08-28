@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Answer Ticket</title>
+    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+    <%- include('../../partials/dashboardHeader'); %>
+
+    <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+      <div class="container mx-auto">
+        <h1 class="text-3xl font-semibold mb-6">Answer Ticket</h1>
+
+        <!-- Ticket Details -->
+        <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md mb-6">
+          <h2 class="text-2xl font-semibold mb-4"><%= ticket.subject %></h2>
+          <p class="text-gray-700 dark:text-gray-300 mb-4"><%= ticket.description %></p>
+          <p class="text-gray-500 dark:text-gray-400">Status: <%= ticket.status %></p>
+        </div>
+
+        <!-- Answer Form -->
+        <form action="/api/tickets/answer/<%= ticket._id %>" method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+          <div class="mb-4">
+            <label for="answer" class="block text-sm font-semibold mb-2">Your Answer:</label>
+            <textarea id="answer" name="answer" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"></textarea>
+          </div>
+          <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md transition duration-300">Submit Answer</button>
+          <a href="/dashboard/tickets" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
+            <i class="bi bi-arrow-left"></i> Back to Tickets
+          </a>
+        </form>
+      </div>
+    </main>
+  </body>
+</html>

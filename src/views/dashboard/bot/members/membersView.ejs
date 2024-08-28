@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mitglieder Übersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Mitglieder Übersicht</h1>
+      <table class="min-w-full bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <thead>
+          <tr class="border-b">
+            <th class="py-3 px-6 text-left">ID</th>
+            <th class="py-3 px-6 text-left">Name</th>
+            <th class="py-3 px-6 text-left">Gilde</th>
+            <th class="py-3 px-6 text-left">Status</th>
+            <th class="py-3 px-6 text-left">Aktionen</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% members.forEach(member => { %>
+            <tr class="border-b hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-6"><%= member.id %></td>
+              <td class="py-3 px-6"><%= member.username %></td>
+              <td class="py-3 px-6"><%= member.guildName %></td>
+              <td class="py-3 px-6"><%= member.isOnline ? 'Online' : 'Offline' %></td>
+              <td class="py-3 px-6">
+                <a href="/dashboard/bot/members/<%= member.id %>" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Details</a>
+              </td>
+            </tr>
+          <% }) %>
+          <% if (members.length === 0) { %>
+            <tr>
+              <td colspan="5" class="py-3 px-6 text-center">Keine Mitglieder gefunden.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
+</html>

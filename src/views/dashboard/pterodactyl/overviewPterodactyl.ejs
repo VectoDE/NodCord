@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pterodactyl Overview</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Pterodactyl Overview</h1>
+
+      <!-- General Pterodactyl Status -->
+      <div class="status-card mb-6">
+        <h2 class="text-xl font-semibold mb-4">General Status</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Example Card 1 -->
+          <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+            <h3 class="text-lg font-medium mb-2">Total Servers</h3>
+            <p class="text-2xl font-bold"><%= totalServers %></p>
+          </div>
+          <!-- Example Card 2 -->
+          <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+            <h3 class="text-lg font-medium mb-2">Online Servers</h3>
+            <p class="text-2xl font-bold"><%= onlineServers %></p>
+          </div>
+          <!-- Example Card 3 -->
+          <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-4">
+            <h3 class="text-lg font-medium mb-2">Offline Servers</h3>
+            <p class="text-2xl font-bold"><%= offlineServers %></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Servers List -->
+      <div class="status-card">
+        <h2 class="text-xl font-semibold mb-4">Servers List</h2>
+        <% if (servers.length > 0) { %>
+        <table class="server-list-table">
+          <thead>
+            <tr>
+              <th class="py-3 px-4 border-b">Server ID</th>
+              <th class="py-3 px-4 border-b">Name</th>
+              <th class="py-3 px-4 border-b">Status</th>
+              <th class="py-3 px-4 border-b">Memory Usage</th>
+              <th class="py-3 px-4 border-b">Disk Usage</th>
+              <th class="py-3 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% servers.forEach(server => { %>
+            <tr>
+              <td class="py-3 px-4 border-b"><%= server.id %></td>
+              <td class="py-3 px-4 border-b"><%= server.name %></td>
+              <td class="py-3 px-4 border-b"><%= server.status %></td>
+              <td class="py-3 px-4 border-b"><%= server.memoryUsage %> MB</td>
+              <td class="py-3 px-4 border-b"><%= server.diskUsage %> GB</td>
+              <td class="py-3 px-4 border-b">
+                <a href="/dashboard/pterodactyl/servers/<%= server.id %>" class="text-blue-500 hover:underline">Details</a> |
+                <a href="/api/pterodactyl/servers/<%= server.id %>/stop" class="text-red-500 hover:underline">Stop</a> |
+                <a href="/api/pterodactyl/servers/<%= server.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } else { %>
+        <p class="text-gray-600 dark:text-gray-400">No servers available.</p>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

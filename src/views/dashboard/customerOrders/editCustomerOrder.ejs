@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Customer Order</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Edit Order for <%= customer.name %></h1>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <form action="/api/customers/<%= customer.id %>/orders/edit/<%= order.id %>" method="POST">
+          <div class="mb-4">
+            <label for="date" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Order Date</label>
+            <input type="date" id="date" name="date" value="<%= new Date(order.date).toISOString().split('T')[0] %>" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+          </div>
+
+          <div class="mb-4">
+            <label for="totalAmount" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Total Amount</label>
+            <input type="number" id="totalAmount" name="totalAmount" value="<%= order.totalAmount %>" step="0.01" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+          </div>
+
+          <div class="mb-4">
+            <label for="status" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Status</label>
+            <input type="text" id="status" name="status" value="<%= order.status %>" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+          </div>
+
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

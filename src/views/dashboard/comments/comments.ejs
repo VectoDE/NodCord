@@ -1,78 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Comments</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-      h1 {
-        text-align: center;
-      }
-      .comment-list {
-        margin: 20px 0;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-bottom: 20px;
-      }
-      table,
-      th,
-      td {
-        border: 1px solid #ddd;
-      }
-      th,
-      td {
-        padding: 10px;
-        text-align: left;
-      }
-      th {
-        background-color: #f4f4f4;
-      }
-      .actions a {
-        margin-right: 10px;
-        text-decoration: none;
-        color: #007bff;
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <h1>Comments for Blog: <%= blogTitle %></h1>
-      <div class="comment-list">
-        <% if (comments.length > 0) { %>
-        <table>
-          <thead>
-            <tr>
-              <th>Author</th>
-              <th>Content</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% comments.forEach(comment => { %>
-            <tr>
-              <td><%= comment.author.name %></td>
-              <td><%= comment.content %></td>
-              <td class="actions">
-                <a href="/dashboard/comments/<%= comment._id %>/edit">Edit</a>
-                <a href="/api/comments/delete/<%= comment._id %>">Delete</a>
-              </td>
-            </tr>
-            <% }) %>
-          </tbody>
-        </table>
-        <% } else { %>
-        <p>No comments available.</p>
-        <% } %>
-      </div>
-      <a href="/dashboard/comments/create?blogId=<%= blogId %>"
-        >Create New Comment</a
-      >
-    </main>
-    <%- include('../../partials/footer'); %>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comments</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .table-header {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <h1 class="text-3xl font-semibold mb-6">Comments for Blog: <%= blogTitle %></h1>
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+      <% if (comments.length > 0) { %>
+      <table class="w-full bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-300">
+        <thead>
+          <tr class="table-header">
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Author</th>
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Content</th>
+            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% comments.forEach(comment => { %>
+          <tr>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= comment.author.name %></td>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= comment.content %></td>
+            <td class="p-3 border-b border-gray-200 dark:border-gray-700 flex space-x-2">
+              <a href="/dashboard/comments/<%= comment._id %>/edit" class="text-blue-500 hover:text-blue-600">Edit</a>
+              <form action="/api/comments/delete/<%= comment._id %>" method="POST" style="display: inline;">
+                <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } else { %>
+      <p>No comments available.</p>
+      <% } %>
+      <a href="/dashboard/comments/create?blogId=<%= blogId %>" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md mt-4 inline-block">
+        <i class="bi bi-plus-circle"></i> Create New Comment
+      </a>
+    </div>
+  </main>
+</body>
 </html>

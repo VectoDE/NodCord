@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Übersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .table th, .table td {
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">API Übersicht</h1>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5 mb-4">
+        <h2 class="text-xl font-semibold">API-System Status:</h2>
+        <div class="mt-2">
+          <strong>
+            <% if (apiSystem) { %>
+              <%= apiSystem.isActive ? 'Aktiv' : 'Inaktiv' %>
+            <% } else { %>
+              Nicht verfügbar
+            <% } %>
+          </strong>
+        </div>
+        <form id="apiSystemForm" method="POST" action="/api/api/toggle" class="mt-4">
+          <div class="mb-4">
+            <label for="apiSystemStatus" class="block text-lg font-medium">API-System Status ändern</label>
+            <select id="apiSystemStatus" name="isActive" class="form-select mt-1 block w-full">
+              <option value="true" <%= apiSystem.isActive ? 'selected' : '' %>>Aktiv</option>
+              <option value="false" <%= !apiSystem.isActive ? 'selected' : '' %>>Inaktiv</option>
+            </select>
+          </div>
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Status ändern</button>
+        </form>
+      </div>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5">
+        <h2 class="text-xl font-semibold">API-Schlüssel Übersicht:</h2>
+        <div class="mt-4">
+          <p>Gesamtanzahl der API-Schlüssel: <strong><%= apiKeys.length %></strong></p>
+          <p>Verwendete API-Schlüssel: <strong><%= apiKeys.filter(key => key.isActive).length %></strong></p>
+          <p>Unbenutzte API-Schlüssel: <strong><%= apiKeys.filter(key => !key.isActive).length %></strong></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('apiSystemForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const isActive = document.getElementById('apiSystemStatus').value;
+
+      fetch('/api/api/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.message === 'Systemstatus geändert') {
+          location.reload();
+        }
+      })
+      .catch(error => console.error('Fehler:', error));
+    });
+  </script>
+</body>
+</html>

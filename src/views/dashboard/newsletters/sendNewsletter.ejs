@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Send Newsletter</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Send Newsletter</h1>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
+        <form action="/api/newsletter/send/<%= newsletter.id %>" method="POST">
+          <p class="mb-4">You are about to send the following newsletter:</p>
+          <h2 class="text-xl font-semibold mb-4"><%= newsletter.subject %></h2>
+          <p class="mb-4"><%= newsletter.content %></p>
+          <div class="mb-4">
+            <label for="recipients" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Recipients</label>
+            <textarea id="recipients" name="recipients" rows="5" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required></textarea>
+            <p class="text-gray-600 dark:text-gray-400 mt-1">Enter email addresses separated by commas.</p>
+          </div>
+
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Send Newsletter</button>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

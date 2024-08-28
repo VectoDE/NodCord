@@ -1,109 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create Company</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <style>
-      h1 {
-        text-align: center;
-      }
-      form {
-        max-width: 600px;
-        margin: 0 auto;
-      }
-      label {
-        display: block;
-        margin-bottom: 5px;
-      }
-      input[type='text'],
-      input[type='date'],
-      textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-      }
-      button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <h1>Create New Company</h1>
-      <form action="/api/companies/create" method="POST">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Company ~ NodCord</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Create New Company</h1>
+      <form action="/api/companies/create" method="POST" class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md space-y-4">
         <div>
-          <label for="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            name="name"
-            placeholder="Company Name"
-            required
-          />
+          <label for="name" class="block text-sm font-semibold mb-2">Name</label>
+          <input type="text" id="name" name="name" placeholder="Company Name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
         </div>
         <div>
-          <label for="description">Description</label>
-          <textarea
-            id="description"
-            name="description"
-            rows="5"
-            placeholder="Company Description"
-          ></textarea>
+          <label for="description" class="block text-sm font-semibold mb-2">Description</label>
+          <textarea id="description" name="description" rows="5" placeholder="Company Description" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"></textarea>
         </div>
         <div>
-          <label for="industry">Industry</label>
-          <input
-            type="text"
-            id="industry"
-            name="industry"
-            placeholder="Industry"
-          />
+          <label for="industry" class="block text-sm font-semibold mb-2">Industry</label>
+          <input type="text" id="industry" name="industry" placeholder="Industry" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
         </div>
         <div>
-          <label for="headquarters">Headquarters</label>
-          <input
-            type="text"
-            id="headquarters"
-            name="headquarters"
-            placeholder="Headquarters Location"
-          />
+          <label for="headquarters" class="block text-sm font-semibold mb-2">Headquarters</label>
+          <input type="text" id="headquarters" name="headquarters" placeholder="Headquarters Location" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
         </div>
         <div>
-          <label for="foundedDate">Founded Date</label>
-          <input type="date" id="foundedDate" name="foundedDate" />
+          <label for="foundedDate" class="block text-sm font-semibold mb-2">Founded Date</label>
+          <input type="date" id="foundedDate" name="foundedDate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
         </div>
         <div>
-          <label for="employees">Number of Employees</label>
-          <input
-            type="number"
-            id="employees"
-            name="employees"
-            placeholder="Number of Employees"
-          />
+          <label for="employees" class="block text-sm font-semibold mb-2">Number of Employees</label>
+          <input type="number" id="employees" name="employees" placeholder="Number of Employees" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
         </div>
         <div>
-          <label for="website">Website</label>
-          <input
-            type="url"
-            id="website"
-            name="website"
-            placeholder="Website URL"
-          />
+          <label for="website" class="block text-sm font-semibold mb-2">Website</label>
+          <input type="url" id="website" name="website" placeholder="Website URL" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"/>
         </div>
-        <button type="submit">Create Company</button>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md transition duration-300">Create Company</button>
       </form>
-    </main>
-    <%- include('../../partials/footer'); %>
-  </body>
+    </div>
+  </main>
+</body>
 </html>

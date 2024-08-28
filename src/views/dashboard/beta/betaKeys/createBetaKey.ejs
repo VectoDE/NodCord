@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neuen Beta-Schlüssel erstellen</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Neuen Beta-Schlüssel erstellen</h1>
+      <form action="/api/beta/create" method="POST">
+        <div class="mb-4">
+          <label for="keyName" class="block text-lg font-medium">Name</label>
+          <input type="text" id="keyName" name="name" class="form-input mt-1 block w-full" required>
+        </div>
+        <div class="mb-4">
+          <label for="keyDescription" class="block text-lg font-medium">Beschreibung</label>
+          <textarea id="keyDescription" name="description" class="form-textarea mt-1 block w-full" rows="4"></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="keyUser" class="block text-lg font-medium">Benutzer</label>
+          <input type="text" id="keyUser" name="user" class="form-input mt-1 block w-full">
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Erstellen</button>
+        <a href="/dashboard/beta" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Zurück</a>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

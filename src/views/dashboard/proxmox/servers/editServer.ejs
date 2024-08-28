@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Server</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-6">Edit Server</h1>
+      <div class="form-container">
+        <form action="/api/proxmox/servers/<%= server.id %>/update" method="POST">
+          <div class="mb-4">
+            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Server Name</label>
+            <input type="text" id="name" name="name" value="<%= server.name %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />
+          </div>
+          <div class="mb-4">
+            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+            <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+              <option value="running" <%= server.status === 'running' ? 'selected' : '' %>>Running</option>
+              <option value="stopped" <%= server.status === 'stopped' ? 'selected' : '' %>>Stopped</option>
+            </select>
+          </div>
+          <div class="mb-4">
+            <label for="memoryUsage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Memory Usage (MB)</label>
+            <input type="number" id="memoryUsage" name="memoryUsage" value="<%= server.memoryUsage %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />
+          </div>
+          <div class="mb-4">
+            <label for="diskUsage" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Disk Usage (GB)</label>
+            <input type="number" id="diskUsage" name="diskUsage" value="<%= server.diskUsage %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />
+          </div>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">Save Changes</button>
+            <a href="/dashboard/proxmox/servers" class="ml-4 text-red-500 hover:underline">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

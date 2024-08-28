@@ -1,56 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Bug Tracker</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <h1>All Bugs</h1>
-      <a href="/dashboard/bugs/create">Create New Bug</a>
-      <table border="1">
-        <thead>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bug Tracker</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <h1 class="text-3xl font-semibold mb-6">All Bugs</h1>
+    <a href="/dashboard/bugs/create" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md mb-4 inline-block">
+      <i class="bi bi-plus-circle"></i> Create New Bug
+    </a>
+    <div class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-800">
           <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Severity</th>
-            <th>Status</th>
-            <th>Project</th>
-            <th>Actions</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Title</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Severity</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Project</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
-        <tbody>
-          <% if (bugs && bugs.length > 0) { %> <% bugs.forEach(function(bug) {
-          %>
-          <tr>
-            <td><%= bug.title %></td>
-            <td><%= bug.description %></td>
-            <td><%= bug.severity %></td>
-            <td><%= bug.status %></td>
-            <td><%= bug.project.name %></td>
-            <td>
-              <a href="/dashboard/bugs/update/<%= bug._id %>">Edit</a>
-              <form
-                action="/api/bugs/delete/<%= bug._id %>"
-                method="POST"
-                style="display: inline"
-              >
-                <button type="submit">Delete</button>
-              </form>
-            </td>
-          </tr>
-          <% }); %> <% } else { %>
-          <tr>
-            <td colspan="6">No bugs found.</td>
-          </tr>
+        <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+          <% if (bugs && bugs.length > 0) { %>
+            <% bugs.forEach(bug => { %>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap"><%= bug.title %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= bug.description %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= bug.severity %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= bug.status %></td>
+                <td class="px-6 py-4 whitespace-nowrap"><%= bug.project.name %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                  <a href="/dashboard/bugs/update/<%= bug._id %>" class="text-blue-500 hover:text-blue-600">Edit</a>
+                  <form action="/api/bugs/delete/<%= bug._id %>" method="POST" class="inline-block ml-2">
+                    <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No bugs found.</td>
+            </tr>
           <% } %>
         </tbody>
       </table>
-    </main>
-    <%- include('../../partials/footer'); %>
-  </body>
+    </div>
+  </main>
+</body>
 </html>

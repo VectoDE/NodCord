@@ -1,64 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blog Übersicht</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <div class="container">
-        <h1 class="mt-5">Blog Übersicht</h1>
-        <a href="/dashboard/blogs/create" class="btn btn-primary mb-3"
-          >Neuen Blog erstellen</a
-        >
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th>Title</th>
-              <th>Author</th>
-              <th>Tags</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% blogs.forEach(blog => { %>
-            <tr>
-              <td><%= blog.title %></td>
-              <td><%= blog.author %></td>
-              <td><%= blog.tags.join(', ') %></td>
-              <td>
-                <a
-                  href="/dashboard/blogs/update/<%= blog._id %>"
-                  class="btn btn-warning btn-sm"
-                  >Bearbeiten</a
-                >
-                <form
-                  action="/api/blogs/delete/<%= blog._id %>"
-                  method="POST"
-                  style="display: inline"
-                >
-                  <button type="submit" class="btn btn-danger btn-sm">
-                    Löschen
-                  </button>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Übersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Blog Übersicht</h1>
+      <a href="/dashboard/blogs/create" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Neuen Blog erstellen</a>
+      <table class="min-w-full bg-white dark:bg-gray-900 rounded-lg shadow-md">
+        <thead>
+          <tr class="border-b">
+            <th class="py-3 px-6 text-left">Title</th>
+            <th class="py-3 px-6 text-left">Author</th>
+            <th class="py-3 px-6 text-left">Tags</th>
+            <th class="py-3 px-6 text-left">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% blogs.forEach(blog => { %>
+            <tr class="border-b hover:bg-gray-100 dark:hover:bg-gray-700">
+              <td class="py-3 px-6"><%= blog.title %></td>
+              <td class="py-3 px-6"><%= blog.author %></td>
+              <td class="py-3 px-6"><%= blog.tags.join(', ') %></td>
+              <td class="py-3 px-6">
+                <a href="/dashboard/blogs/update/<%= blog._id %>" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600">Bearbeiten</a>
+                <form action="/api/blogs/delete/<%= blog._id %>" method="POST" style="display:inline;">
+                  <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">Löschen</button>
                 </form>
               </td>
             </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    </main>
-    <%- include('../../partials/footer'); %>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  </body>
+          <% }) %>
+          <% if (blogs.length === 0) { %>
+            <tr>
+              <td colspan="4" class="py-3 px-6 text-center">Keine Blogs gefunden.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</body>
 </html>

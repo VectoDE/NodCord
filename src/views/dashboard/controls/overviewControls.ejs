@@ -1,112 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Overview Controls</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <div class="container">
-        <h1>System Overview</h1>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kontrollübersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Kontrollübersicht</h1>
 
-        <div class="status-section">
-          <h2>Bot Status</h2>
-          <p id="bot-status">Loading...</p>
-          <div class="controls">
-            <button onclick="controlBot('start')">Start Bot</button>
-            <button onclick="controlBot('stop')">Stop Bot</button>
-            <button onclick="controlBot('restart')">Restart Bot</button>
-            <button onclick="controlBot('setMaintenance')">
-              Enable Maintenance
-            </button>
-            <button onclick="controlBot('removeMaintenance')">
-              Disable Maintenance
-            </button>
+      <!-- Abschnitt für verschiedene Kontrollmöglichkeiten -->
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5 mb-4">
+        <h2 class="text-xl font-semibold mb-4">Kontrollmöglichkeiten</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Beispiel für eine Kontrollmöglichkeit -->
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">Beta-System</h3>
+            <p class="mb-4">Verwalten Sie den Status des Beta-Systems und erstellen Sie neue Beta-Keys.</p>
+            <a href="/dashboard/beta" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zur Beta-Verwaltung</a>
           </div>
-        </div>
 
-        <div class="status-section">
-          <h2>API Status</h2>
-          <p id="api-status">Loading...</p>
-          <div class="controls">
-            <button onclick="controlApi('start')">Start API</button>
-            <button onclick="controlApi('stop')">Stop API</button>
-            <button onclick="controlApi('restart')">Restart API</button>
-            <button onclick="controlApi('setMaintenance')">
-              Enable Maintenance
-            </button>
-            <button onclick="controlApi('removeMaintenance')">
-              Disable Maintenance
-            </button>
+          <!-- Weitere Kontrollmöglichkeiten -->
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">Discord Bot</h3>
+            <p class="mb-4">Verwalten Sie den Discord Bot, sehen Sie den Status an und verwalten Sie Mitglieder und Gilden.</p>
+            <a href="/dashboard/bot/overview" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zur Bot-Verwaltung</a>
+          </div>
+
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">API-Schlüssel</h3>
+            <p class="mb-4">Verwalten Sie Ihre API-Schlüssel, erstellen Sie neue und bearbeiten Sie bestehende.</p>
+            <a href="/dashboard/api/keys" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zu API-Schlüsseln</a>
+          </div>
+
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">Systemeinstellungen</h3>
+            <p class="mb-4">Ändern Sie die globalen Systemeinstellungen und Konfigurationen.</p>
+            <a href="/dashboard/settings" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zu Systemeinstellungen</a>
           </div>
         </div>
       </div>
-    </main>
-    <%- include('../../partials/footer'); %>
-    <script>
-      // Fetch Bot Status
-      fetch('/api/controls/bot/status')
-        .then((response) => response.json())
-        .then((data) => {
-          document.getElementById(
-            'bot-status'
-          ).textContent = `Bot Status: ${data.status}`;
-        })
-        .catch((error) => {
-          console.error('Error fetching bot status:', error);
-          document.getElementById('bot-status').textContent =
-            'Error fetching bot status';
-        });
 
-      // Fetch API Status
-      fetch('/api/controls/api/status')
-        .then((response) => response.json())
-        .then((data) => {
-          document.getElementById(
-            'api-status'
-          ).textContent = `API Status: ${data.status}`;
-        })
-        .catch((error) => {
-          console.error('Error fetching API status:', error);
-          document.getElementById('api-status').textContent =
-            'Error fetching API status';
-        });
+      <!-- Abschnitt für spezifische Einstellungen -->
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5">
+        <h2 class="text-xl font-semibold mb-4">Spezifische Einstellungen</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">Benutzerverwaltung</h3>
+            <p class="mb-4">Verwalten Sie die Benutzerkonten und Berechtigungen.</p>
+            <a href="/dashboard/users" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zu Benutzerverwaltung</a>
+          </div>
 
-      // Bot Control Actions
-      function controlBot(action) {
-        fetch(`/api/controls/bot/${action}`, {
-          method: 'POST',
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            alert(data.message);
-            location.reload(); // Refresh the page to update the status
-          })
-          .catch((error) => {
-            console.error(`Error performing ${action} on bot:`, error);
-            alert(`Failed to ${action} bot`);
-          });
-      }
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">Protokolle</h3>
+            <p class="mb-4">Überprüfen Sie die Systemprotokolle und Aktivitäten.</p>
+            <a href="/dashboard/logs" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zu Protokollen</a>
+          </div>
 
-      // API Control Actions
-      function controlApi(action) {
-        fetch(`/api/controls/api/${action}`, {
-          method: 'POST',
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            alert(data.message);
-            location.reload(); // Refresh the page to update the status
-          })
-          .catch((error) => {
-            console.error(`Error performing ${action} on API:`, error);
-            alert(`Failed to ${action} API`);
-          });
-      }
-    </script>
-  </body>
+          <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow">
+            <h3 class="text-lg font-medium mb-2">Systemstatus</h3>
+            <p class="mb-4">Überprüfen Sie den aktuellen Status des Systems und der Dienste.</p>
+            <a href="/dashboard/status" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Zu Systemstatus</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</body>
 </html>

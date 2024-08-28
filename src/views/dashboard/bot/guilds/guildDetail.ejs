@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gilden Details</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Gilden Details</h1>
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5 mb-4">
+        <h2 class="text-xl font-semibold">Details für <%= guild.name %></h2>
+        <div class="mt-4">
+          <p><strong>ID:</strong> <%= guild.id %></p>
+          <p><strong>Name:</strong> <%= guild.name %></p>
+          <p><strong>Mitgliederanzahl:</strong> <%= guild.memberCount %></p>
+        </div>
+        <a href="/dashboard/bot/guilds" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mt-4 inline-block">Zurück zur Übersicht</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

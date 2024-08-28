@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discord Bot Übersicht</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Discord Bot Übersicht</h1>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5 mb-4">
+        <h2 class="text-xl font-semibold">Bot Status:</h2>
+        <div class="mt-2">
+          <strong>
+            <% if (botStatus) { %>
+              <%= botStatus.isActive ? 'Aktiv' : 'Inaktiv' %>
+            <% } else { %>
+              Nicht verfügbar
+            <% } %>
+          </strong>
+        </div>
+        <form id="botStatusForm" method="POST" action="/api/bot/toggle" class="mt-4">
+          <div class="mb-4">
+            <label for="botStatus" class="block text-lg font-medium">Bot Status ändern</label>
+            <select id="botStatus" name="isActive" class="form-select mt-1 block w-full">
+              <option value="true" <%= botStatus.isActive ? 'selected' : '' %>>Aktiv</option>
+              <option value="false" <%= !botStatus.isActive ? 'selected' : '' %>>Inaktiv</option>
+            </select>
+          </div>
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Status ändern</button>
+        </form>
+      </div>
+
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5">
+        <h2 class="text-xl font-semibold">Bot Übersicht:</h2>
+        <div class="mt-4">
+          <p>Gesamtanzahl der Mitglieder: <strong><%= totalMembers %></strong></p>
+          <p>Gesamtanzahl der Gilden: <strong><%= totalGuilds %></strong></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.getElementById('botStatusForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const isActive = document.getElementById('botStatus').value;
+
+      fetch('/api/bot/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ isActive })
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.message === 'Botstatus geändert') {
+          location.reload();
+        }
+      })
+      .catch(error => console.error('Fehler:', error));
+    });
+  </script>
+</body>
+</html>

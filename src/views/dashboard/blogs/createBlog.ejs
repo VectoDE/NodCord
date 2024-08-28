@@ -1,64 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Neuen Blog erstellen</title>
-    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="/assets/css/styles.css">
-    <link
-      rel="stylesheet"
-      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
-  </head>
-  <body>
-    <%- include('../../partials/header'); %>
-    <main>
-      <div class="container">
-        <h1 class="mt-5">Neuen Blog erstellen</h1>
-        <form action="/api/blogs/create" method="POST">
-          <div class="form-group">
-            <label for="title">Title</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              class="form-control"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="author">Author</label>
-            <input
-              type="text"
-              id="author"
-              name="author"
-              class="form-control"
-              required
-            />
-          </div>
-          <div class="form-group">
-            <label for="content">Content</label>
-            <textarea
-              id="content"
-              name="content"
-              class="form-control"
-              rows="10"
-              required
-            ></textarea>
-          </div>
-          <div class="form-group">
-            <label for="tags">Tags (Komma-getrennt)</label>
-            <input type="text" id="tags" name="tags" class="form-control" />
-          </div>
-          <button type="submit" class="btn btn-primary">Erstellen</button>
-          <a href="/dashboard/blogs" class="btn btn-secondary">Zurück</a>
-        </form>
-      </div>
-    </main>
-    <%- include('../../partials/footer'); %>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neuen Blog erstellen</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <h1 class="text-3xl font-semibold mb-4">Neuen Blog erstellen</h1>
+      <form action="/api/blogs/create" method="POST">
+        <div class="mb-4">
+          <label for="title" class="block text-lg font-medium mb-2">Title</label>
+          <input type="text" id="title" name="title" class="form-input w-full" required />
+        </div>
+        <div class="mb-4">
+          <label for="author" class="block text-lg font-medium mb-2">Author</label>
+          <input type="text" id="author" name="author" class="form-input w-full" required />
+        </div>
+        <div class="mb-4">
+          <label for="content" class="block text-lg font-medium mb-2">Content</label>
+          <textarea id="content" name="content" class="form-textarea w-full" rows="10" required></textarea>
+        </div>
+        <div class="mb-4">
+          <label for="tags" class="block text-lg font-medium mb-2">Tags (Komma-getrennt)</label>
+          <input type="text" id="tags" name="tags" class="form-input w-full" />
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Erstellen</button>
+        <a href="/dashboard/blogs" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Zurück</a>
+      </form>
+    </div>
+  </main>
+</body>
 </html>

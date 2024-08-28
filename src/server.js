@@ -1,4 +1,5 @@
 const http = require('http');
+const express = require('express');
 const pm2 = require('@pm2/io');
 const packageInfo = require('../package.json');
 const { api } = require('./api/app');
@@ -46,12 +47,12 @@ const startServer = async () => {
       next();
     });
 
-    //api.use((err, req, res, next) => {
-    //  if (err) {
-    //    errorMeter.inc();
-    //  }
-    //  next(err);
-    //});
+    api.use((err, req, res, next) => {
+      if (err) {
+        errorMeter.inc();
+      }
+      next(err);
+    });
 
     await connectDB();
 

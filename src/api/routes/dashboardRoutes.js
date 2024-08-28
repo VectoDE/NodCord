@@ -11,6 +11,7 @@ const logService = require('../services/logService');
 const bot = require('../../bot/index');
 const overviewControl = require('../helpers/overviewControl');
 const cloudnetController = require('../controllers/cloudnetController');
+const commentController = require('../controllers/commentController');
 
 const User = require('../../models/userModel');
 const Role = require('../../models/roleModel');
@@ -25,31 +26,73 @@ const Company = require('../../models/companyModel');
 const Organization = require('../../models/organizationModel');
 const Comment = require('../../models/commentModel');
 const FileUpload = require('../../models/fileModel');
+const Tournament = require('../../models/tournamentModel');
+const TournamentMatch = require('../../models/tournamentMatchModel');
+const TournamentTeam = require('../../models/tournamentTeamModel');
+const Team = require('../../models/teamModel');
+const Task = require('../../models/taskModel');
+const Tag = require('../../models/tagModel');
+const Subscriber = require('../../models/subscriberModel');
+const Story = require('../../models/storyModel');
+const Project = require('../../models/projectModel');
+const Issue = require('../../models/issueModel');
+const Group = require('../../models/groupModel');
+const Game = require('../../models/gameModel');
+const Feedback = require('../../models/feedbackModel');
+const Feature = require('../../models/featureModel');
+const Favorite = require('../../models/favoriteModel');
+const Product = require('../../models/productModel');
+const Customer = require('../../models/customerModel');
+const CustomerOrders = require('../../models/customerOrderModel');
+const Order = require('../../models/orderModel');
+const Payment = require('../../models/paymentModel');
+const Return = require('../../models/returnModel');
 
 router.use(authMiddleware(true));
 
 // Dashboard Overview
 router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBetaSystemStatus, betaMiddleware.checkBetaKeyValidity, async (req, res) => {
   try {
-    const botStatus = await botStatusService.getStatus();
-    const apiStatus = await apiStatusService.getStatus();
-    const dbStatus = await dbStatusService.getStatus();
+    const users = await User.find();
+    const tournaments = await Tournament.find();
+    const tickets = await Ticket.find();
+    const teams = await Team.find();
+    const tasks = await Task.find();
+    const tags = await Tag.find();
+    const subscribers = await Subscriber.find();
+    const stories = await Story.find();
+    const roles = await Role.find();
+    const projects = await Project.find();
+    const organizations = await Organization.find();
+    const issues = await Issue.find();
+    const groups = await Group.find();
+    const games = await Game.find();
+    const files = await FileUpload.find();
+    const feedbacks = await Feedback.find();
+    const features = await Feature.find();
+    const favorites = await Favorite.find();
+    const companies = await Company.find();
+    const comments = await Comment.find();
+    const categories = await Category.find();
+    const bugs = await Bug.find();
+    const blogs = await Blog.find();
 
     const betaKey = await BetaKey.find();
     const apiKey = await ApiKey.find();
-    const users = await User.find();
-    const roles = await Role.find();
-    const categories = await Category.find();
-    const tickets = await Ticket.find();
-    const bugs = await Bug.find();
-    const blogs = await Blog.find();
-    const comments = await Comment.find();
-    const companies = await Company.find();
-    const organizations = await Organization.find();
+
+    const products = await Product.find();
+    const customers = await Customer.find();
+    const customerOrders = await CustomerOrders.find();
+    const orders = await Order.find();
+    const payments = await Payment.find();
+    const returns = await Return.find();
+
     const discordServers = await bot.getServers();
     const discordMembers = await bot.getMembers();
 
-    const files = await FileUpload.find();
+    const botStatus = await botStatusService.getStatus();
+    const apiStatus = await apiStatusService.getStatus();
+    const dbStatus = await dbStatusService.getStatus();
 
     const loggerLogs = await logService.getRecentLoggerLogs(20);
 
@@ -60,6 +103,12 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       betaKey,
       apiKey,
       users,
+      tournaments,
+      teams,
+      tasks,
+      tags,
+      subscribers,
+      stories,
       roles,
       categories,
       tickets,
@@ -67,10 +116,23 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       blogs,
       comments,
       companies,
+      projects,
       organizations,
+      issues,
+      groups,
+      games,
+      feedbacks,
+      features,
+      favorites,
       discordServers,
       discordMembers,
       files,
+      products,
+      customers,
+      customerOrders,
+      orders,
+      payments,
+      returns,
       loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
@@ -83,16 +145,20 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
 });
 
 // Api Key CRUD
-router.get('/apiKeys', roleMiddleware(['admin', 'moderator']), async (req, res) => {
+router.get('/api/overview', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKeys = await ApiKey.find();
-  res.render('dashboard/apiKey/apiKeys', { apiKeys, errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/api/apiKey/apiKeys', { apiKeys, errorstack: null, logoImage: '/assets/img/logo.png' });
 });
-router.get('/apiKeys/create', roleMiddleware(['admin', 'moderator']), (req, res) => {
-  res.render('dashboard/apiKey/createApiKey', { errorstack: null, logoImage: '/assets/img/logo.png' });
+router.get('/api/keys', roleMiddleware(['admin', 'moderator']), async (req, res) => {
+  const apiKeys = await ApiKey.find();
+  res.render('dashboard/api/apiKey/apiKeys', { apiKeys, errorstack: null, logoImage: '/assets/img/logo.png' });
 });
-router.get('/apiKeys/update/:id', roleMiddleware(['admin', 'moderator']), async (req, res) => {
+router.get('/api/keys/create', roleMiddleware(['admin', 'moderator']), (req, res) => {
+  res.render('dashboard/api/apiKey/createApiKey', { errorstack: null, logoImage: '/assets/img/logo.png' });
+});
+router.get('/api/keys/update/:id', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKey = await ApiKey.findById(req.params.id);
-  res.render('dashboard/apiKey/updateApiKey', { apiKey, errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/api/apiKey/editApiKey', { apiKey, errorstack: null, logoImage: '/assets/img/logo.png' });
 });
 
 // Blog CRUD
@@ -111,7 +177,7 @@ router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blog = await Blog.findById(req, res);
     if (blog) {
-      res.render('dashboard/blogs/updateBlog', { blog, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/blogs/editBlog', { blog, errorstack: null, logoImage: '/assets/img/logo.png' });
     } else {
       res.status(404).send('Blog not found');
     }
@@ -141,7 +207,7 @@ router.get('/bugs/update/:id', async (req, res) => {
     if (!bug) {
       return res.status(404).send('Bug not found');
     }
-    res.render('dashboard/bugs/updateBug', { bug, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/bugs/editBug', { bug, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error(`Error fetching bug with ID ${id}:`, error);
     res.status(500).send('Internal Server Error');
@@ -169,7 +235,7 @@ router.get('/categories/update/:id', async (req, res) => {
     if (!category) {
       return res.status(404).send('Category not found');
     }
-    res.render('dashboard/categories/updateCategory', { category, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/categories/editCategory', { category, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
     res.status(500).send('Internal Server Error');
@@ -219,7 +285,7 @@ router.get('/comments/:id/edit', roleMiddleware(['admin']), async (req, res) => 
 
     const { comment } = commentData.json;
 
-    res.render('dashboard/comments/updateComment', {
+    res.render('dashboard/comments/editComment', {
       comment,
       blogTitle: comment.blog.title,
       logoImage: '/assets/img/logo.png'
@@ -262,7 +328,7 @@ router.get('/companies/:companyId/edit', roleMiddleware(['admin']), async (req, 
       return res.status(404).send('Company not found');
     }
 
-    res.render('dashboard/companies/updateCompany', {
+    res.render('dashboard/companies/editCompany', {
       company,
       logoImage: '/assets/img/logo.png'
     });
@@ -293,14 +359,12 @@ router.get('/users/:id/edit', roleMiddleware(['admin']), async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    res.render('dashboard/users/updateUser', { user, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/users/editUser', { user, logoImage: '/assets/img/logo.png' });
   } catch (error) {
     console.error('Error displaying edit form:', error);
     res.status(500).send('Internal Server Error');
   }
 });
-
-
 
 // Organization CRUD
 router.get('/organizations', async (req, res) => {
@@ -318,7 +382,7 @@ router.get('/organizations/create', (req, res) => {
 router.get('/organizations/:id/edit', async (req, res) => {
   try {
       const organization = await Organization.findById(req, res);
-      res.render('dashboard/organizations/updateOrganization', { organization: organization.data, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/organizations/editOrganization', { organization: organization.data, logoImage: '/assets/img/logo.png' });
   } catch (error) {
       console.error('Error displaying edit form:', error);
       res.status(500).send('Internal Server Error');
@@ -357,7 +421,7 @@ router.get('/logs', roleMiddleware(['admin']), async (req, res) => {
 });
 
 // Beta Management-Route
-router.get('/beta-management', roleMiddleware(['admin']), async (req, res) => {
+router.get('/beta', roleMiddleware(['admin']), async (req, res) => {
   try {
     let betaSystem = await BetaSystem.findOne();
 
@@ -369,7 +433,7 @@ router.get('/beta-management', roleMiddleware(['admin']), async (req, res) => {
 
     const betaKeys = await BetaKey.find().populate('user');
 
-    res.render('dashboard/beta/beta-management', {
+    res.render('dashboard/beta/betaOverview', {
       betaKeys,
       betaSystem,
       isAuthenticated: res.locals.isAuthenticated,
