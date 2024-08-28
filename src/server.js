@@ -1,11 +1,15 @@
 const http = require('http');
-const express = require('express');
 const pm2 = require('@pm2/io');
+
 const packageInfo = require('../package.json');
+
 const { api } = require('./api/app');
 const bot = require('./bot/index');
+const { client } = require('./frontend/client');
+
 const connectDB = require('./database/connectDB');
 const { seedRolesIfNotExist } = require('./seeds/rolesSeed');
+
 const logger = require('./api/services/loggerService');
 
 const realtimeUsers = pm2.metric({
