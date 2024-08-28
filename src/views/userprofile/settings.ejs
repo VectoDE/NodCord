@@ -19,7 +19,7 @@
         <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Email Address</label>
         <input type="email" name="email" id="email" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.email %>" required>
         <% if (!user.isVerified) { %>
-          <p class="text-sm text-red-600 mt-2">Your email is not verified. <a href="/user/profile/send-verification" class="text-blue-600 hover:underline">Send verification email</a>.</p>
+          <p class="text-sm text-red-600 mt-2">Your email is not verified. <a href="/user/profile/${user.username}/send-verification" class="text-blue-600 hover:underline">Send verification email</a>.</p>
         <% } %>
       </div>
 
