@@ -9,6 +9,7 @@ const { client } = require('./frontend/client');
 
 const connectDB = require('./database/connectDB');
 const { seedRolesIfNotExist } = require('./seeds/rolesSeed');
+const {} = require('./seeds/usersSeed');
 
 const logger = require('./api/services/loggerService');
 
