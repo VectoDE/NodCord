@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const User = require('../models/userModel'); // Importiere das User-Modell
+const User = require('../models/userModel');
+const serverConfig = require('../config/serverConfig');
 const bcrypt = require('bcrypt');
 
 async function createUser(data) {
@@ -22,7 +23,7 @@ async function createUser(data) {
 
 async function seedUsers() {
   // Verbinde dich mit der MongoDB-Datenbank
-  await mongoose.connect(process.env.MONGODB_URI, { });
+  await mongoose.connect(serverConfig.mongoURI, { });
 
   // Benutzer-Daten zum Seed (Beispiel)
   const users = [
