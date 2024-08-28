@@ -393,6 +393,143 @@ router.get('/organizations/:id/edit', async (req, res) => {
   }
 });
 
+// Games CRUD
+router.get('/games', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const games = await Game.find();
+    res.render('dashboard/games/games', { games, errorstack: null, logoImage: '/assets/img/logo.png' });
+  } catch (error) {
+    res.status(500).send('Error retrieving games');
+  }
+});
+router.get('/games/create', roleMiddleware(['admin']), (req, res) => {
+  res.render('dashboard/games/createGame', { errorstack: null, logoImage: '/assets/img/logo.png' });
+});
+router.get('/games/update/:id', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const game = await Game.findById(req, res);
+    if (game) {
+      res.render('dashboard/games/editGame', { game, errorstack: null, logoImage: '/assets/img/logo.png' });
+    } else {
+      res.status(404).send('Game not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error retrieving game');
+  }
+});
+
+// Groups CRUD
+router.get('/groups', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const groups = await Group.find();
+    res.render('dashboard/groups/groups', { groups, errorstack: null, logoImage: '/assets/img/logo.png' });
+  } catch (error) {
+    res.status(500).send('Error retrieving groups');
+  }
+});
+router.get('/groups/create', roleMiddleware(['admin']), (req, res) => {
+  res.render('dashboard/groups/createGroup', { errorstack: null, logoImage: '/assets/img/logo.png' });
+});
+router.get('/groups/update/:id', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const group = await Group.findById(req, res);
+    if (group) {
+      res.render('dashboard/groups/editGroup', { group, errorstack: null, logoImage: '/assets/img/logo.png' });
+    } else {
+      res.status(404).send('Group not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error retrieving group');
+  }
+});
+
+// Teams CRUD
+router.get('/teams', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const teams = await Team.find();
+    res.render('dashboard/teams/teams', { teams, errorstack: null, logoImage: '/assets/img/logo.png' });
+  } catch (error) {
+    res.status(500).send('Error retrieving teams');
+  }
+});
+router.get('/teams/create', roleMiddleware(['admin']), (req, res) => {
+  res.render('dashboard/teams/createTeam', { errorstack: null, logoImage: '/assets/img/logo.png' });
+});
+router.get('/teams/update/:id', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const team = await Team.findById(req, res);
+    if (team) {
+      res.render('dashboard/teams/editTeam', { team, errorstack: null, logoImage: '/assets/img/logo.png' });
+    } else {
+      res.status(404).send('Team not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error retrieving team');
+  }
+});
+
+// Tournament CRUD
+router.get('/tournaments', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const tournaments = await Tournament.find();
+    res.render('dashboard/tournaments/tournaments', { tournaments, errorstack: null, logoImage: '/assets/img/logo.png' });
+  } catch (error) {
+    res.status(500).send('Error retrieving tournaments');
+  }
+});
+router.get('/tournaments/create', roleMiddleware(['admin']), (req, res) => {
+  res.render('dashboard/tournaments/createTournament', { errorstack: null, logoImage: '/assets/img/logo.png' });
+});
+router.get('/tournaments/update/:id', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const tournament = await Tournament.findById(req, res);
+    if (tournament) {
+      res.render('dashboard/tournaments/editTournament', { tournament, errorstack: null, logoImage: '/assets/img/logo.png' });
+    } else {
+      res.status(404).send('Tournament not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error retrieving tournament');
+  }
+});
+
+
+
+
+
+
+// Tags CRUD
+router.get('/tags', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const tags = await Tag.find();
+    res.render('dashboard/tags/tags', { tags, errorstack: null, logoImage: '/assets/img/logo.png' });
+  } catch (error) {
+    res.status(500).send('Error retrieving tags');
+  }
+});
+router.get('/tags/create', roleMiddleware(['admin']), (req, res) => {
+  res.render('dashboard/tags/createTag', { errorstack: null, logoImage: '/assets/img/logo.png' });
+});
+router.get('/tags/update/:id', roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const tag = await Tag.findById(req, res);
+    if (tag) {
+      res.render('dashboard/tags/editTag', { tag, errorstack: null, logoImage: '/assets/img/logo.png' });
+    } else {
+      res.status(404).send('Tag not found');
+    }
+  } catch (error) {
+    res.status(500).send('Error retrieving tag');
+  }
+});
+
+
+
+
+
+
+
+
 
 
 
