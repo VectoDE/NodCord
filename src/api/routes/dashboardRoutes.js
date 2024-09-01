@@ -58,7 +58,6 @@ router.use(authMiddleware(true));
 router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBetaSystemStatus, betaMiddleware.checkBetaKeyValidity, async (req, res) => {
   try {
     const users = await User.find();
-    const tournaments = await Tournament.find();
     const tickets = await Ticket.find();
     const teams = await Team.find();
     const tasks = await Task.find();
@@ -91,6 +90,10 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
     const payments = await Payment.find();
     const returns = await Return.find();
 
+    const tournaments = await Tournament.find();
+    const tournamentMatch = await TournamentMatch.find();
+    const tournamentTeam = await TournamentTeam.find();
+
     const discordServers = await bot.getServers();
     const discordMembers = await bot.getMembers();
 
@@ -107,7 +110,6 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       betaKey,
       apiKey,
       users,
-      tournaments,
       teams,
       tasks,
       tags,
@@ -128,6 +130,9 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       feedbacks,
       features,
       favorites,
+      tournaments,
+      tournamentMatch,
+      tournamentTeam,
       discordServers,
       discordMembers,
       files,

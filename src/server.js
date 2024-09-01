@@ -4,13 +4,13 @@ const pm2 = require('@pm2/io');
 const packageInfo = require('../package.json');
 const packagelockInfo = require('../package-lock.json');
 
-const { api } = require('./api/app');
-const bot = require('./bot/index');
-const { client } = require('./frontend/client');
+const { api, startApi } = require('./api/app');
+const { bot, startBot } = require('./bot/index');
+// const { client, startClient } = require('./frontend/client');
 
 const connectDB = require('./database/connectDB');
 const { seedRolesIfNotExist } = require('./seeds/rolesSeed');
-const { seedUsers } = require('./seeds/usersSeed');
+const { seedUsersIfNotExist } = require('./seeds/usersSeed');
 
 const logger = require('./api/services/loggerService');
 
@@ -63,8 +63,8 @@ const startServer = async () => {
     await connectDB();
 
     await seedRolesIfNotExist();
-    
-    await seedUsers();
+
+    await seedUsersIfNotExist();
 
     const port = process.env.PORT || 3000;
     const baseURL = process.env.BASE_URL || 'localhost';
@@ -73,7 +73,7 @@ const startServer = async () => {
       logger.info(`Server is running on https://${baseURL}:${port}`);
     });
 
-    bot.start();
+    startBot();
 
   } catch (err) {
     logger.error('Error starting server:', err);

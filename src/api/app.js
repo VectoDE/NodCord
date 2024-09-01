@@ -175,10 +175,10 @@ api.use((err, req, res, next) => {
   }
 });
 
-const startApp = () => {
+const startApi = () => {
   api.listen(port, () => {
     logger.info(`API is running on https://${baseURL}:${port}`);
   });
 };
 
-module.exports = { api, startApp };
+module.exports = { api, startApi };

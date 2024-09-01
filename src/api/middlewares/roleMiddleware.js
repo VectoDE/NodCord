@@ -9,7 +9,6 @@ const checkRole = (roles) => {
       const token = req.cookies.token;
       if (!token) {
         logger.warn('Kein Token bereitgestellt.');
-        req.session.returnTo = req.originalUrl; // Speichern der aktuellen URL in der Sitzung
         if (req.headers.accept.includes('application/json')) {
           return res.status(401).json({ success: false, message: 'No token provided' });
         } else {
@@ -22,7 +21,6 @@ const checkRole = (roles) => {
 
       if (!user) {
         logger.warn(`Benutzer mit ID ${decoded.id} nicht gefunden.`);
-        req.session.returnTo = req.originalUrl; // Speichern der aktuellen URL in der Sitzung
         if (req.headers.accept.includes('application/json')) {
           return res.status(401).json({ success: false, message: 'User not found' });
         } else {
@@ -33,7 +31,6 @@ const checkRole = (roles) => {
       const userRole = await Role.findOne({ roleName: user.role });
       if (!userRole) {
         logger.warn(`Rolle ${user.role} für Benutzer mit ID ${user._id} nicht gefunden.`);
-        req.session.returnTo = req.originalUrl; // Speichern der aktuellen URL in der Sitzung
         if (req.headers.accept.includes('application/json')) {
           return res.status(403).json({ success: false, message: 'Role not found' });
         } else {
@@ -43,7 +40,6 @@ const checkRole = (roles) => {
 
       if (!roles.includes(user.role)) {
         logger.warn(`Benutzer mit ID ${user._id} hat nicht die erforderliche Rolle. Erforderliche Rollen: ${roles.join(', ')}, Benutzerrolle: ${user.role}`);
-        req.session.returnTo = req.originalUrl; // Speichern der aktuellen URL in der Sitzung
         if (req.headers.accept.includes('application/json')) {
           return res.status(403).json({ success: false, message: 'Forbidden: insufficient role' });
         } else {
@@ -57,7 +53,6 @@ const checkRole = (roles) => {
       next();
     } catch (err) {
       logger.error('Fehler beim Überprüfen der Rolle:', err);
-      req.session.returnTo = req.originalUrl; // Speichern der aktuellen URL in der Sitzung
       if (req.headers.accept.includes('application/json')) {
         return res.status(401).json({ success: false, message: 'Invalid token' });
       } else {

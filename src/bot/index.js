@@ -45,7 +45,7 @@ for (arx of prefixFolders) {
 }
 
 // Handle start
-const start = () => {
+const startBot = () => {
   (async () => {
     for (file of functions) {
       require(`./functions/${file}`)(client);
@@ -278,7 +278,7 @@ client.on('messageCreate', async (message) => {
 })
 
 module.exports = {
-  start,
+  startBot,
   getMembers,
   getServers,
   getBots,

@@ -1,6 +1,5 @@
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
 
@@ -51,26 +50,20 @@ exports.register = async (req, res) => {
   }
 };
 
-
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
     const user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'Invalid verification token' });
+      return res.status(400).json({ success: false, message: 'Invalid verification token' });
     }
 
     user.isVerified = true;
     user.verificationToken = null;
     await user.save();
 
-    await nodemailerService.sendVerificationSuccessEmail(
-      user.email,
-      user.username
-    );
+    await nodemailerService.sendVerificationSuccessEmail(user.email, user.username);
 
     res.status(200).render('verification/email-verified', {
       message: 'Your email has been verified. You can now log in.',
@@ -92,6 +85,7 @@ exports.login = async (req, res) => {
       logger.warn('Login failed: Invalid credentials');
       return res.status(400).render('auth/login', {
         isAuthenticated: false,
+        logoImage: '/assets/img/logo.png',
         errorMessage: 'Invalid credentials',
       });
     }
@@ -108,7 +102,14 @@ exports.login = async (req, res) => {
     });
 
     logger.info(`User ${user.username} successfully logged in.`);
-    res.redirect('/dashboard');
+
+    if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
+      res.redirect('/dashboard');
+    } else if (user.role === 'user') {
+      res.redirect(`/user/profile/${user.username}`);
+    } else {
+      res.redirect('/');
+    }
   } catch (err) {
     logger.error('Login error:', err.message);
     res.status(500).send('Internal Server Error');
