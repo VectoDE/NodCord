@@ -17,9 +17,9 @@ if (fs.existsSync(statusFilePath)) {
   try {
     const data = fs.readFileSync(statusFilePath, 'utf8');
     apiStatus = JSON.parse(data).status;
-    logger.info(`API-Status beim Starten geladen: ${apiStatus}`);
+    logger.info(`[STATUS] API-Status beim Starten geladen: ${apiStatus}`);
   } catch (err) {
-    logger.error('Fehler beim Lesen der Statusdatei:', err);
+    logger.error('[STATUS] Fehler beim Lesen der Statusdatei:', err);
   }
 } else {
   apiStatus = 'online';
@@ -29,9 +29,9 @@ if (fs.existsSync(statusFilePath)) {
       JSON.stringify({ status: apiStatus }),
       'utf8'
     );
-    logger.info('Statusdatei erstellt und auf online gesetzt.');
+    logger.info('[STATUS] Statusdatei erstellt und auf online gesetzt.');
   } catch (err) {
-    logger.error('Fehler beim Erstellen der Statusdatei:', err);
+    logger.error('[STATUS] Fehler beim Erstellen der Statusdatei:', err);
   }
 }
 
@@ -40,19 +40,19 @@ exports.setStatus = (status) => {
     apiStatus = status;
     try {
       fs.writeFileSync(statusFilePath, JSON.stringify({ status }), 'utf8');
-      logger.info(`API-Status auf ${status} gesetzt.`);
+      logger.info(`[STATUS] API-Status auf ${status} gesetzt.`);
     } catch (err) {
-      logger.error('Fehler beim Setzen des API-Status:', err);
+      logger.error('[STATUS] Fehler beim Setzen des API-Status:', err);
       throw err;
     }
   } else {
-    logger.error('Ungültiger Status beim Setzen des API-Status:', status);
+    logger.error('[STATUS] Ungültiger Status beim Setzen des API-Status:', status);
     throw new Error('Ungültiger Status');
   }
 };
 
 exports.getStatus = () => {
-  logger.info(`Aktueller API-Status: ${apiStatus}`);
+  logger.info(`[STATUS] Aktueller API-Status: ${apiStatus}`);
   return apiStatus;
 };
 
@@ -65,14 +65,14 @@ exports.startApi = () => {
         JSON.stringify({ status: apiStatus }),
         'utf8'
       );
-      logger.info('API erfolgreich gestartet.');
+      logger.info('[STATUS] API erfolgreich gestartet.');
     } catch (err) {
-      logger.error('Fehler beim Starten der API:', err);
+      logger.error('[STATUS] Fehler beim Starten der API:', err);
       throw err;
     }
   } else {
     logger.error(
-      'API kann nicht gestartet werden, da sie bereits online oder im Wartungsmodus ist.'
+      '[STATUS] API kann nicht gestartet werden, da sie bereits online oder im Wartungsmodus ist.'
     );
     throw new Error('API ist bereits online oder im Wartungsmodus');
   }
@@ -87,14 +87,14 @@ exports.stopApi = () => {
         JSON.stringify({ status: apiStatus }),
         'utf8'
       );
-      logger.info('API erfolgreich gestoppt.');
+      logger.info('[STATUS] API erfolgreich gestoppt.');
     } catch (err) {
-      logger.error('Fehler beim Stoppen der API:', err);
+      logger.error('[STATUS] Fehler beim Stoppen der API:', err);
       throw err;
     }
   } else {
     logger.error(
-      'API kann nicht gestoppt werden, da sie bereits offline oder im Wartungsmodus ist.'
+      '[STATUS] API kann nicht gestoppt werden, da sie bereits offline oder im Wartungsmodus ist.'
     );
     throw new Error('API ist bereits offline oder im Wartungsmodus');
   }
@@ -109,7 +109,7 @@ exports.restartApi = () => {
         JSON.stringify({ status: apiStatus }),
         'utf8'
       );
-      logger.info('API wird neu gestartet...');
+      logger.info('[STATUS] API wird neu gestartet...');
       setTimeout(() => {
         apiStatus = 'online';
         try {
@@ -118,19 +118,19 @@ exports.restartApi = () => {
             JSON.stringify({ status: apiStatus }),
             'utf8'
           );
-          logger.info('API erfolgreich neu gestartet.');
+          logger.info('[STATUS] API erfolgreich neu gestartet.');
         } catch (err) {
-          logger.error('Fehler beim Neu-Starten der API:', err);
+          logger.error('[STATUS] Fehler beim Neu-Starten der API:', err);
           throw err;
         }
       }, 5000);
     } catch (err) {
-      logger.error('Fehler beim Neustarten der API:', err);
+      logger.error('[STATUS] Fehler beim Neustarten der API:', err);
       throw err;
     }
   } else {
     logger.error(
-      'API kann nicht neu gestartet werden, da sie nicht online ist.'
+      '[STATUS] API kann nicht neu gestartet werden, da sie nicht online ist.'
     );
     throw new Error('API ist bereits offline oder im Wartungsmodus');
   }
@@ -145,13 +145,13 @@ exports.setMaintenance = () => {
         JSON.stringify({ status: apiStatus }),
         'utf8'
       );
-      logger.info('API in den Wartungsmodus versetzt.');
+      logger.info('[STATUS] API in den Wartungsmodus versetzt.');
     } catch (err) {
-      logger.error('Fehler beim Versetzen der API in den Wartungsmodus:', err);
+      logger.error('[STATUS] Fehler beim Versetzen der API in den Wartungsmodus:', err);
       throw err;
     }
   } else {
-    logger.error('API ist bereits im Wartungsmodus.');
+    logger.error('[STATUS] API ist bereits im Wartungsmodus.');
     throw new Error('API ist bereits im Wartungsmodus');
   }
 };
@@ -165,13 +165,13 @@ exports.removeMaintenance = () => {
         JSON.stringify({ status: apiStatus }),
         'utf8'
       );
-      logger.info('Wartungsmodus entfernt. API ist jetzt online.');
+      logger.info('[STATUS] Wartungsmodus entfernt. API ist jetzt online.');
     } catch (err) {
-      logger.error('Fehler beim Entfernen des Wartungsmodus:', err);
+      logger.error('[STATUS] Fehler beim Entfernen des Wartungsmodus:', err);
       throw err;
     }
   } else {
-    logger.error('API ist nicht im Wartungsmodus.');
+    logger.error('[STATUS] API ist nicht im Wartungsmodus.');
     throw new Error('API ist nicht im Wartungsmodus');
   }
 };

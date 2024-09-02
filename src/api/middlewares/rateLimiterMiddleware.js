@@ -8,7 +8,7 @@ const rateLimiter = rateLimit({
   headers: true,
   trustProxy: 1,
   handler: (req, res, next, options) => {
-    logger.warn(`Rate limit exceeded for IP: ${req.ip}. ${options.message}`);
+    logger.warn(`[MIDDLEWARE] Rate limit exceeded for IP: ${req.ip}. ${options.message}`);
     res.status(options.statusCode || 429).send(options.message);
   },
 });

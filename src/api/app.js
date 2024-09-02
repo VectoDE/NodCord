@@ -26,7 +26,7 @@ api.use(rateLimiter);
 morgan.token('remote-addr', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 morgan.token('url', (req) => req.originalUrl);
 
-const logFormat = ':remote-addr - :method :url :status :response-time ms - :res[content-length]';
+const logFormat = '[API] :remote-addr - :method :url :status :response-time ms - :res[content-length]';
 api.use(morgan(logFormat, { stream: { write: (message) => logger.info(message.trim()) } }));
 
 api.set('view engine', 'ejs');
@@ -129,53 +129,10 @@ api.use('/api/tournaments', tournamentRoutes);
 api.use('/api/teamspeak', teamspeakRoutes);
 api.use('/api/files', fileRoutes);
 
-const maintenanceRoutes = require('./routes/maintenanceRoutes');
-api.use('/', maintenanceRoutes);
-
-const indexRoutes = require('./routes/indexRoutes');
-const legalRoutes = require('./routes/legalRoutes');
-const userProfileRoutes = require('./routes/userprofileRoutes');
-const dashRoutes = require('./routes/dashboardRoutes');
-
-api.use('/', indexRoutes);
-api.use('/legal', legalRoutes);
-api.use('/user', userProfileRoutes);
-api.use('/dashboard', dashRoutes);
-
-api.use((req, res, next) => {
-  const err = new Error('Not Found');
-  err.status = 404;
-  next(err);
-});
-
-api.use((err, req, res, next) => {
-  const statusCode = err.status || 500;
-  res.status(statusCode);
-  logger.error(`Error ${statusCode}: ${err.message}`, { stack: err.stack });
-
-  if (req.xhr || req.headers.accept.includes('application/json')) {
-    res.status(statusCode).json({
-      error: {
-        title: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
-        message: err.message,
-        status: statusCode,
-        stack: api.get('env') === 'development' ? err.stack : null,
-      },
-    });
-  } else {
-    res.status(statusCode).render('error', {
-      isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png',
-      logo404: '/assets/img/404.png',
-      errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
-      errormessage: err.message,
-      errorstatus: statusCode,
-      errorstack: api.get('env') === 'development' ? err.stack : null,
-    });
-  }
-});
-
 const startApi = () => {
+  const port = process.env.API_PORT || '3000';
+  const baseURL = process.env.API_BASE_URL || 'localhost';
+
   api.listen(port, () => {
     logger.info(`API is running on https://${baseURL}:${port}`);
   });

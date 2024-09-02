@@ -13,7 +13,7 @@ module.exports = {
     try {
       await command.execute(interaction, client);
     } catch (error) {
-      logger.error(error);
+      logger.error('[BOT]' + error);
       await interaction.reply({
         content: 'There was an error while executing this command!',
         ephemeral: true,

@@ -92,7 +92,7 @@ const getBots = async () => {
       });
     }
   } catch (error) {
-    logger.error('Error fetching bots:', error);
+    logger.error('[BOT] Error fetching bots:', error);
   }
   return botData;
 };
@@ -115,7 +115,7 @@ const getMembers = async () => {
       });
     }
   } catch (error) {
-    logger.error('Error fetching members:', error);
+    logger.error('[BOT] Error fetching members:', error);
   }
   return memberData;
 };
@@ -147,7 +147,7 @@ const getServers = async () => {
       });
     }
   } catch (error) {
-    logger.error('Error fetching servers:', error);
+    logger.error('[BOT] Error fetching servers:', error);
   }
 
   return serverData;
@@ -273,7 +273,7 @@ client.on('messageCreate', async (message) => {
       await message.author.send('Your message contained a banned word and has been deleted.')
     }
   } catch (error) {
-    console.error('Error checking banned words:', error);
+    logger.error('[BOT] Error checking banned words:', error);
   }
 })
 

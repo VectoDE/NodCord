@@ -34,7 +34,7 @@ module.exports = {
 
     member.kick().catch((err) => {
       message.channel.send('Error kicking member.');
-      console.log(err);
+      console.log('[BOT]' + err);
     });
 
     message.channel.send({ embeds: [embed] });

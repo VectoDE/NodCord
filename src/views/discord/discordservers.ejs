@@ -8,6 +8,7 @@
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -30,20 +31,7 @@
                 <p class="text-base mb-1"><strong>ID:</strong> <%= server.id %></p>
                 <p class="text-base mb-1"><strong>Owner:</strong> <%= server.owner %></p>
                 <p class="text-base mb-1"><strong>Created At:</strong> <%= server.createdAt.toDateString() %></p>
-                <h3 class="text-lg font-semibold mt-4 mb-2">Members:</h3>
-                <ul class="list-disc pl-5">
-                  <% server.members.forEach(member => { %>
-                    <li class="mb-2 flex items-center bg-white dark:bg-gray-900">
-                      <img src="<%= member.avatar %>" alt="<%= member.displayName %>" class="w-8 h-8 rounded-full mr-2">
-                      <span class="font-semibold"><%= member.displayName %></span> (<%= member.username %>) - <%= member.hashname %>
-                      <ul class="list-disc pl-5 mt-1">
-                        <% member.badges.forEach(badge => { %>
-                          <li><%= badge %></li>
-                        <% }) %>
-                      </ul>
-                    </li>
-                  <% }) %>
-                </ul>
+                <p class="text-base mb-1"><strong>Members:</strong> <%= server.memberCount %></p>
               </div>
             </div>
           <% }) %>

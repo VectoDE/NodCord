@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
 
+const client = {
+  https: process.env.CLIENT_HTTPS,
+  baseURL: process.env.CLIENT_BASE_URL,
+  port: process.env.CLIENT_PORT
+}
+
 exports.register = async (req, res) => {
   try {
     const { username, email, password, confirmPassword, fullname, terms } = req.body;
@@ -43,7 +49,7 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    res.redirect('/login');
+    res.redirect(`${client.https}://${client.baseURL}:${client.port}/login`);
   } catch (err) {
     logger.error('Error during registration:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
@@ -67,6 +73,7 @@ exports.verifyEmail = async (req, res) => {
 
     res.status(200).render('verification/email-verified', {
       message: 'Your email has been verified. You can now log in.',
+      logoImage: '/assets/img/logo.png',
     });
   } catch (error) {
     logger.error('Verification error:', error.message);
@@ -90,6 +97,8 @@ exports.login = async (req, res) => {
       });
     }
 
+    user.recentActivity = new Date();
+
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
@@ -104,11 +113,11 @@ exports.login = async (req, res) => {
     logger.info(`User ${user.username} successfully logged in.`);
 
     if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
-      res.redirect('/dashboard');
+      res.redirect(`${client.https}://${client.baseURL}:${client.port}/dashboard`);
     } else if (user.role === 'user') {
-      res.redirect(`/user/profile/${user.username}`);
+      res.redirect(`${client.https}://${client.baseURL}:${client.port}/user/profile/${user.username}`);
     } else {
-      res.redirect('/');
+      res.redirect(`${client.https}://${client.baseURL}:${client.port}`);
     }
   } catch (err) {
     logger.error('Login error:', err.message);
@@ -120,7 +129,7 @@ exports.logout = async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.redirect('/login');
+      return res.redirect(`${client.https}://${client.baseURL}:${client.port}/login`);
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -134,7 +143,7 @@ exports.logout = async (req, res) => {
     await user.save();
 
     res.clearCookie('token');
-    res.redirect('/');
+    res.redirect(`${client.https}://${client.baseURL}:${client.port}/`);
   } catch (err) {
     logger.error('Logout error:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error' });

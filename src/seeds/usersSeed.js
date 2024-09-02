@@ -15,7 +15,12 @@ const users = [
     socialLinks: {
       facebook: 'https://facebook.com/admin',
       twitter: 'https://twitter.com/admin',
+      google: 'https://google.com/admin',
       linkedin: 'https://linkedin.com/in/admin',
+      instagram: 'https://instagram.com/admin',
+      github: 'https://github.com/admin',
+      discord: 'https://discord.com/admin',
+      apple: 'https://apple.com/admin',
     },
     isVerified: true,
     isAuthenticated: false,
@@ -32,8 +37,9 @@ const users = [
     role: 'moderator',
     bio: 'I am a moderator.',
     socialLinks: {
-      github: 'https://github.com/moderator',
-      discord: 'moderator#1234',
+      google: 'https://google.com/admin',
+      github: 'https://github.com/admin',
+      apple: 'https://apple.com/in/admin',
     },
     isVerified: true,
     isAuthenticated: false,
@@ -50,8 +56,8 @@ const users = [
     role: 'user',
     bio: 'I am a regular user.',
     socialLinks: {
-      instagram: 'https://instagram.com/user',
-      twitter: 'https://twitter.com/user',
+      google: 'https://google.com/admin',
+      github: 'https://github.com/admin',
     },
     isVerified: true,
     isAuthenticated: false,
@@ -65,7 +71,7 @@ const createUser = async (data) => {
   try {
     const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {
-      logger.info(`User with email ${data.email} already exists.`);
+      logger.info(`[SEED] User with email ${data.email} already exists.`);
       return;
     }
 
@@ -73,9 +79,9 @@ const createUser = async (data) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
     await user.save();
-    logger.info(`User ${data.username} created successfully.`);
+    logger.info(`[SEED] User ${data.username} created successfully.`);
   } catch (error) {
-    logger.error(`Error creating user ${data.username}: `, error);
+    logger.error(`[SEED] Error creating user ${data.username}: `, error);
   }
 };
 
@@ -86,12 +92,12 @@ const seedUsersIfNotExist = async () => {
       for (const userData of users) {
         await createUser(userData);
       }
-      logger.info('Seeding users completed successfully.');
+      logger.info('[SEED] Seeding users completed successfully.');
     } else {
-      logger.warn('Users already exist, skipping seeding');
+      logger.warn('[SEED] Users already exist, skipping seeding');
     }
   } catch (error) {
-    logger.error('Error during user seeding:', error);
+    logger.error('[SEED] Error during user seeding:', error);
   }
 };
 

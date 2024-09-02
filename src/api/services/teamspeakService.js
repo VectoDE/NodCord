@@ -8,7 +8,7 @@ const areCredentialsValid = () => {
 
 const initializeTeamSpeakClient = async () => {
   if (!areCredentialsValid()) {
-    logger.warn('TeamSpeak-Client konnte nicht erstellt werden. Überprüfen Sie die Anmeldeinformationen.');
+    logger.warn('[TS3] TeamSpeak-Client konnte nicht erstellt werden. Überprüfen Sie die Anmeldeinformationen.');
     throw new Error('Anmeldeinformationen fehlen oder sind unvollständig.');
   }
 
@@ -23,16 +23,16 @@ const initializeTeamSpeakClient = async () => {
     });
 
     ts3.on('ready', () => {
-      logger.info('TeamSpeak-Client verbunden');
+      logger.info('[TS3] TeamSpeak-Client verbunden');
     });
 
     ts3.on('error', (error) => {
-      logger.error('TeamSpeak-Fehler:', error);
+      logger.error('[TS3] TeamSpeak-Fehler:', error);
     });
 
     return ts3;
   } catch (error) {
-    logger.error('Fehler beim Verbinden zum TeamSpeak-Server:', error);
+    logger.error('[TS3] Fehler beim Verbinden zum TeamSpeak-Server:', error);
     throw new Error('Verbindung zum TeamSpeak-Server konnte nicht hergestellt werden.');
   }
 };
@@ -44,7 +44,7 @@ initializeTeamSpeakClient()
     ts3Client = client;
   })
   .catch(error => {
-    logger.error('Initialisierung des TeamSpeak-Clients fehlgeschlagen:', error);
+    logger.error('[TS3] Initialisierung des TeamSpeak-Clients fehlgeschlagen:', error);
   });
 
 module.exports = {
@@ -56,7 +56,7 @@ module.exports = {
       const info = await ts3Client.serverInfo();
       return info;
     } catch (error) {
-      logger.error('Fehler beim Abrufen der Server-Informationen:', error);
+      logger.error('[TS3] Fehler beim Abrufen der Server-Informationen:', error);
       throw new Error('Fehler beim Abrufen der Server-Informationen.');
     }
   },
@@ -69,7 +69,7 @@ module.exports = {
       const channels = await ts3Client.channelList();
       return channels;
     } catch (error) {
-      logger.error('Fehler beim Abrufen der Channel-Informationen:', error);
+      logger.error('[TS3] Fehler beim Abrufen der Channel-Informationen:', error);
       throw new Error('Fehler beim Abrufen der Channel-Informationen.');
     }
   },
@@ -82,7 +82,7 @@ module.exports = {
       const clients = await ts3Client.clientList();
       return clients;
     } catch (error) {
-      logger.error('Fehler beim Abrufen der Benutzerinformationen:', error);
+      logger.error('[TS3] Fehler beim Abrufen der Benutzerinformationen:', error);
       throw new Error('Fehler beim Abrufen der Benutzerinformationen.');
     }
   },
@@ -95,7 +95,7 @@ module.exports = {
       const channel = await ts3Client.channelCreate(name, parentId);
       return channel;
     } catch (error) {
-      logger.error('Fehler beim Erstellen des Channels:', error);
+      logger.error('[TS3] Fehler beim Erstellen des Channels:', error);
       throw new Error('Fehler beim Erstellen des Channels.');
     }
   },
@@ -107,7 +107,7 @@ module.exports = {
     try {
       await ts3Client.channelDelete(channelId);
     } catch (error) {
-      logger.error('Fehler beim Löschen des Channels:', error);
+      logger.error('[TS3] Fehler beim Löschen des Channels:', error);
       throw new Error('Fehler beim Löschen des Channels.');
     }
   },
@@ -120,7 +120,7 @@ module.exports = {
       const user = await ts3Client.clientAdd(name);
       return user;
     } catch (error) {
-      logger.error('Fehler beim Erstellen des Benutzers:', error);
+      logger.error('[TS3] Fehler beim Erstellen des Benutzers:', error);
       throw new Error('Fehler beim Erstellen des Benutzers.');
     }
   },
@@ -132,7 +132,7 @@ module.exports = {
     try {
       await ts3Client.clientKick(userId);
     } catch (error) {
-      logger.error('Fehler beim Löschen des Benutzers:', error);
+      logger.error('[TS3] Fehler beim Löschen des Benutzers:', error);
       throw new Error('Fehler beim Löschen des Benutzers.');
     }
   }

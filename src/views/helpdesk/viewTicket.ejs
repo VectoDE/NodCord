@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Ticket</title>
+    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center py-10">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-4">Ticket Details</h1>
+
+        <div class="space-y-4">
+            <div>
+                <strong>Ticket ID:</strong> <%= ticket.id %>
+            </div>
+            <div>
+                <strong>Subject:</strong> <%= ticket.subject %>
+            </div>
+            <div>
+                <strong>Status:</strong> <%= ticket.status %>
+            </div>
+            <div>
+                <strong>Message:</strong>
+                <p class="mt-2 text-gray-700"><%= ticket.message %></p>
+            </div>
+        </div>
+
+        <hr class="my-6">
+
+        <div>
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Responses</h2>
+
+            <% if (responses.length > 0) { %>
+                <ul class="space-y-4">
+                    <% responses.forEach(response => { %>
+                        <li class="p-4 bg-gray-100 rounded-lg">
+                            <strong><%= response.user.username %></strong> <span class="text-gray-500 text-sm"><%= response.createdAt %></span>
+                            <p class="mt-2 text-gray-700"><%= response.message %></p>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p class="text-gray-600">No responses yet.</p>
+            <% } %>
+        </div>
+
+        <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/helpdesk/respondTicket/<%= ticket.id %>" method="POST" class="mt-6 space-y-4">
+            <textarea
+                name="message"
+                rows="3"
+                required
+                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                placeholder="Write your response here..."
+            ></textarea>
+
+            <button
+                type="submit"
+                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+            >
+                <i class="bi bi-reply-fill mr-2"></i> Submit Response
+            </button>
+        </form>
+    </div>
+</body>
+</html>

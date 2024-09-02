@@ -8,7 +8,7 @@ const checkRole = (roles) => {
     try {
       const token = req.cookies.token;
       if (!token) {
-        logger.warn('Kein Token bereitgestellt.');
+        logger.warn('[MIDDLEWARE] Kein Token bereitgestellt.');
         if (req.headers.accept.includes('application/json')) {
           return res.status(401).json({ success: false, message: 'No token provided' });
         } else {
@@ -20,7 +20,7 @@ const checkRole = (roles) => {
       const user = await User.findById(decoded.id);
 
       if (!user) {
-        logger.warn(`Benutzer mit ID ${decoded.id} nicht gefunden.`);
+        logger.warn(`[MIDDLEWARE] Benutzer mit ID ${decoded.id} nicht gefunden.`);
         if (req.headers.accept.includes('application/json')) {
           return res.status(401).json({ success: false, message: 'User not found' });
         } else {
@@ -30,7 +30,7 @@ const checkRole = (roles) => {
 
       const userRole = await Role.findOne({ roleName: user.role });
       if (!userRole) {
-        logger.warn(`Rolle ${user.role} für Benutzer mit ID ${user._id} nicht gefunden.`);
+        logger.warn(`[MIDDLEWARE] Rolle ${user.role} für Benutzer mit ID ${user._id} nicht gefunden.`);
         if (req.headers.accept.includes('application/json')) {
           return res.status(403).json({ success: false, message: 'Role not found' });
         } else {
@@ -39,7 +39,7 @@ const checkRole = (roles) => {
       }
 
       if (!roles.includes(user.role)) {
-        logger.warn(`Benutzer mit ID ${user._id} hat nicht die erforderliche Rolle. Erforderliche Rollen: ${roles.join(', ')}, Benutzerrolle: ${user.role}`);
+        logger.warn(`[MIDDLEWARE] Benutzer mit ID ${user._id} hat nicht die erforderliche Rolle. Erforderliche Rollen: ${roles.join(', ')}, Benutzerrolle: ${user.role}`);
         if (req.headers.accept.includes('application/json')) {
           return res.status(403).json({ success: false, message: 'Forbidden: insufficient role' });
         } else {
@@ -49,10 +49,10 @@ const checkRole = (roles) => {
 
       req.user = user;
       req.userRole = userRole;
-      logger.info(`Benutzer mit ID ${user._id} und Rolle ${user.role} autorisiert. Weiterleitung zur nächsten Middleware.`);
+      logger.info(`[MIDDLEWARE] Benutzer mit ID ${user._id} und Rolle ${user.role} autorisiert. Weiterleitung zur nächsten Middleware.`);
       next();
     } catch (err) {
-      logger.error('Fehler beim Überprüfen der Rolle:', err);
+      logger.error('[MIDDLEWARE] Fehler beim Überprüfen der Rolle:', err);
       if (req.headers.accept.includes('application/json')) {
         return res.status(401).json({ success: false, message: 'Invalid token' });
       } else {

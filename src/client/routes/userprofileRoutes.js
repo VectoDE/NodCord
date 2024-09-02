@@ -5,27 +5,25 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const User = require('../../models/userModel');
-const { sendRegistrationVerificationEmail } = require('../services/nodemailerService');
+const { sendRegistrationVerificationEmail } = require('../../api/services/nodemailerService');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'public/uploads/profilePictures/');
   },
   filename: function (req, file, cb) {
-    cb(null, req.user.username + path.extname(file.originalname)); // Speichert die Datei mit dem Benutzernamen
+    cb(null, req.user.username + path.extname(file.originalname));
   }
 });
 
 const upload = multer({ storage: storage });
 
-// Middleware for authentication and user setup
 router.use((req, res, next) => {
   isAuthenticated = res.locals.isAuthenticated;
   res.locals.user = req.user || null;
   next();
 });
 
-// Route to redirect to the current user's profile
 router.get('/profile', (req, res) => {
   if (isAuthenticated && res.locals.user) {
     return res.redirect(`/user/profile/${res.locals.user.username}`);
@@ -34,7 +32,6 @@ router.get('/profile', (req, res) => {
   }
 });
 
-// Route to render user profile by username
 router.get('/profile/:username', async (req, res) => {
   try {
     const { username } = req.params;
@@ -80,7 +77,6 @@ router.get('/profile/:username', async (req, res) => {
   }
 });
 
-// Route to render profile edit page
 router.get('/profile/:username/edit', async (req, res) => {
   if (!isAuthenticated || !res.locals.user) {
     return res.redirect('/login');
@@ -117,7 +113,6 @@ router.get('/profile/:username/edit', async (req, res) => {
   }
 });
 
-// Route to handle profile edits
 router.post('/profile/:username/edit', upload.single('profilePicture'), async (req, res) => {
   if (!isAuthenticated || !res.locals.user) {
     return res.redirect('/login');
@@ -148,7 +143,7 @@ router.post('/profile/:username/edit', upload.single('profilePicture'), async (r
     }
 
     await user.save();
-    res.redirect(`/profile/${user.username}`);
+    res.redirect(`/user/profile/${user.username}`);
   } catch (error) {
     console.error('Error updating user profile:', error);
     res.status(500).render('error', {
@@ -160,7 +155,6 @@ router.post('/profile/:username/edit', upload.single('profilePicture'), async (r
   }
 });
 
-// Route to render settings page
 router.get('/profile/:username/settings', (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
@@ -173,7 +167,6 @@ router.get('/profile/:username/settings', (req, res) => {
   });
 });
 
-// Route to handle settings form submission
 router.post('/profile/:username/settings', async (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
@@ -190,7 +183,7 @@ router.post('/profile/:username/settings', async (req, res) => {
     if (password) user.password = await bcrypt.hash(password, 10);
 
     await user.save();
-    res.redirect(`/profile/${user.username}/settings`);
+    res.redirect(`/user/profile/${user.username}/settings`);
   } catch (error) {
     console.error('Error updating settings:', error);
     res.status(500).render('error', {
@@ -203,7 +196,6 @@ router.post('/profile/:username/settings', async (req, res) => {
   }
 });
 
-// Route to send verification email
 router.get('/profile/:username/send-verification', async (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
@@ -223,10 +215,9 @@ router.get('/profile/:username/send-verification', async (req, res) => {
     }
 
     if (user.isVerified) {
-      return res.redirect(`/profile/${user.username}/settings`);
+      return res.redirect(`/user/profile/${user.username}/settings`);
     }
 
-    // Generate a verification token and save it
     const verificationToken = crypto.randomBytes(32).toString('hex');
     user.verificationToken = verificationToken;
     user.verificationTokenExpires = Date.now() + 3600000;
@@ -234,7 +225,7 @@ router.get('/profile/:username/send-verification', async (req, res) => {
 
     await sendRegistrationVerificationEmail(user.email, user.username, verificationToken);
 
-    res.redirect(`/profile/${user.username}/settings`);
+    res.redirect(`/user/profile/${user.username}/settings`);
   } catch (error) {
     console.error('Error sending verification email:', error);
     res.status(500).render('error', {

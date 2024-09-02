@@ -33,12 +33,12 @@ const readRecentLines = (filePath, numLines) => {
     rl.on('line', (line) => {
       lines.push(line);
       if (lines.length > numLines) {
-        lines.shift(); // Remove the oldest line when exceeding numLines
+        lines.shift();
       }
     });
 
     rl.on('close', () => {
-      resolve(lines.reverse()); // Reverse to get the latest entries first
+      resolve(lines.reverse());
     });
 
     rl.on('error', (err) => {

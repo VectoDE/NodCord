@@ -27,15 +27,15 @@ module.exports = (client) => {
 
     (async () => {
       try {
-        logger.info('Started refreshing application (/) commands.');
+        logger.info('[BOT] Started refreshing application (/) commands.');
 
         await rest.put(Routes.applicationCommands(clientId), {
           body: client.commandArray,
         });
 
-        logger.info('Successfully reloaded application (/) commands.');
+        logger.info('[BOT] Successfully reloaded application (/) commands.');
       } catch (error) {
-        logger.error(error);
+        logger.error('[BOT]' + error);
       }
     })();
   };

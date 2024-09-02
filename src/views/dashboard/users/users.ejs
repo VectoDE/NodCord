@@ -87,18 +87,43 @@
                     <td class="py-3 px-4"><%= new Date(user.recentActivity).toLocaleString() %></td>
                     <td class="py-3 px-4">
                       <div class="flex space-x-2">
+                        <% if (user.socialLinks.facebook) { %>
+                          <a href="<%= user.socialLinks.facebook %>" target="_blank" class="text-blue-600 hover:text-blue-800 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-blue-600/80">
+                            <i class="bi bi-facebook"></i>
+                          </a>
+                        <% } %>
+                        <% if (user.socialLinks.twitter) { %>
+                          <a href="<%= user.socialLinks.twitter %>" target="_blank" class="text-blue-400 hover:text-blue-600 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-blue-400/80">
+                            <i class="bi bi-twitter"></i>
+                          </a>
+                        <% } %>
                         <% if (user.socialLinks.google) { %>
-                          <a href="<%= user.socialLinks.google %>" target="_blank" class="text-pink-600 hover:text-pink-800 transition duration-300">
+                          <a href="<%= user.socialLinks.google %>" target="_blank" class="text-red-500 hover:text-red-700 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-red-500/80">
                             <i class="bi bi-google"></i>
                           </a>
                         <% } %>
+                        <% if (user.socialLinks.linkedin) { %>
+                          <a href="<%= user.socialLinks.linkedin %>" target="_blank" class="text-blue-700 hover:text-blue-900 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-blue-700/80">
+                            <i class="bi bi-linkedin"></i>
+                          </a>
+                        <% } %>
+                        <% if (user.socialLinks.instagram) { %>
+                          <a href="<%= user.socialLinks.instagram %>" target="_blank" class="text-pink-500 hover:text-pink-700 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-pink-500/80">
+                            <i class="bi bi-instagram"></i>
+                          </a>
+                        <% } %>
                         <% if (user.socialLinks.github) { %>
-                          <a href="<%= user.socialLinks.github %>" target="_blank" class="text-gray-800 hover:text-gray-900 transition duration-300">
+                          <a href="<%= user.socialLinks.github %>" target="_blank" class="text-gray-800 hover:text-gray-900 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-gray-800/80">
                             <i class="bi bi-github"></i>
                           </a>
                         <% } %>
+                        <% if (user.socialLinks.discord) { %>
+                          <a href="<%= user.socialLinks.discord %>" target="_blank" class="text-indigo-600 hover:text-indigo-800 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-indigo-600/80">
+                            <i class="bi bi-discord"></i>
+                          </a>
+                        <% } %>
                         <% if (user.socialLinks.apple) { %>
-                          <a href="<%= user.socialLinks.apple %>" target="_blank" class="text-indigo-600 hover:text-indigo-800 transition duration-300">
+                          <a href="<%= user.socialLinks.apple %>" target="_blank" class="text-black hover:text-gray-800 transition duration-300 transform hover:scale-105 shadow-md hover:shadow-black/80">
                             <i class="bi bi-apple"></i>
                           </a>
                         <% } %>

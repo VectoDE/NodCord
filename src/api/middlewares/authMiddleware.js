@@ -9,12 +9,12 @@ const authMiddleware = (requireAuth = true) => {
 
       if (!token) {
         if (requireAuth) {
-          logger.warn('Unauthorized access attempt: No token provided');
+          logger.warn('[MIDDLEWARE] Unauthorized access attempt: No token provided');
           const err = new Error('Unauthorized');
           err.status = 401;
           return next(err);
         } else {
-          logger.info('No token provided, but authentication not required');
+          logger.info('[MIDDLEWARE] No token provided, but authentication not required');
           return next();
         }
       }
@@ -25,14 +25,14 @@ const authMiddleware = (requireAuth = true) => {
       if (!user || !user.isAuthenticated) {
         if (requireAuth) {
           logger.warn(
-            'Unauthorized access attempt: User not authenticated or not found'
+            '[MIDDLEWARE] Unauthorized access attempt: User not authenticated or not found'
           );
           const err = new Error('Unauthorized');
           err.status = 401;
           return next(err);
         } else {
           logger.info(
-            'User not authenticated, but authentication not required'
+            '[MIDDLEWARE] User not authenticated, but authentication not required'
           );
           return next();
         }
@@ -40,10 +40,10 @@ const authMiddleware = (requireAuth = true) => {
 
       res.locals.isAuthenticated = true;
       req.user = user;
-      logger.info(`User '${user._id}' authenticated successfully`);
+      logger.info(`[MIDDLEWARE] User '${user._id}' authenticated successfully`);
       next();
     } catch (error) {
-      logger.error('Authentication error:', error);
+      logger.error('[MIDDLEWARE] Authentication error:', error);
       if (requireAuth) {
         const err = new Error('Unauthorized');
         err.status = 401;

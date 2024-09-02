@@ -128,14 +128,12 @@ exports.verifyBetaKey = async (req, res) => {
     }
 
     if (betaKey.user) {
-      return res
-        .status(400)
-        .json({ message: 'Beta Key wurde bereits verwendet' });
+      return res.status(400).json({ message: 'Beta Key wurde bereits verwendet' });
     }
 
     const user = await User.findByIdAndUpdate(
       userId,
-      { betaKey: betaKey._id },
+      { betaKey: betaKey._id, isBetaTester: true },
       { new: true }
     );
 

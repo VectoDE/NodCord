@@ -9,11 +9,11 @@ const corsOptions = {
 
 const corsMiddleware = (req, res, next) => {
   logger.info(
-    `CORS Middleware: Incoming request from ${req.headers.origin} for ${req.method} ${req.url}`
+    `[MIDDLEWARE] CORS Middleware: Incoming request from ${req.headers.origin} for ${req.method} ${req.url}`
   );
   cors(corsOptions)(req, res, (err) => {
     if (err) {
-      logger.error('CORS Middleware error:', err);
+      logger.error('[MIDDLEWARE] CORS Middleware error:', err);
       return res.status(500).json({ message: 'CORS error' });
     }
     next();

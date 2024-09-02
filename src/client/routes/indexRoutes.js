@@ -6,13 +6,13 @@ const botConfig = require('../../config/botConfig');
 const apiConfig = require('../../config/apiConfig');
 const serverConfig = require('../../config/serverConfig');
 const bot = require('../../bot/index');
-const apiStatusService = require('../services/apiStatusService');
-const infoService = require('../services/infoService');
-const botStatusService = require('../services/botStatusService');
-const dbStatusService = require('../services/dbStatusService');
-const authController = require('../controllers/authController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const blogService = require('../services/blogService');
+const apiStatusService = require('../../api/services/apiStatusService');
+const infoService = require('../../api/services/infoService');
+const botStatusService = require('../../api/services/botStatusService');
+const dbStatusService = require('../../api/services/dbStatusService');
+const authController = require('../../api/controllers/authController');
+const authMiddleware = require('../../api/middlewares/authMiddleware');
+const blogService = require('../../api/services/blogService');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(authMiddleware(false));
@@ -36,7 +36,12 @@ router.get('/', async (req, res) => {
   res.render('index', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -47,7 +52,12 @@ router.get('/news', async (req, res) => {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blogs,
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: 'http',
+        baseURL: 'localhost',
+        port: '3000',
+      },
     });
   } catch (error) {
     console.error('Error fetching blog posts:', error);
@@ -68,14 +78,24 @@ router.get('/news/:id', async (req, res) => {
         isAuthenticated: res.locals.isAuthenticated,
         logoImage: '/assets/img/logo.png',
         blog: null,
-        errorstack: 'Blog-Post nicht gefunden.'
+        errorstack: 'Blog-Post nicht gefunden.',
+        api: {
+          https: 'http',
+          baseURL: 'localhost',
+          port: '3000',
+        },
       });
     }
     res.render('blogPost', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blog,
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: 'http',
+        baseURL: 'localhost',
+        port: '3000',
+      },
     });
   } catch (error) {
     console.error('Error fetching blog post:', error);
@@ -93,7 +113,12 @@ router.get('/docs', (req, res) => {
   res.render('documentation', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -128,7 +153,12 @@ router.get('/status', async (req, res) => {
       dbStatusMessage,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: 'http',
+        baseURL: 'localhost',
+        port: '3000',
+      },
     });
   } catch (error) {
     console.error('Error fetching status:', error);
@@ -184,7 +214,12 @@ router.get('/versions', (req, res) => {
     versions,
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -195,7 +230,12 @@ router.get('/discord-members', async (req, res) => {
       servers,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: 'http',
+        baseURL: 'localhost',
+        port: '3000',
+      },
     });
   } catch (error) {
     console.error('Error fetching servers:', error);
@@ -212,7 +252,12 @@ router.get('/discord-servers', async (req, res) => {
       serverCount,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: 'http',
+        baseURL: 'localhost',
+        port: '3000',
+      },
     });
   } catch (error) {
     console.error('Error fetching servers:', error);
@@ -248,7 +293,12 @@ router.get('/contact', async (req, res) => {
     logoImage: '/assets/img/logo.png',
     successMessage,
     errorMessage,
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -256,7 +306,12 @@ router.get('/about', async (req, res) => {
   res.render('about', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -270,7 +325,12 @@ router.get('/login', (req, res) => {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     errorMessage: errorMessage,
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -285,7 +345,12 @@ router.get('/register', (req, res) => {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     errorMessage: errorMessage,
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 
@@ -296,7 +361,12 @@ router.get('/beta-verify', authMiddleware(true), (req, res) => {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     error: req.query.error || null,
-    errorstack: null
+    errorstack: null,
+    api: {
+      https: 'http',
+      baseURL: 'localhost',
+      port: '3000',
+    },
   });
 });
 

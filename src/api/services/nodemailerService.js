@@ -33,10 +33,58 @@ const sendMail = async (fromName, to, subject, text, html) => {
 
 const sendRegistrationVerificationEmail = async (to, username, verificationToken) => {
   const fromName = 'Verification | Hauknetz';
-  const verificationLink = `https://${process.env.BASE_URL}:${process.env.PORT}/verify-email/${verificationToken}`;
+  const verificationLink = `https://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/verify-email/${verificationToken}`;
+
   const subject = 'Verify Your Email Address';
   const text = `Hello ${username},\n\nPlease verify your email address by clicking on the following link: ${verificationLink}\n\nThank you!`;
-  const html = `<p>Hello ${username},</p><p>Please verify your email address by clicking on the following link: <a href="${verificationLink}">${verificationLink}</a></p><p>Thank you!</p>`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+        <header style="border-bottom: 1px solid #dddddd; padding-bottom: 20px; margin-bottom: 20px; text-align: center;">
+            <div style="margin-bottom: 20px;">
+                <a href="https://nodcord.hauknetz.de/" style="display: inline-block;">
+                    <img src="http://hauknetz.de:3000/assets/img/logo.png" alt="Logo" style="height: 40px;">
+                </a>
+            </div>
+
+            <nav style="text-align: center; margin-bottom: 20px;">
+                <a href="https://nodcord.hauknetz.de/" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Home</a>
+                <a href="https://nodcord.hauknetz.de/news" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Blog</a>
+                <a href="https://nodcord.hauknetz.de/tutorials" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Tutorials</a>
+                <a href="https://nodcord.hauknetz.de/support" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Support</a>
+            </nav>
+        </header>
+
+        <main style="text-align: center;">
+            <h2 style="color: #333333; margin-bottom: 20px;">Hi ${username},</h2>
+
+            <p style="color: #666666; line-height: 1.6; margin-bottom: 20px;">
+                We’re glad to have you onboard! You’re already on your way to
+                creating beautiful visual products. Whether you’re here for your brand,
+                for a cause, or just for fun — welcome! If there’s anything you need,
+                we’ll be here every step of the way.
+            </p>
+
+            <p style="color: #666666; margin-bottom: 20px;">
+                Please verify your email address by clicking on the button below:
+            </p>
+
+            <a href="${verificationLink}" style="display: inline-block; background-color: #007bff; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin: 0 auto; text-align: center;">Verify Email</a>
+
+            <p style="color: #666666; margin-bottom: 20px;">
+                Thanks, <br>
+                The Hauknetz team
+            </p>
+        </main>
+
+        <footer style="border-top: 1px solid #dddddd; padding-top: 20px; margin-top: 20px;">
+            <p style="text-align: center; color: #999999; margin-bottom: 10px;">
+              This email was sent to <a href="mailto:${to}" style="color: #007bff; text-decoration: underline;">${to}</a>.
+            </p>
+
+            <p style="text-align: center; color: #999999;">${new Date().getFullYear()} © Hauknetz. All rights reserved.</p>
+        </footer>
+    </div>
+  `;
 
   logger.info('Preparing registration verification email', { fromName, to, username });
   await sendMail(fromName, to, subject, text, html);
@@ -46,9 +94,93 @@ const sendVerificationSuccessEmail = async (to, username) => {
   const fromName = 'Verification | Hauknetz';
   const subject = 'Email Verification Successful';
   const text = `Hello ${username},\n\nYour email address has been successfully verified. You can now log in to your account.\n\nThank you!`;
-  const html = `<p>Hello ${username},</p><p>Your email address has been successfully verified. You can now log in to your account.</p><p>Thank you!</p>`;
+  const html = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+        <header style="border-bottom: 1px solid #dddddd; padding-bottom: 20px; margin-bottom: 20px; text-align: center;">
+            <div style="margin-bottom: 20px;">
+                <a href="https://nodcord.hauknetz.de/" style="display: inline-block;">
+                    <img src="http://hauknetz.de:3000/assets/img/logo.png" alt="Logo" style="height: 40px;">
+                </a>
+            </div>
+
+            <nav style="text-align: center; margin-bottom: 20px;">
+                <a href="https://nodcord.hauknetz.de/" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Home</a>
+                <a href="https://nodcord.hauknetz.de/news" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Blog</a>
+                <a href="https://nodcord.hauknetz.de/tutorials" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Tutorials</a>
+                <a href="https://nodcord.hauknetz.de/support" style="color: #007bff; text-decoration: none; display: inline-block; margin: 0 10px;">Support</a>
+            </nav>
+        </header>
+
+        <main style="text-align: center;">
+            <h2 style="color: #333333; margin-bottom: 20px;">Hello ${username},</h2>
+
+            <p style="color: #666666; line-height: 1.6; margin-bottom: 20px;">
+                Your email address has been successfully verified. You can now log in to your account.
+            </p>
+
+            <p style="color: #666666; margin-bottom: 20px;">
+                Thank you for verifying your email!
+            </p>
+        </main>
+
+        <footer style="border-top: 1px solid #dddddd; padding-top: 20px; margin-top: 20px;">
+            <p style="text-align: center; color: #999999; margin-bottom: 10px;">
+              This email was sent to <a href="mailto:${to}" style="color: #007bff; text-decoration: underline;">${to}</a>.
+            </p>
+
+            <p style="text-align: center; color: #999999;">${new Date().getFullYear()} © Hauknetz. All rights reserved.</p>
+        </footer>
+    </div>
+  `;
 
   logger.info('Preparing verification success email', { fromName, to, username });
+  await sendMail(fromName, to, subject, text, html);
+};
+
+const sendOAuth2CodeVerificationEmail = async (to, username, verificationCode) => {
+  const fromName = 'Verification | Hauknetz';
+  const subject = 'OAuth2 Code Verification';
+  const text = `Hello ${username},\n\nYour verification code is: ${verificationCode}\n\nPlease use this code to complete the OAuth2 verification process.\n\nThank you!`;
+  const html = `
+    <section style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+        <header style="margin-bottom: 20px;">
+            <a href="https://nodcord.hauknetz.de/">
+                <img src="http://hauknetz.de:3000/assets/img/logo.png" alt="Logo" style="height: 40px; width: auto;">
+            </a>
+        </header>
+
+        <main>
+            <p style="font-size: 20px; color: #333333;">Hello ${username},</p>
+
+            <p style="margin-top: 16px; color: #666666; line-height: 1.6;">
+                We have received a request to verify your account. Here is your verification code:
+            </p>
+
+            <div style="background-color: #f1f1f1; padding: 16px; border-radius: 4px; margin-top: 16px;">
+                <p style="font-size: 18px; color: #333333; text-align: center;">${verificationCode}</p>
+            </div>
+
+            <p style="margin-top: 16px; color: #666666;">
+                Please use this code to complete the OAuth2 verification process. If you did not request this, please ignore this email.
+            </p>
+
+            <button style="display: inline-block; padding: 10px 20px; margin-top: 16px; font-size: 14px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 5px; transition: background-color 0.3s;">
+                <a href="#" style="color: #ffffff; text-decoration: none;">Complete Verification</a>
+            </button>
+        </main>
+
+        <footer style="margin-top: 20px; text-align: center;">
+            <p style="color: #999999; margin-bottom: 10px;">
+                This email was sent to <a href="mailto:${to}" style="color: #007bff; text-decoration: underline;">${to}</a>.
+                If you'd rather not receive this kind of email, you can <a href="#" style="color: #007bff; text-decoration: underline;">unsubscribe</a> or <a href="#" style="color: #007bff; text-decoration: underline;">manage your email preferences</a>.
+            </p>
+
+            <p style="color: #999999;">${new Date().getFullYear()} © Hauknetz. All Rights Reserved.</p>
+        </footer>
+    </section>
+  `;
+
+  logger.info('Preparing OAuth2 code verification email', { fromName, to, username });
   await sendMail(fromName, to, subject, text, html);
 };
 
@@ -162,9 +294,58 @@ const sendDeveloperProgramLeaveEmail = async (to, username) => {
   await sendMail(fromName, to, subject, text, html);
 };
 
+const sendUpdateNotificationEmail = async (to, updateTitle, updateDescription, updateLink) => {
+  const fromName = 'Updates | Hauknetz';
+  const subject = 'Exciting Update Available!';
+  const text = `Hello,\n\nWe are excited to announce a new update for our software. ${updateTitle}\n\n${updateDescription}\n\nYou can learn more about this update and download it here: ${updateLink}\n\nThank you!`;
+  const html = `
+    <section style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #ffffff;">
+        <header style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #dddddd; padding-bottom: 20px; margin-bottom: 20px;">
+            <a href="https://nodcord.hauknetz.de/">
+                <img src="http://hauknetz.de:3000/assets/img/logo.png" alt="Logo" style="height: 40px; width: auto;">
+            </a>
+
+            <div style="display: flex; gap: 16px;">
+                <a href="https://nodcord.hauknetz.de/login" style="text-decoration: none; color: #007bff; font-size: 14px; transition: color 0.3s;">Login</a>
+                <a href="https://nodcord.hauknetz.de/register" style="text-decoration: none; color: #007bff; font-size: 14px; transition: color 0.3s;">Register</a>
+            </div>
+        </header>
+
+        <main>
+            <img src="https://images.unsplash.com/photo-1545235617-9465d2a55698?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80" alt="Update Image" style="width: 100%; height: auto; border-radius: 8px; margin-bottom: 20px;">
+
+            <h2 style="color: #333333; margin-bottom: 16px; font-size: 24px;">${updateTitle}</h2>
+
+            <p style="color: #666666; line-height: 1.6; margin-bottom: 20px;">
+                ${updateDescription}
+            </p>
+
+            <a href="${updateLink}" style="display: inline-flex; align-items: center; padding: 10px 20px; font-size: 14px; color: #ffffff; background-color: #007bff; text-decoration: none; border-radius: 5px; transition: background-color 0.3s;">
+                Learn More
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px; margin-left: 8px;">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                </svg>
+            </a>
+        </main>
+
+        <footer style="border-top: 1px solid #dddddd; padding-top: 20px; margin-top: 20px; text-align: center;">
+            <p style="color: #999999; margin-bottom: 10px;">
+                This email was sent to <a href="mailto:${to}" style="color: #007bff; text-decoration: underline;">${to}</a>.
+            </p>
+
+            <p style="color: #999999;">${new Date().getFullYear()} © Hauknetz. All Rights Reserved.</p>
+        </footer>
+    </section>
+  `;
+
+  logger.info('Preparing update notification email', { fromName, to, updateTitle });
+  await sendMail(fromName, to, subject, text, html);
+};
+
 module.exports = {
   sendRegistrationVerificationEmail,
   sendVerificationSuccessEmail,
+  sendOAuth2CodeVerificationEmail,
   sendOrderConfirmationEmail,
   sendShippingNotificationEmail,
   sendInvitationEmail,
@@ -176,4 +357,5 @@ module.exports = {
   sendSubscriptionConfirmation,
   sendDeveloperProgramJoinEmail,
   sendDeveloperProgramLeaveEmail,
+  sendUpdateNotificationEmail,
 };

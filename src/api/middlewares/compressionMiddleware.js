@@ -8,12 +8,12 @@ const compressionMiddleware = (req, res, next) => {
   };
 
   logger.info(
-    `Compression Middleware: Processing request ${req.method} ${req.url} with compression level ${compressionOptions.level} and threshold ${compressionOptions.threshold} bytes`
+    `[MIDDLEWARE] Compression Middleware: Processing request ${req.method} ${req.url} with compression level ${compressionOptions.level} and threshold ${compressionOptions.threshold} bytes`
   );
 
   compression(compressionOptions)(req, res, (err) => {
     if (err) {
-      logger.error('Compression Middleware error:', err);
+      logger.error('[MIDDLEWARE] Compression Middleware error:', err);
       return res.status(500).json({ message: 'Compression error' });
     }
     next();

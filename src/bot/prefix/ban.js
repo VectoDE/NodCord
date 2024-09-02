@@ -38,12 +38,12 @@ module.exports = {
       );
 
     member.send({ embeds: [dmembed] }).catch((err) => {
-      console.log('Error');
+      console.log('[BOT] Error');
     });
 
     member.ban().catch((err) => {
       message.channel.send('There was an error.');
-      console.log(err);
+      console.log('[BOT]' + err);
     });
 
     message.channel.send({ embeds: [embed] });

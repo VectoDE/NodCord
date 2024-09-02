@@ -5,10 +5,12 @@ const findOrCreate = require('mongoose-findorcreate');
 const socialLinksSchema = new mongoose.Schema({
   facebook: { type: String, default: '' },
   twitter: { type: String, default: '' },
+  google: { type: String, default: '' },
   linkedin: { type: String, default: '' },
   instagram: { type: String, default: '' },
   github: { type: String, default: '' },
   discord: { type: String, default: '' },
+  apple: { type: String, default: '' },
 });
 
 const oauthProvidersSchema = new mongoose.Schema({

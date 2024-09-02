@@ -8,14 +8,14 @@ exports.checkBetaSystemStatus = async (req, res, next) => {
     const betaSystem = await BetaSystem.findOne();
 
     if (betaSystem && betaSystem.isActive) {
-      logger.info('Beta System ist aktiv. Fortfahren.');
+      logger.info('[BETA] Beta System ist aktiv. Fortfahren.');
       return next();
     } else {
-      logger.warn('Beta System ist momentan deaktiviert.');
+      logger.warn('[BETA] Beta System ist momentan deaktiviert.');
       return next();
     }
   } catch (error) {
-    logger.error('Fehler beim Überprüfen des Beta System Status:', error);
+    logger.error('[BETA] Fehler beim Überprüfen des Beta System Status:', error);
     return res
       .status(500)
       .json({

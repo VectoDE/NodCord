@@ -6,22 +6,22 @@ const apiKeyMiddleware = async (req, res, next) => {
     const apiKey = req.headers['x-api-key'] || req.query.apiKey;
 
     if (!apiKey) {
-      logger.warn('API key missing in request');
+      logger.warn('[API-AUTHENTICATION] API key missing in request');
       return res.status(401).json({ message: 'API key required' });
     }
 
     const keyDoc = await ApiKey.findOne({ key: apiKey });
 
     if (!keyDoc) {
-      logger.warn(`Invalid API key: ${apiKey}`);
+      logger.warn(`[API-AUTHENTICATION] Invalid API key: ${apiKey}`);
       return res.status(403).json({ message: 'Invalid API key' });
     }
 
     req.apiKey = keyDoc;
-    logger.info(`API key '${apiKey}' validated successfully`);
+    logger.info(`[API-AUTHENTICATION] API key '${apiKey}' validated successfully`);
     next();
   } catch (error) {
-    logger.error('API key validation error:', error);
+    logger.error('[API-AUTHENTICATION] API key validation error:', error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };

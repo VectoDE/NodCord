@@ -6,8 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Profile - <%= user.username %></title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -17,7 +18,7 @@
     <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
       <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit Profile</h1>
 
-      <form action="/user/profile/<%= user.username %>/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
+      <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/user/profile/<%= user.username %>/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
 
         <!-- Profile Picture Upload -->
         <div>

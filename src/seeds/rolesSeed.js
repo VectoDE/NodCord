@@ -18,12 +18,12 @@ const seedRolesIfNotExist = async () => {
     const existingRoles = await Role.find({});
     if (existingRoles.length === 0) {
       await Role.insertMany(roles);
-      logger.info('Roles seeded successfully');
+      logger.info('[SEED] Roles seeded successfully');
     } else {
-      logger.warn('Roles already exist, skipping seeding');
+      logger.warn('[SEED] Roles already exist, skipping seeding');
     }
   } catch (err) {
-    logger.error('Error seeding roles:', err);
+    logger.error('[SEED] Error seeding roles:', err);
   }
 };
 

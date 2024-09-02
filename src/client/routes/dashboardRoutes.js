@@ -1,19 +1,19 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const cloudnetController = require('../controllers/cloudnetController');
-const commentController = require('../controllers/commentController');
+const cloudnetController = require('../../api/controllers/cloudnetController');
+const commentController = require('../../api/controllers/commentController');
 
-const authMiddleware = require('../middlewares/authMiddleware');
-const roleMiddleware = require('../middlewares/roleMiddleware');
-const betaMiddleware = require('../middlewares/betaMiddleware');
+const authMiddleware = require('../../api/middlewares/authMiddleware');
+const roleMiddleware = require('../../api/middlewares/roleMiddleware');
+const betaMiddleware = require('../../api/middlewares/betaMiddleware');
 
-const overviewControl = require('../helpers/overviewControl');
+const overviewControl = require('../../api/helpers/overviewControl');
 
-const apiStatusService = require('../services/apiStatusService');
-const botStatusService = require('../services/botStatusService');
-const dbStatusService = require('../services/dbStatusService');
-const logService = require('../services/logService');
+const apiStatusService = require('../../api/services/apiStatusService');
+const botStatusService = require('../../api/services/botStatusService');
+const dbStatusService = require('../../api/services/dbStatusService');
+const logService = require('../../api/services/logService');
 
 const bot = require('../../bot/index');
 

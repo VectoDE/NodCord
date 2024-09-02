@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Ticket ~ NodCord</title>
+    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex flex-col items-center py-10">
+    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create a New Ticket</h1>
+
+        <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/helpdesk/createTicket" method="POST" class="space-y-4">
+            <div>
+                <label for="subject" class="block text-gray-700">Subject</label>
+                <input
+                    type="text"
+                    id="subject"
+                    name="subject"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                />
+            </div>
+
+            <div>
+                <label for="message" class="block text-gray-700">Message</label>
+                <textarea
+                    id="message"
+                    name="message"
+                    rows="5"
+                    required
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
+                ></textarea>
+            </div>
+
+            <button
+                type="submit"
+                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
+            >
+                <i class="bi bi-send-fill mr-2"></i> Submit Ticket
+            </button>
+        </form>
+    </div>
+</body>
+</html>
