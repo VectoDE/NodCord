@@ -38,9 +38,9 @@ router.get('/', async (req, res) => {
     logoImage: '/assets/img/logo.png',
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -54,9 +54,9 @@ router.get('/news', async (req, res) => {
       blogs,
       errorstack: null,
       api: {
-        https: 'http',
-        baseURL: 'localhost',
-        port: '3000',
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
       },
     });
   } catch (error) {
@@ -65,7 +65,12 @@ router.get('/news', async (req, res) => {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blogs: [],
-      errorstack: 'Fehler beim Abrufen der Blog-Posts. Bitte versuchen Sie es später erneut.'
+      errorstack: 'Fehler beim Abrufen der Blog-Posts. Bitte versuchen Sie es später erneut.',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   }
 });
@@ -80,9 +85,9 @@ router.get('/news/:id', async (req, res) => {
         blog: null,
         errorstack: 'Blog-Post nicht gefunden.',
         api: {
-          https: 'http',
-          baseURL: 'localhost',
-          port: '3000',
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
         },
       });
     }
@@ -92,9 +97,9 @@ router.get('/news/:id', async (req, res) => {
       blog,
       errorstack: null,
       api: {
-        https: 'http',
-        baseURL: 'localhost',
-        port: '3000',
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
       },
     });
   } catch (error) {
@@ -103,7 +108,12 @@ router.get('/news/:id', async (req, res) => {
       isAuthenticated: res.locals.isAuthenticated,
       LogoImage: '/assets/img/logo.png',
       blog: null,
-      errorstack: 'Fehler beim Abrufen des Blog-Posts. Bitte versuchen Sie es später erneut.'
+      errorstack: 'Fehler beim Abrufen des Blog-Posts. Bitte versuchen Sie es später erneut.',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   }
 });
@@ -115,9 +125,9 @@ router.get('/docs', (req, res) => {
     logoImage: '/assets/img/logo.png',
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -155,9 +165,9 @@ router.get('/status', async (req, res) => {
       logoImage: '/assets/img/logo.png',
       errorstack: null,
       api: {
-        https: 'http',
-        baseURL: 'localhost',
-        port: '3000',
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
       },
     });
   } catch (error) {
@@ -186,7 +196,12 @@ router.get('/info', async (req, res) => {
       system: systemInfo,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error fetching info:', error);
@@ -216,9 +231,9 @@ router.get('/versions', (req, res) => {
     logoImage: '/assets/img/logo.png',
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -232,9 +247,9 @@ router.get('/discord-members', async (req, res) => {
       logoImage: '/assets/img/logo.png',
       errorstack: null,
       api: {
-        https: 'http',
-        baseURL: 'localhost',
-        port: '3000',
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
       },
     });
   } catch (error) {
@@ -254,9 +269,9 @@ router.get('/discord-servers', async (req, res) => {
       logoImage: '/assets/img/logo.png',
       errorstack: null,
       api: {
-        https: 'http',
-        baseURL: 'localhost',
-        port: '3000',
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
       },
     });
   } catch (error) {
@@ -295,9 +310,9 @@ router.get('/contact', async (req, res) => {
     errorMessage,
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -308,9 +323,9 @@ router.get('/about', async (req, res) => {
     logoImage: '/assets/img/logo.png',
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -327,9 +342,9 @@ router.get('/login', (req, res) => {
     errorMessage: errorMessage,
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -347,9 +362,9 @@ router.get('/register', (req, res) => {
     errorMessage: errorMessage,
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });
@@ -363,9 +378,9 @@ router.get('/beta-verify', authMiddleware(true), (req, res) => {
     error: req.query.error || null,
     errorstack: null,
     api: {
-      https: 'http',
-      baseURL: 'localhost',
-      port: '3000',
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
     },
   });
 });

@@ -5,27 +5,56 @@ const logger = require('../services/loggerService');
 
 exports.createUser = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword } = req.body;
+    const { fullname, username, email, password, confirmPassword, role } = req.body;
 
     if (password !== confirmPassword) {
       logger.warn('Password mismatch during user creation:', {
         username,
         email,
       });
-      return res
-        .status(400)
-        .json({ success: false, message: 'Passwords do not match' });
+      return res.render('dashboard/users/createUser', {
+        errorMessage: 'Passwords do not match',
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, email, password: hashedPassword });
+    const user = new User({ fullname, username, email, password: hashedPassword, role });
     await user.save();
 
+    const users = await User.find();
+
     logger.info('User created successfully:', { username, email });
-    res.status(201).json({ success: true, user });
+    res.render('dashboard/users/users', {
+      errorMessage: 'User created successfully',
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+      user,
+      users,
+    });
   } catch (err) {
     logger.error('Error creating user:', err);
-    res.status(400).json({ success: false, message: err.message });
+    res.render('dashboard/users/createUser', {
+      errorMessage: 'You must accept the Terms of Service',
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   }
 };
 

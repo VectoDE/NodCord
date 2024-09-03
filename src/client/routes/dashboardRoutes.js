@@ -145,7 +145,12 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
-      errorstack: null
+      errorstack: null,
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Fehler beim Abrufen des Status:', error);
@@ -156,37 +161,98 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
 // Api Key CRUD
 router.get('/api/overview', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKeys = await ApiKey.find();
-  res.render('dashboard/api/apiKey/apiKeys', { apiKeys, errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/api/apiKey/apiKeys', {
+    apiKeys,
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/api/keys', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKeys = await ApiKey.find();
-  res.render('dashboard/api/apiKey/apiKeys', { apiKeys, errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/api/apiKey/apiKeys', {
+    apiKeys,
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/api/keys/create', roleMiddleware(['admin', 'moderator']), (req, res) => {
-  res.render('dashboard/api/apiKey/createApiKey', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/api/apiKey/createApiKey', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/api/keys/update/:id', roleMiddleware(['admin', 'moderator']), async (req, res) => {
   const apiKey = await ApiKey.findById(req.params.id);
-  res.render('dashboard/api/apiKey/editApiKey', { apiKey, errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/api/apiKey/editApiKey', {
+    apiKey,
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 
 // Blog CRUD
 router.get('/blogs', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blogs = await Blog.find();
-    res.render('dashboard/blogs/blogs', { blogs, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/blogs/blogs', {
+      blogs,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     res.status(500).send('Error retrieving blogs');
   }
 });
 router.get('/blogs/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/blogs/createBlog', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/blogs/createBlog', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const blog = await Blog.findById(req, res);
     if (blog) {
-      res.render('dashboard/blogs/editBlog', { blog, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/blogs/editBlog', {
+        blog,
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     } else {
       res.status(404).send('Blog not found');
     }
@@ -199,14 +265,30 @@ router.get('/blogs/update/:id', roleMiddleware(['admin']), async (req, res) => {
 router.get('/bugs', roleMiddleware(['admin']), async (req, res) => {
   try {
     const bugs = await Bug.find().populate('project');
-    res.render('dashboard/bugs/bugs', { bugs, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/bugs/bugs', {
+      bugs,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     console.error('Error fetching bugs:', error);
     res.status(500).send('Internal Server Error');
   }
 });
 router.get('/bugs/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/bugs/createBug', { logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/bugs/createBug', {
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/bugs/update/:id', async (req, res) => {
   const { id } = req.params;
@@ -216,7 +298,15 @@ router.get('/bugs/update/:id', async (req, res) => {
     if (!bug) {
       return res.status(404).send('Bug not found');
     }
-    res.render('dashboard/bugs/editBug', { bug, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/bugs/editBug', {
+      bug,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     console.error(`Error fetching bug with ID ${id}:`, error);
     res.status(500).send('Internal Server Error');
@@ -227,14 +317,28 @@ router.get('/bugs/update/:id', async (req, res) => {
 router.get('/categories', roleMiddleware(['admin']), async (req, res) => {
   try {
     const categories = await Category.find();
-    res.render('dashboard/categories/categories', { categories, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/categories/categories', {
+      categories,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     console.error('Error fetching categories:', error);
     res.status(500).send('Internal Server Error');
   }
 });
 router.get('/categories/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/categories/createCategory');
+  res.render('dashboard/categories/createCategory', {
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/categories/update/:id', async (req, res) => {
   const { id } = req.params;
@@ -244,7 +348,15 @@ router.get('/categories/update/:id', async (req, res) => {
     if (!category) {
       return res.status(404).send('Category not found');
     }
-    res.render('dashboard/categories/editCategory', { category, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/categories/editCategory', {
+      category,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     console.error(`Error fetching category with ID ${id}:`, error);
     res.status(500).send('Internal Server Error');
@@ -264,7 +376,12 @@ router.get('/comments', roleMiddleware(['admin']), async (req, res) => {
       comments,
       blogTitle,
       blogId,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error rendering comments:', error);
@@ -280,7 +397,12 @@ router.get('/comments/create', roleMiddleware(['admin']), async (req, res) => {
     res.render('dashboard/comments/createComment', {
       blogId,
       blogTitle,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error rendering create comment form:', error);
@@ -297,7 +419,12 @@ router.get('/comments/:id/edit', roleMiddleware(['admin']), async (req, res) => 
     res.render('dashboard/comments/editComment', {
       comment,
       blogTitle: comment.blog.title,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error rendering edit comment form:', error);
@@ -312,7 +439,12 @@ router.get('/companies', roleMiddleware(['admin']), async (req, res) => {
 
     res.render('dashboard/companies/companies', {
       companies,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error rendering companies:', error);
@@ -321,7 +453,14 @@ router.get('/companies', roleMiddleware(['admin']), async (req, res) => {
 });
 router.get('/companies/create', roleMiddleware(['admin']), (req, res) => {
   try {
-    res.render('dashboard/companies/createCompany', { logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/companies/createCompany', {
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     console.error('Error rendering create company form:', error);
     res.status(500).send('Internal Server Error');
@@ -339,7 +478,12 @@ router.get('/companies/:companyId/edit', roleMiddleware(['admin']), async (req, 
 
     res.render('dashboard/companies/editCompany', {
       company,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error rendering edit company form:', error);
@@ -348,13 +492,32 @@ router.get('/companies/:companyId/edit', roleMiddleware(['admin']), async (req, 
 });
 
 // User CRUD
-router.get('/users/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/users/createUser', { logoImage: '/assets/img/logo.png' });
+router.get('/users/create', roleMiddleware(['admin']), async (req, res) => {
+  res.render('dashboard/users/createUser', {
+    isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
+    errorstack: null,
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/users', roleMiddleware(['admin']), async (req, res) => {
   try {
     const users = await User.find();
-    res.render('dashboard/users/users', { users, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/users/users', {
+      users,
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      errorstack: null,
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (err) {
     console.error('Error fetching users for EJS page:', err);
     res.status(500).send('Internal Server Error');
@@ -368,7 +531,17 @@ router.get('/users/:id/edit', roleMiddleware(['admin']), async (req, res) => {
       return res.status(404).send('User not found');
     }
 
-    res.render('dashboard/users/editUser', { user, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/users/editUser', {
+      user,
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      errorstack: null,
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     console.error('Error displaying edit form:', error);
     res.status(500).send('Internal Server Error');
@@ -378,23 +551,48 @@ router.get('/users/:id/edit', roleMiddleware(['admin']), async (req, res) => {
 // Organization CRUD
 router.get('/organizations', async (req, res) => {
   try {
-      const organizations = await Organization.find();
-      res.render('dashboard/organizations/organizations', { organizations: organizations.data, logoImage: '/assets/img/logo.png' });
+    const organizations = await Organization.find();
+    res.render('dashboard/organizations/organizations', {
+      organizations:
+        organizations.data,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
-      console.error('Error displaying organizations:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error displaying organizations:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 router.get('/organizations/create', (req, res) => {
-  res.render('dashboard/organizations/createOrganization', { logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/organizations/createOrganization', {
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/organizations/:id/edit', async (req, res) => {
   try {
-      const organization = await Organization.findById(req, res);
-      res.render('dashboard/organizations/editOrganization', { organization: organization.data, logoImage: '/assets/img/logo.png' });
+    const organization = await Organization.findById(req, res);
+    res.render('dashboard/organizations/editOrganization', {
+      organization:
+        organization.data,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
-      console.error('Error displaying edit form:', error);
-      res.status(500).send('Internal Server Error');
+    console.error('Error displaying edit form:', error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -402,19 +600,45 @@ router.get('/organizations/:id/edit', async (req, res) => {
 router.get('/games', roleMiddleware(['admin']), async (req, res) => {
   try {
     const games = await Game.find();
-    res.render('dashboard/games/games', { games, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/games/games', {
+      games,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     res.status(500).send('Error retrieving games');
   }
 });
 router.get('/games/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/games/createGame', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/games/createGame', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/games/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const game = await Game.findById(req, res);
     if (game) {
-      res.render('dashboard/games/editGame', { game, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/games/editGame', {
+        game,
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     } else {
       res.status(404).send('Game not found');
     }
@@ -427,19 +651,45 @@ router.get('/games/update/:id', roleMiddleware(['admin']), async (req, res) => {
 router.get('/groups', roleMiddleware(['admin']), async (req, res) => {
   try {
     const groups = await Group.find();
-    res.render('dashboard/groups/groups', { groups, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/groups/groups', {
+      groups,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     res.status(500).send('Error retrieving groups');
   }
 });
 router.get('/groups/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/groups/createGroup', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/groups/createGroup', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/groups/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const group = await Group.findById(req, res);
     if (group) {
-      res.render('dashboard/groups/editGroup', { group, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/groups/editGroup', {
+        group,
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     } else {
       res.status(404).send('Group not found');
     }
@@ -452,19 +702,45 @@ router.get('/groups/update/:id', roleMiddleware(['admin']), async (req, res) => 
 router.get('/teams', roleMiddleware(['admin']), async (req, res) => {
   try {
     const teams = await Team.find();
-    res.render('dashboard/teams/teams', { teams, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/teams/teams', {
+      teams,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     res.status(500).send('Error retrieving teams');
   }
 });
 router.get('/teams/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/teams/createTeam', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/teams/createTeam', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/teams/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const team = await Team.findById(req, res);
     if (team) {
-      res.render('dashboard/teams/editTeam', { team, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/teams/editTeam', {
+        team,
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     } else {
       res.status(404).send('Team not found');
     }
@@ -477,19 +753,45 @@ router.get('/teams/update/:id', roleMiddleware(['admin']), async (req, res) => {
 router.get('/tournaments', roleMiddleware(['admin']), async (req, res) => {
   try {
     const tournaments = await Tournament.find();
-    res.render('dashboard/tournaments/tournaments', { tournaments, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/tournaments/tournaments', {
+      tournaments,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     res.status(500).send('Error retrieving tournaments');
   }
 });
 router.get('/tournaments/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/tournaments/createTournament', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/tournaments/createTournament', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/tournaments/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const tournament = await Tournament.findById(req, res);
     if (tournament) {
-      res.render('dashboard/tournaments/editTournament', { tournament, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/tournaments/editTournament', {
+        tournament,
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     } else {
       res.status(404).send('Tournament not found');
     }
@@ -507,19 +809,45 @@ router.get('/tournaments/update/:id', roleMiddleware(['admin']), async (req, res
 router.get('/tags', roleMiddleware(['admin']), async (req, res) => {
   try {
     const tags = await Tag.find();
-    res.render('dashboard/tags/tags', { tags, errorstack: null, logoImage: '/assets/img/logo.png' });
+    res.render('dashboard/tags/tags', {
+      tags,
+      errorstack: null,
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
   } catch (error) {
     res.status(500).send('Error retrieving tags');
   }
 });
 router.get('/tags/create', roleMiddleware(['admin']), (req, res) => {
-  res.render('dashboard/tags/createTag', { errorstack: null, logoImage: '/assets/img/logo.png' });
+  res.render('dashboard/tags/createTag', {
+    errorstack: null,
+    logoImage: '/assets/img/logo.png',
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+  });
 });
 router.get('/tags/update/:id', roleMiddleware(['admin']), async (req, res) => {
   try {
     const tag = await Tag.findById(req, res);
     if (tag) {
-      res.render('dashboard/tags/editTag', { tag, errorstack: null, logoImage: '/assets/img/logo.png' });
+      res.render('dashboard/tags/editTag', {
+        tag,
+        errorstack: null,
+        logoImage: '/assets/img/logo.png',
+        api: {
+          https: process.env.API_HTTPS,
+          baseURL: process.env.API_BASE_URL,
+          port: process.env.API_PORT,
+        },
+      });
     } else {
       res.status(404).send('Tag not found');
     }
@@ -558,7 +886,12 @@ router.get('/logs', roleMiddleware(['admin']), async (req, res) => {
     res.render('dashboard/logging/logs', {
       loggerLogs,
       isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Fehler beim Abrufen der Logs:', error);
@@ -583,7 +916,12 @@ router.get('/beta', roleMiddleware(['admin']), async (req, res) => {
       betaKeys,
       betaSystem,
       isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Fehler beim Abrufen der Beta Keys:', error);
@@ -600,7 +938,12 @@ router.get('/cloudnet', roleMiddleware(['admin']), async (req, res) => {
     res.render('dashboard/cloudnet/overviewCloudNet', {
       status: status,
       servers: servers,
-      logoImage: '/assets/img/logo.png'
+      logoImage: '/assets/img/logo.png',
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
     });
   } catch (error) {
     console.error('Error rendering CloudNet overview:', error);
