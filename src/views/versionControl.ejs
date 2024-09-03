@@ -10,6 +10,39 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .card-container {
+      perspective: 1000px;
+    }
+
+    .card {
+      width: 100%;
+      height: 100%;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      position: relative;
+    }
+
+    .card.is-flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-front,
+    .card-back {
+      backface-visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+  </style>
 </head>
 
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
@@ -18,11 +51,72 @@
   <main class="container mx-auto p-4">
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       <% versions.forEach(version => { %>
-        <div class="card bg-white dark:bg-gray-900 shadow-md rounded-lg p-6">
-          <h2 class="card-title text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2"><%= version.name %></h2>
-          <p class="text-gray-800 dark:text-gray-200 mb-4">Version: <span class="font-medium text-blue-500"><%= version.tag %></span></p>
-          <p class="text-gray-800 dark:text-gray-200 mb-4"><%= version.description %></p>
-          <a href="<%= version.downloadLink %>" class="btn bg-blue-500 text-white w-full py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">Download</a>
+        <div class="card-container">
+          <div class="card">
+            <!-- Vorderseite der Karte -->
+            <div class="card-front bg-white dark:bg-gray-900 shadow-lg rounded-lg">
+              <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2"><%= version.name %></h2>
+              <p class="text-gray-800 dark:text-gray-200 mb-4">Version: <span class="font-medium text-blue-500"><%= version.tag %></span></p>
+              <p class="text-gray-800 dark:text-gray-200 mb-4"><%= version.shortDescription %></p>
+              <button class="bg-blue-500 text-white w-full py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300 flip-card">Details anzeigen</button>
+            </div>
+            <!-- Rückseite der Karte -->
+            <div class="card-back bg-white dark:bg-gray-900 shadow-lg rounded-lg">
+              <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2"><%= version.name %></h2>
+              <p class="text-gray-800 dark:text-gray-200 mb-4">Version: <span class="font-medium text-blue-500"><%= version.tag %></span></p>
+              <p class="text-gray-800 dark:text-gray-200 mb-4"><%= version.detailedDescription %></p>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Features</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-800 dark:text-gray-200">
+                  <% version.features.forEach(feature => { %>
+                    <li><%= feature %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Added</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-800 dark:text-gray-200">
+                  <% version.added.forEach(addition => { %>
+                    <li><%= addition %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Fixed</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-800 dark:text-gray-200">
+                  <% version.fixed.forEach(fix => { %>
+                    <li><%= fix %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Known Bugs</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-800 dark:text-gray-200">
+                  <% version.bugs.forEach(bug => { %>
+                    <li><%= bug %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <p class="text-gray-800 dark:text-gray-200 mb-2">Created At: <span class="font-medium"><%= version.createdAt.toDateString() %></span></p>
+              <p class="text-gray-800 dark:text-gray-200 mb-4">Released At: <span class="font-medium"><%= version.releasedAt.toDateString() %></span></p>
+
+              <p class="text-gray-800 dark:text-gray-200 mb-4">
+                <strong>Developers:</strong>
+                <span class="font-medium"><%= version.developers.join(', ') %></span>
+              </p>
+
+              <a href="<%= version.downloadLink %>" class="bg-blue-500 text-white w-full py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">
+                Download
+              </a>
+
+              <button class="bg-gray-500 text-white w-full py-2 px-4 rounded-md hover:bg-gray-600 mt-4 transition duration-300 flip-card">Zurück</button>
+            </div>
+          </div>
         </div>
       <% }); %>
     </div>
@@ -30,5 +124,13 @@
 
   <%- include('./partials/footer'); %>
 </body>
+
+<script>
+  document.querySelectorAll('.flip-card').forEach(button => {
+    button.addEventListener('click', function() {
+      this.closest('.card').classList.toggle('is-flipped');
+    });
+  });
+</script>
 
 </html>
