@@ -213,14 +213,59 @@ router.get('/versions', (req, res) => {
   const versions = [
     {
       name: "NodCord v0.5 Beta",
-      tag: "v0.5.0 Alpha",
-      description: "Release the beta of nodcord with beta key access to nodcord features for users.",
-      downloadLink: "/downloads/NodCord-v0.5.0-alpha.zip"
+      tag: "v0.5.0 Beta",
+      shortDescription: "Release the beta of NodCord with beta key access to features for users.",
+      detailedDescription: "This version includes early access to NodCord's key features, providing a glimpse into the capabilities of the platform before the official release.",
+      features: [
+        "Early access to NodCord core features",
+        "Beta testing feedback system",
+        "Limited support for integrations"
+      ],
+      added: [
+        "Initial beta version released",
+        "Added basic user interface",
+        "Included initial API endpoints"
+      ],
+      fixed: [
+        "Fixed initial setup bugs",
+        "Resolved issues with user authentication",
+        "Minor UI bug fixes"
+      ],
+      bugs: [
+        "Occasional crashes during user sign-up",
+        "Intermittent lag in API responses"
+      ],
+      createdAt: new Date('2023-05-01'),
+      releasedAt: new Date('2023-05-15'),
+      developers: ["John Doe", "Jane Smith", "Alice Johnson"],
+      downloadLink: "/downloads/NodCord-v0.5.0-beta.zip"
     },
     {
       name: "NodCord v1.0 LTS",
       tag: "v1.0.0 LTS",
-      description: "The official first version of nodcord with every feature to use and everything is set for production environment for the commercial use.",
+      shortDescription: "The official first version of NodCord, ready for production environments.",
+      detailedDescription: "The LTS (Long-Term Support) version is the first stable release of NodCord, featuring full functionality for production use in commercial environments.",
+      features: [
+        "Full production-ready feature set",
+        "Comprehensive API documentation",
+        "Extended integration support"
+      ],
+      added: [
+        "Production-ready codebase",
+        "Complete user management system",
+        "Expanded plugin support"
+      ],
+      fixed: [
+        "Improved system stability",
+        "Resolved security vulnerabilities",
+        "Optimized API performance"
+      ],
+      bugs: [
+        "None reported at the time of release"
+      ],
+      createdAt: new Date('2024-01-01'),
+      releasedAt: new Date('2024-02-01'),
+      developers: ["John Doe", "Alice Johnson", "Michael Brown"],
       downloadLink: "/downloads/NodCord-v1.0.0-lts.zip"
     },
   ];
