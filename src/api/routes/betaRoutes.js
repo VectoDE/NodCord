@@ -1,23 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const betaKeyController = require('../controllers/betaController');
+const betaController = require('../controllers/betaController');
 
-// Route zum Erstellen eines neuen Beta Keys
-router.post('/create', betaKeyController.createBetaKey);
+router.post('/keys/create', betaController.createBetaKey);
 
-// Route zum Bearbeiten eines Beta Keys
-router.put('/edit/:id', betaKeyController.editBetaKey);
+router.get('/keys', betaController.getBetaKeys);
 
-// Route zum Löschen eines Beta Keys
-router.delete('/delete/:id', betaKeyController.deleteBetaKey);
+router.get('/keys/:id', betaController.getBetaKeyById);
 
-// Route zum Aktivieren/Deaktivieren des Beta Systems
-router.post('/toggle', betaKeyController.toggleBetaSystem);
+router.post('/keys/update/:id', betaController.updateBetaKey);
 
-// Route zum Abrufen aller Beta Keys
-router.get('/keys', betaKeyController.getBetaKeys);
+router.post('/keys/delete/:id', betaController.deleteBetaKey);
 
-// Route zur Verifizierung eines Beta Keys
-router.post('/verify', betaKeyController.verifyBetaKey);
+router.post('/toggle', betaController.toggleBetaSystem);
+
+router.post('/verify', betaController.verifyBetaKey);
 
 module.exports = router;

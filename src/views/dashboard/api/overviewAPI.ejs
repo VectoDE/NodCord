@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,9 @@
   <style>
     .table th, .table td {
       text-align: center;
+    }
+    .select-black {
+      color: black;
     }
   </style>
 </head>
@@ -34,7 +37,7 @@
         <form id="apiSystemForm" method="POST" action="/api/api/toggle" class="mt-4">
           <div class="mb-4">
             <label for="apiSystemStatus" class="block text-lg font-medium">API-System Status ändern</label>
-            <select id="apiSystemStatus" name="isActive" class="form-select mt-1 block w-full">
+            <select id="apiSystemStatus" name="isActive" class="form-select mt-1 block w-full select-black border-gray-300 dark:border-gray-600 rounded-lg">
               <option value="true" <%= apiSystem.isActive ? 'selected' : '' %>>Aktiv</option>
               <option value="false" <%= !apiSystem.isActive ? 'selected' : '' %>>Inaktiv</option>
             </select>
@@ -50,6 +53,7 @@
           <p>Verwendete API-Schlüssel: <strong><%= apiKeys.filter(key => key.isActive).length %></strong></p>
           <p>Unbenutzte API-Schlüssel: <strong><%= apiKeys.filter(key => !key.isActive).length %></strong></p>
         </div>
+        <a href="/dashboard/api/keys" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">API Keys</a>
       </div>
     </div>
   </main>

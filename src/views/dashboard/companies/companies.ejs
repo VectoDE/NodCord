@@ -3,49 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Companies ~ NodCord</title>
+  <title>Companies Overview</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .table-header {
-      background-color: #f4f4f4;
-    }
-  </style>
 </head>
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
   <%- include('../../partials/dashboardHeader'); %>
-  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+
+  <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <div class="container mx-auto">
-      <h1 class="text-3xl font-semibold mb-6">Companies</h1>
-      <a href="/dashboard/companies/create" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md inline-block mb-4">
-        <i class="bi bi-plus-circle"></i> Create New Company
-      </a>
-      <table class="w-full bg-white dark:bg-gray-900 rounded-lg shadow-md border border-gray-300">
-        <thead>
-          <tr class="table-header">
-            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Name</th>
-            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Industry</th>
-            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Headquarters</th>
-            <th class="p-3 border-b border-gray-200 dark:border-gray-700">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% companies.forEach(company => { %>
-          <tr>
-            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= company.name %></td>
-            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= company.industry %></td>
-            <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= company.headquarters %></td>
-            <td class="p-3 border-b border-gray-200 dark:border-gray-700 flex space-x-2">
-              <a href="/dashboard/companies/<%= company._id %>/edit" class="text-blue-500 hover:text-blue-600">Edit</a>
-              <form action="/api/companies/delete/<%= company._id %>" method="POST" style="display: inline;">
-                <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
-              </form>
-            </td>
-          </tr>
-          <% }) %>
-        </tbody>
-      </table>
+      <!-- Title and Create Button -->
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-semibold">Companies Overview</h1>
+        <a href="/dashboard/companies/create" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
+          <i class="bi bi-plus-circle"></i> Create New Company
+        </a>
+      </div>
+
+      <!-- Companies Table -->
+      <div class="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden">
+        <table class="min-w-full bg-white dark:bg-gray-900">
+          <thead>
+            <tr class="w-full bg-gray-200 dark:bg-gray-800">
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Industry</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Headquarters</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="text-gray-700 dark:text-gray-200">
+            <% if (companies && companies.length > 0) { %>
+              <% companies.forEach(company => { %>
+                <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <td class="py-3 px-4"><%= company.name %></td>
+                  <td class="py-3 px-4"><%= company.industry %></td>
+                  <td class="py-3 px-4"><%= company.headquarters %></td>
+                  <td class="py-3 px-4 flex space-x-2">
+                    <a href="/dashboard/companies/<%= company._id %>/edit" class="text-blue-500 hover:text-blue-700 transition duration-300">
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    <form action="/api/companies/delete/<%= company._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this company?');" style="display: inline;">
+                      <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">
+                        <i class="bi bi-trash"></i> Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            <% } else { %>
+              <tr>
+                <td colspan="4" class="text-center py-3 px-4 text-gray-500 dark:text-gray-400">No companies available.</td>
+              </tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </main>
 </body>

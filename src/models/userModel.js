@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
   role: {
     type: String,
     default: 'user',
-    enum: ['user', 'admin', 'moderator'], // Beispielrollen
+    enum: ['user', 'admin', 'moderator'], // Sample roles
   },
   bio: {
     type: String,

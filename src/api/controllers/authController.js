@@ -3,12 +3,6 @@ const jwt = require('jsonwebtoken');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
 
-const client = {
-  https: process.env.CLIENT_HTTPS,
-  baseURL: process.env.CLIENT_BASE_URL,
-  port: process.env.CLIENT_PORT
-}
-
 exports.register = async (req, res) => {
   try {
     const { username, email, password, confirmPassword, fullname, terms } = req.body;
@@ -49,7 +43,7 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    res.redirect(`${client.https}://${client.baseURL}:${client.port}/login`);
+    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
   } catch (err) {
     logger.error('Error during registration:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
@@ -113,11 +107,11 @@ exports.login = async (req, res) => {
     logger.info(`User ${user.username} successfully logged in.`);
 
     if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
-      res.redirect(`${client.https}://${client.baseURL}:${client.port}/dashboard`);
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard`);
     } else if (user.role === 'user') {
-      res.redirect(`${client.https}://${client.baseURL}:${client.port}/user/profile/${user.username}`);
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/user/profile/${user.username}`);
     } else {
-      res.redirect(`${client.https}://${client.baseURL}:${client.port}`);
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}`);
     }
   } catch (err) {
     logger.error('Login error:', err.message);
@@ -129,7 +123,7 @@ exports.logout = async (req, res) => {
   try {
     const token = req.cookies.token;
     if (!token) {
-      return res.redirect(`${client.https}://${client.baseURL}:${client.port}/login`);
+      return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -143,7 +137,7 @@ exports.logout = async (req, res) => {
     await user.save();
 
     res.clearCookie('token');
-    res.redirect(`${client.https}://${client.baseURL}:${client.port}/`);
+    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/`);
   } catch (err) {
     logger.error('Logout error:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error' });

@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-// Definiere das Schema für Return
 const returnSchema = new mongoose.Schema({
   orderId: {
     type: mongoose.Schema.Types.ObjectId,
@@ -48,11 +47,9 @@ const returnSchema = new mongoose.Schema({
   },
 });
 
-// Aktualisiere `updatedAt` bei Änderungen
 returnSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Erstelle das Modell aus dem Schema
 module.exports = mongoose.model('Return', returnSchema);

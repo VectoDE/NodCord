@@ -1,392 +1,550 @@
-<aside class="sidebar bg-gray-800 text-white shadow-md dark:bg-gray-900 fixed inset-y-0 left-0 w-64 lg:w-72 z-50">
-  <div class="flex flex-col h-full">
-    <div class="flex items-center justify-between px-4 py-4 border-b border-gray-700 dark:border-gray-800">
-      <!-- Burger Button -->
-      <button id="toggle-button" class="text-white lg:hidden focus:outline-none">
-        <i class="fas fa-bars"></i>
-      </button>
+<aside
+	class="sidebar bg-gray-800 text-white shadow-md dark:bg-gray-900 fixed inset-y-0 left-0 w-64 lg:w-72 z-50"
+>
+	<div class="flex flex-col h-full">
+		<div
+			class="flex items-center justify-between px-4 py-4 border-b border-gray-700 dark:border-gray-800"
+		>
+			<!-- Burger Button -->
+			<button
+				id="toggle-button"
+				class="text-white lg:hidden focus:outline-none"
+			>
+				<i class="fas fa-bars"></i>
+			</button>
 
-      <!-- Dashboard Logo Section -->
-      <a href="/" class="flex items-center">
-        <img src="<%= logoImage %>" alt="NodCord Logo" class="h-8 w-8 lg:h-10 lg:w-10" />
-        <span class="hidden lg:block ml-2 text-lg font-bold">Dashboard</span>
-      </a>
-    </div>
+			<!-- Dashboard Logo Section -->
+			<a href="/" class="flex items-center">
+				<img
+					src="<%= logoImage %>"
+					alt="NodCord Logo"
+					class="h-8 w-8 lg:h-10 lg:w-10"
+				/>
+				<span class="hidden lg:block ml-2 text-lg font-bold">Dashboard</span>
+			</a>
+		</div>
 
-    <!-- Dashboard Navigation Menu -->
-    <div class="nav-container mt-4 space-y-4 px-2 lg:px-4 flex-1 overflow-y-auto">
-      <a href="/dashboard" class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-home"></i>
-        <span class="hidden lg:inline">Overview</span>
-      </a>
+		<!-- Dashboard Navigation Menu -->
+		<div
+			class="nav-container mt-4 space-y-4 px-2 lg:px-4 flex-1 overflow-y-auto"
+		>
+			<a
+				href="/dashboard"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-home"></i>
+				<span class="hidden lg:inline">Overview</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">CRUD</p>
-      <a href="/dashboard/users"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-user"></i>
-        <span class="hidden lg:inline">Users</span>
-      </a>
-      <a href="/dashboard/tournaments"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tournaments</span>
-      </a>
-      <a href="/dashboard/tickets"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tickets</span>
-      </a>
-      <a href="/dashboard/teams"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Teams</span>
-      </a>
-      <a href="/dashboard/tasks"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tasks</span>
-      </a>
-      <a href="/dashboard/tags"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tags</span>
-      </a>
-      <a href="/dashboard/subscribers"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Subscribers</span>
-      </a>
-      <a href="/dashboard/stories"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Stories</span>
-      </a>
-      <a href="/dashboard/roles"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Roles</span>
-      </a>
-      <a href="/dashboard/projects"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Projects</span>
-      </a>
-      <a href="/dashboard/organizations"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Organizations</span>
-      </a>
-      <a href="/dashboard/issues"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Issues</span>
-      </a>
-      <a href="/dashboard/groups"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Groups</span>
-      </a>
-      <a href="/dashboard/games"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Games</span>
-      </a>
-      <a href="/dashboard/files"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Files</span>
-      </a>
-      <a href="/dashboard/feedbacks"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Feedbacks</span>
-      </a>
-      <a href="/dashboard/features"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Features</span>
-      </a>
-      <a href="/dashboard/favorites"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Favorites</span>
-      </a>
-      <a href="/dashboard/companies"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Companies</span>
-      </a>
-      <a href="/dashboard/comments"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Comments</span>
-      </a>
-      <a href="/dashboard/categories"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Categories</span>
-      </a>
-      <a href="/dashboard/bugs"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Bugs</span>
-      </a>
-      <a href="/dashboard/blogs"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Blogs</span>
-      </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">CRUD</p>
+			<a
+				href="/dashboard/users"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-person"></i>
+				<span class="hidden lg:inline">Users</span>
+			</a>
+			<a
+				href="/dashboard/groups"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-people"></i>
+				<span class="hidden lg:inline">Groups</span>
+			</a>
+			<a
+				href="/dashboard/categories"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-bookmark"></i>
+				<span class="hidden lg:inline">Categories</span>
+			</a>
+			<a
+				href="/dashboard/blogs"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-postage"></i>
+				<span class="hidden lg:inline">Blogs</span>
+			</a>
+			<a
+				href="/dashboard/companies"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-building"></i>
+				<span class="hidden lg:inline">Companies</span>
+			</a>
+			<a
+				href="/dashboard/bugs"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-bug"></i>
+				<span class="hidden lg:inline">Bugs</span>
+			</a>
+			<a
+				href="/dashboard/games"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-joystick"></i>
+				<span class="hidden lg:inline">Games</span>
+			</a>
+			<p class="hidden lg:block text-sm font-semibold">~ Coming Soon</p>
+			<a
+				href="/dashboard/tickets"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Tickets</span>
+			</a>
+			<a
+				href="/dashboard/teams"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Teams</span>
+			</a>
+			<a
+				href="/dashboard/tasks"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Tasks</span>
+			</a>
+			<a
+				href="/dashboard/tags"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Tags</span>
+			</a>
+			<a
+				href="/dashboard/subscribers"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Subscribers</span>
+			</a>
+			<a
+				href="/dashboard/stories"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Stories</span>
+			</a>
+			<a
+				href="/dashboard/roles"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Roles</span>
+			</a>
+			<a
+				href="/dashboard/projects"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Projects</span>
+			</a>
+			<a
+				href="/dashboard/organizations"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Organizations</span>
+			</a>
+			<a
+				href="/dashboard/issues"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Issues</span>
+			</a>
+			<a
+				href="/dashboard/files"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Files</span>
+			</a>
+			<a
+				href="/dashboard/feedbacks"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Feedbacks</span>
+			</a>
+			<a
+				href="/dashboard/features"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Features</span>
+			</a>
+			<a
+				href="/dashboard/favorites"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Favorites</span>
+			</a>
+			<a
+				href="/dashboard/comments"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Comments</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">Keys</p>
-      <a href="/dashboard/api-keys"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">API Keys</span>
-      </a>
-      <a href="/dashboard/beta-keys"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Beta Keys</span>
-      </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">Keys</p>
+			<a
+				href="/dashboard/api/keys"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-key"></i>
+				<span class="hidden lg:inline">API Keys</span>
+			</a>
+			<a
+				href="/dashboard/beta/keys"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-key"></i>
+				<span class="hidden lg:inline">Beta Keys</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">Shopping</p>
-      <a href="/dashboard/products"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Products</span>
-      </a>
-      <a href="/dashboard/customers"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Customers</span>
-      </a>
-      <a href="/dashboard/customer-orders"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Customer Orders</span>
-      </a>
-      <a href="/dashboard/orders"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Orders</span>
-      </a>
-      <a href="/dashboard/payments"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Payments</span>
-      </a>
-      <a href="/dashboard/returns"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Returns</span>
-      </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">Shopping</p>
+			<a
+				href="/dashboard/products"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-kanban"></i>
+				<span class="hidden lg:inline">Products</span>
+			</a>
+			<a
+				href="/dashboard/customers"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-person"></i>
+				<span class="hidden lg:inline">Customers</span>
+			</a>
+			<a
+				href="/dashboard/customer-orders"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-trophy"></i>
+				<span class="hidden lg:inline">Customer Orders</span>
+			</a>
+			<a
+				href="/dashboard/orders"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-truck"></i>
+				<span class="hidden lg:inline">Orders</span>
+			</a>
+			<a
+				href="/dashboard/payments"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-credit-card"></i>
+				<span class="hidden lg:inline">Payments</span>
+			</a>
+			<a
+				href="/dashboard/returns"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-truck-flatbed"></i>
+				<span class="hidden lg:inline">Returns</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">Services</p>
-      <a href="/dashboard/analytics"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Analytics</span>
-      </a>
-      <a href="/dashboard/tournaments-panel"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Tournament Panel</span>
-      </a>
-      <a href="/dashboard/cloudnet"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">CloudNet</span>
-      </a>
-      <a href="/dashboard/faceit"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">FaceIt</span>
-      </a>
-      <a href="/dashboard/plex"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Plex</span>
-      </a>
-      <a href="/dashboard/proxmox"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">ProxMox</span>
-      </a>
-      <a href="/dashboard/pterodactyl"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Pterodactyl</span>
-      </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">Tournament Planner</p>
+			<a
+				href="/dashboard/tournaments"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-trophy"></i>
+				<span class="hidden lg:inline">Tournaments</span>
+			</a>
+			<a
+				href="/dashboard/tournaments/matches"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-controller"></i>
+				<span class="hidden lg:inline">Matches</span>
+			</a>
+			<a
+				href="/dashboard/tournaments/teams"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-people"></i>
+				<span class="hidden lg:inline">Teams</span>
+			</a>
+			<a
+				href="/dashboard/tournaments/players"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-person"></i>
+				<span class="hidden lg:inline">Players</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">Control</p>
-      <a href="/dashboard/beta"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Beta</span>
-      </a>
-      <a href="/dashboard/discord-bot"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Discord Bot</span>
-      </a>
-      <a href="/dashboard/api"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">API</span>
-      </a>
-      <a href="/dashboard/securities"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-server"></i>
-        <span class="hidden lg:inline">Security</span>
-      </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">Services</p>
+			<a
+				href="/dashboard/analytics"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-graph-up"></i>
+				<span class="hidden lg:inline">Analytics</span>
+			</a>
+			<a
+				href="/dashboard/cloudnet"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-cloud"></i>
+				<span class="hidden lg:inline">CloudNet</span>
+			</a>
+			<a
+				href="/dashboard/faceit"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fas fa-server"></i>
+				<span class="hidden lg:inline">FaceIt</span>
+			</a>
+			<a
+				href="/dashboard/plex"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-cast"></i>
+				<span class="hidden lg:inline">Plex</span>
+			</a>
+			<a
+				href="/dashboard/proxmox"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-hdd-stack"></i>
+				<span class="hidden lg:inline">ProxMox</span>
+			</a>
+			<a
+				href="/dashboard/pterodactyl"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-menu-button"></i>
+				<span class="hidden lg:inline">Pterodactyl</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">CMS</p>
-      <a href="/dashboard/youtube"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-youtube"></i>
-        <span class="hidden lg:inline">YouTube</span>
-      </a>
-      <a href="/dashboard/twitch"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-twitch"></i>
-        <span class="hidden lg:inline">Twitch</span>
-      </a>
-      <a href="/dashboard/instgram"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-instagram"></i>
-        <span class="hidden lg:inline">Instagram</span>
-      </a>
-      <a href="/dashboard/tiktok"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-tiktok"></i>
-        <span class="hidden lg:inline">TikTok</span>
-      </a>
-      <a href="/dashboard/twitter"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-twitter"></i>
-        <span class="hidden lg:inline">Twitter (X)</span>
-      </a>
-      <a href="/dashboard/github"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-github"></i>
-        <span class="hidden lg:inline">GitHub</span>
-      </a>
-      <a href="/dashboard/discord"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-discord"></i>
-        <span class="hidden lg:inline">Discord</span>
-      </a>
-      <a href="/dashboard/linkedin"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fab fa-linkedin"></i>
-        <span class="hidden lg:inline">LinkedIn</span>
-      </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">Control</p>
+			<a
+				href="/dashboard/beta"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-toggle-off"></i>
+				<span class="hidden lg:inline">Beta</span>
+			</a>
+      <a
+				href="/dashboard/api"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-cpu"></i>
+				<span class="hidden lg:inline">API</span>
+			</a>
+			<a
+				href="/dashboard/discord-bot"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-robot"></i>
+				<span class="hidden lg:inline">Discord Bot</span>
+			</a>
+      <a
+				href="/dashboard/securities"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-shield-check"></i>
+				<span class="hidden lg:inline">Security</span>
+			</a>
 
-      <hr class="border-gray-700 dark:border-gray-800" />
-      <p class="hidden lg:block text-sm font-semibold">Protocol</p>
-      <a href="/dashboard/logs"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-file-alt"></i>
-        <span class="hidden lg:inline">Logs</span>
-      </a>
-      <a href="/dashboard/api-log"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-file-alt"></i>
-        <span class="hidden lg:inline">API Log</span>
-      </a>
-      <a href="/dashboard/bot-log"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-file-alt"></i>
-        <span class="hidden lg:inline">Bot Log</span>
-      </a>
-      <a href="/dashboard/web-log"
-        class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300">
-        <i class="fas fa-file-alt"></i>
-        <span class="hidden lg:inline">Web Log</span>
-      </a>
-    </div>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">CMS</p>
+			<a
+				href="/dashboard/youtube"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-youtube"></i>
+				<span class="hidden lg:inline">YouTube</span>
+			</a>
+			<a
+				href="/dashboard/twitch"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-twitch"></i>
+				<span class="hidden lg:inline">Twitch</span>
+			</a>
+			<a
+				href="/dashboard/instgram"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-instagram"></i>
+				<span class="hidden lg:inline">Instagram</span>
+			</a>
+			<a
+				href="/dashboard/tiktok"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-tiktok"></i>
+				<span class="hidden lg:inline">TikTok</span>
+			</a>
+			<a
+				href="/dashboard/twitter"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-twitter"></i>
+				<span class="hidden lg:inline">Twitter (X)</span>
+			</a>
+			<a
+				href="/dashboard/github"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-github"></i>
+				<span class="hidden lg:inline">GitHub</span>
+			</a>
+			<a
+				href="/dashboard/discord"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-discord"></i>
+				<span class="hidden lg:inline">Discord</span>
+			</a>
+			<a
+				href="/dashboard/linkedin"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="fab fa-linkedin"></i>
+				<span class="hidden lg:inline">LinkedIn</span>
+			</a>
 
-    <!-- User Profile Dropdown -->
-    <div class="border-t border-gray-700 dark:border-gray-800 p-4">
-      <div class="flex items-center space-x-2">
-        <!-- Profilbild -->
-        <a href="/user/profile/<%= user.username %>">
-          <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>"
-            class="w-8 h-8 lg:w-10 lg:h-10 rounded-full cursor-pointer" />
-        </a>
+			<hr class="border-gray-700 dark:border-gray-800" />
+			<p class="hidden lg:block text-sm font-semibold">Protocol</p>
+			<a
+				href="/dashboard/logs"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-door-open"></i>
+				<span class="hidden lg:inline">Logs</span>
+			</a>
+			<a
+				href="/dashboard/api-log"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-cpu"></i>
+				<span class="hidden lg:inline">API Log</span>
+			</a>
+			<a
+				href="/dashboard/bot-log"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-robot"></i>
+				<span class="hidden lg:inline">Bot Log</span>
+			</a>
+			<a
+				href="/dashboard/web-log"
+				class="nav-item flex items-center space-x-2 hover:text-yellow-400 transition duration-300"
+			>
+				<i class="bi bi-browser-edge"></i>
+				<span class="hidden lg:inline">Web Log</span>
+			</a>
+		</div>
 
-        <!-- Benutzername und Rolle -->
-        <div class="relative">
-          <button id="userDropdownToggle" class="hidden lg:block font-semibold text-left w-full focus:outline-none">
-            <span>
-              <%= user.username %>
-            </span>
-            <br />
-            <span class="text-sm text-gray-400">
-              <%= user.role %>
-            </span>
-          </button>
+		<!-- User Profile Dropdown -->
+		<div class="border-t border-gray-700 dark:border-gray-800 p-4">
+			<div class="flex items-center space-x-2">
+				<!-- Profile Picture -->
+				<a href="/user/profile/<%= user.username %>">
+					<img
+						src="<%= user.profilePicture || '/assets/img/default-profile.png' %>"
+						alt="<%= user.username %>"
+						class="w-8 h-8 lg:w-10 lg:h-10 rounded-full cursor-pointer"
+					/>
+				</a>
 
-          <!-- Dropdown-Inhalt -->
-          <div id="userDropdownContent"
-            class="absolute mt-2 w-48 bg-gray-800 text-white rounded shadow-lg hidden z-50 dark:bg-gray-900">
-            <a href="/user/profile/<%= user.username %>"
-              class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
-            <a href="/user/profile/<%= user.username %>/settings"
-              class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
-            <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+				<!-- Username and Role -->
+				<div class="relative">
+					<button
+						id="userDropdownToggle"
+						class="hidden lg:block font-semibold text-left w-full focus:outline-none"
+					>
+						<span><%= user.username %></span><br />
+						<span class="text-sm text-gray-400"><%= user.role %></span>
+					</button>
+
+					<!-- Dropdown Content -->
+					<div
+						id="userDropdownContent"
+						class="absolute mt-2 w-48 bg-gray-800 text-white rounded shadow-lg hidden z-50 dark:bg-gray-900"
+					>
+						<a
+							href="/user/profile/<%= user.username %>"
+							class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700"
+							>Profile</a
+						>
+						<a
+							href="/user/profile/<%= user.username %>/settings"
+							class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700"
+							>Settings</a
+						>
+						<a
+							href="/logout"
+							class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700"
+							>Logout</a
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </aside>
 
 <style>
-  .sidebar {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+	.sidebar {
+		height: 100vh;
+		display: flex;
+		flex-direction: column;
+	}
 
-  .nav-container {
-    flex: 1;
-    overflow-y: auto;
-  }
+	.nav-container {
+		flex: 1;
+		overflow-y: auto;
+	}
 
-  .sidebar::-webkit-scrollbar {
-    width: 8px;
-  }
+	.sidebar::-webkit-scrollbar {
+		width: 8px;
+	}
 
-  .sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-  }
+	.sidebar::-webkit-scrollbar-thumb {
+		background-color: rgba(0, 0, 0, 0.2);
+		border-radius: 4px;
+	}
 </style>
 
 <script>
-  // Toggle Sidebar
-  document.getElementById('toggle-button').addEventListener('click', () => {
-    document.querySelector('.sidebar').classList.toggle('lg:hidden');
-  });
+	// Toggle Sidebar
+	document.getElementById('toggle-button').addEventListener('click', () => {
+		document.querySelector('.sidebar').classList.toggle('lg:hidden');
+	});
 
-  // User Profile Dropdown Toggle
-  document.getElementById('userDropdownToggle').addEventListener('click', () => {
-    const dropdown = document.getElementById('userDropdownContent');
-    dropdown.classList.toggle('hidden');
-  });
+	// User Profile Dropdown Toggle
+	document.getElementById('userDropdownToggle').addEventListener('click', () => {
+			const dropdown = document.getElementById('userDropdownContent');
+			dropdown.classList.toggle('hidden');
+		});
 
-  // Close dropdown if clicked outside
-  document.addEventListener('click', (event) => {
-    const dropdown = document.getElementById('userDropdownContent');
-    if (!dropdown.contains(event.target) && !document.getElementById('userDropdownToggle').contains(event.target)) {
-      dropdown.classList.add('hidden');
-    }
-  });
+	// Close dropdown if clicked outside
+	document.addEventListener('click', (event) => {
+		const dropdown = document.getElementById('userDropdownContent');
+		if (
+			!dropdown.contains(event.target) &&
+			!document.getElementById('userDropdownToggle').contains(event.target)
+		) {
+			dropdown.classList.add('hidden');
+		}
+	});
 </script>

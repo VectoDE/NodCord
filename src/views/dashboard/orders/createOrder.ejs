@@ -5,41 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Create Order</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
   <%- include('../../partials/dashboardHeader'); %>
-  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+
+  <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <div class="container mx-auto">
       <h1 class="text-3xl font-semibold mb-6">Create New Order</h1>
-
-      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-        <form action="/api/orders/create" method="POST">
-          <div class="mb-4">
-            <label for="customer" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Customer</label>
-            <input type="text" id="customer" name="customer" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+      <form action="/dashboard/orders/create" method="POST" class="bg-white dark:bg-gray-900 shadow-md rounded-lg p-6">
+        <div class="space-y-4">
+          <div>
+            <label for="customer" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer</label>
+            <input type="text" id="customer" name="customer" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:text-gray-200" required>
           </div>
-
-          <div class="mb-4">
-            <label for="totalAmount" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Total Amount</label>
-            <input type="number" id="totalAmount" name="totalAmount" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+          <div>
+            <label for="totalAmount" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Total Amount</label>
+            <input type="text" id="totalAmount" name="totalAmount" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:text-gray-200" required>
           </div>
-
-          <div class="mb-4">
-            <label for="date" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Date</label>
-            <input type="date" id="date" name="date" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+          <div>
+            <label for="date" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date</label>
+            <input type="date" id="date" name="date" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:text-gray-200" required>
           </div>
-
-          <div class="mb-4">
-            <label for="status" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Status</label>
-            <input type="text" id="status" name="status" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+          <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Status</label>
+            <select id="status" name="status" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:text-gray-200" required>
+              <option value="Pending">Pending</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
           </div>
-
-          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Order</button>
-        </form>
-      </div>
+          <div class="flex justify-end">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
+              <i class="bi bi-save"></i> Save Order
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
   </main>
 </body>

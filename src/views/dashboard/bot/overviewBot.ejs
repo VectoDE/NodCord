@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +8,14 @@
   <link rel="stylesheet" href="assets/css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .table th, .table td {
+      text-align: center;
+    }
+    .select-black {
+      color: black;
+    }
+  </style>
 </head>
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
   <%- include('../../partials/dashboardHeader'); %>
@@ -29,7 +37,7 @@
         <form id="botStatusForm" method="POST" action="/api/bot/toggle" class="mt-4">
           <div class="mb-4">
             <label for="botStatus" class="block text-lg font-medium">Bot Status ändern</label>
-            <select id="botStatus" name="isActive" class="form-select mt-1 block w-full">
+            <select id="botStatus" name="isActive" class="form-select mt-1 block w-full select-black border-gray-300 dark:border-gray-600 rounded-lg">
               <option value="true" <%= botStatus.isActive ? 'selected' : '' %>>Aktiv</option>
               <option value="false" <%= !botStatus.isActive ? 'selected' : '' %>>Inaktiv</option>
             </select>
@@ -44,13 +52,14 @@
           <p>Gesamtanzahl der Mitglieder: <strong><%= totalMembers %></strong></p>
           <p>Gesamtanzahl der Gilden: <strong><%= totalGuilds %></strong></p>
         </div>
+        <a href="/dashboard/bot/keys" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Bot Keys</a>
       </div>
     </div>
   </main>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://maxcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
     document.getElementById('botStatusForm').addEventListener('submit', function(event) {
       event.preventDefault();

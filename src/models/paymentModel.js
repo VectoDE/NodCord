@@ -4,7 +4,7 @@ const paymentModel = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'User', // Verweist auf das User-Modell, falls vorhanden
+    ref: 'User',
   },
   amount: {
     type: Number,

@@ -1,6 +1,6 @@
 {
   "name": "nodcord",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Eine Node.js-API mit Express.js und einem integrierten Discord-Bot",
   "main": "src/app.js",
   "scripts": {

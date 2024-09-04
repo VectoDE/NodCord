@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +11,9 @@
   <style>
     .table th, .table td {
       text-align: center;
+    }
+    .select-black {
+      color: black;
     }
   </style>
 </head>
@@ -34,7 +37,7 @@
         <form id="betaSystemForm" method="POST" action="/api/beta/toggle" class="mt-4">
           <div class="mb-4">
             <label for="betaSystemStatus" class="block text-lg font-medium">Beta-System Status ändern</label>
-            <select id="betaSystemStatus" name="isActive" class="form-select mt-1 block w-full">
+            <select id="betaSystemStatus" name="isActive" class="form-select mt-1 block w-full select-black border-gray-300 dark:border-gray-600 rounded-lg">
               <option value="true" <%= betaSystem.isActive ? 'selected' : '' %>>Aktiv</option>
               <option value="false" <%= !betaSystem.isActive ? 'selected' : '' %>>Inaktiv</option>
             </select>
@@ -50,6 +53,7 @@
           <p>Verwendete Beta-Schlüssel: <strong><%= betaKeys.filter(key => !key.isActive).length %></strong></p>
           <p>Unbenutzte Beta-Schlüssel: <strong><%= betaKeys.filter(key => key.isActive).length %></strong></p>
         </div>
+        <a href="/dashboard/beta/keys" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Beta Keys</a>
       </div>
     </div>
   </main>
