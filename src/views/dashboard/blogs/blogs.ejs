@@ -42,7 +42,7 @@
                   <td class="py-3 px-6 whitespace-nowrap"><%= blog.tags.join(', ') %></td>
                   <td class="py-3 px-6 whitespace-nowrap flex space-x-2">
                     <a href="/dashboard/blogs/update/<%= blog._id %>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-300">Bearbeiten</a>
-                    <form action="/api/blogs/delete/<%= blog._id %>" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this blog?');">
+                    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/blogs/delete/<%= blog._id %>" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this blog?');">
                       <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition duration-300">Löschen</button>
                     </form>
                   </td>

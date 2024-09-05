@@ -49,7 +49,7 @@
             <% } %>
         </div>
 
-        <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/helpdesk/respondTicket/<%= ticket.id %>" method="POST" class="mt-6 space-y-4">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/helpdesk/respondTicket/<%= ticket.id %>" method="POST" class="mt-6 space-y-4">
             <textarea
                 name="message"
                 rows="3"

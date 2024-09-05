@@ -36,7 +36,7 @@
               <td class="py-3 px-4 border-b"><%= (file.size / 1024 / 1024).toFixed(2) %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/files/edit/<%= file.id %>" class="text-blue-500 hover:underline">Edit</a> |
-                <a href="/api/files/delete/<%= file.id %>" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/files/delete/<%= file.id %>" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

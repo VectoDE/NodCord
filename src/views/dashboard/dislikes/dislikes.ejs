@@ -38,7 +38,7 @@
               <td class="py-3 px-4 border-b"><%= new Date(dislike.date).toLocaleDateString() %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/dislikes/<%= dislike.id %>" class="text-blue-500 hover:underline">Details</a> |
-                <a href="/api/dislikes/<%= dislike.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/dislikes/<%= dislike.id %>/delete" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

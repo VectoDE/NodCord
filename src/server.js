@@ -24,9 +24,15 @@ const startServer = async () => {
     const port = process.env.API_PORT || 3000;
     const baseURL = process.env.API_BASE_URL || 'localhost';
 
-    http.createServer(api).listen(port, () => {
-      logger.info(`[HTTP] Started and running on https://${baseURL}:${port}`);
-    });
+    if (process.env.NODE_ENV === 'production') {
+      http.createServer(api).listen(port, () => {
+        logger.info(`[HTTP] Started and running on https://${baseURL}`);
+      });
+    } else if (process.env.NODE_ENV === 'development') {
+      http.createServer(api).listen(port, () => {
+        logger.info(`[HTTP] Started and running on https://${baseURL}:${port}`);
+      });
+    }
 
     startBot();
     startClient();

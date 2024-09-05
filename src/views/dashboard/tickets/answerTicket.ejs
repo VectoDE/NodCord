@@ -24,7 +24,7 @@
         </div>
 
         <!-- Answer Form -->
-        <form action="/api/tickets/answer/<%= ticket._id %>" method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/tickets/answer/<%= ticket._id %>" method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
           <div class="mb-4">
             <label for="answer" class="block text-sm font-semibold mb-2">Your Answer:</label>
             <textarea id="answer" name="answer" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"></textarea>

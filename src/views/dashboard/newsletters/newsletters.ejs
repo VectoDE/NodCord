@@ -38,7 +38,7 @@
               <td class="py-3 px-4 border-b"><%= newsletter.status %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/newsletter/edit/<%= newsletter.id %>" class="text-blue-500 hover:underline">Edit</a> |
-                <a href="/api/newsletter/delete/<%= newsletter.id %>" class="text-red-500 hover:underline">Delete</a> |
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/newsletter/delete/<%= newsletter.id %>" class="text-red-500 hover:underline">Delete</a> |
                 <a href="/dashboard/newsletter/send/<%= newsletter.id %>" class="text-green-500 hover:underline">Send</a>
               </td>
             </tr>

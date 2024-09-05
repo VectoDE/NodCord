@@ -31,7 +31,7 @@
             <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= issue.status %></td>
             <td class="p-3 border-b border-gray-200 dark:border-gray-700">
               <a href="/dashboard/issues/<%= issue._id %>/edit" class="text-blue-500 hover:text-blue-600">Edit</a>
-              <form action="/api/issues/delete/<%= issue._id %>" method="POST" style="display: inline;">
+              <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/issues/delete/<%= issue._id %>" method="POST" style="display: inline;">
                 <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
               </form>
             </td>

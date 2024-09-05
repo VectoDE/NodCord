@@ -22,7 +22,7 @@
           <%= errorMessage %>
         </p>
       <% } %>
-      <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/auth/login" method="POST" class="space-y-6">
+      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/login" method="POST" class="space-y-6">
         <div>
           <label for="emailOrUsername" class="block text-sm font-medium text-gray-200">Username or Email</label>
           <input type="text" id="emailOrUsername" name="emailOrUsername" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">

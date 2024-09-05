@@ -36,7 +36,7 @@
               <td class="py-3 px-4 border-b"><%= feedback.text %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/feedbacks/edit/<%= feedback.id %>" class="text-blue-500 hover:underline">Edit</a> |
-                <a href="/api/feedbacks/delete/<%= feedback.id %>" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/feedbacks/delete/<%= feedback.id %>" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

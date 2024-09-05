@@ -16,7 +16,7 @@
             <p class="text-red-500 text-center mb-4"><%= errorMessage %></p>
         <% } %>
 
-        <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/auth/verify-oauth2-code" method="POST" class="space-y-6">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/verify-oauth2-code" method="POST" class="space-y-6">
             <input
                 type="text"
                 name="verificationCode"

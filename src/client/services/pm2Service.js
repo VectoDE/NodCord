@@ -80,7 +80,6 @@ const nodeEnv = pm2.metric({
 const monitorComponent = (component, componentName) => {
   logger.info(`[PM2] Monitoring initialized for: ${componentName}`);
 
-  // Überprüfen, ob Metriken korrekt initialisiert sind
   if (!realtimeUsers || !latency || !requestCounter || !errorMeter || !totalMemory || !freeMemory || !processMemory || !nodeVersion || !appVersion || !nodeEnv) {
     logger.error('[PM2] One or more metrics are not initialized correctly.');
     return;

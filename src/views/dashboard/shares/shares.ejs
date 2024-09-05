@@ -38,7 +38,7 @@
               <td class="py-3 px-4 border-b"><%= new Date(share.date).toLocaleDateString() %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/shares/<%= share.id %>" class="text-blue-500 hover:underline">Details</a> |
-                <a href="/api/shares/<%= share.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/shares/<%= share.id %>/delete" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

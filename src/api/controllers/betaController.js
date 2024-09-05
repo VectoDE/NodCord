@@ -29,13 +29,24 @@ exports.createBetaKey = async (req, res) => {
     const newBetaKey = new BetaKey({ key, name });
     await newBetaKey.save();
 
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(201).json({
-        message: 'Beta Key erstellt',
-        key: newBetaKey,
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(201).json({
+          message: 'Beta Key erstellt',
+          key: newBetaKey,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta/keys`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(201).json({
+          message: 'Beta Key erstellt',
+          key: newBetaKey,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+      }
     }
   } catch (error) {
     logger.error('Fehler beim Erstellen des Beta Keys:', error);
@@ -85,9 +96,16 @@ exports.getBetaKeyById = async (req, res) => {
 
   try {
     const betaKey = await BetaKey.findById(id);
-    if (!betaKey) {
-      logger.warn('Beta Key nicht gefunden:', { id });
-      return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+    if (process.env.NODE_ENV === 'production') {
+      if (!betaKey) {
+        logger.warn('Beta Key nicht gefunden:', { id });
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta/keys`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (!betaKey) {
+        logger.warn('Beta Key nicht gefunden:', { id });
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+      }
     }
 
     if (req.headers.accept && req.headers.accept.includes('application/json')) {
@@ -127,13 +145,24 @@ exports.updateBetaKey = async (req, res) => {
       return res.status(404).json({ message: 'Beta Key nicht gefunden' });
     }
 
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(200).json({
-        message: 'Beta Key aktualisiert',
-        key: updatedBetaKey,
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(200).json({
+          message: 'Beta Key aktualisiert',
+          key: updatedBetaKey,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta/keys`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(200).json({
+          message: 'Beta Key aktualisiert',
+          key: updatedBetaKey,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+      }
     }
   } catch (error) {
     logger.error('Fehler beim Aktualisieren des Beta Keys:', error);
@@ -157,22 +186,43 @@ exports.deleteBetaKey = async (req, res) => {
       return res.status(404).json({ message: 'Beta Key nicht gefunden' });
     }
 
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(200).json({
-        message: 'Beta Key gelöscht',
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(200).json({
+          message: 'Beta Key gelöscht',
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta/keys`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(200).json({
+          message: 'Beta Key gelöscht',
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+      }
     }
   } catch (error) {
     logger.error('Fehler beim Löschen des Beta Keys:', error);
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(500).json({
-        message: 'Fehler beim Löschen des Beta Keys',
-        error: error.message,
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(500).json({
+          message: 'Fehler beim Löschen des Beta Keys',
+          error: error.message,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta/keys`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(500).json({
+          message: 'Fehler beim Löschen des Beta Keys',
+          error: error.message,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta/keys`);
+      }
     }
   }
 };
@@ -187,23 +237,45 @@ exports.toggleBetaSystem = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(200).json({
-        message: `Beta System ${isActive ? 'aktiviert' : 'deaktiviert'}`,
-        betaSystem: updatedBetaSystem,
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(200).json({
+          message: `Beta System ${isActive ? 'aktiviert' : 'deaktiviert'}`,
+          betaSystem: updatedBetaSystem,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(200).json({
+          message: `Beta System ${isActive ? 'aktiviert' : 'deaktiviert'}`,
+          betaSystem: updatedBetaSystem,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta`);
+      }
     }
   } catch (error) {
     logger.error('Fehler beim Umschalten des Beta Systems:', error);
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(500).json({
-        message: 'Fehler beim Umschalten des Beta Systems',
-        error: error.message,
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(500).json({
+          message: 'Fehler beim Umschalten des Beta Systems',
+          error: error.message,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(500).json({
+          message: 'Fehler beim Umschalten des Beta Systems',
+          error: error.message,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta`);
+      }
     }
   }
 };
@@ -245,13 +317,24 @@ exports.verifyBetaKey = async (req, res) => {
     }
   } catch (error) {
     logger.error('Fehler bei der Verifizierung des Beta Keys:', error);
-    if (req.headers.accept && req.headers.accept.includes('application/json')) {
-      res.status(500).json({
-        message: 'Fehler bei der Verifizierung des Beta Keys',
-        error: error.message,
-      });
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta`);
+    if (process.env.NODE_ENV === 'production') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(500).json({
+          message: 'Fehler bei der Verifizierung des Beta Keys',
+          error: error.message,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/beta`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        res.status(500).json({
+          message: 'Fehler bei der Verifizierung des Beta Keys',
+          error: error.message,
+        });
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/beta`);
+      }
     }
   }
 };

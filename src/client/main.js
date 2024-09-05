@@ -80,9 +80,15 @@ const startClient = () => {
   const port = process.env.CLIENT_PORT || '3001';
   const baseURL = process.env.CLIENT_BASE_URL || 'localhost';
 
-  client.listen(port, () => {
-    logger.info(`[CLIENT] API is running on https://${baseURL}:${port}`);
-  });
+  if (process.env.NODE_ENV === 'production') {
+    client.listen(port, () => {
+      logger.info(`[CLIENT] Frontend is running on https://${baseURL}`);
+    });
+  } else if (process.env.NODE_ENV === 'development') {
+    client.listen(port, () => {
+      logger.info(`[CLIENT] Frontend is running on https://${baseURL}:${port}`);
+    });
+  }
 };
 
 module.exports = { client, startClient };

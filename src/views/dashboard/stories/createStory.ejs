@@ -16,7 +16,7 @@
       <h1 class="text-3xl font-semibold mb-6">Create New Story</h1>
 
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-        <form action="/api/stories/create" method="POST">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/stories/create" method="POST">
           <div class="mb-4">
             <label for="title" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Title</label>
             <input type="text" id="title" name="title" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>

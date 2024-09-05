@@ -34,7 +34,7 @@
             <td class="p-3 border-b border-gray-200 dark:border-gray-700"><%= comment.content %></td>
             <td class="p-3 border-b border-gray-200 dark:border-gray-700 flex space-x-2">
               <a href="/dashboard/comments/<%= comment._id %>/edit" class="text-blue-500 hover:text-blue-600">Edit</a>
-              <form action="/api/comments/delete/<%= comment._id %>" method="POST" style="display: inline;">
+              <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/comments/delete/<%= comment._id %>" method="POST" style="display: inline;">
                 <button type="submit" class="text-red-500 hover:text-red-600">Delete</button>
               </form>
             </td>

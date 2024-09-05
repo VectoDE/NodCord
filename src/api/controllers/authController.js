@@ -1,3 +1,4 @@
+require('dotenv').config();
 const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
 const nodemailerService = require('../services/nodemailerService');
@@ -43,7 +44,11 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/login`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
+    }
   } catch (err) {
     logger.error('Error during registration:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
@@ -106,12 +111,22 @@ exports.login = async (req, res) => {
 
     logger.info(`User ${user.username} successfully logged in.`);
 
-    if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard`);
-    } else if (user.role === 'user') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/user/profile/${user.username}`);
-    } else {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}`);
+    if (process.env.NODE_ENV === 'production') {
+      if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard`);
+      } else if (user.role === 'user') {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/user/profile/${user.username}`);
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard`);
+      } else if (user.role === 'user') {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/user/profile/${user.username}`);
+      } else {
+        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/`);
+      }
     }
   } catch (err) {
     logger.error('Login error:', err.message);
@@ -122,8 +137,14 @@ exports.login = async (req, res) => {
 exports.logout = async (req, res) => {
   try {
     const token = req.cookies.token;
-    if (!token) {
-      return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
+    if (process.env.NODE_ENV === 'production') {
+      if (!token) {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/login`);
+      }
+    } else if (process.env.NODE_ENV === 'development') {
+      if (!token) {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
+      }
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -137,7 +158,11 @@ exports.logout = async (req, res) => {
     await user.save();
 
     res.clearCookie('token');
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/`);
+    }
   } catch (err) {
     logger.error('Logout error:', err.message);
     res.status(500).json({ success: false, message: 'Internal Server Error' });

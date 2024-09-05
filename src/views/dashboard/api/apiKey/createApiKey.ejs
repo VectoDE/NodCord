@@ -14,7 +14,7 @@
   <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
     <div class="container mx-auto">
       <h1 class="text-3xl font-semibold mb-4">Neuen API-Schlüssel erstellen</h1>
-      <form action="/api/api/create" method="POST">
+      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/api/create" method="POST">
         <div class="mb-4">
           <label for="keyName" class="block text-lg font-medium">Name</label>
           <input type="text" id="keyName" name="name" class="form-input mt-1 block w-full" required>

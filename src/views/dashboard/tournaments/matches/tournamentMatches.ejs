@@ -35,7 +35,7 @@
                 <td><%= match.teams.join(', ') %></td>
                 <td>
                   <a href="/dashboard/tournaments/<%= tournamentId %>/matches/<%= match.id %>/edit" class="text-yellow-500 hover:underline">Edit</a> |
-                  <a href="/api/tournaments/<%= tournamentId %>/matches/<%= match.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+                  <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/tournaments/<%= tournamentId %>/matches/<%= match.id %>/delete" class="text-red-500 hover:underline">Delete</a>
                 </td>
               </tr>
             <% }) %>

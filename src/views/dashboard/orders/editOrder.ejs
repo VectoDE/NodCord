@@ -15,7 +15,7 @@
   <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <div class="container mx-auto">
       <h1 class="text-3xl font-semibold mb-6">Edit Order</h1>
-      <form action="/dashboard/orders/edit/<%= order.id %>" method="POST" class="bg-white dark:bg-gray-900 shadow-md rounded-lg p-6">
+      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/dashboard/orders/edit/<%= order.id %>" method="POST" class="bg-white dark:bg-gray-900 shadow-md rounded-lg p-6">
         <div class="space-y-4">
           <div>
             <label for="customer" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer</label>

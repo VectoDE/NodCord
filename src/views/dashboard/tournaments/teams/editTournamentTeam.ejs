@@ -15,7 +15,7 @@
     <div class="container mx-auto">
       <h1 class="text-3xl font-semibold mb-6">Edit Tournament Team</h1>
       <div class="form-container">
-        <form action="/api/tournaments/<%= tournamentId %>/teams/<%= team.id %>/update" method="POST">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/tournaments/<%= tournamentId %>/teams/<%= team.id %>/update" method="POST">
           <div class="mb-4">
             <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Team Name</label>
             <input type="text" id="name" name="name" value="<%= team.name %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />

@@ -14,7 +14,7 @@
     <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
         <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create a New Ticket</h1>
 
-        <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/helpdesk/createTicket" method="POST" class="space-y-4">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/helpdesk/createTicket" method="POST" class="space-y-4">
             <div>
                 <label for="subject" class="block text-gray-700">Subject</label>
                 <input

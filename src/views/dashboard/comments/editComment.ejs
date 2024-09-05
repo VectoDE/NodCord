@@ -12,7 +12,7 @@
   <%- include('../../partials/dashboardHeader'); %>
   <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
     <h1 class="text-3xl font-semibold mb-6">Edit Comment for Blog: <%= blogTitle %></h1>
-    <form action="/api/comments/update/<%= comment._id %>" method="POST" class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md space-y-4 max-w-lg mx-auto">
+    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/comments/update/<%= comment._id %>" method="POST" class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md space-y-4 max-w-lg mx-auto">
       <div>
         <label for="content" class="block text-sm font-semibold mb-2">Comment</label>
         <textarea id="content" name="content" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"><%= comment.content %></textarea>

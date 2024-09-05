@@ -62,8 +62,8 @@
               <td class="py-3 px-4 border-b"><%= server.diskUsage %> GB</td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/proxmox/servers/<%= server.id %>" class="text-blue-500 hover:underline">Details</a> |
-                <a href="/api/proxmox/servers/<%= server.id %>/stop" class="text-red-500 hover:underline">Stop</a> |
-                <a href="/api/proxmox/servers/<%= server.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/proxmox/servers/<%= server.id %>/stop" class="text-red-500 hover:underline">Stop</a> |
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/proxmox/servers/<%= server.id %>/delete" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

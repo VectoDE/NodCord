@@ -18,7 +18,7 @@
     <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
       <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit Profile</h1>
 
-      <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/user/profile/<%= user.username %>/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
+      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/<%= user.username %>/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
 
         <!-- Profile Picture Upload -->
         <div>

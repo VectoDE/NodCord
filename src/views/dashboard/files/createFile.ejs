@@ -16,7 +16,7 @@
       <h1 class="text-3xl font-semibold mb-6">Upload New File</h1>
 
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-        <form action="/api/files/create" method="POST" enctype="multipart/form-data">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/files/create" method="POST" enctype="multipart/form-data">
           <div class="mb-4">
             <label for="file" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Choose File</label>
             <input type="file" id="file" name="file" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>

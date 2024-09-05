@@ -16,7 +16,7 @@
       <h1 class="text-3xl font-semibold mb-6">Send Newsletter</h1>
 
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
-        <form action="/api/newsletter/send/<%= newsletter.id %>" method="POST">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/newsletter/send/<%= newsletter.id %>" method="POST">
           <p class="mb-4">You are about to send the following newsletter:</p>
           <h2 class="text-xl font-semibold mb-4"><%= newsletter.subject %></h2>
           <p class="mb-4"><%= newsletter.content %></p>

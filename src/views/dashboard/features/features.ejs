@@ -36,7 +36,7 @@
               <td class="py-3 px-4 border-b"><%= feature.description %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/features/edit/<%= feature.id %>" class="text-blue-500 hover:underline">Edit</a> |
-                <a href="/api/features/delete/<%= feature.id %>" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/features/delete/<%= feature.id %>" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

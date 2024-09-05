@@ -77,8 +77,8 @@
               <td class="py-3 px-4 border-b"><%= new Date(incident.date).toLocaleDateString() %></td>
               <td class="py-3 px-4 border-b">
                 <a href="/dashboard/securities/incidents/<%= incident.id %>" class="text-blue-500 hover:underline">Details</a> |
-                <a href="/api/securities/incidents/<%= incident.id %>/resolve" class="text-green-500 hover:underline">Resolve</a> |
-                <a href="/api/securities/incidents/<%= incident.id %>/delete" class="text-red-500 hover:underline">Delete</a>
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/securities/incidents/<%= incident.id %>/resolve" class="text-green-500 hover:underline">Resolve</a> |
+                <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/securities/incidents/<%= incident.id %>/delete" class="text-red-500 hover:underline">Delete</a>
               </td>
             </tr>
             <% }) %>

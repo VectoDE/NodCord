@@ -40,7 +40,7 @@
                   <td class="py-3 px-6 whitespace-nowrap"><%= category.description %></td>
                   <td class="py-3 px-6 whitespace-nowrap flex space-x-2">
                     <a href="/dashboard/categories/update/<%= category._id %>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded transition duration-300">Edit</a>
-                    <form action="/api/categories/delete/<%= category._id %>" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this category?');">
+                    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/categories/delete/<%= category._id %>" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this category?');">
                       <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition duration-300">Delete</button>
                     </form>
                   </td>

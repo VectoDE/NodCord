@@ -15,7 +15,7 @@
     <div class="container mx-auto">
       <h1 class="text-3xl font-semibold mb-6">Edit Series</h1>
       <div class="form-container">
-        <form action="/api/plex/series/<%= series.id %>/update" method="POST">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/plex/series/<%= series.id %>/update" method="POST">
           <div class="mb-4">
             <label for="title" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Title</label>
             <input type="text" id="title" name="title" value="<%= series.title %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required />

@@ -23,7 +23,7 @@
         </div>
       <% } %>
 
-      <form action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/auth/register" method="POST" class="space-y-6">
+      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/register" method="POST" class="space-y-6">
         <div>
           <label for="fullname" class="block text-sm font-medium text-gray-200">Full Name</label>
           <input type="text" id="fullname" name="fullname" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">

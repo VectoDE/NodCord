@@ -133,9 +133,15 @@ const startApi = () => {
   const port = process.env.API_PORT || '3000';
   const baseURL = process.env.API_BASE_URL || 'localhost';
 
-  api.listen(port, () => {
-    logger.info(`API is running on https://${baseURL}:${port}`);
-  });
+  if (process.env.NODE_ENV === 'production') {
+    api.listen(port, () => {
+      logger.info(`API is running on https://${baseURL}`);
+    });
+  } else if (process.env.NODE_ENV === 'development') {
+    api.listen(port, () => {
+      logger.info(`API is running on https://${baseURL}:${port}`);
+    });
+  }
 };
 
 module.exports = { api, startApi };

@@ -47,7 +47,7 @@
                     <a href="/dashboard/api/keys/edit/<%= key._id %>" class="bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded shadow-md transition duration-300">
                       <i class="bi bi-pencil-square"></i> Bearbeiten
                     </a>
-                    <form action="/api/api/keys/delete/<%= key._id %>" method="POST" onsubmit="return confirm('Sind Sie sicher, dass Sie diesen API-Schlüssel löschen möchten?');" style="display: inline;">
+                    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/api/keys/delete/<%= key._id %>" method="POST" onsubmit="return confirm('Sind Sie sicher, dass Sie diesen API-Schlüssel löschen möchten?');" style="display: inline;">
                       <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow-md transition duration-300">
                         <i class="bi bi-trash"></i> Löschen
                       </button>

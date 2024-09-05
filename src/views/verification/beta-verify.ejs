@@ -19,7 +19,7 @@
         <h1 class="text-3xl font-extrabold text-gray-900 dark:text-gray-200">Beta Key Verifizierung</h1>
       </div>
 
-      <form class="mt-8 space-y-6" method="POST" action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/beta/verify">
+      <form class="mt-8 space-y-6" method="POST" action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/beta/verify">
         <div class="rounded-md shadow-sm -space-y-px">
           <div>
             <label for="key" class="sr-only">Beta Key</label>
