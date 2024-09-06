@@ -3,7 +3,11 @@ const os = require('os');
 const logger = require('../../api/services/loggerService');
 const packageInfo = require('../../../package.json');
 
-// Initialisiere Metriken außerhalb der monitorComponent-Funktion
+pm2.init({
+  transactions: true,
+  http: true
+})
+
 const realtimeUsers = pm2.metric({
   name: 'Realtime Users',
   id: 'app/realtime/users',
