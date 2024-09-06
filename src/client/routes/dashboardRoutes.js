@@ -152,6 +152,7 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       loggerLogs,
       versions,
       isAuthenticated: res.locals.isAuthenticated,
+      token: res.locals.token,
       logoImage: '/assets/img/logo.png',
       errorstack: null,
       api: {
@@ -166,7 +167,6 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
     res.status(500).send('Fehler beim Abrufen des Status');
   }
 });
-
 
 // Blog CRUD
 router.get('/blogs', roleMiddleware(['admin']), async (req, res) => {
