@@ -1,52 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NodCord - Blog</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-bg {
+      background-image: url('/assets/img/blog-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
 </head>
+
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('./partials/header'); %>
 
-  <main class="p-5 space-y-8">
-    <!-- Blog Section -->
-    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <div class="flex items-center justify-between">
-        <h1 class="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white"></h1>
-        <button class="focus:outline-none">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-gray-600 transition-colors duration-300 transform dark:text-gray-400 hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-        </button>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-16 lg:py-24">
+      <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">Our Blog</h1>
+        <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+          Stay updated with the latest news and features from NodCord.
+        </p>
       </div>
-      <hr class="my-8 border-gray-200 dark:border-gray-700">
-      <div class="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3">
-        <% blogs.forEach(blog => { %>
-          <div>
-            <img class="object-cover object-center w-full h-64 rounded-lg lg:h-80" src="<%= blog.picture ? blog.picture : 'default-image-url' %>" alt="Blog Image">
-            <div class="mt-8">
-              <span class="text-blue-500 uppercase"><%= blog.tags.join(', ') %></span>
-              <h1 class="mt-4 text-xl font-semibold text-gray-800 dark:text-white"><%= blog.title %></h1>
-              <p class="mt-2 text-gray-500 dark:text-gray-400"><%= blog.content.substring(0, 100) %>...</p>
-              <div class="flex items-center justify-between mt-4">
-                <div>
-                  <a href="#" class="text-lg font-medium text-gray-700 dark:text-gray-300 hover:underline hover:text-gray-500"><%= blog.author %></a>
-                  <p class="text-sm text-gray-500 dark:text-gray-400"><%= blog.createdAt.toDateString() %></p>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 py-16 lg:py-24">
+      <div class="container mx-auto px-6">
+        <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+          <% blogs.forEach(blog => { %>
+            <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+              <img class="object-cover object-center w-full h-64 rounded-lg lg:h-80" src="<%= blog.picture ? blog.picture : '/assets/img/default-image.png' %>" alt="Blog Image">
+              <div class="mt-8">
+                <span class="text-blue-500 uppercase">
+                  <%= blog.tags.join(', ') %>
+                </span>
+                <h2 class="mt-4 text-xl font-semibold text-gray-900 dark:text-white">
+                  <a href="/news/<%= blog._id %>" class="hover:underline">
+                    <%= blog.title %>
+                  </a>
+                </h2>
+                <p class="mt-2 text-gray-600 dark:text-gray-400">
+                  <%= blog.content.substring(0, 100) %>...
+                </p>
+                <div class="flex items-center justify-between mt-4">
+                  <div>
+                    <a href="/user/profile/<%= blog.author %>" class="text-lg font-medium text-gray-700 dark:text-gray-300 hover:underline hover:text-gray-500">
+                      <%= blog.author %>
+                    </a>
+                    <p class="text-sm text-gray-500 dark:text-gray-400">
+                      <%= new Date(blog.createdAt).toDateString() %>
+                    </p>
+                  </div>
+                  <a href="/news/<%= blog._id %>" class="inline-block text-blue-500 underline hover:text-blue-400">
+                    Read more
+                  </a>
                 </div>
-                <a href="/news/<%= blog._id %>" class="inline-block text-blue-500 underline hover:text-blue-400">Read more</a>
               </div>
             </div>
-          </div>
-        <% }); %>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-bg text-white py-16 lg:py-24">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-bold md:text-4xl lg:text-5xl">
+          Want to Stay Updated?
+        </h2>
+        <p class="mt-4 text-lg md:text-xl">
+          Subscribe to our newsletter to receive the latest updates.
+        </p>
+        <a href="/subscribe" class="mt-8 inline-block bg-white text-blue-500 dark:bg-gray-800 dark:text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600">
+          Subscribe Now
+        </a>
       </div>
     </section>
   </main>
+
   <%- include('./partials/footer'); %>
+  <script src="/assets/js/script.js"></script>
 </body>
-<script src="assets/js/script.js"></script>
+
 </html>

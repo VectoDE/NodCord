@@ -6,13 +6,15 @@ const botConfig = require('../../config/botConfig');
 const apiConfig = require('../../config/apiConfig');
 const serverConfig = require('../../config/serverConfig');
 const bot = require('../../bot/index');
+const authController = require('../../api/controllers/authController');
+const blogController = require('../../api/controllers/blogController');
+const authMiddleware = require('../../api/middlewares/authMiddleware');
 const apiStatusService = require('../../api/services/apiStatusService');
-const infoService = require('../../api/services/infoService');
 const botStatusService = require('../../api/services/botStatusService');
 const dbStatusService = require('../../api/services/dbStatusService');
-const authController = require('../../api/controllers/authController');
-const authMiddleware = require('../../api/middlewares/authMiddleware');
-const blogService = require('../../api/services/blogService');
+const infoService = require('../../api/services/infoService');
+
+const Version = require('../../models/versionModel');
 
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(authMiddleware(false));
@@ -47,7 +49,7 @@ router.get('/', async (req, res) => {
 
 router.get('/news', async (req, res) => {
   try {
-    const blogs = await blogService.getAllPosts();
+    const blogs = await blogController.getAllBlogs();
     res.render('blog', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
@@ -65,7 +67,8 @@ router.get('/news', async (req, res) => {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blogs: [],
-      errorstack: 'Fehler beim Abrufen der Blog-Posts. Bitte versuchen Sie es später erneut.',
+      errorstack: null,
+      errorMessage: error.message,
       api: {
         https: process.env.API_HTTPS,
         baseURL: process.env.API_BASE_URL,
@@ -77,7 +80,7 @@ router.get('/news', async (req, res) => {
 
 router.get('/news/:id', async (req, res) => {
   try {
-    const blog = await blogService.getPostById(req.params.id);
+    const blog = await blogController.getBlogById(req.params.id);
     if (!blog) {
       return res.status(404).render('blogPost', {
         isAuthenticated: res.locals.isAuthenticated,
@@ -106,7 +109,7 @@ router.get('/news/:id', async (req, res) => {
     console.error('Error fetching blog post:', error);
     res.status(500).render('blogPost', {
       isAuthenticated: res.locals.isAuthenticated,
-      LogoImage: '/assets/img/logo.png',
+      logoImage: '/assets/img/logo.png',
       blog: null,
       errorstack: 'Fehler beim Abrufen des Blog-Posts. Bitte versuchen Sie es später erneut.',
       api: {
@@ -117,7 +120,6 @@ router.get('/news/:id', async (req, res) => {
     });
   }
 });
-
 
 router.get('/docs', (req, res) => {
   res.render('documentation', {
@@ -209,37 +211,8 @@ router.get('/info', async (req, res) => {
   }
 });
 
-router.get('/versions', (req, res) => {
-  const versions = [
-    {
-      name: "NodCord v0.5 Beta",
-      tag: "v0.5.0 Beta",
-      shortDescription: "Release the beta of NodCord with beta key access to features for users.",
-      detailedDescription: "This version includes early access to NodCord's key features, providing a glimpse into the capabilities of the platform before the official release.",
-      features: [
-        "Early access to NodCord core features",
-        "Beta testing feedback system",
-        "Limited support for integrations"
-      ],
-      added: [
-        "Initial beta version released",
-        "Added basic user interface",
-        "Included initial API endpoints"
-      ],
-      fixed: [
-        "Fixed initial setup bugs",
-        "Resolved issues with user authentication",
-        "Minor UI bug fixes"
-      ],
-      bugs: [
-        "Occasional crashes during user sign-up",
-        "Intermittent lag in API responses"
-      ],
-      createdAt: new Date('2023-05-01'),
-      releasedAt: new Date('2023-05-15'),
-      developers: ["John Doe", "Jane Smith", "Alice Johnson"],
-      downloadLink: "/downloads/NodCord-v0.5.0-beta.zip"
-    },
+router.get('/versions', async (req, res) => {
+  const version = [
     {
       name: "NodCord v1.0 LTS",
       tag: "v1.0.0 LTS",
@@ -270,7 +243,9 @@ router.get('/versions', (req, res) => {
     },
   ];
 
-  res.render('versionControl', {
+  const versions = await Version.find();
+
+  res.render('versions', {
     versions,
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',

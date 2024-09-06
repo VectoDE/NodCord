@@ -6,17 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login ~ NodCord</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Additional custom styles */
+    body {
+      background-color: #1a202c; /* Dark background similar to about.ejs */
+    }
+    .login-container {
+      background-color: #2d3748; /* Darker background for the form */
+    }
+  </style>
 </head>
 
-<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+<body class="text-gray-200">
   <%- include('../partials/header'); %>
-  <main class="flex justify-center items-center min-h-screen">
-    <div class="max-w-md w-full bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
-      <h1 class="text-2xl font-bold text-gray-200 mb-6">Login</h1>
+  <main class="flex justify-center items-center min-h-screen py-8">
+    <div class="max-w-md w-full p-8 rounded-lg shadow-lg login-container">
+      <h1 class="text-2xl font-bold text-gray-100 mb-6">Login</h1>
       <% if (errorMessage) { %>
         <p class="text-red-500 mb-4">
           <%= errorMessage %>
@@ -24,12 +34,12 @@
       <% } %>
       <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/login" method="POST" class="space-y-6">
         <div>
-          <label for="emailOrUsername" class="block text-sm font-medium text-gray-200">Username or Email</label>
-          <input type="text" id="emailOrUsername" name="emailOrUsername" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="emailOrUsername" class="block text-sm font-medium text-gray-300">Username or Email</label>
+          <input type="text" id="emailOrUsername" name="emailOrUsername" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-200">Password</label>
-          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div>
           <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">Login</button>
@@ -37,7 +47,7 @@
       </form>
 
       <div class="text-center my-6">
-        <p class="text-gray-600">---- OR ----</p>
+        <p class="text-gray-400">---- OR ----</p>
       </div>
 
       <!-- Social Login Buttons -->
@@ -53,7 +63,7 @@
         </a>
       </div>
       <div class="text-center">
-        <a href="/register" class="text-sm text-indigo-600 hover:text-indigo-500">Du hast noch keinen Account?</a>
+        <a href="/register" class="text-sm text-indigo-400 hover:text-indigo-300">Du hast noch keinen Account?</a>
       </div>
     </div>
   </main>

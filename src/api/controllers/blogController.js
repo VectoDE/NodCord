@@ -32,90 +32,62 @@ const createBlog = async (req, res) => {
   }
 };
 
-const getAllBlogs = async (req, res) => {
+const getAllBlogs = async () => {
   try {
     const blogs = await Blog.find();
-    res.status(200).json(blogs);
+    return blogs;
   } catch (error) {
     logger.error('Error fetching blogs:', error);
-    res.status(500).json({
-      message: 'Internal Server Error',
-      details: error.message,
-    });
+    throw new Error('Internal Server Error');
   }
 };
 
-const getBlogById = async (req, res) => {
-  const { id } = req.params;
-
+const getBlogById = async (id) => {
   try {
     const blog = await Blog.findById(id);
 
     if (!blog) {
-      return res.status(404).json({
-        message: 'Blog not found',
-      });
+      throw new Error('Blog not found');
     }
 
-    res.status(200).json(blog);
+    return blog;
   } catch (error) {
     logger.error(`Error fetching blog with ID ${id}:`, error);
-    res.status(500).json({
-      message: 'Internal Server Error',
-      details: error.message,
-    });
+    throw error;
   }
 };
 
-const updateBlog = async (req, res) => {
-  const { id } = req.params;
-  const { title, content, author, tags } = req.body;
-
+const updateBlog = async (id, data) => {
   try {
     const updatedBlog = await Blog.findByIdAndUpdate(
       id,
-      { title, content, author, tags },
+      data,
       { new: true, runValidators: true }
     );
 
     if (!updatedBlog) {
-      return res.status(404).json({
-        message: 'Blog not found',
-      });
+      throw new Error('Blog not found');
     }
 
-    res.status(200).json({
-      message: 'Blog updated successfully.',
-      blog: updatedBlog,
-    });
+    return updatedBlog;
   } catch (error) {
     logger.error(`Error updating blog with ID ${id}:`, error);
-    res.status(500).json({
-      message: 'Internal Server Error',
-      details: error.message,
-    });
+    throw error;
   }
 };
 
-const deleteBlog = async (req, res) => {
-  const { id } = req.params;
-
+const deleteBlog = async (id) => {
   try {
     const deletedBlog = await Blog.findByIdAndDelete(id);
 
     if (!deletedBlog) {
-      return res.status(404).json({
-        message: 'Blog not found',
-      });
+      throw new Error('Blog not found');
     }
 
-    res.status(204).send();
+    return deletedBlog;
   } catch (error) {
     logger.error(`Error deleting blog with ID ${id}:`, error);
-    res.status(500).json({
-      message: 'Internal Server Error',
-      details: error.message,
-    });
+    throw error;
   }
 };
 

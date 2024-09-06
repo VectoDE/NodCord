@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= blog.title %> - NodCord</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -18,7 +18,7 @@
     <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
       <h1 class="text-3xl font-semibold text-gray-800 dark:text-white"><%= blog.title %></h1>
       <div class="mt-4">
-        <img class="object-cover object-center w-full h-64 rounded-lg lg:h-80" src="<%= blog.picture ? blog.picture : 'default-image-url' %>" alt="Blog Image">
+        <img class="object-cover object-center w-full h-64 rounded-lg lg:h-80" src="<%= blog.picture ? blog.picture : '/assets/img/default-image.png' %>" alt="Blog Image">
       </div>
       <p class="mt-4 text-gray-500 dark:text-gray-400"><%= blog.content %></p>
       <div class="mt-4 text-gray-500 dark:text-gray-400">
@@ -31,5 +31,5 @@
 
   <%- include('./partials/footer'); %>
 </body>
-<script src="assets/js/script.js"></script>
+<script src="/assets/js/script.js"></script>
 </html>

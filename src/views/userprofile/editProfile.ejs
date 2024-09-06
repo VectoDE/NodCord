@@ -1,69 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Profile - <%= user.username %></title>
+  <title>Profil bearbeiten ~ NodCord</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="dark:bg-gray-900">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex flex-col min-h-screen">
   <%- include('../partials/header'); %>
-  <main class="flex justify-center items-center min-h-screen">
-    <div class="max-w-2xl w-full bg-white p-8 rounded-lg shadow-lg">
-      <h1 class="text-3xl font-bold text-gray-800 mb-6">Edit Profile</h1>
 
-      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/<%= user.username %>/edit" method="POST" enctype="multipart/form-data" class="space-y-4">
+  <main class="flex-1 flex flex-col p-6">
+    <h1 class="text-3xl font-bold mb-6">Profil bearbeiten</h1>
 
-        <!-- Profile Picture Upload -->
-        <div>
-          <label for="profilePicture" class="block text-gray-700">Profile Picture</label>
-          <div class="flex items-center space-x-4 mt-2">
-            <img src="<%= user.profilePicture %>" alt="<%= user.fullName %>'s Profile Picture" class="w-16 h-16 rounded-full object-cover">
-            <input type="file" name="profilePicture" id="profilePicture" accept="image/*" class="w-full p-2 border border-gray-300 rounded">
-          </div>
-        </div>
+    <form action="/user/profile/<%= user.username %>edit" method="POST" enctype="multipart/form-data" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
 
-        <div>
-          <label for="fullname" class="block text-gray-700">Full Name</label>
-          <input type="text" name="fullname" id="fullname" value="<%= user.fullName %>" class="w-full p-2 border border-gray-300 rounded mt-1" required>
-        </div>
+      <div class="mb-6">
+        <label for="thumbnail" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Thumbnail</label>
+        <input type="file" id="thumbnail" name="thumbnail" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500">
+        <img src="<%= user.thumbnail %>" alt="Thumbnail" class="mt-2 w-32 h-32 object-cover rounded-lg">
+      </div>
 
-        <div>
-          <label for="email" class="block text-gray-700">Email</label>
-          <input type="email" name="email" id="email" value="<%= user.email %>" class="w-full p-2 border border-gray-300 rounded mt-1" required>
-        </div>
+      <div class="mb-6">
+        <label for="profilePicture" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Profilbild</label>
+        <input type="file" id="profilePicture" name="profilePicture" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500">
+        <img src="<%= user.profilePicture %>" alt="Profilbild" class="mt-2 w-32 h-32 rounded-full border-4 border-white shadow-lg">
+      </div>
 
-        <div>
-          <label for="bio" class="block text-gray-700">Bio</label>
-          <textarea name="bio" id="bio" rows="4" class="w-full p-2 border border-gray-300 rounded mt-1"><%= user.bio %></textarea>
-        </div>
+      <div class="mb-6">
+        <label for="fullName" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Vollständiger Name</label>
+        <input type="text" id="fullName" name="fullName" value="<%= user.fullName %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500">
+      </div>
 
-        <div>
-          <label for="socialLinks" class="block text-gray-700">Social Links</label>
-          <div class="space-y-2">
-            <% const platforms = ['twitter', 'facebook', 'instagram', 'linkedin']; %>
-            <% platforms.forEach(platform => { %>
-              <div class="flex items-center space-x-2">
-                <i class="bi bi-<%= platform %>"></i>
-                <input type="url" name="socialLinks[<%= platform %>]" placeholder="<%= platform.charAt(0).toUpperCase() + platform.slice(1) %> URL" value="<%= user.socialLinks[platform] || '' %>" class="w-full p-2 border border-gray-300 rounded mt-1">
-              </div>
-            <% }); %>
-          </div>
-        </div>
+      <div class="mb-6">
+        <label for="username" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Benutzername</label>
+        <input type="text" id="username" name="username" value="<%= user.username %>" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500">
+      </div>
 
-        <div>
-          <button type="submit" class="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300">Save Changes</button>
-        </div>
-      </form>
-    </div>
+      <div class="mb-6">
+        <label for="bio" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Bio</label>
+        <textarea id="bio" name="bio" rows="4" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500"><%= user.bio %></textarea>
+      </div>
+
+      <div class="mb-6">
+        <label for="socialLinks" class="block text-lg font-medium text-gray-700 dark:text-gray-300">Soziale Links</label>
+        <input type="url" id="twitter" name="socialLinks[twitter]" value="<%= user.socialLinks.twitter %>" placeholder="Twitter" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500 mb-2">
+        <input type="url" id="linkedin" name="socialLinks[linkedin]" value="<%= user.socialLinks.linkedin %>" placeholder="LinkedIn" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500 mb-2">
+        <input type="url" id="github" name="socialLinks[github]" value="<%= user.socialLinks.github %>" placeholder="GitHub" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500 mb-2">
+        <input type="url" id="website" name="socialLinks[website]" value="<%= user.socialLinks.website %>" placeholder="Website" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 dark:bg-gray-700 dark:border-gray-600 dark:focus:border-blue-500">
+      </div>
+
+      <div class="flex justify-end">
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Speichern</button>
+      </div>
+    </form>
   </main>
+
   <%- include('../partials/footer'); %>
+
+  <script src="/assets/js/script.js"></script>
 </body>
 
 </html>

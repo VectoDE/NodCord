@@ -6,10 +6,10 @@ router.get('/', groupController.getAllGroups);
 
 router.get('/:id', groupController.getGroupById);
 
-router.post('/', groupController.createGroup);
+router.post('/create', groupController.createGroup);
 
-router.put('/:id', groupController.updateGroup);
+router.put('/update/:id', groupController.updateGroup);
 
-router.delete('/:id', groupController.deleteGroup);
+router.delete('/delete/:id', groupController.deleteGroup);
 
 module.exports = router;

@@ -1,28 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Account Settings ~ NodCord</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('../partials/header'); %>
 
   <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
 
-    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/settings" method="POST" class="space-y-6">
+    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/settings" method="POST" enctype="multipart/form-data" class="space-y-6">
       <div>
-        <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Email Address</label>
-        <input type="email" name="email" id="email" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.email %>" required>
-        <% if (!user.isVerified) { %>
-          <p class="text-sm text-red-600 mt-2">Your email is not verified. <a href="/user/profile/${user.username}/send-verification" class="text-blue-600 hover:underline">Send verification email</a>.</p>
-        <% } %>
+        <label for="thumbnail" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Thumbnail Image</label>
+        <input type="file" name="thumbnail" id="thumbnail" class="mt-1 block w-full text-gray-900 dark:text-gray-200">
+        <img src="<%= user.thumbnail %>" alt="Current Thumbnail" class="mt-2 w-32 h-32 object-cover rounded-lg border">
+      </div>
+
+      <div>
+        <label for="profilePicture" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Profile Picture</label>
+        <input type="file" name="profilePicture" id="profilePicture" class="mt-1 block w-full text-gray-900 dark:text-gray-200">
+        <img src="<%= user.profilePicture %>" alt="Current Profile Picture" class="mt-2 w-32 h-32 object-cover rounded-full border">
       </div>
 
       <div>
@@ -36,9 +42,37 @@
       </div>
 
       <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Password</label>
-        <input type="password" name="password" id="password" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-        <p class="text-sm text-gray-500 mt-1">Leave blank to keep your current password.</p>
+        <label for="bio" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Bio</label>
+        <textarea name="bio" id="bio" rows="4" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"><%= user.bio %></textarea>
+      </div>
+
+      <div>
+        <label for="twitter" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Twitter</label>
+        <input type="url" name="twitter" id="twitter" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.twitter %>">
+      </div>
+
+      <div>
+        <label for="linkedin" class="block text-sm font-medium text-gray-700 dark:text-gray-200">LinkedIn</label>
+        <input type="url" name="linkedin" id="linkedin" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.linkedin %>">
+      </div>
+
+      <div>
+        <label for="github" class="block text-sm font-medium text-gray-700 dark:text-gray-200">GitHub</label>
+        <input type="url" name="github" id="github" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.github %>">
+      </div>
+
+      <div>
+        <label for="website" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Website</label>
+        <input type="url" name="website" id="website" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.website %>">
+      </div>
+
+      <div class="mt-6">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Change Password</h2>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200">New Password</label>
+          <input type="password" name="password" id="password" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          <p class="text-sm text-gray-500 mt-1">Leave blank to keep your current password.</p>
+        </div>
       </div>
 
       <div class="mt-6">
@@ -51,14 +85,15 @@
         <button type="button" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700" onclick="document.getElementById('deleteAccountForm').submit()">Delete Account</button>
       </div>
 
-      <input type="hidden" name="_method" value="DELETE">
+      <input type="hidden" name="_method" value="PUT">
     </form>
 
-    <form id="deleteAccountForm" action="<%= api.https %>://<%= api.baseURL %>:<%= api.port %>/api/user/profile/delete-account" method="POST">
+    <form id="deleteAccountForm" action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/delete-account" method="POST">
       <input type="hidden" name="_method" value="DELETE">
     </form>
   </main>
 
   <%- include('../partials/footer'); %>
+  <script src="/assets/js/script.js"></script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Beta Übersicht</title>
+  <title>Client Übersicht</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
   <link rel="stylesheet" href="/assets/css/styles.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
@@ -21,39 +21,40 @@
   <%- include('../../partials/dashboardHeader'); %>
   <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
     <div class="container mx-auto">
-      <h1 class="text-3xl font-semibold mb-4">Beta Übersicht</h1>
+      <h1 class="text-3xl font-semibold mb-4">Client Übersicht</h1>
 
+      <!-- Client Status Section -->
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5 mb-4">
-        <h2 class="text-xl font-semibold">Beta-System Status:</h2>
+        <h2 class="text-xl font-semibold">Client Status:</h2>
         <div class="mt-2">
           <strong>
-            <% if (betaSystem) { %>
-              <%= betaSystem.isActive ? 'Aktiv' : 'Inaktiv' %>
+            <% if (clientStatus) { %>
+              <%= clientStatus.isActive ? 'Aktiv' : 'Inaktiv' %>
             <% } else { %>
               Nicht verfügbar
             <% } %>
           </strong>
         </div>
-        <form id="betaSystemForm" method="POST" action="/api/beta/toggle" class="mt-4">
+        <form id="clientStatusForm" method="POST" action="/api/client/toggle" class="mt-4">
           <div class="mb-4">
-            <label for="betaSystemStatus" class="block text-lg font-medium">Beta-System Status ändern</label>
-            <select id="betaSystemStatus" name="isActive" class="form-select mt-1 block w-full select-black border-gray-300 dark:border-gray-600 rounded-lg">
-              <option value="true" <%= betaSystem.isActive ? 'selected' : '' %>>Aktiv</option>
-              <option value="false" <%= !betaSystem.isActive ? 'selected' : '' %>>Inaktiv</option>
+            <label for="clientStatus" class="block text-lg font-medium">Client Status ändern</label>
+            <select id="clientStatus" name="isActive" class="form-select mt-1 block w-full select-black border-gray-300 dark:border-gray-600 rounded-lg">
+              <option value="true" <%= clientStatus.isActive ? 'selected' : '' %>>Aktiv</option>
+              <option value="false" <%= !clientStatus.isActive ? 'selected' : '' %>>Inaktiv</option>
             </select>
           </div>
           <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Status ändern</button>
         </form>
       </div>
 
+      <!-- Client Overview Section -->
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-5">
-        <h2 class="text-xl font-semibold">Beta-Schlüssel Übersicht:</h2>
+        <h2 class="text-xl font-semibold">Client Übersicht:</h2>
         <div class="mt-4">
-          <p>Gesamtanzahl der Beta-Schlüssel: <strong><%= betaKeys.length %></strong></p>
-          <p>Verwendete Beta-Schlüssel: <strong><%= betaKeys.filter(key => !key.isActive).length %></strong></p>
-          <p>Unbenutzte Beta-Schlüssel: <strong><%= betaKeys.filter(key => key.isActive).length %></strong></p>
+          <p>Gesamtanzahl der Benutzer: <strong><%= totalUsers %></strong></p>
+          <p>Gesamtanzahl der aktiven Clients: <strong><%= totalActiveClients %></strong></p>
         </div>
-        <a href="/dashboard/beta/keys" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Beta Keys</a>
+        <a href="/dashboard/client/keys" class="inline-block mt-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Client Keys</a>
       </div>
     </div>
   </main>
@@ -62,11 +63,11 @@
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script>
-    document.getElementById('betaSystemForm').addEventListener('submit', function(event) {
+    document.getElementById('clientStatusForm').addEventListener('submit', function(event) {
       event.preventDefault();
-      const isActive = document.getElementById('betaSystemStatus').value;
+      const isActive = document.getElementById('clientStatus').value;
 
-      fetch('/api/beta/toggle', {
+      fetch('/api/client/toggle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ isActive })
@@ -74,7 +75,7 @@
       .then(response => response.json())
       .then(data => {
         console.log(data);
-        if (data.message === 'Systemstatus geändert') {
+        if (data.message === 'Clientstatus geändert') {
           location.reload();
         }
       })

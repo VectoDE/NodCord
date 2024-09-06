@@ -1,328 +1,285 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Documentation ~ NodCord</title>
-		<link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
-	</head>
 
-	<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
-		<%- include('./partials/header'); %>
-		<div class="flex flex-col lg:flex-row">
-			<!-- Sidebar for mobile and larger screens -->
-			<aside
-				class="lg:w-64 dark:bg-gray-900 text-white h-full lg:h-screen sticky top-0 p-5 shadow-lg lg:block lg:static fixed inset-0 lg:relative lg:flex lg:flex-col z-10 transform -translate-x-full lg:translate-x-0 transition-transform duration-300"
-				id="sidebar"
-			>
-				<button class="lg:hidden text-2xl mb-4" id="closeSidebar">
-					&times;
-				</button>
-				<div class="space-y-2 lg:space-y-4">
-					<a
-						href="#overview"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>Overview</a
-					>
-					<a
-						href="#installation"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>Installation</a
-					>
-					<a
-						href="#configuration"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>Configuration</a
-					>
-					<a
-						href="#usage"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>Usage</a
-					>
-					<a
-						href="#api"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>API Reference</a
-					>
-					<a
-						href="#faq"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>FAQ</a
-					>
-					<a
-						href="#contact"
-						class="block py-3 px-4 text-lg hover:bg-gray-700 rounded transition-colors"
-						>Contact</a
-					>
-				</div>
-			</aside>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Documentation ~ NodCord</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-bg {
+      background-image: url('/assets/img/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+</head>
 
-			<!-- Main content area -->
-			<main
-				class="flex-1 p-6 m-5 bg-white dark:bg-gray-900 shadow-lg rounded-lg"
-			>
-				<button class="lg:hidden text-2xl mb-4" id="openSidebar">
-					&#9776;
-					<!-- Burger Menu Icon -->
-				</button>
+<body class="bg-gray-900 text-gray-200">
+  <%- include('./partials/header'); %>
 
-				<!-- Overview Section -->
-				<section id="overview">
-					<h1
-						class="text-3xl font-bold border-b-2 border-gray-700 dark:border-gray-600 pb-2 mb-4"
-					>
-						Overview
-					</h1>
-					<p class="text-base leading-relaxed mb-4">
-						Welcome to the NodCord documentation. NodCord is a versatile and
-						powerful Discord bot framework that simplifies the process of
-						creating and managing your own Discord bots.
-					</p>
-					<p class="text-base leading-relaxed">
-						With NodCord, you can easily set up, configure, and deploy bots that
-						interact with Discord servers, providing a seamless integration
-						experience. This documentation will guide you through the
-						installation, configuration, and usage of NodCord, along with
-						detailed information about its API.
-					</p>
-				</section>
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-bg text-white py-16 lg:py-24">
+        <div class="container mx-auto px-6 text-center">
+          <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">
+            NodCord Documentation
+          </h1>
+          <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+            Everything you need to get started with NodCord
+          </p>
+        </div>
+      </section>
 
-				<!-- Installation Section -->
-				<section id="installation" class="mt-10">
-					<h2
-						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
-					>
-						Installation
-					</h2>
-					<p class="text-base leading-relaxed mb-4">
-						To install NodCord, ensure you have Node.js and npm installed on
-						your system. Run the following command to install NodCord:
-					</p>
-					<pre
-						class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto"
-					><code>npm install nodcord</code></pre>
-					<p class="text-base leading-relaxed mt-4">
-						Once installed, you can start building your bot with ease using the
-						features provided by NodCord.
-					</p>
-				</section>
+      <div class="flex">
+        <!-- Sidebar -->
+        <aside class="relative w-64 bg-gray-800 h-full sticky top-0 py-8 px-4 rounded-lg border-l-4 border-transparent overflow-hidden">
+          <!-- Green Stripe with Animation -->
+          <div class="absolute inset-0 pointer-events-none">
+            <div class="absolute right-0 top-0 h-full w-2 bg-gradient-to-b from-green-400 to-green-700 animate-pulse"></div>
+          </div>
 
-				<!-- Configuration Section -->
-				<section id="configuration" class="mt-10">
-					<h2
-						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
-					>
-						Configuration
-					</h2>
-					<p class="text-base leading-relaxed mb-4">
-						After installation, you need to configure NodCord to work with your
-						Discord bot. Create a
-						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-							>.env</code
-						>
-						file in your project directory and add the following environment
-						variables:
-					</p>
-					<pre
-						class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto"
-					><code>DISCORD_TOKEN=your_discord_token_here
-      BOT_PREFIX=!</code></pre>
-					<p class="text-base leading-relaxed mt-4">
-						These variables will be used by NodCord to authenticate your bot
-						with Discord and to set the command prefix for the bot's
-						interactions.
-					</p>
-				</section>
+          <nav class="space-y-4">
+            <a href="#overview" class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded">Overview</a>
 
-				<!-- Usage Section -->
-				<section id="usage" class="mt-10">
-					<h2
-						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
-					>
-						Usage
-					</h2>
-					<p class="text-base leading-relaxed mb-4">
-						To start using NodCord, create an
-						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-							>index.js</code
-						>
-						file and add the following code to initialize your bot:
-					</p>
-					<pre
-						class="bg-gray-100 dark:bg-gray-800 p-4 rounded-lg overflow-x-auto"
-					><code>const { Client, GatewayIntentBits } = require('nodcord');
-      const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages] });
+            <!-- Installation Dropdown -->
+            <div class="relative">
+              <a href="#installation"
+                class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded flex items-center justify-between"
+                id="installationLink">
+                Installation
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="installationIcon"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+              <div id="installationDropdown" class="hidden absolute left-0 mt-1 w-full bg-gray-700 rounded z-10">
+                <a href="#installation-linux" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Linux</a>
+                <a href="#installation-windows" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Windows</a>
+                <a href="#installation-macos" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">macOS</a>
+              </div>
+            </div>
 
-      client.on('ready', () => {
-        console.log(`Logged in as ${client.user.tag}!`);
-      });
+            <!-- Configuration Dropdown -->
+            <div class="relative">
+              <a href="#configuration"
+                class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded flex items-center justify-between"
+                id="configurationLink">
+                Configuration
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="configurationIcon"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+              <div id="configurationDropdown" class="hidden absolute left-0 mt-1 w-full bg-gray-700 rounded z-10">
+                <a href="#config-basic" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Basic Configuration</a>
+                <a href="#config-advanced" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Advanced Configuration</a>
+              </div>
+            </div>
 
-      client.login(process.env.DISCORD_TOKEN);</code></pre>
-					<p class="text-base leading-relaxed mt-4">
-						This script sets up a basic bot that logs in to Discord using the
-						token you provided and outputs a message when it is successfully
-						connected.
-					</p>
-				</section>
+            <!-- Usage Dropdown -->
+            <div class="relative">
+              <a href="#usage"
+                class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded flex items-center justify-between"
+                id="usageLink">
+                Usage
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="usageIcon"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+              <div id="usageDropdown" class="hidden absolute left-0 mt-1 w-full bg-gray-700 rounded z-10">
+                <a href="#usage-intro" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Introduction</a>
+                <a href="#usage-examples" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Examples</a>
+              </div>
+            </div>
 
-				<!-- API Reference Section -->
-				<section id="api" class="mt-10">
-					<h2
-						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
-					>
-						API Reference
-					</h2>
-					<p class="text-base leading-relaxed mb-4">
-						NodCord provides a comprehensive API for interacting with Discord.
-						Here are some of the main methods:
-					</p>
-					<ul class="list-disc pl-5 mb-4">
-						<li>
-							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-								>client.on(event, listener)</code
-							>
-							- Listens for a specific event.
-						</li>
-						<li>
-							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-								>client.login(token)</code
-							>
-							- Logs in to Discord with the provided token.
-						</li>
-						<li>
-							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-								>client.user.setActivity(activity)</code
-							>
-							- Sets the bot's activity status.
-						</li>
-						<li>
-							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-								>client.guilds.cache</code
-							>
-							- Accesses the cache of guilds (servers) the bot is part of.
-						</li>
-						<li>
-							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-								>client.channels.cache</code
-							>
-							- Accesses the cache of channels within the bot's guilds.
-						</li>
-						<li>
-							<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-								>client.users.cache</code
-							>
-							- Accesses the cache of users that the bot has interacted with.
-						</li>
-					</ul>
-					<p class="text-base leading-relaxed">
-						For more detailed information, refer to the full API documentation
-						included in the NodCord package or visit the official NodCord GitHub
-						repository.
-					</p>
-				</section>
+            <!-- API Reference Dropdown -->
+            <div class="relative">
+              <a href="#api"
+                class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded flex items-center justify-between"
+                id="apiLink">
+                API Reference
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="apiIcon"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+              <div id="apiDropdown" class="hidden absolute left-0 mt-1 w-full bg-gray-700 rounded z-10">
+                <a href="#api-endpoints" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Endpoints</a>
+                <a href="#api-authentication" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Authentication</a>
+              </div>
+            </div>
 
-				<!-- FAQ Section -->
-				<section id="faq" class="mt-10">
-					<h2
-						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
-					>
-						FAQ
-					</h2>
-					<p class="text-base leading-relaxed mb-4">
-						Here are some frequently asked questions about NodCord:
-					</p>
-					<h3 class="text-xl font-semibold mt-6">What is NodCord?</h3>
-					<p class="text-base leading-relaxed">
-						NodCord is a framework for creating Discord bots with ease. It
-						provides a robust API and tools to help developers build and manage
-						bots quickly.
-					</p>
-					<h3 class="text-xl font-semibold mt-6">How do I install NodCord?</h3>
-					<p class="text-base leading-relaxed">
-						To install NodCord, run the command
-						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-							>npm install nodcord</code
-						>
-						in your Node.js project.
-					</p>
-					<h3 class="text-xl font-semibold mt-6">
-						Where can I find more information about the API?
-					</h3>
-					<p class="text-base leading-relaxed">
-						The API reference is included in this documentation and can also be
-						found in the NodCord GitHub repository, where you can access the
-						full list of available methods and features.
-					</p>
-					<h3 class="text-xl font-semibold mt-6">How do I configure my bot?</h3>
-					<p class="text-base leading-relaxed">
-						Configuration is done using a
-						<code class="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded"
-							>.env</code
-						>
-						file where you define your Discord token and bot prefix. This file
-						should be placed in the root directory of your project.
-					</p>
-				</section>
+            <!-- FAQ Dropdown -->
+            <div class="relative">
+              <a href="#faq"
+                class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded flex items-center justify-between"
+                id="faqLink">
+                FAQ
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="faqIcon"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+              <div id="faqDropdown" class="hidden absolute left-0 mt-1 w-full bg-gray-700 rounded z-10">
+                <a href="#faq-general" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">General Questions</a>
+                <a href="#faq-technical" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Technical Support</a>
+              </div>
+            </div>
 
-				<!-- Contact Section -->
-				<section id="contact" class="mt-10">
-					<h2
-						class="text-2xl font-semibold border-b border-gray-600 dark:border-gray-500 pb-1 mb-4"
-					>
-						Contact
-					</h2>
-					<p class="text-base leading-relaxed mb-4">
-						If you have any questions or need further assistance, please contact
-						us:
-					</p>
-					<p class="text-base leading-relaxed">
-						Email:
-						<a
-							href="mailto:support@nodcord.com"
-							class="text-blue-500 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-400"
-							>support@nodcord.com</a
-						>
-					</p>
-					<p class="text-base leading-relaxed">
-						GitHub:
-						<a
-							href="https://github.com/nodcord"
-							class="text-blue-500 hover:text-blue-700 dark:text-blue-300 dark:hover:text-blue-400"
-							target="_blank"
-							>NodCord GitHub</a
-						>
-					</p>
-				</section>
-			</main>
-		</div>
+            <!-- Contact Dropdown -->
+            <div class="relative">
+              <a href="#contact"
+                class="block py-2 px-4 text-lg text-gray-200 hover:bg-gray-700 rounded flex items-center justify-between"
+                id="contactLink">
+                Contact
+                <svg class="w-4 h-4 ml-2 transition-transform duration-200" id="contactIcon"
+                  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                  stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 9l6 6 6-6" />
+                </svg>
+              </a>
+              <div id="contactDropdown" class="hidden absolute left-0 mt-1 w-full bg-gray-700 rounded z-10">
+                <a href="#contact-support" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Support</a>
+                <a href="#contact-sales" class="block py-2 px-4 text-gray-200 hover:bg-gray-600">Sales</a>
+              </div>
+            </div>
+          </nav>
+        </aside>
 
-		<script>
-			// JavaScript for handling the sidebar toggle
-			document.addEventListener('DOMContentLoaded', () => {
-				const sidebarToggle = document.getElementById('openSidebar');
-				const closeSidebar = document.getElementById('closeSidebar');
-				const sidebar = document.getElementById('sidebar');
+        <!-- Main Content -->
+        <div class="flex-1 p-8 bg-gray-900 text-gray-200">
+          <!-- Overview Section -->
+          <section id="overview">
+            <h2 class="text-3xl font-bold border-b border-gray-700 pb-2 mb-4">
+              Overview
+            </h2>
+            <p>
+              Welcome to the NodCord documentation. Learn how to use our
+              framework to build powerful Discord bots.
+            </p>
+          </section>
 
-				if (sidebarToggle) {
-					sidebarToggle.addEventListener('click', () => {
-						sidebar.classList.remove('-translate-x-full');
-						sidebar.classList.add('translate-x-0');
-					});
-				}
+          <!-- Installation Section -->
+          <section id="installation" class="mt-10">
+            <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2 mb-4">
+              Installation
+            </h2>
+            <p>Run the following command to install NodCord:</p>
+            <pre class="bg-gray-800 p-4 rounded-lg"><code>npm install nodcord</code></pre>
+          </section>
 
-				if (closeSidebar) {
-					closeSidebar.addEventListener('click', () => {
-						sidebar.classList.remove('translate-x-0');
-						sidebar.classList.add('-translate-x-full');
-					});
-				}
-			});
-		</script>
+          <!-- Configuration Section -->
+          <section id="configuration" class="mt-10">
+            <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2 mb-4">
+              Configuration
+            </h2>
+            <p>Configure NodCord with a `.env` file:</p>
+            <pre class="bg-gray-800 p-4 rounded-lg"><code>DISCORD_TOKEN=your_token_here
+BOT_PREFIX=!</code></pre>
+          </section>
 
-		<%- include('./partials/footer'); %>
-	</body>
+          <!-- Usage Section -->
+          <section id="usage" class="mt-10">
+            <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2 mb-4">
+              Usage
+            </h2>
+            <p>Create an `index.js` file and initialize your bot:</p>
+            <pre class="bg-gray-800 p-4 rounded-lg"><code>const { Client, GatewayIntentBits } = require('nodcord');
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}!`);
+});
+
+client.login(process.env.DISCORD_TOKEN);</code></pre>
+          </section>
+
+          <!-- API Reference Section -->
+          <section id="api" class="mt-10">
+            <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2 mb-4">
+              API Reference
+            </h2>
+            <ul class="list-disc pl-6 space-y-2">
+              <li>
+                <code>client.on(event, listener)</code> - Listens for events.
+              </li>
+              <li><code>client.login(token)</code> - Logs in with a token.</li>
+              <li>
+                <code>client.user.setActivity(activity)</code> - Sets the bot's
+                activity.
+              </li>
+            </ul>
+          </section>
+
+          <!-- FAQ Section -->
+          <section id="faq" class="mt-10">
+            <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2 mb-4">
+              FAQ
+            </h2>
+            <h3 class="text-xl font-semibold mt-4">What is NodCord?</h3>
+            <p>NodCord is a Discord bot framework for developers.</p>
+          </section>
+
+          <!-- Contact Section -->
+          <section id="contact" class="mt-10">
+            <h2 class="text-2xl font-semibold border-b border-gray-700 pb-2 mb-4">
+              Contact
+            </h2>
+            <p>For help, contact us via email or GitHub.</p>
+            <p>
+              Email:
+              <a href="mailto:support@nodcord.com" class="text-blue-500">support@nodcord.com</a>
+            </p>
+            <p>
+              GitHub:
+              <a href="https://github.com/nodcord" class="text-blue-500">NodCord GitHub</a>
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <%- include('./partials/footer'); %>
+</body>
+<script src="/assets/js/script.js"></script>
+<script>
+  document.querySelectorAll('[id$="Link"]').forEach(link => {
+    link.addEventListener('click', function(event) {
+      const id = this.id.replace('Link', '');
+      const dropdown = document.getElementById(`${id}Dropdown`);
+      const icon = document.getElementById(`${id}Icon`);
+
+      if (dropdown.classList.contains('hidden')) {
+        document.querySelectorAll('[id$="Dropdown"]').forEach(dropdown => {
+          dropdown.classList.add('hidden');
+        });
+        dropdown.classList.remove('hidden');
+        document.querySelectorAll('[id$="Icon"]').forEach(icon => {
+          icon.style.transform = 'rotate(0deg)';
+        });
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        dropdown.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+
+      if (!dropdown.classList.contains('hidden')) {
+        event.preventDefault();
+      }
+    });
+  });
+</script>
+
 </html>

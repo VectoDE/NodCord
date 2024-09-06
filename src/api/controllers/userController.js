@@ -26,7 +26,11 @@ exports.createUser = async (req, res) => {
     await user.save();
 
     logger.info('User created successfully:', { username, email });
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    }
   } catch (err) {
     logger.error('Error creating user:', err);
     res.render('dashboard/users/createUser', {
@@ -94,7 +98,11 @@ exports.getUserById = async (req, res) => {
     const user = await User.findById(req.params.id);
     if (!user) {
       logger.warn('User not found:', { userId: req.params.id });
-      return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+      if (process.env.NODE_ENV === 'production') {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+      } else if (process.env.NODE_ENV === 'development') {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+      }
     }
 
     logger.info('User fetched by ID:', { userId: req.params.id });
@@ -111,7 +119,11 @@ exports.getUserById = async (req, res) => {
     });
   } catch (err) {
     logger.error('Error fetching user by ID:', err);
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    }
   }
 };
 
@@ -143,11 +155,19 @@ exports.updateUser = async (req, res) => {
     const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true });
     if (!user) {
       logger.warn('User not found for update:', { userId: req.params.id });
-      return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+      if (process.env.NODE_ENV === 'production') {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+      } else if (process.env.NODE_ENV === 'development') {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+      }
     }
 
     logger.info('User updated successfully:', { userId: req.params.id });
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    }
   } catch (err) {
     logger.error('Error updating user:', err);
     res.render('dashboard/users/editUser', {
@@ -170,13 +190,25 @@ exports.deleteUser = async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if (!user) {
       logger.warn('User not found for deletion:', { userId: req.params.id });
-      return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+      if (process.env.NODE_ENV === 'production') {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+      } else if (process.env.NODE_ENV === 'development') {
+        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+      }
     }
 
     logger.info('User deleted successfully:', { userId: req.params.id });
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    }
   } catch (err) {
     logger.error('Error deleting user:', err);
-    res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    if (process.env.NODE_ENV === 'production') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
+    } else if (process.env.NODE_ENV === 'development') {
+      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
+    }
   }
 };

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Versions</title>
+    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+    <%- include('../../partials/dashboardHeader'); %>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
+      <div class="container mx-auto">
+        <!-- Title -->
+        <div class="flex justify-between items-center mb-6">
+          <h1 class="text-3xl font-semibold">Versions Overview</h1>
+          <a href="/dashboard/versions/create" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
+            <i class="bi bi-plus-circle"></i> Create New Version
+          </a>
+        </div>
+
+        <!-- Versions Table -->
+        <div class="bg-white dark:bg-gray-900 shadow-md rounded-lg overflow-hidden">
+          <table class="min-w-full bg-white dark:bg-gray-900">
+            <thead>
+              <tr class="w-full bg-gray-200 dark:bg-gray-800">
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Tag</th>
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Short Description</th>
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Created At</th>
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Released At</th>
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="text-gray-700 dark:text-gray-200">
+              <% if (versions && versions.length > 0) { %>
+                <% versions.forEach(version => { %>
+                  <tr class="border-t border-gray-200 dark:border-gray-700">
+                    <td class="py-3 px-4"><%= version.name %></td>
+                    <td class="py-3 px-4"><%= version.tag %></td>
+                    <td class="py-3 px-4"><%= version.shortDescription %></td>
+                    <td class="py-3 px-4"><%= new Date(version.createdAt).toLocaleDateString() %></td>
+                    <td class="py-3 px-4"><%= new Date(version.releasedAt).toLocaleDateString() %></td>
+                    <td class="py-3 px-4 flex space-x-2">
+                      <a href="/dashboard/versions/update/<%= version._id %>" class="text-blue-500 hover:text-blue-700 transition duration-300">
+                        <i class="bi bi-pencil-square"></i> Edit
+                      </a>
+                      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/versions/delete/<%= version._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this version?');">
+                        <button type="submit" class="text-red-500 hover:text-red-700 transition duration-300">
+                          <i class="bi bi-trash"></i> Delete
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="6" class="text-center py-3 px-4 text-gray-500 dark:text-gray-400">No versions found.</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

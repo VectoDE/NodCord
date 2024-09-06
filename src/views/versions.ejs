@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NodCord - Version Control</title>
+  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-bg {
+      background-image: url('/assets/img/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .card {
+      background-color: #f9fafb;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 16px;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      width: 100%;
+    }
+
+    .card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 0 13px 2px rgba(0, 150, 136, 0.7); /* Teal glow */
+    }
+
+    .card h2 {
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      margin-bottom: 16px;
+    }
+
+    details {
+      margin-bottom: 16px;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+  <%- include('./partials/header'); %>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-16 lg:py-24">
+      <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">Version Control</h1>
+        <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+          Keep track of all versions and updates.
+        </p>
+      </div>
+    </section>
+
+    <!-- Versions Section -->
+    <section class="py-8 lg:py-8">
+      <div class="container mx-auto px-6">
+        <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+          <% versions.forEach(version => { %>
+            <div class="card dark:bg-gray-900">
+              <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2"><%= version.name %></h2>
+              <p class="text-gray-700 dark:text-gray-300 mb-4">Version: <span class="font-medium text-blue-500"><%= version.tag %></span></p>
+              <p class="text-gray-700 dark:text-gray-300 mb-4"><%= version.shortDescription %></p>
+              <p class="text-gray-700 dark:text-gray-300 mb-4"><%= version.detailedDescription %></p>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Features</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
+                  <% version.features.forEach(feature => { %>
+                    <li><%= feature %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Added</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
+                  <% version.added.forEach(addition => { %>
+                    <li><%= addition %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <details class="mb-4">
+                <summary class="cursor-pointer font-medium text-blue-500">Fixed</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
+                  <% version.fixed.forEach(fix => { %>
+                    <li><%= fix %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <details class="mb-6">
+                <summary class="cursor-pointer font-medium text-blue-500">Known Bugs</summary>
+                <ul class="list-disc pl-5 mt-2 text-gray-700 dark:text-gray-300">
+                  <% version.bugs.forEach(bug => { %>
+                    <li><%= bug %></li>
+                  <% }) %>
+                </ul>
+              </details>
+
+              <a href="<%= version.downloadLink %>" class="bg-blue-500 text-white w-full py-2 px-4 rounded-md hover:bg-blue-400 transition duration-300">
+                Download
+              </a>
+
+              <p class="text-gray-700 dark:text-gray-300 mt-6">
+                <strong>Developers:</strong>
+                <span class="font-medium"><%= version.developers.join(', ') %></span>
+              </p>
+
+              <p class="text-gray-700 dark:text-gray-300 mt-4">Created At: <span class="font-medium"><%= version.createdAt.toDateString() %></span></p>
+              <p class="text-gray-700 dark:text-gray-300">Released At: <span class="font-medium"><%= version.releasedAt.toDateString() %></span></p>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <%- include('./partials/footer'); %>
+  <script src="/assets/js/script.js"></script>
+</body>
+
+</html>

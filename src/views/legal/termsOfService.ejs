@@ -6,31 +6,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nutzungsbedingungen ~ NodCord</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    p {
+      margin-bottom: 1rem;
+      line-height: 1.6;
+    }
+  </style>
 </head>
 
-<body class="dark:bg-gray-900 text-gray-900">
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex flex-col min-h-screen">
   <%- include('../partials/header'); %>
 
-  <main class="py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
-      <h1 class="text-3xl font-bold mb-6">Nutzungsbedingungen</h1>
+  <main class="flex-1">
+    <div class="container bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 mt-8 mb-8">
+      <h1 class="text-3xl font-semibold mb-4">Nutzungsbedingungen</h1>
       <section class="mb-6">
-        <h2 class="text-2xl font-semibold mb-4">1. Einleitung</h2>
-        <p class="mb-4">Willkommen auf unserer Website. Durch den Zugriff auf unsere Website stimmen Sie den folgenden Nutzungsbedingungen zu...</p>
+        <h2 class="text-2xl font-semibold mb-2">1. Einleitung</h2>
+        <p>Willkommen auf unserer Website. Durch den Zugriff auf unsere Website stimmen Sie den folgenden Nutzungsbedingungen zu...</p>
         <p class="mb-4">Weitere Abschnitte...</p>
       </section>
       <section class="mb-6">
-        <h2 class="text-2xl font-semibold mb-4">2. Haftungsausschluss</h2>
-        <p class="mb-4">Wir übernehmen keine Verantwortung für...</p>
+        <h2 class="text-2xl font-semibold mb-2">2. Haftungsausschluss</h2>
+        <p>Wir übernehmen keine Verantwortung für...</p>
         <p class="mb-4">Weitere Abschnitte...</p>
       </section>
       <section class="mb-6">
-        <h2 class="text-2xl font-semibold mb-4">3. Änderungen der Bedingungen</h2>
-        <p class="mb-4">Wir behalten uns das Recht vor...</p>
+        <h2 class="text-2xl font-semibold mb-2">3. Änderungen der Bedingungen</h2>
+        <p>Wir behalten uns das Recht vor...</p>
         <p class="mb-4">Weitere Abschnitte...</p>
       </section>
     </div>
@@ -38,5 +56,5 @@
 
   <%- include('../partials/footer'); %>
 </body>
-<script src="assets/js/script.js"></script>
+<script src="/assets/js/script.js"></script>
 </html>

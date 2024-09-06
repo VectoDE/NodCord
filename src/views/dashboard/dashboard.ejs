@@ -6,220 +6,127 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NodCord - Dashboard</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+<body class="bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
   <%- include('../partials/dashboardHeader'); %>
 
-  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+  <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <!-- Overview Section -->
-    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <h3 class="text-2xl font-semibold mb-4">CRUD</h3>
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
+      <h3 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">CRUD</h3>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <!-- CRUD Count Cards -->
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Users</h4>
-          <p>Anzahl: <%= users.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Tournaments</h4>
-          <p>Anzahl: <%= tournaments.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Tickets</h4>
-          <p>Anzahl: <%= tickets.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Teams</h4>
-          <p>Anzahl: <%= teams.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Tasks</h4>
-          <p>Anzahl: <%= tasks.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Tags</h4>
-          <p>Anzahl: <%= tags.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Subscribers</h4>
-          <p>Anzahl: <%= subscribers.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Stories</h4>
-          <p>Anzahl: <%= stories.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Roles</h4>
-          <p>Anzahl: <%= roles.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Projects</h4>
-          <p>Anzahl: <%= projects.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Organizations</h4>
-          <p>Anzahl: <%= organizations.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Issues</h4>
-          <p>Anzahl: <%= issues.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Groups</h4>
-          <p>Anzahl: <%= groups.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Games</h4>
-          <p>Anzahl: <%= games.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Files</h4>
-          <p>Anzahl: <%= files.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Feedbacks</h4>
-          <p>Anzahl: <%= feedbacks.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Features</h4>
-          <p>Anzahl: <%= features.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Favorites</h4>
-          <p>Anzahl: <%= favorites.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Companies</h4>
-          <p>Anzahl: <%= companies.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Comments</h4>
-          <p>Anzahl: <%= comments.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Categories</h4>
-          <p>Anzahl: <%= categories.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Bugs</h4>
-          <p>Anzahl: <%= bugs.length %>
-          </p>
-        </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Blogs</h4>
-          <p>Anzahl: <%= blogs.length %>
-          </p>
-        </div>
+        <% const cardClasses = 'bg-gray-200 dark:bg-gray-700 p-4 rounded-lg shadow-md text-center'; %>
+        <% const titleClasses = 'text-lg font-medium text-gray-900 dark:text-gray-200'; %>
+        <% const numberClasses = 'text-xl font-semibold text-gray-800 dark:text-gray-300'; %>
+        <%
+          const items = [
+            { label: 'Users', count: users.length },
+            { label: 'Versions', count: versions.length },
+            { label: 'Tournaments', count: tournaments.length },
+            { label: 'Tickets', count: tickets.length },
+            { label: 'Teams', count: teams.length },
+            { label: 'Tasks', count: tasks.length },
+            { label: 'Tags', count: tags.length },
+            { label: 'Subscribers', count: subscribers.length },
+            { label: 'Stories', count: stories.length },
+            { label: 'Roles', count: roles.length },
+            { label: 'Projects', count: projects.length },
+            { label: 'Organizations', count: organizations.length },
+            { label: 'Issues', count: issues.length },
+            { label: 'Groups', count: groups.length },
+            { label: 'Games', count: games.length },
+            { label: 'Files', count: files.length },
+            { label: 'Feedbacks', count: feedbacks.length },
+            { label: 'Features', count: features.length },
+            { label: 'Favorites', count: favorites.length },
+            { label: 'Companies', count: companies.length },
+            { label: 'Comments', count: comments.length },
+            { label: 'Categories', count: categories.length },
+            { label: 'Bugs', count: bugs.length },
+            { label: 'Blogs', count: blogs.length },
+          ];
+        %>
+        <% items.forEach(item => { %>
+          <div class="<%= cardClasses %>">
+            <h4 class="<%= titleClasses %>"><%= item.label %></h4>
+            <p class="<%= numberClasses %>">Anzahl: <%= item.count %></p>
+          </div>
+        <% }); %>
       </div>
 
-      <h3 class="text-2xl font-semibold mb-4 mt-6">Keys</h3>
+      <h3 class="text-2xl font-semibold mb-4 mt-6 text-gray-900 dark:text-gray-100">Keys</h3>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <!-- Keys Count Cards -->
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Beta Keys</h4>
-          <p>Anzahl: <%= betaKey.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Beta Keys</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= betaKey.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">API Keys</h4>
-          <p>Anzahl: <%= apiKey.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">API Keys</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= apiKey.length %></p>
         </div>
       </div>
 
-      <h3 class="text-2xl font-semibold mb-4 mt-6">Shipping</h3>
+      <h3 class="text-2xl font-semibold mb-4 mt-6 text-gray-900 dark:text-gray-100">Shipping</h3>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <!-- Shipping Count Cards -->
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Products</h4>
-          <p>Anzahl: <%= products.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Products</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= products.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Customers</h4>
-          <p>Anzahl: <%= customers.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Customers</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= customers.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Customer Orders</h4>
-          <p>Anzahl: <%= customerOrders.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Customer Orders</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= customerOrders.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Orders</h4>
-          <p>Anzahl: <%= orders.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Orders</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= orders.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Payments</h4>
-          <p>Anzahl: <%= payments.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Payments</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= payments.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Returns</h4>
-          <p>Anzahl: <%= returns.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Returns</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= returns.length %></p>
         </div>
       </div>
 
-      <h3 class="text-2xl font-semibold mb-4 mt-6">Discord</h3>
+      <h3 class="text-2xl font-semibold mb-4 mt-6 text-gray-900 dark:text-gray-100">Discord</h3>
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         <!-- Discord Count Cards -->
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Discord Servers</h4>
-          <p>Anzahl: <%= discordServers.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Discord Servers</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= discordServers.length %></p>
         </div>
-        <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-lg shadow-sm text-center">
-          <h4 class="text-lg font-medium">Discord Members</h4>
-          <p>Anzahl: <%= discordMembers.length %>
-          </p>
+        <div class="<%= cardClasses %>">
+          <h4 class="<%= titleClasses %>">Discord Members</h4>
+          <p class="<%= numberClasses %>">Anzahl: <%= discordMembers.length %></p>
         </div>
       </div>
     </section>
 
     <!-- Status Section -->
-    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <h3 class="text-2xl font-semibold mb-4">System Status</h3>
-      <p class="mb-2">API Status: <strong>
-          <%= apiStatus %>
-        </strong></p>
-      <p class="mb-2">Bot Status: <strong>
-          <%= botStatus %>
-        </strong></p>
-      <p>Database Status: <strong>
-          <%= dbStatus %>
-        </strong></p>
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
+      <h3 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">System Status</h3>
+      <p class="mb-2">API Status: <strong class="text-gray-800 dark:text-gray-300"><%= apiStatus %></strong></p>
+      <p class="mb-2">Bot Status: <strong class="text-gray-800 dark:text-gray-300"><%= botStatus %></strong></p>
+      <p>Database Status: <strong class="text-gray-800 dark:text-gray-300"><%= dbStatus %></strong></p>
     </section>
 
     <!-- File Upload Section -->
-    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <h3 class="text-2xl font-semibold mb-4">Datei-Upload</h3>
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
+      <h3 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Datei-Upload</h3>
       <form id="upload-form" action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/files/upload" method="POST" enctype="multipart/form-data">
         <div class="mb-4">
           <label for="file" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Datei auswählen</label>
@@ -234,24 +141,23 @@
     </section>
 
     <!-- System Logs Section -->
-    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
-      <h3 class="text-2xl font-semibold mb-4">System Logs</h3>
-      <div class="bg-gray-200 dark:bg-gray-800 p-4 rounded-md shadow-inner max-h-72 overflow-y-auto font-mono text-sm">
-        <pre>
-          <% loggerLogs.forEach((log) => { %>
-            <%= log %>
-          <% }); %>
-        </pre>
-      </div>
-      <div class="mt-4">
-        <a href="/dashboard/logs" target="_blank" class="text-blue-500 hover:underline">Logs anzeigen</a>
+    <section class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg">
+      <h3 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Combined Log (Latests)</h3>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+            <% loggerLogs.forEach(log => { %>
+              <tr>
+                <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-200"><%= log %></td>
+              </tr>
+            <% }); %>
+          </tbody>
+        </table>
       </div>
     </section>
   </main>
 
-  <!-- JS -->
-  <script src="assets/js/dashboard.js"></script>
-  <script src="assets/js/script.js"></script>
+  <script src="/assets/js/script.js"></script>
 </body>
 
 </html>

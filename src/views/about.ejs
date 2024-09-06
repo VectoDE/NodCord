@@ -1,70 +1,102 @@
 <!DOCTYPE html>
-<html lang="de">
-
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About ~ NodCord</title>
-  <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About ~ NodCord</title>
+    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .hero-bg {
+            background-image: url('/assets/img/hero-bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
 </head>
-
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
-  <%- include('./partials/header'); %>
+    <%- include('./partials/header'); %>
 
-  <main class="py-8 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-4xl mx-auto card bg-white dark:bg-gray-900 p-8 rounded-lg shadow-md">
-      <h1 class="text-4xl font-bold mb-6 text-gray-800 dark:text-gray-200">Über uns</h1>
-      <p class="mb-6 text-lg text-gray-600 dark:text-gray-400">
-        Willkommen bei NodCord! Wir sind ein engagiertes Team von Entwicklern, das sich auf die Erstellung innovativer
-        Lösungen im Bereich der Discord-Bots und -Integration spezialisiert hat. Unser Ziel ist es, qualitativ hochwertige
-        Software zu entwickeln, die den Bedürfnissen unserer Benutzer gerecht wird und ihnen hilft, das Beste aus ihren
-        Discord-Servern herauszuholen.
-      </p>
+    <main>
+        <!-- About Hero Section -->
+        <section class="hero-bg text-white py-16 lg:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">About NodCord</h1>
+                <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+                    Learn more about the platform that connects you with your community.
+                </p>
+            </div>
+        </section>
 
-      <h2 class="text-3xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Unsere Mission</h2>
-      <p class="mb-6 text-lg text-gray-600 dark:text-gray-400">
-        Unsere Mission ist es, leistungsstarke, benutzerfreundliche und zuverlässige Tools und Bots für die Discord-Community
-        bereitzustellen. Wir streben danach, unsere Benutzer durch kontinuierliche Verbesserung und Innovation zu unterstützen
-        und ihnen die besten Funktionen und das beste Erlebnis zu bieten.
-      </p>
+        <!-- About Content Section -->
+        <section class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 py-16 lg:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold">Who We Are</h2>
+                    <p class="mt-4 text-lg">
+                        NodCord was founded with the mission to simplify and enhance the Discord experience.
+                    </p>
+                </div>
+                <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+                        <i class="bi bi-discord text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Connecting Discord Users</h3>
+                        <p class="mt-2">
+                            Our platform brings together Discord communities with powerful integrations.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+                        <i class="bi bi-laptop text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Cutting-Edge Technology</h3>
+                        <p class="mt-2">
+                            Built with modern web technologies like EJS and TailwindCSS.
+                        </p>
+                    </div>
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg">
+                        <i class="bi bi-people-fill text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Open Source</h3>
+                        <p class="mt-2">
+                            NodCord is open-source, allowing the community to contribute and improve the platform.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <h2 class="text-3xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Unser Team</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="card bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-          <img src="/assets/img/team-member-1.jpg" alt="Teammitglied 1" class="card-img-top w-full h-40 object-cover rounded-t-lg">
-          <div class="card-body p-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Max Mustermann</h3>
-            <p class="text-gray-600 dark:text-gray-400">Leitender Entwickler</p>
-          </div>
-        </div>
-        <div class="card bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-          <img src="/assets/img/team-member-2.jpg" alt="Teammitglied 2" class="card-img-top w-full h-40 object-cover rounded-t-lg">
-          <div class="card-body p-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">Erika Musterfrau</h3>
-            <p class="text-gray-600 dark:text-gray-400">Designerin</p>
-          </div>
-        </div>
-        <div class="card bg-gray-100 dark:bg-gray-800 rounded-lg shadow-md">
-          <img src="/assets/img/team-member-3.jpg" alt="Teammitglied 3" class="card-img-top w-full h-40 object-cover rounded-t-lg">
-          <div class="card-body p-4">
-            <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-2">John Doe</h3>
-            <p class="text-gray-600 dark:text-gray-400">Marketing Spezialist</p>
-          </div>
-        </div>
-      </div>
+        <!-- Our Team Section -->
+        <section class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-200 py-16 lg:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold">Meet the Team</h2>
+                    <p class="mt-4 text-lg">
+                        Behind NodCord is a dedicated team of developers and community enthusiasts.
+                    </p>
+                </div>
+                <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <img class="w-16 h-16 rounded-full mx-auto" src="/assets/img/user1.jpg" alt="User 1" />
+                        <h3 class="mt-4 text-xl font-semibold">Alex Johnson</h3>
+                        <p class="mt-2">Lead Developer</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <img class="w-16 h-16 rounded-full mx-auto" src="/assets/img/user2.jpg" alt="User 2" />
+                        <h3 class="mt-4 text-xl font-semibold">Emily Davis</h3>
+                        <p class="mt-2">Community Manager</p>
+                    </div>
+                    <div class="p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <img class="w-16 h-16 rounded-full mx-auto" src="/assets/img/user3.jpg" alt="User 3" />
+                        <h3 class="mt-4 text-xl font-semibold">Michael Brown</h3>
+                        <p class="mt-2">Frontend Developer</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-      <h2 class="text-3xl font-semibold mb-4 mt-8 text-gray-800 dark:text-gray-200">Kontaktieren Sie uns</h2>
-      <p class="text-lg text-gray-600 dark:text-gray-400">
-        Wenn Sie Fragen oder Anregungen haben, zögern Sie nicht, uns zu kontaktieren. Sie erreichen uns per E-Mail unter
-        <a href="mailto:nodcord@hauknetz.de" class="text-blue-600 dark:text-blue-400 hover:underline">nodcord@hauknetz.de</a>.
-      </p>
-    </div>
-  </main>
-
-  <%- include('./partials/footer'); %>
+    <%- include('./partials/footer'); %>
+    <script src="/assets/js/script.js"></script>
 </body>
 </html>

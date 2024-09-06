@@ -3,8 +3,10 @@
     <!-- Logo Section -->
     <div class="flex items-center">
       <a href="/" class="flex items-center">
-        <img src="<%= logoImage %>" alt="NodCord Logo" class="h-8 w-8 mr-2">
+        <img src="<%= logoImage %>" alt="NodCord Logo" class="h-8 w-8 mr-2" />
         <span class="text-lg font-bold">NodCord</span>
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
       </a>
     </div>
 
@@ -17,39 +19,73 @@
 
     <!-- Navigation Menu -->
     <nav class="hidden lg:flex space-x-4 items-center" id="navMenu">
-      <a href="/" class="hover:text-yellow-400 transition duration-300">Home</a>
-      <a href="/news" class="hover:text-yellow-400 transition duration-300">News</a>
-      <a href="/status" class="hover:text-yellow-400 transition duration-300">Status</a>
-      <a href="/versions" class="hover:text-yellow-400 transition duration-300">Versions</a>
-      <a href="/about" class="hover:text-yellow-400 transition duration-300">About</a>
-      <a href="/contact" class="hover:text-yellow-400 transition duration-300">Contact</a>
+      <a href="/" class="relative group hover:text-yellow-400 transition duration-300">Home
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/news" class="relative group hover:text-yellow-400 transition duration-300">News
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/status" class="relative group hover:text-yellow-400 transition duration-300">Status
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/versions" class="relative group hover:text-yellow-400 transition duration-300">Versions
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/about" class="relative group hover:text-yellow-400 transition duration-300">About
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+      </a>
+      <a href="/contact" class="relative group hover:text-yellow-400 transition duration-300">Contact
+        <span
+          class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+      </a>
       <% if (!isAuthenticated) { %>
-        <a href="/login" class="hover:text-yellow-400 transition duration-300">Login</a>
-        <a href="/register" class="hover:text-yellow-400 transition duration-300">Register</a>
-      <% } else { %>
-        <div class="relative">
-          <button id="userMenuBtn" class="hover:text-yellow-400 transition duration-300">
-            <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>" class="w-8 h-8 rounded-full inline-block">
-            <span class="ml-2"><%= user.username %></span>
-          </button>
-          <div id="userDropdown" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden dark:bg-gray-800">
-            <% if (user.role === 'admin' || user.role === 'moderator') { %>
-              <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Dashboard</a>
-            <% } %>
-            <% if (isAuthenticated && user) { %>
-              <a href="/user/profile/<%= user.username %>" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
-            <% } %>
-            <a href="/user/profile/<%= user.username %>/settings" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
-            <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
+        <a href="/login" class="relative group hover:text-yellow-400 transition duration-300">Login
+          <span
+            class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="/register" class="relative group hover:text-yellow-400 transition duration-300">Register
+          <span
+            class="absolute left-0 bottom-0 w-0 h-0.5 bg-yellow-400 transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <% } else { %>
+          <div class="relative group">
+            <button id="userMenuBtn" class="hover:text-yellow-400 transition duration-300 flex items-center">
+              <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>"
+                class="w-8 h-8 rounded-full inline-block" />
+              <span class="ml-2">
+                <%= user.username %>
+              </span>
+            </button>
+            <div id="userDropdown"
+              class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden dark:bg-gray-800 z-50">
+              <% if (user.role==='admin' || user.role==='moderator' ) { %>
+                <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Dashboard</a>
+                <% } %>
+                  <% if (isAuthenticated && user) { %>
+                    <a href="/user/profile/<%= user.username %>"
+                      class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
+                    <% } %>
+                      <a href="/user/profile/<%= user.username %>/settings"
+                        class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
+                      <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
+            </div>
           </div>
-        </div>
-      <% } %>
+          <% } %>
     </nav>
   </div>
 
   <!-- Mobile Navigation Menu -->
-  <nav class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center space-y-4 hidden dark:bg-gray-900" id="mobileMenu">
-    <button class="absolute top-4 right-4 text-white text-2xl" id="closeBtn">&times;</button>
+  <nav
+    class="lg:hidden fixed inset-0 bg-gray-800 bg-opacity-90 flex flex-col items-center justify-center space-y-4 hidden dark:bg-gray-900"
+    id="mobileMenu">
+    <button class="absolute top-4 right-4 text-white text-2xl" id="closeBtn">
+      &times;
+    </button>
     <a href="/" class="text-white text-lg hover:text-yellow-400 transition duration-300">Home</a>
     <a href="/news" class="text-white text-lg hover:text-yellow-400 transition duration-300">News</a>
     <a href="/status" class="text-white text-lg hover:text-yellow-400 transition duration-300">Status</a>
@@ -60,22 +96,28 @@
     <% if (!isAuthenticated) { %>
       <a href="/login" class="text-white text-lg hover:text-yellow-400 transition duration-300">Login</a>
       <a href="/register" class="text-white text-lg hover:text-yellow-400 transition duration-300">Register</a>
-    <% } else { %>
-      <div class="relative">
-        <button id="userMenuBtnMobile" class="text-white text-lg hover:text-yellow-400 transition duration-300">
-          <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>" class="w-8 h-8 rounded-full inline-block">
-          <span class="ml-2"><%= user.username %></span>
-        </button>
-        <div id="userDropdownMobile" class="mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden dark:bg-gray-800">
-          <% if (user.role === 'admin' || user.role === 'moderator') { %>
-            <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Dashboard</a>
-          <% } %>
-          <a href="/user/profile/<%= user.username %>" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
-          <a href="/user/profile/<%= user.username %>/settings" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
-          <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
+      <% } else { %>
+        <div class="relative">
+          <button id="userMenuBtnMobile" class="text-white text-lg hover:text-yellow-400 transition duration-300">
+            <img src="<%= user.profilePicture || '/assets/img/default-profile.png' %>" alt="<%= user.username %>"
+              class="w-8 h-8 rounded-full inline-block" />
+            <span class="ml-2">
+              <%= user.username %>
+            </span>
+          </button>
+          <div id="userDropdownMobile"
+            class="mt-2 w-48 bg-gray-700 text-white rounded shadow-lg hidden dark:bg-gray-800">
+            <% if (user.role==='admin' || user.role==='moderator' ) { %>
+              <a href="/dashboard" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Dashboard</a>
+              <% } %>
+                <a href="/user/profile/<%= user.username %>"
+                  class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Profile</a>
+                <a href="/user/profile/<%= user.username %>/settings"
+                  class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Settings</a>
+                <a href="/logout" class="block px-4 py-2 hover:bg-gray-600 dark:hover:bg-gray-700">Logout</a>
+          </div>
         </div>
-      </div>
-    <% } %>
+        <% } %>
   </nav>
 </header>
 
@@ -104,7 +146,10 @@
     });
 
     document.addEventListener('click', (event) => {
-      if (!userDropdown.contains(event.target) && !userMenuBtn.contains(event.target)) {
+      if (
+        !userDropdown.contains(event.target) &&
+        !userMenuBtn.contains(event.target)
+      ) {
         userDropdown.classList.add('hidden');
       }
     });
@@ -121,7 +166,10 @@
     });
 
     document.addEventListener('click', (event) => {
-      if (!userDropdownMobile.contains(event.target) && !userMenuBtnMobile.contains(event.target)) {
+      if (
+        !userDropdownMobile.contains(event.target) &&
+        !userMenuBtnMobile.contains(event.target)
+      ) {
         userDropdownMobile.classList.add('hidden');
       }
     });

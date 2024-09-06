@@ -1,3 +1,4 @@
+require('dotenv').config();
 const BetaKey = require('../../models/betaKeyModel');
 const BetaSystem = require('../../models/betaSystemModel');
 const User = require('../../models/userModel');

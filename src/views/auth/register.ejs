@@ -6,17 +6,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register ~ NodCord</title>
   <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="/assets/css/styles.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Additional custom styles */
+    body {
+      background-color: #1a202c; /* Dark background similar to about.ejs */
+    }
+    .register-container {
+      background-color: #2d3748; /* Darker background for the form */
+    }
+  </style>
 </head>
 
-<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+<body class="text-gray-200">
   <%- include('../partials/header'); %>
-  <main class="flex justify-center items-center min-h-screen">
-    <div class="max-w-md w-full bg-white dark:bg-gray-900 p-8 rounded-lg shadow-lg">
-      <h1 class="text-2xl font-bold text-gray-200 mb-6">Register</h1>
+  <main class="flex justify-center items-center min-h-screen py-8">
+    <div class="max-w-md w-full p-8 rounded-lg shadow-lg register-container">
+      <h1 class="text-2xl font-bold text-gray-100 mb-6">Register</h1>
       <% if (errorMessage) { %>
         <div class="text-red-500 mb-4">
           <%= errorMessage %>
@@ -25,31 +35,31 @@
 
       <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/register" method="POST" class="space-y-6">
         <div>
-          <label for="fullname" class="block text-sm font-medium text-gray-200">Full Name</label>
-          <input type="text" id="fullname" name="fullname" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="fullname" class="block text-sm font-medium text-gray-300">Full Name</label>
+          <input type="text" id="fullname" name="fullname" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-200">Username</label>
-          <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
+          <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div>
-          <label for="email" class="block text-sm font-medium text-gray-200">Email</label>
-          <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
+          <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-200">Password</label>
-          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
+          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-200">Confirm Password</label>
-          <input type="password" id="confirmPassword" name="confirmPassword" required class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          <label for="confirmPassword" class="block text-sm font-medium text-gray-300">Confirm Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
         </div>
         <div class="flex items-start">
           <div class="flex items-center h-5">
-            <input id="terms" name="terms" type="checkbox" required class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+            <input id="terms" name="terms" type="checkbox" required class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-600 rounded">
           </div>
           <div class="ml-3 text-sm">
-            <label for="terms" class="font-medium text-gray-200">I agree to the <a href="/legal/terms-of-service" class="text-indigo-600 hover:text-indigo-500" target="_blank">Terms of Service</a> and <a href="/legal/privacy-policy" class="text-indigo-600 hover:text-indigo-500" target="_blank">Privacy Policy</a>.</label>
+            <label for="terms" class="font-medium text-gray-300">I agree to the <a href="/legal/terms-of-service" class="text-indigo-500 hover:text-indigo-400" target="_blank">Terms of Service</a> and <a href="/legal/privacy-policy" class="text-indigo-500 hover:text-indigo-400" target="_blank">Privacy Policy</a>.</label>
           </div>
         </div>
         <div>
@@ -58,10 +68,10 @@
       </form>
 
       <div class="text-center my-6">
-        <p class="text-gray-600">---- OR ----</p>
+        <p class="text-gray-400">---- OR ----</p>
       </div>
 
-      <!-- Social Login Buttons -->
+      <!-- Social Register Buttons -->
       <div class="flex flex-col gap-4 mb-6">
         <a href="/auth/google" class="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">
           <i class="bi bi-google mr-2"></i> Register with Google
@@ -74,7 +84,7 @@
         </a>
       </div>
       <div class="text-center">
-        <a href="/login" class="text-sm text-indigo-600 hover:text-indigo-500">Du hast schon einen Account?</a>
+        <a href="/login" class="text-sm text-indigo-400 hover:text-indigo-300">Du hast schon einen Account?</a>
       </div>
     </div>
   </main>
