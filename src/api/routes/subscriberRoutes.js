@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const subscriberController = require('../controllers/subscriberController');
 
-router.post('/', subscriberController.createSubscriber);
-
 router.get('/', subscriberController.getAllSubscribers);
 
-router.get('/:id', subscriberController.getSubscriberById);
+router.get('/:subscriberId', subscriberController.getSubscriberById);
 
-router.put('/:id', subscriberController.updateSubscriber);
+router.post('/create', subscriberController.createSubscriber);
 
-router.delete('/:id', subscriberController.deleteSubscriber);
+router.post('/:subscriberId/update', subscriberController.updateSubscriber);
+
+router.post('/:subscriberId/delete', subscriberController.deleteSubscriber);
 
 module.exports = router;

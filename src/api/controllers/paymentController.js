@@ -9,6 +9,8 @@ paypal.configure({
   client_secret: process.env.PAYPAL_CLIENT_SECRET,
 });
 
+// TODO: Function Controller
+
 const listPayments = async (req, res) => {
   try {
     const { userId } = req.query;

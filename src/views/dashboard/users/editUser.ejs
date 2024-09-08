@@ -4,9 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Edit User</title>
-    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/assets/css/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       .custom-input {
@@ -21,7 +22,7 @@
       <div class="container mx-auto">
         <h1 class="text-3xl font-semibold mb-6">Edit User</h1>
 
-        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/users/update/<%= user._id %>" method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/users/<%= user._id %>/update" method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
           <div class="mb-4">
             <label for="fullname" class="block text-sm font-semibold mb-2">Full Name:</label>
             <input type="text" id="fullname" name="fullname" value="<%= user.fullname %>" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200 custom-input" />

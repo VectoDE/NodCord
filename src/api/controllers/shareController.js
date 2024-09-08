@@ -1,5 +1,7 @@
 const Share = require('../../models/shareModel');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
 exports.createShare = async (req, res) => {
   try {
@@ -7,25 +9,22 @@ exports.createShare = async (req, res) => {
 
     logger.info('Creating a new share:', { user, blog, platform });
 
-    const newShare = new Share({
-      user,
-      blog,
-      platform,
-    });
-
+    const newShare = new Share({ user, blog, platform });
     const savedShare = await newShare.save();
 
-    logger.info('Share created successfully:', { share: savedShare });
+    logger.info('Share created successfully:', { shareId: savedShare._id });
 
-    res.status(201).json({
-      message: 'Share created successfully',
-      share: savedShare,
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares`, {
+      success: true,
+      message: 'Share created successfully.',
+      share: savedShare
     });
   } catch (error) {
-    logger.error('Error creating share:', { error });
-    res.status(500).json({
-      message: 'Error creating share',
-      error,
+    logger.error('Error creating share:', error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares/create`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
@@ -42,74 +41,82 @@ exports.getSharesByBlog = async (req, res) => {
 
     logger.info('Shares fetched successfully for blog ID:', { blogId, shares });
 
-    res.status(200).json({
-      shares,
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares`, {
+      success: true,
+      data: shares
     });
   } catch (error) {
     logger.error('Error fetching shares:', { blogId, error });
-    res.status(500).json({
-      message: 'Error fetching shares',
-      error,
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
 exports.getShareById = async (req, res) => {
+  const { shareId } = req.params;
+
   try {
-    const { id } = req.params;
+    logger.info('Fetching share by ID:', { shareId });
 
-    logger.info('Fetching share by ID:', { id });
-
-    const share = await Share.findById(id)
+    const share = await Share.findById(shareId)
       .populate('user', 'name')
       .populate('blog', 'title');
 
     if (!share) {
-      logger.warn('Share not found for ID:', { id });
-      return res.status(404).json({
-        message: 'Share not found',
+      logger.warn('Share not found for ID:', { shareId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares/${shareId}`, {
+        success: false,
+        message: 'Share not found.'
       });
     }
 
     logger.info('Share fetched successfully:', { share });
 
-    res.status(200).json({
-      share,
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares/${shareId}`, {
+      success: true,
+      data: share
     });
   } catch (error) {
-    logger.error('Error fetching share:', { id, error });
-    res.status(500).json({
-      message: 'Error fetching share',
-      error,
+    logger.error('Error fetching share:', { shareId, error });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares/${shareId}`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
 exports.deleteShare = async (req, res) => {
+  const { shareId } = req.params;
+
   try {
-    const { id } = req.params;
+    logger.info('Deleting share by ID:', { shareId });
 
-    logger.info('Deleting share by ID:', { id });
-
-    const deletedShare = await Share.findByIdAndDelete(id);
+    const deletedShare = await Share.findByIdAndDelete(shareId);
 
     if (!deletedShare) {
-      logger.warn('Share not found for ID:', { id });
-      return res.status(404).json({
-        message: 'Share not found',
+      logger.warn('Share not found for ID:', { shareId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares`, {
+        success: false,
+        message: 'Share not found.'
       });
     }
 
-    logger.info('Share deleted successfully:', { id });
+    logger.info('Share deleted successfully:', { shareId });
 
-    res.status(200).json({
-      message: 'Share deleted successfully',
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares`, {
+      success: true,
+      message: 'Share deleted successfully.'
     });
   } catch (error) {
-    logger.error('Error deleting share:', { id, error });
-    res.status(500).json({
-      message: 'Error deleting share',
-      error,
+    logger.error('Error deleting share:', { shareId, error });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/shares`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
     });
   }
 };

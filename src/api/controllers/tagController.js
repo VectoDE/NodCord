@@ -1,122 +1,180 @@
+require('dotenv').config();
 const Tag = require('../../models/tagModel');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
 
-const listTags = async (req, res) => {
+exports.listTags = async (req, res) => {
   try {
     const tags = await Tag.find();
     logger.info('Fetched tags:', { count: tags.length });
-    res.status(200).json(tags);
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      tags
+    });
   } catch (error) {
     logger.error('Failed to list tags:', error);
-    res.status(500).json({ error: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error fetching tags',
+      error: error.message
+    });
   }
 };
 
-const createTag = async (req, res) => {
+exports.createTag = async (req, res) => {
   try {
     const { name, description } = req.body;
     if (!name) {
-      logger.warn('Missing required field in create tag request:', {
-        body: req.body,
+      logger.warn('Missing required field in create tag request:', { body: req.body });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags/create`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Name is required'
       });
-      return res.status(400).json({ error: 'Name is required' });
     }
 
-    const newTag = new Tag({
-      name,
-      description,
-    });
-
+    const newTag = new Tag({ name, description });
     await newTag.save();
-    logger.info('Created new tag:', { tagId: newTag._id, name });
-    res.status(201).json(newTag);
+    logger.info('Created new tag:', { id: newTag._id, name });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Tag created successfully',
+      tag: newTag
+    });
   } catch (error) {
     logger.error('Failed to create tag:', error);
-    res.status(500).json({ error: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags/create`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error creating tag',
+      error: error.message
+    });
   }
 };
 
-const getTagDetails = async (req, res) => {
+exports.getTagDetails = async (req, res) => {
   try {
-    const { tagId } = req.params;
-    if (!tagId) {
-      logger.warn('Tag ID is missing in get tag details request:', {
-        params: req.params,
+    const { id } = req.params;
+    if (!id) {
+      logger.warn('Tag ID is missing in get tag details request:', { params: req.params });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Tag ID is required'
       });
-      return res.status(400).json({ error: 'Tag ID is required' });
     }
 
-    const tag = await Tag.findById(tagId);
+    const tag = await Tag.findById(id);
     if (!tag) {
-      logger.warn('Tag not found:', { tagId });
-      return res.status(404).json({ error: 'Tag not found' });
+      logger.warn('Tag not found:', { id });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Tag not found'
+      });
     }
 
-    logger.info('Fetched tag details:', { tagId });
-    res.status(200).json(tag);
+    logger.info('Fetched tag details:', { id });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags/${id}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      tag
+    });
   } catch (error) {
     logger.error('Failed to get tag details:', error);
-    res.status(500).json({ error: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error fetching tag details',
+      error: error.message
+    });
   }
 };
 
-const updateTag = async (req, res) => {
+exports.updateTag = async (req, res) => {
   try {
-    const { tagId, name, description } = req.body;
-    if (!tagId) {
-      logger.warn('Tag ID is missing in update tag request:', {
-        body: req.body,
+    const { id, name, description } = req.body;
+    if (!id) {
+      logger.warn('Tag ID is missing in update tag request:', { body: req.body });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags/edit`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Tag ID is required'
       });
-      return res.status(400).json({ error: 'Tag ID is required' });
     }
 
-    const tag = await Tag.findById(tagId);
+    const tag = await Tag.findById(id);
     if (!tag) {
-      logger.warn('Tag not found for update:', { tagId });
-      return res.status(404).json({ error: 'Tag not found' });
+      logger.warn('Tag not found for update:', { id });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Tag not found'
+      });
     }
 
     if (name) tag.name = name;
     if (description) tag.description = description;
 
     await tag.save();
-    logger.info('Updated tag:', { tagId });
-    res.status(200).json(tag);
+    logger.info('Updated tag:', { id });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Tag updated successfully',
+      tag
+    });
   } catch (error) {
     logger.error('Failed to update tag:', error);
-    res.status(500).json({ error: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags/edit`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error updating tag',
+      error: error.message
+    });
   }
 };
 
-const deleteTag = async (req, res) => {
+exports.deleteTag = async (req, res) => {
   try {
-    const { tagId } = req.body;
-    if (!tagId) {
-      logger.warn('Tag ID is missing in delete tag request:', {
-        body: req.body,
+    const { id } = req.body;
+    if (!id) {
+      logger.warn('Tag ID is missing in delete tag request:', { body: req.body });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Tag ID is required'
       });
-      return res.status(400).json({ error: 'Tag ID is required' });
     }
 
-    const tag = await Tag.findById(tagId);
+    const tag = await Tag.findById(id);
     if (!tag) {
-      logger.warn('Tag not found for deletion:', { tagId });
-      return res.status(404).json({ error: 'Tag not found' });
+      logger.warn('Tag not found for deletion:', { id });
+      const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Tag not found'
+      });
     }
 
     await tag.remove();
-    logger.info('Deleted tag:', { tagId });
-    res.status(200).json({ message: 'Tag deleted successfully' });
+    logger.info('Deleted tag:', { id });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Tag deleted successfully'
+    });
   } catch (error) {
     logger.error('Failed to delete tag:', error);
-    res.status(500).json({ error: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/tags`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error deleting tag',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  listTags,
-  createTag,
-  getTagDetails,
-  updateTag,
-  deleteTag,
 };

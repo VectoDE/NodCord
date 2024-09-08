@@ -3,33 +3,35 @@ const User = require('../../models/userModel');
 const jwt = require('jsonwebtoken');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
 exports.register = async (req, res) => {
   try {
     const { username, email, password, confirmPassword, fullname, terms } = req.body;
 
     if (!username || !email || !password || !confirmPassword || !fullname || !terms) {
-      return res.render('auth/register', {
-        errorMessage: 'All fields are required, including accepting the terms and conditions.',
+      const redirectUrl = `${getBaseUrl()}/register`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'All fields are required, including accepting the terms and conditions.'
       });
     }
 
     if (password !== confirmPassword) {
-      return res.render('auth/register', {
-        errorMessage: 'Passwords do not match',
-      });
-    }
-
-    if (!terms) {
-      return res.render('auth/register', {
-        errorMessage: 'You must accept the Terms of Service',
+      const redirectUrl = `${getBaseUrl()}/register`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Passwords do not match'
       });
     }
 
     const existingUser = await User.findOne({ $or: [{ email }, { username }] });
     if (existingUser) {
-      return res.render('auth/register', {
-        errorMessage: 'User already exists',
+      const redirectUrl = `${getBaseUrl()}/register`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'User already exists'
       });
     }
 
@@ -44,14 +46,19 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/login`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
-    }
+    const redirectUrl = `${getBaseUrl()}/login`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Registration successful, you can now log in.'
+    });
   } catch (err) {
     logger.error('Error during registration:', err.message);
-    res.status(500).json({ success: false, message: 'Internal Server Error', error: err.message });
+    const redirectUrl = `${getBaseUrl()}/register`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: err.message
+    });
   }
 };
 
@@ -61,7 +68,11 @@ exports.verifyEmail = async (req, res) => {
     const user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid verification token' });
+      const redirectUrl = `${getBaseUrl()}/verify-email/${token}`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Invalid verification token'
+      });
     }
 
     user.isVerified = true;
@@ -70,13 +81,19 @@ exports.verifyEmail = async (req, res) => {
 
     await nodemailerService.sendVerificationSuccessEmail(user.email, user.username);
 
-    res.status(200).render('verification/email-verified', {
-      message: 'Your email has been verified. You can now log in.',
-      logoImage: '/assets/img/logo.png',
+    const redirectUrl = `${getBaseUrl()}/verify-email/${token}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Your email has been verified. You can now log in.'
     });
   } catch (error) {
     logger.error('Verification error:', error.message);
-    res.status(500).send('Internal Server Error');
+    const redirectUrl = `${getBaseUrl()}/verify-email/${token}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
@@ -89,10 +106,10 @@ exports.login = async (req, res) => {
 
     if (!user || !(await user.comparePassword(password))) {
       logger.warn('Login failed: Invalid credentials');
-      return res.status(400).render('auth/login', {
-        isAuthenticated: false,
-        logoImage: '/assets/img/logo.png',
-        errorMessage: 'Invalid credentials',
+      const redirectUrl = `${getBaseUrl()}/login`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Invalid credentials'
       });
     }
 
@@ -111,60 +128,61 @@ exports.login = async (req, res) => {
 
     logger.info(`User ${user.username} successfully logged in.`);
 
-    if (process.env.NODE_ENV === 'production') {
-      if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
-        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard`);
-      } else if (user.role === 'user') {
-        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/user/profile/${user.username}`);
-      } else {
-        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/`);
-      }
-    } else if (process.env.NODE_ENV === 'development') {
-      if (['admin', 'moderator', 'content', 'dev'].includes(user.role)) {
-        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard`);
-      } else if (user.role === 'user') {
-        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/user/profile/${user.username}`);
-      } else {
-        res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/`);
-      }
-    }
+    const redirectUrl = user.role === 'user' ? `/user/profile/${user.username}` : '/dashboard';
+    return sendResponse(req, res, `${getBaseUrl()}${redirectUrl}`, {
+      success: true,
+      message: 'Login successful',
+      user
+    });
   } catch (err) {
     logger.error('Login error:', err.message);
-    res.status(500).send('Internal Server Error');
+    const redirectUrl = `${getBaseUrl()}/login`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: err.message
+    });
   }
 };
 
 exports.logout = async (req, res) => {
   try {
     const token = req.cookies.token;
-    if (process.env.NODE_ENV === 'production') {
-      if (!token) {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/login`);
-      }
-    } else if (process.env.NODE_ENV === 'development') {
-      if (!token) {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/login`);
-      }
+    if (!token) {
+      const redirectUrl = `${getBaseUrl()}/login`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'No token found, unable to log out.'
+      });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      return res.status(400).json({ success: false, message: 'Invalid user' });
+      const redirectUrl = `${getBaseUrl()}/login`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Invalid user'
+      });
     }
 
     user.isAuthenticated = false;
     await user.save();
 
     res.clearCookie('token');
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/`);
-    }
+    const redirectUrl = `${getBaseUrl()}/`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Logout successful'
+    });
   } catch (err) {
     logger.error('Logout error:', err.message);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    const redirectUrl = `${getBaseUrl()}/`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: err.message
+    });
   }
 };

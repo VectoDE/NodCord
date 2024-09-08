@@ -152,7 +152,6 @@ router.get('/', roleMiddleware(['admin', 'moderator']), betaMiddleware.checkBeta
       loggerLogs,
       versions,
       isAuthenticated: res.locals.isAuthenticated,
-      token: res.locals.token,
       logoImage: '/assets/img/logo.png',
       errorstack: null,
       api: {

@@ -1,35 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Team</title>
-    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-  </head>
-  <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
-    <%- include('../../partials/dashboardHeader'); %>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Team</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
+  <%- include('../../partials/dashboardHeader'); %>
 
     <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
       <div class="container mx-auto">
         <h1 class="text-3xl font-semibold mb-6">Create Team</h1>
-        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/teams/create" method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
+        <form
+          action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/teams/create"
+          method="POST" class="space-y-4 bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md">
           <div class="mb-4">
             <label for="name" class="block text-sm font-semibold mb-2">Team Name:</label>
-            <input type="text" id="name" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200">
+            <input type="text" id="name" name="name" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200">
           </div>
           <div class="mb-4">
             <label for="description" class="block text-sm font-semibold mb-2">Description:</label>
-            <textarea id="description" name="description" rows="5" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"></textarea>
+            <textarea id="description" name="description" rows="5" required
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-green-200"></textarea>
           </div>
-          <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md transition duration-300">Create Team</button>
-          <a href="/dashboard/teams" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
+          <button type="submit"
+            class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md transition duration-300">Create
+            Team</button>
+          <a href="/dashboard/teams"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
             <i class="bi bi-arrow-left"></i> Back to Teams
           </a>
         </form>
       </div>
     </main>
-  </body>
+</body>
+
 </html>

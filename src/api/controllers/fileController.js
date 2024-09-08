@@ -1,14 +1,20 @@
+require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const File = require('../../models/fileModel');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const uploadFile = async (req, res) => {
+exports.uploadFile = async (req, res) => {
   try {
     if (!req.file) {
-      return res
-        .status(400)
-        .json({ success: false, message: 'No file uploaded' });
+      const redirectUrl = `${getBaseUrl()}/dashboard`;
+      logger.warn('No file uploaded');
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'No file uploaded'
+      });
     }
 
     const fileData = new File({
@@ -20,58 +26,84 @@ const uploadFile = async (req, res) => {
 
     await fileData.save();
 
-    res.redirect('/dashboard');
+    const redirectUrl = `${getBaseUrl()}/dashboard`;
+    logger.info('File uploaded successfully:', { filename: req.file.filename });
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'File uploaded successfully',
+    });
   } catch (error) {
     logger.error('Error uploading file:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    const redirectUrl = `${getBaseUrl()}/dashboard`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const getFile = async (req, res) => {
-  try {
-    const fileId = req.params.id;
+exports.getFile = async (req, res) => {
+  const { fileId } = req.params;
 
+  try {
     const file = await File.findById(fileId);
     if (!file) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'File not found' });
+      const redirectUrl = `${getBaseUrl()}/dashboard`;
+      logger.warn('File not found:', { fileId });
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'File not found'
+      });
     }
 
-    res.status(200).json({ success: true, file });
+    logger.info('Fetched file metadata:', { fileId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/files/${fileId}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      file
+    });
   } catch (error) {
     logger.error('Error fetching file metadata:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    const redirectUrl = `${getBaseUrl()}/dashboard`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const downloadFile = async (req, res) => {
-  try {
-    const fileId = req.params.id;
+exports.downloadFile = async (req, res) => {
+  const { fileId } = req.params;
 
+  try {
     const file = await File.findById(fileId);
     if (!file) {
-      return res
-        .status(404)
-        .json({ success: false, message: 'File not found' });
+      const redirectUrl = `${getBaseUrl()}/dashboard`;
+      logger.warn('File not found for download:', { fileId });
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'File not found'
+      });
     }
 
     res.download(file.path, file.filename, (err) => {
       if (err) {
         logger.error('Error downloading file:', err);
-        res
-          .status(500)
-          .json({ success: false, message: 'Internal Server Error' });
+        return res.status(500).json({
+          success: false,
+          message: 'Internal Server Error'
+        });
       }
     });
   } catch (error) {
     logger.error('Error downloading file:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    const redirectUrl = `${getBaseUrl()}/dashboard`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  uploadFile,
-  getFile,
-  downloadFile,
 };

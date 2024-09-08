@@ -4,12 +4,12 @@ const organizationController = require('../controllers/organizationController');
 
 router.get('/', organizationController.getAllOrganizations);
 
-router.get('/:id', organizationController.getOrganizationById);
+router.get('/:organizationId', organizationController.getOrganizationById);
 
 router.post('/create', organizationController.createOrganization);
 
-router.put('/update/:id', organizationController.updateOrganization);
+router.post('/:organizationId/update', organizationController.updateOrganization);
 
-router.delete('/delete/:id', organizationController.deleteOrganization);
+router.post('/:organizationId/delete', organizationController.deleteOrganization);
 
 module.exports = router;

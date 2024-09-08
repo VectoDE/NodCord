@@ -1,53 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Support ~ NodCord</title>
-    <link rel="shortcut icon" href="<%= logoImage %>" type="image/x-icon">
-    <link rel="stylesheet" href="assets/css/styles.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
-    <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support ~ NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 flex flex-col items-center py-10">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Your Support Tickets</h1>
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Your Support Tickets</h1>
 
-        <div class="flex justify-end mb-4">
-            <a href="/helpdesk/createTicket" class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-                <i class="bi bi-plus-circle-fill mr-2"></i> Create New Ticket
-            </a>
-        </div>
-
-        <div class="space-y-4">
-            <% if (tickets.length > 0) { %>
-                <table class="min-w-full bg-white border border-gray-300">
-                    <thead>
-                        <tr>
-                            <th class="py-2 px-4 border-b">Ticket ID</th>
-                            <th class="py-2 px-4 border-b">Subject</th>
-                            <th class="py-2 px-4 border-b">Status</th>
-                            <th class="py-2 px-4 border-b">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% tickets.forEach(ticket => { %>
-                            <tr>
-                                <td class="py-2 px-4 border-b"><%= ticket.id %></td>
-                                <td class="py-2 px-4 border-b"><%= ticket.subject %></td>
-                                <td class="py-2 px-4 border-b"><%= ticket.status %></td>
-                                <td class="py-2 px-4 border-b">
-                                    <a href="/helpdesk/viewTicket/<%= ticket.id %>" class="text-blue-600 hover:underline"><i class="bi bi-eye-fill"></i> View</a>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            <% } else { %>
-                <p class="text-gray-600">You have no tickets yet.</p>
-            <% } %>
-        </div>
+    <div class="flex justify-end mb-4">
+      <a href="/helpdesk/createTicket"
+        class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+        <i class="bi bi-plus-circle-fill mr-2"></i> Create New Ticket
+      </a>
     </div>
+
+    <div class="space-y-4">
+      <% if (tickets.length> 0) { %>
+        <table class="min-w-full bg-white border border-gray-300">
+          <thead>
+            <tr>
+              <th class="py-2 px-4 border-b">Ticket ID</th>
+              <th class="py-2 px-4 border-b">Subject</th>
+              <th class="py-2 px-4 border-b">Status</th>
+              <th class="py-2 px-4 border-b">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% tickets.forEach(ticket=> { %>
+              <tr>
+                <td class="py-2 px-4 border-b">
+                  <%= ticket.id %>
+                </td>
+                <td class="py-2 px-4 border-b">
+                  <%= ticket.subject %>
+                </td>
+                <td class="py-2 px-4 border-b">
+                  <%= ticket.status %>
+                </td>
+                <td class="py-2 px-4 border-b">
+                  <a href="/helpdesk/viewTicket/<%= ticket.id %>" class="text-blue-600 hover:underline"><i
+                      class="bi bi-eye-fill"></i> View</a>
+                </td>
+              </tr>
+              <% }); %>
+          </tbody>
+        </table>
+        <% } else { %>
+          <p class="text-gray-600">You have no tickets yet.</p>
+          <% } %>
+    </div>
+  </div>
 </body>
+
 </html>

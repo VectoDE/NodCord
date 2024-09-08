@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const featureController = require('../controllers/featureController');
 
-router.post('/', featureController.createFeature);
-
 router.get('/', featureController.getAllFeatures);
 
-router.get('/:id', featureController.getFeatureById);
+router.get('/:featureId', featureController.getFeatureById);
 
-router.put('/:id', featureController.updateFeature);
+router.post('/create', featureController.createFeature);
 
-router.delete('/:id', featureController.deleteFeature);
+router.post('/:featureId/update', featureController.updateFeature);
+
+router.post('/:featureId/delete', featureController.deleteFeature);
 
 module.exports = router;

@@ -4,8 +4,8 @@ const favoriteController = require('../controllers/favoriteController');
 
 router.get('/', favoriteController.listFavorites);
 
-router.post('/', favoriteController.createFavorite);
+router.post('/create', favoriteController.createFavorite);
 
-router.delete('/', favoriteController.deleteFavorite);
+router.post('/:favoriteId/delete', favoriteController.deleteFavorite);
 
 module.exports = router;

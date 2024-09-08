@@ -1,6 +1,8 @@
 const Chat = require('../../models/chatModel');
 const logger = require('../services/loggerService');
 
+// TODO: Function Controller
+
 exports.getAllChats = async (req, res) => {
   try {
     const chats = await Chat.find();

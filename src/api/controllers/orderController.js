@@ -1,13 +1,19 @@
 const Order = require('../../models/orderModel');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const createOrder = async (req, res) => {
+exports.createOrder = async (req, res) => {
   try {
     const orderData = req.body;
 
     if (!orderData.customer || !orderData.totalAmount || !orderData.products) {
-      return res.status(400).json({ message: 'Invalid order data' });
+      logger.warn('Invalid order data');
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/create`, {
+        success: false,
+        message: 'Invalid order data'
+      });
     }
 
     const newOrder = new Order(orderData);
@@ -16,24 +22,29 @@ const createOrder = async (req, res) => {
     const customerEmail = orderData.customer.email;
     await nodemailerService.sendOrderConfirmationEmail(
       customerEmail,
-      `Order ID: ${newOrder._id}\nTotal Amount: ${
-        newOrder.totalAmount
-      }\nDetails: ${JSON.stringify(orderData.products)}`
+      `Order ID: ${newOrder._id}\nTotal Amount: ${newOrder.totalAmount}\nDetails: ${JSON.stringify(orderData.products)}`
     );
 
     logger.info(`Order created successfully: ${newOrder._id}`);
-    res.status(201).json(newOrder);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${newOrder._id}`, {
+      success: true,
+      data: newOrder
+    });
   } catch (error) {
     logger.error('Error creating order:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/create`, {
+      success: false,
+      message: 'Failed to create order',
+      error: error.message
+    });
   }
 };
 
-const updateOrderStatus = async (req, res) => {
-  try {
-    const { orderId } = req.params;
-    const { status, trackingNumber } = req.body;
+exports.updateOrderStatus = async (req, res) => {
+  const { orderId } = req.params;
+  const { status, trackingNumber } = req.body;
 
+  try {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,
       { status, trackingNumber },
@@ -42,7 +53,10 @@ const updateOrderStatus = async (req, res) => {
 
     if (!updatedOrder) {
       logger.warn(`Order not found for ID: ${orderId}`);
-      return res.status(404).json({ message: 'Order not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${orderId}/update`, {
+        success: false,
+        message: 'Order not found'
+      });
     }
 
     if (status === 'Shipped') {
@@ -54,50 +68,68 @@ const updateOrderStatus = async (req, res) => {
     }
 
     logger.info(`Order status updated successfully: ${orderId}`);
-    res.status(200).json(updatedOrder);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${orderId}`, {
+      success: true,
+      data: updatedOrder
+    });
   } catch (error) {
     logger.error('Error updating order status:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${orderId}/update`, {
+      success: false,
+      message: 'Failed to update order status',
+      error: error.message
+    });
   }
 };
 
-const getOrder = async (req, res) => {
+exports.getOrder = async (req, res) => {
+  const { orderId } = req.params;
+
   try {
-    const { orderId } = req.params;
     const order = await Order.findById(orderId)
       .populate('customer')
       .populate('products.product');
 
     if (!order) {
       logger.warn(`Order not found for ID: ${orderId}`);
-      return res.status(404).json({ message: 'Order not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${orderId}`, {
+        success: false,
+        message: 'Order not found'
+      });
     }
 
     logger.info(`Fetched order details: ${orderId}`);
-    res.status(200).json(order);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${orderId}`, {
+      success: true,
+      data: order
+    });
   } catch (error) {
     logger.error('Error fetching order:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders/${orderId}`, {
+      success: false,
+      message: 'Failed to fetch order details',
+      error: error.message
+    });
   }
 };
 
-const getAllOrders = async (req, res) => {
+exports.getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate('customer')
       .populate('products.product');
 
     logger.info('Fetched all orders successfully');
-    res.status(200).json(orders);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders`, {
+      success: true,
+      data: orders
+    });
   } catch (error) {
     logger.error('Error fetching orders:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/orders`, {
+      success: false,
+      message: 'Failed to fetch orders',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  createOrder,
-  updateOrderStatus,
-  getOrder,
-  getAllOrders,
 };

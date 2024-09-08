@@ -1,25 +1,36 @@
 const Project = require('../../models/projectModel');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const listProjects = async (req, res) => {
+exports.listProjects = async (req, res) => {
   try {
     const projects = await Project.find().populate('members').populate('tags');
     logger.info('Fetched all projects successfully');
-    res.status(200).json(projects);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+      success: true,
+      data: projects
+    });
   } catch (error) {
     logger.error('Error fetching projects:', error);
-    res.status(500).json({ error: 'Failed to fetch projects' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+      success: false,
+      message: 'Failed to fetch projects',
+      error: error.message
+    });
   }
 };
 
-const createProject = async (req, res) => {
+exports.createProject = async (req, res) => {
   try {
-    const { name, description, status, startDate, endDate, members, tags } =
-      req.body;
+    const { name, description, status, startDate, endDate, members, tags } = req.body;
 
     if (!name) {
       logger.warn('Attempted to create project without a name');
-      return res.status(400).json({ error: 'Name is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/create`, {
+        success: false,
+        message: 'Name is required'
+      });
     }
 
     const newProject = new Project({
@@ -34,20 +45,30 @@ const createProject = async (req, res) => {
 
     await newProject.save();
     logger.info('Project created successfully:', newProject);
-    res.status(201).json(newProject);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+      success: true,
+      data: newProject
+    });
   } catch (error) {
     logger.error('Error creating project:', error);
-    res.status(500).json({ error: 'Failed to create project' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/create`, {
+      success: false,
+      message: 'Failed to create project',
+      error: error.message
+    });
   }
 };
 
-const getProjectDetails = async (req, res) => {
-  try {
-    const { projectId } = req.params;
+exports.getProjectDetails = async (req, res) => {
+  const { projectId } = req.params;
 
+  try {
     if (!projectId) {
       logger.warn('Project ID is required to fetch project details');
-      return res.status(400).json({ error: 'Project ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}`, {
+        success: false,
+        message: 'Project ID is required'
+      });
     }
 
     const project = await Project.findById(projectId)
@@ -56,40 +77,48 @@ const getProjectDetails = async (req, res) => {
 
     if (!project) {
       logger.warn(`Project with ID ${projectId} not found`);
-      return res.status(404).json({ error: 'Project not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}`, {
+        success: false,
+        message: 'Project not found'
+      });
     }
 
     logger.info(`Fetched details for project ID: ${projectId}`);
-    res.status(200).json(project);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}`, {
+      success: true,
+      data: project
+    });
   } catch (error) {
     logger.error('Error fetching project details:', error);
-    res.status(500).json({ error: 'Failed to fetch project details' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}`, {
+      success: false,
+      message: 'Failed to fetch project details',
+      error: error.message
+    });
   }
 };
 
-const updateProject = async (req, res) => {
-  try {
-    const {
-      projectId,
-      name,
-      description,
-      status,
-      startDate,
-      endDate,
-      members,
-      tags,
-    } = req.body;
+exports.updateProject = async (req, res) => {
+  const { projectId } = req.params;
+  const { name, description, status, startDate, endDate, members, tags } = req.body;
 
+  try {
     if (!projectId) {
       logger.warn('Project ID is required to update a project');
-      return res.status(400).json({ error: 'Project ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}/edit`, {
+        success: false,
+        message: 'Project ID is required'
+      });
     }
 
     const project = await Project.findById(projectId);
 
     if (!project) {
       logger.warn(`Project with ID ${projectId} not found`);
-      return res.status(404).json({ error: 'Project not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}/edit`, {
+        success: false,
+        message: 'Project not found'
+      });
     }
 
     if (name) project.name = name;
@@ -102,42 +131,54 @@ const updateProject = async (req, res) => {
 
     await project.save();
     logger.info(`Project updated successfully: ${projectId}`);
-    res.status(200).json(project);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}`, {
+      success: true,
+      data: project
+    });
   } catch (error) {
     logger.error('Error updating project:', error);
-    res.status(500).json({ error: 'Failed to update project' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects/${projectId}/edit`, {
+      success: false,
+      message: 'Failed to update project',
+      error: error.message
+    });
   }
 };
 
-const deleteProject = async (req, res) => {
-  try {
-    const { projectId } = req.body;
+exports.deleteProject = async (req, res) => {
+  const { projectId } = req.params;
 
+  try {
     if (!projectId) {
       logger.warn('Project ID is required to delete a project');
-      return res.status(400).json({ error: 'Project ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+        success: false,
+        message: 'Project ID is required'
+      });
     }
 
     const project = await Project.findById(projectId);
 
     if (!project) {
       logger.warn(`Project with ID ${projectId} not found`);
-      return res.status(404).json({ error: 'Project not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+        success: false,
+        message: 'Project not found'
+      });
     }
 
     await project.remove();
     logger.info(`Project deleted successfully: ${projectId}`);
-    res.status(200).json({ message: 'Project deleted successfully' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+      success: true,
+      message: 'Project deleted successfully'
+    });
   } catch (error) {
     logger.error('Error deleting project:', error);
-    res.status(500).json({ error: 'Failed to delete project' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/projects`, {
+      success: false,
+      message: 'Failed to delete project',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  listProjects,
-  createProject,
-  getProjectDetails,
-  updateProject,
-  deleteProject,
 };

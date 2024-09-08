@@ -6,9 +6,7 @@ exports.createLike = async (req, res) => {
     const { user, blog } = req.body;
 
     if (!user || !blog) {
-      return res
-        .status(400)
-        .json({ message: 'User and blog IDs are required' });
+      return res.status(400).json({ message: 'User and blog IDs are required' });
     }
 
     const newLike = new Like({ user, blog });
@@ -51,13 +49,13 @@ exports.getLikesByBlog = async (req, res) => {
 
 exports.getLikeById = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { likeId } = req.params;
 
-    if (!id) {
+    if (!likeId) {
       return res.status(400).json({ message: 'Like ID is required' });
     }
 
-    const like = await Like.findById(id)
+    const like = await Like.findById(likeId)
       .populate('user', 'name')
       .populate('blog', 'title');
 
@@ -67,7 +65,7 @@ exports.getLikeById = async (req, res) => {
 
     res.status(200).json({ like });
   } catch (error) {
-    logger.error(`Error fetching like with ID ${req.params.id}:`, error);
+    logger.error(`Error fetching like with ID ${req.params.likeId}:`, error);
     res.status(500).json({
       message: 'Error fetching like',
       error: error.message,
@@ -77,13 +75,13 @@ exports.getLikeById = async (req, res) => {
 
 exports.deleteLike = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { likeId } = req.params;
 
-    if (!id) {
+    if (!likeId) {
       return res.status(400).json({ message: 'Like ID is required' });
     }
 
-    const deletedLike = await Like.findByIdAndDelete(id);
+    const deletedLike = await Like.findByIdAndDelete(likeId);
 
     if (!deletedLike) {
       return res.status(404).json({ message: 'Like not found' });
@@ -91,7 +89,7 @@ exports.deleteLike = async (req, res) => {
 
     res.status(200).json({ message: 'Like deleted successfully' });
   } catch (error) {
-    logger.error(`Error deleting like with ID ${req.params.id}:`, error);
+    logger.error(`Error deleting like with ID ${req.params.likeId}:`, error);
     res.status(500).json({
       message: 'Error deleting like',
       error: error.message,

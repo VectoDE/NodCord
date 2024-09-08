@@ -21,21 +21,33 @@ const startServer = async () => {
     await seedRolesIfNotExist();
     await seedUsersIfNotExist();
 
-    const port = process.env.API_PORT || 3000;
-    const baseURL = process.env.API_BASE_URL || 'localhost';
+    const apiPort = process.env.API_PORT || 3000;
+    const apiBaseURL = process.env.API_BASE_URL || 'localhost';
+    const clientPort = process.env.CLIENT_PORT || 3001;
+    const clientBaseURL = process.env.CLIENT_BASE_URL || 'localhost';
 
     if (process.env.NODE_ENV === 'production') {
-      http.createServer(api).listen(port, () => {
-        logger.info(`[HTTP] Started and running on https://${baseURL}`);
+      http.createServer(api).listen( () => {
+        logger.info(`[HTTP] Started and running on https://${apiBaseURL}`);
       });
     } else if (process.env.NODE_ENV === 'development') {
-      http.createServer(api).listen(port, () => {
-        logger.info(`[HTTP] Started and running on https://${baseURL}:${port}`);
+      http.createServer(api).listen(apiPort, () => {
+        logger.info(`[HTTP] Started and running on https://${apiBaseURL}:${apiPort}`);
       });
     }
 
     startBot();
-    startClient();
+
+    if (process.env.NODE_ENV === 'production') {
+      http.createServer(client).listen( () => {
+        logger.info(`[HTTP] Started and running on https://${clientBaseURL}`);
+      });
+    } else if (process.env.NODE_ENV === 'development') {
+      http.createServer(client).listen(clientPort, () => {
+        logger.info(`[HTTP] Started and running on https://${clientBaseURL}:${clientPort}`);
+      });
+    }
+    //startClient();
 
   } catch (err) {
     logger.error('[Server] Error starting server:', err);

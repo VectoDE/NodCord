@@ -6,6 +6,8 @@ const plexService = new PlexService(
   'your-plex-token'
 );
 
+// TODO: Function Controller
+
 exports.getServerInfo = async (req, res) => {
   try {
     const serverInfo = await plexService.getServerInfo();

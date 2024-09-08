@@ -3,11 +3,6 @@ const os = require('os');
 const logger = require('../../api/services/loggerService');
 const packageInfo = require('../../../package.json');
 
-pm2.init({
-  transactions: true,
-  http: true
-})
-
 const realtimeUsers = pm2.metric({
   name: 'Realtime Users',
   id: 'app/realtime/users',
@@ -103,6 +98,7 @@ const monitorComponent = (component, componentName) => {
   component.use((req, res, next) => {
     try {
       requestCounter.inc();
+      pm2.startTransaction({ name: `Request ${req.method} ${req.url}` });
     } catch (error) {
       logger.error(`[PM2] Error incrementing request counter: ${error.message}`);
     }
@@ -113,6 +109,9 @@ const monitorComponent = (component, componentName) => {
     try {
       if (err) {
         errorMeter.mark();
+        pm2.endTransaction({ success: false });
+      } else {
+        pm2.endTransaction({ success: true });
       }
     } catch (error) {
       logger.error(`[PM2] Error recording error meter: ${error.message}`);
@@ -152,6 +151,11 @@ const monitorComponent = (component, componentName) => {
   });
 
   logger.info(`[PM2] Metrics set for: ${componentName}`);
+
+  pm2.init({
+    transactions: true,
+    https: true
+  });
 };
 
 module.exports = {

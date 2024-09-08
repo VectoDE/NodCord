@@ -1,12 +1,17 @@
-const Favorite = require('../../models/favoriteModel');
+require('dotenv').config();
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
+const Favorite = require('../../models/favoriteModel');
 
-const listFavorites = async (req, res) => {
+exports.listFavorites = async (req, res) => {
   try {
     const { userId } = req.query;
 
     if (!userId) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+      logger.warn('User ID is required');
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'User ID is required',
       });
@@ -14,25 +19,31 @@ const listFavorites = async (req, res) => {
 
     const favorites = await Favorite.find({ userId });
 
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+    logger.info('Retrieved favorites for user:', { userId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       data: favorites,
     });
   } catch (error) {
     logger.error('Error listing favorites:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
-const createFavorite = async (req, res) => {
+exports.createFavorite = async (req, res) => {
   try {
     const { userId, type, itemId } = req.body;
 
     if (!userId || !type || !itemId) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/favorites/create`;
+      logger.warn('User ID, Type, and Item ID are required:', { userId, type, itemId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'User ID, Type, and Item ID are required',
       });
@@ -46,26 +57,32 @@ const createFavorite = async (req, res) => {
 
     const savedFavorite = await newFavorite.save();
 
-    res.status(201).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+    logger.info('Favorite created successfully:', { userId, type, itemId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Favorite created successfully',
       data: savedFavorite,
     });
   } catch (error) {
     logger.error('Error creating favorite:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/favorites/create`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
-const deleteFavorite = async (req, res) => {
+exports.deleteFavorite = async (req, res) => {
   try {
     const { favoriteId } = req.body;
 
     if (!favoriteId) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/favorites/delete`;
+      logger.warn('Favorite ID is required');
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Favorite ID is required',
       });
@@ -74,7 +91,9 @@ const deleteFavorite = async (req, res) => {
     const favorite = await Favorite.findById(favoriteId);
 
     if (!favorite) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+      logger.warn('Favorite not found:', { favoriteId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Favorite not found',
       });
@@ -82,21 +101,19 @@ const deleteFavorite = async (req, res) => {
 
     await favorite.remove();
 
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+    logger.info('Favorite removed successfully:', { favoriteId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Favorite removed successfully',
     });
   } catch (error) {
     logger.error('Error deleting favorite:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/favorites`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
-};
-
-module.exports = {
-  listFavorites,
-  createFavorite,
-  deleteFavorite,
 };

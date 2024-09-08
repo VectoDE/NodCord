@@ -1,24 +1,36 @@
 const Product = require('../../models/productModel');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const listProducts = async (req, res) => {
+exports.listProducts = async (req, res) => {
   try {
     const products = await Product.find();
     logger.info('Fetched all products successfully');
-    res.status(200).json(products);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+      success: true,
+      data: products
+    });
   } catch (error) {
     logger.error('Error fetching products:', error);
-    res.status(500).json({ error: 'Failed to fetch products' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+      success: false,
+      message: 'Failed to fetch products',
+      error: error.message
+    });
   }
 };
 
-const createProduct = async (req, res) => {
+exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, category, stock } = req.body;
 
     if (!name || !price) {
       logger.warn('Attempted to create product without required fields');
-      return res.status(400).json({ error: 'Name and price are required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/create`, {
+        success: false,
+        message: 'Name and price are required'
+      });
     }
 
     const newProduct = new Product({
@@ -31,51 +43,78 @@ const createProduct = async (req, res) => {
 
     await newProduct.save();
     logger.info('Product created successfully:', newProduct);
-    res.status(201).json(newProduct);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+      success: true,
+      data: newProduct
+    });
   } catch (error) {
     logger.error('Error creating product:', error);
-    res.status(500).json({ error: 'Failed to create product' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/create`, {
+      success: false,
+      message: 'Failed to create product',
+      error: error.message
+    });
   }
 };
 
-const getProductDetails = async (req, res) => {
-  try {
-    const { productId } = req.params;
+exports.getProductDetails = async (req, res) => {
+  const { productId } = req.params;
 
+  try {
     if (!productId) {
       logger.warn('Product ID is required to fetch product details');
-      return res.status(400).json({ error: 'Product ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}`, {
+        success: false,
+        message: 'Product ID is required'
+      });
     }
 
     const product = await Product.findById(productId);
 
     if (!product) {
       logger.warn(`Product with ID ${productId} not found`);
-      return res.status(404).json({ error: 'Product not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}`, {
+        success: false,
+        message: 'Product not found'
+      });
     }
 
     logger.info(`Fetched details for product ID: ${productId}`);
-    res.status(200).json(product);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}`, {
+      success: true,
+      data: product
+    });
   } catch (error) {
     logger.error('Error fetching product details:', error);
-    res.status(500).json({ error: 'Failed to fetch product details' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}`, {
+      success: false,
+      message: 'Failed to fetch product details',
+      error: error.message
+    });
   }
 };
 
-const updateProduct = async (req, res) => {
-  try {
-    const { productId, name, description, price, category, stock } = req.body;
+exports.updateProduct = async (req, res) => {
+  const { productId } = req.params;
+  const { name, description, price, category, stock } = req.body;
 
+  try {
     if (!productId) {
       logger.warn('Product ID is required to update a product');
-      return res.status(400).json({ error: 'Product ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}/edit`, {
+        success: false,
+        message: 'Product ID is required'
+      });
     }
 
     const product = await Product.findById(productId);
 
     if (!product) {
       logger.warn(`Product with ID ${productId} not found`);
-      return res.status(404).json({ error: 'Product not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}/edit`, {
+        success: false,
+        message: 'Product not found'
+      });
     }
 
     if (name) product.name = name;
@@ -88,42 +127,54 @@ const updateProduct = async (req, res) => {
 
     await product.save();
     logger.info(`Product updated successfully: ${productId}`);
-    res.status(200).json(product);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}`, {
+      success: true,
+      data: product
+    });
   } catch (error) {
     logger.error('Error updating product:', error);
-    res.status(500).json({ error: 'Failed to update product' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products/${productId}/edit`, {
+      success: false,
+      message: 'Failed to update product',
+      error: error.message
+    });
   }
 };
 
-const deleteProduct = async (req, res) => {
-  try {
-    const { productId } = req.body;
+exports.deleteProduct = async (req, res) => {
+  const { productId } = req.params;
 
+  try {
     if (!productId) {
       logger.warn('Product ID is required to delete a product');
-      return res.status(400).json({ error: 'Product ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+        success: false,
+        message: 'Product ID is required'
+      });
     }
 
     const product = await Product.findById(productId);
 
     if (!product) {
       logger.warn(`Product with ID ${productId} not found`);
-      return res.status(404).json({ error: 'Product not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+        success: false,
+        message: 'Product not found'
+      });
     }
 
     await product.remove();
     logger.info(`Product deleted successfully: ${productId}`);
-    res.status(200).json({ message: 'Product deleted successfully' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+      success: true,
+      message: 'Product deleted successfully'
+    });
   } catch (error) {
     logger.error('Error deleting product:', error);
-    res.status(500).json({ error: 'Failed to delete product' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/products`, {
+      success: false,
+      message: 'Failed to delete product',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  listProducts,
-  createProduct,
-  getProductDetails,
-  updateProduct,
-  deleteProduct,
 };

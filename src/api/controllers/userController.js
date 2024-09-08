@@ -1,7 +1,9 @@
 require('dotenv').config();
-const User = require('../../models/userModel');
 const bcrypt = require('bcrypt');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
+const User = require('../../models/userModel');
 
 exports.createUser = async (req, res) => {
   try {
@@ -9,15 +11,10 @@ exports.createUser = async (req, res) => {
 
     if (password !== confirmPassword) {
       logger.warn('Password mismatch during user creation:', { username, email });
-      return res.render('dashboard/users/createUser', {
-        errorMessage: 'Passwords do not match',
-        isAuthenticated: res.locals.isAuthenticated,
-        logoImage: '/assets/img/logo.png',
-        api: {
-          https: process.env.API_HTTPS,
-          baseURL: process.env.API_BASE_URL,
-          port: process.env.API_PORT,
-        },
+      const redirectUrl = `${getBaseUrl()}/dashboard/users/create`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Passwords do not match'
       });
     }
 
@@ -26,23 +23,19 @@ exports.createUser = async (req, res) => {
     await user.save();
 
     logger.info('User created successfully:', { username, email });
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-    }
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'User created successfully',
+      user
+    });
   } catch (err) {
     logger.error('Error creating user:', err);
-    res.render('dashboard/users/createUser', {
-      errorMessage: 'Error creating user',
-      errorstack: err.stack,
-      isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png',
-      api: {
-        https: process.env.API_HTTPS,
-        baseURL: process.env.API_BASE_URL,
-        port: process.env.API_PORT,
-      },
+    const redirectUrl = `${getBaseUrl()}/dashboard/users/create`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error creating user',
+      error: err.message
     });
   }
 };
@@ -65,65 +58,49 @@ exports.getAllUsers = async (req, res) => {
 
     const users = await User.find(query);
     logger.info('Fetched all users:', { count: users.length });
-    res.render('dashboard/users/users', {
-      users,
-      errorMessage: null,
-      isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png',
-      api: {
-        https: process.env.API_HTTPS,
-        baseURL: process.env.API_BASE_URL,
-        port: process.env.API_PORT,
-      },
+
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      users
     });
   } catch (err) {
     logger.error('Error fetching users:', err);
-    res.render('dashboard/users/users', {
-      users: [],
-      errorMessage: 'Error fetching users',
-      errorstack: err.stack,
-      isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png',
-      api: {
-        https: process.env.API_HTTPS,
-        baseURL: process.env.API_BASE_URL,
-        port: process.env.API_PORT,
-      },
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error fetching users',
+      error: err.message
     });
   }
 };
 
 exports.getUserById = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
+    const user = await User.findById(req.params.userId);
     if (!user) {
-      logger.warn('User not found:', { userId: req.params.id });
-      if (process.env.NODE_ENV === 'production') {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-      } else if (process.env.NODE_ENV === 'development') {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-      }
+      logger.warn('User not found:', { userId: req.params.userId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'User not found'
+      });
     }
 
-    logger.info('User fetched by ID:', { userId: req.params.id });
-    res.render('dashboard/users/editUser', {
-      user,
-      errorMessage: null,
-      isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png',
-      api: {
-        https: process.env.API_HTTPS,
-        baseURL: process.env.API_BASE_URL,
-        port: process.env.API_PORT,
-      },
+    logger.info('User fetched by ID:', { userId: req.params.userId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/users/editUser`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      user
     });
   } catch (err) {
     logger.error('Error fetching user by ID:', err);
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-    }
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error fetching user',
+      error: err.message
+    });
   }
 };
 
@@ -132,83 +109,72 @@ exports.updateUser = async (req, res) => {
     const { fullname, username, email, password, confirmPassword, role } = req.body;
 
     if (password && password !== confirmPassword) {
-      logger.warn('Password mismatch during user update:', { userId: req.params.id });
-      return res.render('dashboard/users/editUser', {
-        user: req.body,
-        errorMessage: 'Passwords do not match',
-        isAuthenticated: res.locals.isAuthenticated,
-        logoImage: '/assets/img/logo.png',
-        api: {
-          https: process.env.API_HTTPS,
-          baseURL: process.env.API_BASE_URL,
-          port: process.env.API_PORT,
-        },
+      logger.warn('Password mismatch during user update:', { userId: req.params.userId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/users/edit`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Passwords do not match'
       });
     }
 
     const updates = { fullname, username, email, role };
-
     if (password) {
       updates.password = await bcrypt.hash(password, 10);
     }
 
-    const user = await User.findByIdAndUpdate(req.params.id, updates, { new: true });
+    const user = await User.findByIdAndUpdate(req.params.userId, updates, { new: true });
     if (!user) {
-      logger.warn('User not found for update:', { userId: req.params.id });
-      if (process.env.NODE_ENV === 'production') {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-      } else if (process.env.NODE_ENV === 'development') {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-      }
+      logger.warn('User not found for update:', { userId: req.params.userId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'User not found'
+      });
     }
 
-    logger.info('User updated successfully:', { userId: req.params.id });
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-    }
+    logger.info('User updated successfully:', { userId: req.params.userId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'User updated successfully',
+      user
+    });
   } catch (err) {
     logger.error('Error updating user:', err);
-    res.render('dashboard/users/editUser', {
-      user: req.body,
-      errorMessage: 'Error updating user',
-      errorstack: err.stack,
-      isAuthenticated: res.locals.isAuthenticated,
-      logoImage: '/assets/img/logo.png',
-      api: {
-        https: process.env.API_HTTPS,
-        baseURL: process.env.API_BASE_URL,
-        port: process.env.API_PORT,
-      },
+    const redirectUrl = `${getBaseUrl()}/dashboard/users/edit`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error updating user',
+      error: err.message
     });
   }
 };
 
 exports.deleteUser = async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
+    const user = await User.findByIdAndDelete(req.params.userId);
     if (!user) {
-      logger.warn('User not found for deletion:', { userId: req.params.id });
-      if (process.env.NODE_ENV === 'production') {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-      } else if (process.env.NODE_ENV === 'development') {
-        return res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-      }
+      logger.warn('User not found for deletion:', { userId: req.params.userId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'User not found'
+      });
     }
 
-    logger.info('User deleted successfully:', { userId: req.params.id });
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-    }
+    logger.info('User deleted successfully:', { userId: req.params.userId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'User deleted successfully'
+    });
   } catch (err) {
     logger.error('Error deleting user:', err);
-    if (process.env.NODE_ENV === 'production') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}/dashboard/users`);
-    } else if (process.env.NODE_ENV === 'development') {
-      res.redirect(`${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/dashboard/users`);
-    }
+    const redirectUrl = `${getBaseUrl()}/dashboard/users`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Error deleting user',
+      error: err.message
+    });
   }
 };

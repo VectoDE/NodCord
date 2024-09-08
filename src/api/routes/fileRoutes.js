@@ -5,8 +5,8 @@ const fileController = require('../controllers/fileController');
 
 router.post('/upload', file.checkDiskSpaceMiddleware, file.upload, fileController.uploadFile);
 
-router.get('/:id', fileController.getFile);
+router.get('/:fileId', fileController.getFile);
 
-router.get('/download/:id', fileController.downloadFile);
+router.get('/:fileId/download', fileController.downloadFile);
 
 module.exports = router;

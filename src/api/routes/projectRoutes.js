@@ -4,12 +4,12 @@ const projectController = require('../controllers/projectController');
 
 router.get('/', projectController.listProjects);
 
-router.post('/', projectController.createProject);
-
 router.get('/:projectId', projectController.getProjectDetails);
 
-router.put('/update', projectController.updateProject);
+router.post('/create', projectController.createProject);
 
-router.delete('/delete', projectController.deleteProject);
+router.post('/:projectId/update', projectController.updateProject);
+
+router.post('/:projectId/delete', projectController.deleteProject);
 
 module.exports = router;

@@ -1,6 +1,9 @@
+require('dotenv').config();
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
+const logger = require('../services/loggerService');
 const DeveloperProgram = require('../../models/developerProgramModel');
 const nodemailerService = require('../services/nodemailerService');
-const logger = require('../services/loggerService');
 
 exports.joinDeveloperProgram = async (req, res) => {
   try {
@@ -9,7 +12,9 @@ exports.joinDeveloperProgram = async (req, res) => {
     const username = req.user?.username;
 
     if (!userId || !userEmail || !username) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/developer-program/join`;
+      logger.warn('User information is missing:', { userId, userEmail, username });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'User information is missing',
       });
@@ -27,13 +32,16 @@ exports.joinDeveloperProgram = async (req, res) => {
 
     await nodemailerService.sendDeveloperProgramJoinEmail(userEmail, username);
 
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/developer-program`;
+    logger.info('Successfully joined developer program:', { userId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Successfully joined developer program',
     });
   } catch (error) {
     logger.error('Error joining developer program:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/developer-program/join`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,
@@ -48,7 +56,9 @@ exports.leaveDeveloperProgram = async (req, res) => {
     const username = req.user?.username;
 
     if (!userId || !userEmail || !username) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/developer-program/leave`;
+      logger.warn('User information is missing:', { userId, userEmail, username });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'User information is missing',
       });
@@ -61,7 +71,9 @@ exports.leaveDeveloperProgram = async (req, res) => {
     );
 
     if (!developerProgram) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/developer-program`;
+      logger.warn('Developer Program not found:', { userId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Developer Program not found',
       });
@@ -69,13 +81,16 @@ exports.leaveDeveloperProgram = async (req, res) => {
 
     await nodemailerService.sendDeveloperProgramLeaveEmail(userEmail, username);
 
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/developer-program`;
+    logger.info('Successfully left developer program:', { userId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Successfully left developer program',
     });
   } catch (error) {
     logger.error('Error leaving developer program:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/developer-program/leave`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,

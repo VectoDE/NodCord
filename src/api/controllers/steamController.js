@@ -3,6 +3,8 @@ const logger = require('../services/loggerService');
 
 const steamService = new SteamService('your-steam-api-key');
 
+// TODO: Function Controller
+
 exports.getPlayerSummaries = async (req, res) => {
   const { steamId } = req.params;
   try {
@@ -12,7 +14,7 @@ exports.getPlayerSummaries = async (req, res) => {
       steamId,
       playerSummary,
     });
-    res.json(playerSummary);
+    res.status(200).json(playerSummary);
   } catch (error) {
     logger.error('Failed to fetch player summaries:', { steamId, error });
     res.status(500).json({ error: 'Failed to fetch player summaries' });
@@ -25,7 +27,7 @@ exports.getOwnedGames = async (req, res) => {
     logger.info('Fetching owned games for Steam ID:', { steamId });
     const ownedGames = await steamService.getOwnedGames(steamId);
     logger.info('Successfully fetched owned games:', { steamId, ownedGames });
-    res.json(ownedGames);
+    res.status(200).json(ownedGames);
   } catch (error) {
     logger.error('Failed to fetch owned games:', { steamId, error });
     res.status(500).json({ error: 'Failed to fetch owned games' });
@@ -39,25 +41,20 @@ exports.getPlayerAchievements = async (req, res) => {
       steamId,
       appId,
     });
-    const achievements = await steamService.getPlayerAchievements(
-      steamId,
-      appId
-    );
+    const achievements = await steamService.getPlayerAchievements(steamId, appId);
     logger.info('Successfully fetched achievements:', {
       steamId,
       appId,
       achievements,
     });
-    res.json(achievements);
+    res.status(200).json(achievements);
   } catch (error) {
     logger.error('Failed to fetch achievements for app:', {
       steamId,
       appId,
       error,
     });
-    res
-      .status(500)
-      .json({ error: `Failed to fetch achievements for app ${appId}` });
+    res.status(500).json({ error: `Failed to fetch achievements for app ${appId}` });
   }
 };
 
@@ -67,7 +64,7 @@ exports.getGameDetails = async (req, res) => {
     logger.info('Fetching details for app ID:', { appId });
     const gameDetails = await steamService.getGameDetails(appId);
     logger.info('Successfully fetched game details:', { appId, gameDetails });
-    res.json(gameDetails);
+    res.status(200).json(gameDetails);
   } catch (error) {
     logger.error('Failed to fetch game details for app:', { appId, error });
     res.status(500).json({ error: `Failed to fetch details for app ${appId}` });

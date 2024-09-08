@@ -8,6 +8,8 @@ const proxmoxService = new ProxmoxService(
   'pam' // Realm, z.B. pam oder pve
 );
 
+// TODO: Function Controller
+
 exports.getNodes = async (req, res) => {
   try {
     const nodes = await proxmoxService.getNodes();

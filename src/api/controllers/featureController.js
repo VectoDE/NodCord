@@ -1,15 +1,20 @@
-const Feature = require('../../models/featureModel');
-const nodemailerService = require('../services/nodemailerService');
+require('dotenv').config();
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
+const nodemailerService = require('../services/nodemailerService');
+const Feature = require('../../models/featureModel');
 
-const createFeature = async (req, res) => {
+exports.createFeature = async (req, res) => {
   try {
     const { title, description, status, priority, project } = req.body;
 
     if (!title || !description || !status || !priority || !project) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/features/create`;
+      logger.warn('Missing required fields:', { title, description, status, priority, project });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Missing required fields.',
+        message: 'Missing required fields.'
       });
     }
 
@@ -23,79 +28,99 @@ const createFeature = async (req, res) => {
 
     await newFeature.save();
 
-    res.status(201).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features`;
+    logger.info('Feature created successfully:', { title, description, status, priority, project });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Feature created successfully.',
       feature: newFeature,
     });
   } catch (error) {
     logger.error('Error creating feature:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features/create`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
-const getAllFeatures = async (req, res) => {
+exports.getAllFeatures = async (req, res) => {
   try {
     const features = await Feature.find().populate('project');
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features`;
+    logger.info('Fetched all features:', { count: features.length });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       data: features,
     });
   } catch (error) {
     logger.error('Error fetching features:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
-const getFeatureById = async (req, res) => {
+exports.getFeatureById = async (req, res) => {
   try {
-    const feature = await Feature.findById(req.params.id).populate('project');
+    const featureId = req.params.featureId;
+    const feature = await Feature.findById(featureId).populate('project');
     if (!feature) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/features/${featureId}`;
+      logger.warn('Feature not found:', { featureId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Feature not found.',
+        message: 'Feature not found.'
       });
     }
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features/${featureId}`;
+    logger.info('Fetched feature by ID:', { featureId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       data: feature,
     });
   } catch (error) {
     logger.error('Error fetching feature:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features/${req.params.featureId}`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
-const updateFeature = async (req, res) => {
+exports.updateFeature = async (req, res) => {
   try {
+    const featureId = req.params.featureId;
     const { title, description, status, priority } = req.body;
 
     if (!title && !description && !status && !priority) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/features/${featureId}/edit`;
+      logger.warn('No fields to update:', { featureId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'No fields to update.',
+        message: 'No fields to update.'
       });
     }
 
     const updatedFeature = await Feature.findByIdAndUpdate(
-      req.params.id,
+      featureId,
       { title, description, status, priority },
       { new: true, runValidators: true }
     );
 
     if (!updatedFeature) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/features/${featureId}/edit`;
+      logger.warn('Feature not found for update:', { featureId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Feature not found.',
+        message: 'Feature not found.'
       });
     }
 
@@ -106,45 +131,48 @@ const updateFeature = async (req, res) => {
       );
     }
 
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features/${featureId}`;
+    logger.info('Feature updated successfully:', { featureId, status });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       data: updatedFeature,
     });
   } catch (error) {
     logger.error('Error updating feature:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features/${req.params.featureId}/edit`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
 };
 
-const deleteFeature = async (req, res) => {
+exports.deleteFeature = async (req, res) => {
   try {
-    const deletedFeature = await Feature.findByIdAndDelete(req.params.id);
+    const featureId = req.params.featureId;
+    const deletedFeature = await Feature.findByIdAndDelete(featureId);
     if (!deletedFeature) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/features`;
+      logger.warn('Feature not found for deletion:', { featureId });
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Feature not found.',
+        message: 'Feature not found.'
       });
     }
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features`;
+    logger.info('Feature deleted successfully:', { featureId });
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Feature deleted successfully.',
     });
   } catch (error) {
     logger.error('Error deleting feature:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/features`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
+      error: error.message
     });
   }
-};
-
-module.exports = {
-  createFeature,
-  getAllFeatures,
-  getFeatureById,
-  updateFeature,
-  deleteFeature,
 };

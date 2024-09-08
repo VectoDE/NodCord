@@ -1,5 +1,7 @@
 const ApiKey = require('../../models/apiKeyModel');
 const { v4: uuidv4 } = require('uuid');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
 
 exports.createApiKey = async (req, res) => {
@@ -16,29 +18,29 @@ exports.createApiKey = async (req, res) => {
     await apiKey.save();
     logger.info('API key created successfully:', { apiKeyId: apiKey._id });
 
-    res.status(201).json({ message: 'API key created', apiKey });
+    sendResponse(res, 201, 'API key created', { apiKey });
   } catch (error) {
     logger.error('Error creating API key:', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    sendResponse(res, 500, 'Internal Server Error');
   }
 };
 
 exports.deleteApiKey = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { apiId } = req.params;
 
-    const apiKey = await ApiKey.findByIdAndDelete(id);
+    const apiKey = await ApiKey.findByIdAndDelete(apiId);
 
     if (!apiKey) {
-      logger.warn('API key not found for deletion:', { apiKeyId: id });
-      return res.status(404).json({ message: 'API key not found' });
+      logger.warn('API key not found for deletion:', { apiKeyId: apiId });
+      return sendResponse(res, 404, 'API key not found');
     }
 
-    logger.info('API key deleted successfully:', { apiKeyId: id });
-    res.status(200).json({ message: 'API key deleted' });
+    logger.info('API key deleted successfully:', { apiKeyId: apiId });
+    sendResponse(res, 200, 'API key deleted');
   } catch (error) {
     logger.error('Error deleting API key:', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    sendResponse(res, 500, 'Internal Server Error');
   }
 };
 
@@ -48,29 +50,29 @@ exports.getApiKeys = async (req, res) => {
       developerProgram: req.apiKey.developerProgram,
     });
 
-    res.status(200).json(apiKeys);
+    sendResponse(res, 200, 'API keys fetched', apiKeys);
   } catch (error) {
     logger.error('Error fetching API keys:', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    sendResponse(res, 500, 'Internal Server Error');
   }
 };
 
 exports.updateApiKey = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { apiId } = req.params;
     const { name } = req.body;
 
-    const apiKey = await ApiKey.findByIdAndUpdate(id, { name }, { new: true });
+    const apiKey = await ApiKey.findByIdAndUpdate(apiId, { name }, { new: true });
 
     if (!apiKey) {
-      logger.warn('API key not found for update:', { apiKeyId: id });
-      return res.status(404).json({ message: 'API key not found' });
+      logger.warn('API key not found for update:', { apiKeyId: apiId });
+      return sendResponse(res, 404, 'API key not found');
     }
 
     logger.info('API key updated successfully:', { apiKeyId: apiKey._id });
-    res.status(200).json({ message: 'API key updated', apiKey });
+    sendResponse(res, 200, 'API key updated', { apiKey });
   } catch (error) {
     logger.error('Error updating API key:', error.message);
-    res.status(500).json({ message: 'Internal Server Error' });
+    sendResponse(res, 500, 'Internal Server Error');
   }
 };

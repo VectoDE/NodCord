@@ -1,100 +1,145 @@
+require('dotenv').config();
 const Blog = require('../../models/blogModel');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
 
-const createBlog = async (req, res) => {
+exports.createBlog = async (req, res) => {
   try {
     const { title, content, author, tags } = req.body;
 
     if (!title || !content || !author) {
-      return res
-        .status(400)
-        .json({ error: 'Title, content, and author are required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/create`, {
+        success: false,
+        message: 'Title, content, and author are required'
+      });
     }
 
-    const newBlog = new Blog({
-      title,
-      content,
-      author,
-      tags,
-    });
-
+    const newBlog = new Blog({ title, content, author, tags });
     const savedBlog = await newBlog.save();
-    res.status(201).json({
-      message: 'Blog created successfully.',
-      blog: savedBlog,
+
+    logger.info('Blog created successfully:', { blogId: savedBlog._id });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: true,
+      message: 'Blog created successfully',
+      blog: savedBlog
     });
   } catch (error) {
     logger.error('Error creating blog:', error);
-    res.status(500).json({
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/create`, {
+      success: false,
       message: 'Internal Server Error',
-      details: error.message,
+      error: error.message
     });
   }
 };
 
-const getAllBlogs = async () => {
+exports.getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find();
-    return blogs;
+
+    logger.info('Fetched all blogs:', { count: blogs.length });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: true,
+      blogs
+    });
   } catch (error) {
     logger.error('Error fetching blogs:', error);
-    throw new Error('Internal Server Error');
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const getBlogById = async (id) => {
-  try {
-    const blog = await Blog.findById(id);
+exports.getBlogById = async (req, res) => {
+  const { blogId } = req.params;
 
+  try {
+    const blog = await Blog.findById(blogId);
     if (!blog) {
-      throw new Error('Blog not found');
+      logger.warn('Blog not found:', { blogId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+        success: false,
+        message: 'Blog not found'
+      });
     }
 
-    return blog;
+    logger.info('Blog fetched by ID:', { blogId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/${blogId}`, {
+      success: true,
+      blog
+    });
   } catch (error) {
-    logger.error(`Error fetching blog with ID ${id}:`, error);
-    throw error;
+    logger.error(`Error fetching blog with ID ${blogId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: false,
+      message: 'Failed to fetch blog',
+      error: error.message
+    });
   }
 };
 
-const updateBlog = async (id, data) => {
+exports.updateBlog = async (req, res) => {
+  const { blogId } = req.params;
+  const updateData = req.body;
+
   try {
-    const updatedBlog = await Blog.findByIdAndUpdate(
-      id,
-      data,
-      { new: true, runValidators: true }
-    );
+    const updatedBlog = await Blog.findByIdAndUpdate(blogId, updateData, {
+      new: true,
+      runValidators: true
+    });
 
     if (!updatedBlog) {
-      throw new Error('Blog not found');
+      logger.warn('Blog not found for update:', { blogId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+        success: false,
+        message: 'Blog not found'
+      });
     }
 
-    return updatedBlog;
+    logger.info('Blog updated successfully:', { blogId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: true,
+      message: 'Blog updated successfully',
+      blog: updatedBlog
+    });
   } catch (error) {
-    logger.error(`Error updating blog with ID ${id}:`, error);
-    throw error;
+    logger.error(`Error updating blog with ID ${blogId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/edit/${blogId}`, {
+      success: false,
+      message: 'Failed to update blog',
+      error: error.message
+    });
   }
 };
 
-const deleteBlog = async (id) => {
+exports.deleteBlog = async (req, res) => {
+  const { blogId } = req.params;
+
   try {
-    const deletedBlog = await Blog.findByIdAndDelete(id);
+    const deletedBlog = await Blog.findByIdAndDelete(blogId);
 
     if (!deletedBlog) {
-      throw new Error('Blog not found');
+      logger.warn('Blog not found for deletion:', { blogId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+        success: false,
+        message: 'Blog not found'
+      });
     }
 
-    return deletedBlog;
+    logger.info('Blog deleted successfully:', { blogId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: true,
+      message: 'Blog deleted successfully'
+    });
   } catch (error) {
-    logger.error(`Error deleting blog with ID ${id}:`, error);
-    throw error;
+    logger.error(`Error deleting blog with ID ${blogId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      success: false,
+      message: 'Failed to delete blog',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  createBlog,
-  getAllBlogs,
-  getBlogById,
-  updateBlog,
-  deleteBlog,
 };

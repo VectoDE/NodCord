@@ -1,79 +1,123 @@
-const Issue = require('../../models/issueModel');
+require('dotenv').config();
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
+const Issue = require('../../models/issueModel');
 
-const createIssue = async (req, res) => {
+exports.createIssue = async (req, res) => {
   try {
     const { title, description, status, project } = req.body;
 
     if (!title || !description || !project) {
-      return res
-        .status(400)
-        .json({ message: 'Title, description, and project are required.' });
+      logger.warn('Missing required fields during issue creation:', { title, description, project });
+      const redirectUrl = `${getBaseUrl()}/issues/create`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Title, description, and project are required'
+      });
     }
 
     const newIssue = new Issue({ title, description, status, project });
     await newIssue.save();
 
-    res
-      .status(201)
-      .json({ message: 'Issue created successfully.', issue: newIssue });
+    logger.info('Issue created successfully:', { issueId: newIssue._id });
+    const redirectUrl = `${getBaseUrl()}/issues/${newIssue._id}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Issue created successfully',
+      issue: newIssue
+    });
   } catch (error) {
     logger.error('Error creating issue:', error);
-    res
-      .status(500)
-      .json({ message: 'Internal Server Error', error: error.message });
+    const redirectUrl = `${getBaseUrl()}/issues/create`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to create issue',
+      error: error.message
+    });
   }
 };
 
-const getAllIssues = async (req, res) => {
+exports.getAllIssues = async (req, res) => {
   try {
     const issues = await Issue.find().populate('project');
-    res.status(200).json(issues);
+    logger.info('Fetched all issues successfully');
+    const redirectUrl = `${getBaseUrl()}/issues`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      issues
+    });
   } catch (error) {
     logger.error('Error fetching issues:', error);
-    res
-      .status(500)
-      .json({ message: 'Internal Server Error', error: error.message });
+    const redirectUrl = `${getBaseUrl()}/issues`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to fetch issues',
+      error: error.message
+    });
   }
 };
 
-const getIssueById = async (req, res) => {
+exports.getIssueById = async (req, res) => {
+  const { issueId } = req.params;
+
   try {
-    const issue = await Issue.findById(req.params.id).populate('project');
+    const issue = await Issue.findById(issueId).populate('project');
+
     if (!issue) {
-      return res.status(404).json({ message: 'Issue not found.' });
+      logger.warn('Issue not found:', { issueId });
+      const redirectUrl = `${getBaseUrl()}/issues`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Issue not found'
+      });
     }
-    res.status(200).json(issue);
+
+    logger.info('Fetched issue by ID:', { issueId });
+    const redirectUrl = `${getBaseUrl()}/issues/${issueId}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      issue
+    });
   } catch (error) {
-    logger.error(`Error fetching issue with ID ${req.params.id}:`, error);
-    res
-      .status(500)
-      .json({ message: 'Internal Server Error', error: error.message });
+    logger.error(`Error fetching issue with ID ${issueId}:`, error);
+    const redirectUrl = `${getBaseUrl()}/issues`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to fetch issue',
+      error: error.message
+    });
   }
 };
 
-const updateIssue = async (req, res) => {
-  try {
-    const { title, description, status } = req.body;
+exports.updateIssue = async (req, res) => {
+  const { issueId } = req.params;
+  const { title, description, status } = req.body;
 
+  try {
     if (!title && !description && !status) {
-      return res
-        .status(400)
-        .json({
-          message:
-            'At least one field (title, description, status) is required for update.',
-        });
+      logger.warn('No fields provided for update:', { issueId });
+      const redirectUrl = `${getBaseUrl()}/issues/edit/${issueId}`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'At least one field (title, description, status) is required for update'
+      });
     }
 
     const updatedIssue = await Issue.findByIdAndUpdate(
-      req.params.id,
+      issueId,
       { title, description, status },
       { new: true, runValidators: true }
     );
 
     if (!updatedIssue) {
-      return res.status(404).json({ message: 'Issue not found.' });
+      logger.warn('Issue not found for update:', { issueId });
+      const redirectUrl = `${getBaseUrl()}/issues`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Issue not found'
+      });
     }
 
     if (status === 'Resolved' || status === 'Closed') {
@@ -83,34 +127,51 @@ const updateIssue = async (req, res) => {
       );
     }
 
-    res.status(200).json(updatedIssue);
+    logger.info('Issue updated successfully:', { issueId });
+    const redirectUrl = `${getBaseUrl()}/issues/${issueId}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Issue updated successfully',
+      issue: updatedIssue
+    });
   } catch (error) {
-    logger.error(`Error updating issue with ID ${req.params.id}:`, error);
-    res
-      .status(500)
-      .json({ message: 'Internal Server Error', error: error.message });
+    logger.error(`Error updating issue with ID ${issueId}:`, error);
+    const redirectUrl = `${getBaseUrl()}/issues/edit/${issueId}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to update issue',
+      error: error.message
+    });
   }
 };
 
-const deleteIssue = async (req, res) => {
+exports.deleteIssue = async (req, res) => {
+  const { issueId } = req.params;
+
   try {
-    const deletedIssue = await Issue.findByIdAndDelete(req.params.id);
+    const deletedIssue = await Issue.findByIdAndDelete(issueId);
     if (!deletedIssue) {
-      return res.status(404).json({ message: 'Issue not found.' });
+      logger.warn('Issue not found for deletion:', { issueId });
+      const redirectUrl = `${getBaseUrl()}/issues`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Issue not found'
+      });
     }
-    res.status(200).json({ message: 'Issue deleted successfully.' });
-  } catch (error) {
-    logger.error(`Error deleting issue with ID ${req.params.id}:`, error);
-    res
-      .status(500)
-      .json({ message: 'Internal Server Error', error: error.message });
-  }
-};
 
-module.exports = {
-  createIssue,
-  getAllIssues,
-  getIssueById,
-  updateIssue,
-  deleteIssue,
+    logger.info('Issue deleted successfully:', { issueId });
+    const redirectUrl = `${getBaseUrl()}/issues`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Issue deleted successfully'
+    });
+  } catch (error) {
+    logger.error(`Error deleting issue with ID ${issueId}:`, error);
+    const redirectUrl = `${getBaseUrl()}/issues`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to delete issue',
+      error: error.message
+    });
+  }
 };

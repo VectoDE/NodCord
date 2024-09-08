@@ -1,132 +1,152 @@
-const Customer = require('../../models/customerModel');
+require('dotenv').config();
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
+const Customer = require('../../models/customerModel');
 
-const createCustomer = async (req, res) => {
+exports.createCustomer = async (req, res) => {
   try {
     const { name, email, phone, address } = req.body;
 
     if (!name || !email || !phone || !address) {
-      return res.status(400).json({
+      logger.warn('All fields are required during customer creation:', { name, email });
+      const redirectUrl = `${getBaseUrl()}/dashboard/customers/create`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'All fields are required.',
+        message: 'All fields are required'
       });
     }
 
     const newCustomer = new Customer({ name, email, phone, address });
     await newCustomer.save();
 
-    res.status(201).json({
+    logger.info('Customer created successfully:', { name, email });
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
-      message: 'Customer created successfully.',
-      customer: newCustomer,
+      message: 'Customer created successfully',
+      customer: newCustomer
     });
   } catch (error) {
     logger.error('Error creating customer:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers/create`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
-      message: 'Internal Server Error',
-      error: error.message,
+      message: 'Error creating customer',
+      error: error.message
     });
   }
 };
 
-const getAllCustomers = async (req, res) => {
+exports.getAllCustomers = async (req, res) => {
   try {
     const customers = await Customer.find();
-    res.status(200).json({
+    logger.info('Fetched all customers:', { count: customers.length });
+
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
-      customers,
+      customers
     });
   } catch (error) {
     logger.error('Error fetching customers:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
-      message: 'Internal Server Error',
-      error: error.message,
+      message: 'Error fetching customers',
+      error: error.message
     });
   }
 };
 
-const getCustomerById = async (req, res) => {
+exports.getCustomerById = async (req, res) => {
   try {
-    const customer = await Customer.findById(req.params.id);
+    const customer = await Customer.findById(req.params.customerId);
     if (!customer) {
-      return res.status(404).json({
+      logger.warn('Customer not found:', { customerId: req.params.customerId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Customer not found.',
+        message: 'Customer not found'
       });
     }
-    res.status(200).json({
+
+    logger.info('Customer fetched by ID:', { customerId: req.params.customerId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers/editCustomer`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
-      customer,
+      customer
     });
   } catch (error) {
-    logger.error('Error fetching customer:', error);
-    res.status(500).json({
+    logger.error('Error fetching customer by ID:', error);
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
-      message: 'Internal Server Error',
-      error: error.message,
+      message: 'Error fetching customer',
+      error: error.message
     });
   }
 };
 
-const updateCustomer = async (req, res) => {
+exports.updateCustomer = async (req, res) => {
   try {
     const { name, email, phone, address } = req.body;
-    const updatedCustomer = await Customer.findByIdAndUpdate(
-      req.params.id,
-      { name, email, phone, address },
-      { new: true, runValidators: true }
-    );
 
-    if (!updatedCustomer) {
-      return res.status(404).json({
+    const updates = { name, email, phone, address };
+    const customer = await Customer.findByIdAndUpdate(req.params.customerId, updates, { new: true, runValidators: true });
+
+    if (!customer) {
+      logger.warn('Customer not found for update:', { customerId: req.params.customerId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Customer not found.',
+        message: 'Customer not found'
       });
     }
 
-    res.status(200).json({
+    logger.info('Customer updated successfully:', { customerId: req.params.customerId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
-      customer: updatedCustomer,
+      message: 'Customer updated successfully',
+      customer
     });
   } catch (error) {
     logger.error('Error updating customer:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers/editCustomer`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
-      message: 'Internal Server Error',
-      error: error.message,
+      message: 'Error updating customer',
+      error: error.message
     });
   }
 };
 
-const deleteCustomer = async (req, res) => {
+exports.deleteCustomer = async (req, res) => {
   try {
-    const deletedCustomer = await Customer.findByIdAndDelete(req.params.id);
-    if (!deletedCustomer) {
-      return res.status(404).json({
+    const customer = await Customer.findByIdAndDelete(req.params.customerId);
+    if (!customer) {
+      logger.warn('Customer not found for deletion:', { customerId: req.params.customerId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
-        message: 'Customer not found.',
+        message: 'Customer not found'
       });
     }
-    res.status(200).json({
+
+    logger.info('Customer deleted successfully:', { customerId: req.params.customerId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
-      message: 'Customer deleted successfully.',
+      message: 'Customer deleted successfully'
     });
   } catch (error) {
     logger.error('Error deleting customer:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/customers`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
-      message: 'Internal Server Error',
-      error: error.message,
+      message: 'Error deleting customer',
+      error: error.message
     });
   }
-};
-
-module.exports = {
-  createCustomer,
-  getAllCustomers,
-  getCustomerById,
-  updateCustomer,
-  deleteCustomer,
 };

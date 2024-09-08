@@ -1,17 +1,29 @@
+require('dotenv').config();
 const Company = require('../../models/companyModel');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
 
-const listCompanies = async (req, res) => {
+exports.listCompanies = async (req, res) => {
   try {
     const companies = await Company.find();
-    res.status(200).json(companies);
+
+    logger.info('Fetched all companies:', { count: companies.length });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: true,
+      companies
+    });
   } catch (error) {
     logger.error('Error listing companies:', error);
-    res.status(500).json({ error: 'Failed to fetch companies' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: false,
+      message: 'Failed to fetch companies',
+      error: error.message
+    });
   }
 };
 
-const createCompany = async (req, res) => {
+exports.createCompany = async (req, res) => {
   try {
     const {
       name,
@@ -20,11 +32,14 @@ const createCompany = async (req, res) => {
       headquarters,
       foundedDate,
       employees,
-      website,
+      website
     } = req.body;
 
     if (!name) {
-      return res.status(400).json({ error: 'Name is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies/create`, {
+        success: false,
+        message: 'Name is required'
+      });
     }
 
     const newCompany = new Company({
@@ -34,104 +49,137 @@ const createCompany = async (req, res) => {
       headquarters,
       foundedDate,
       employees,
-      website,
+      website
     });
 
-    await newCompany.save();
-    res
-      .status(201)
-      .json({ message: 'Company created successfully', company: newCompany });
+    const savedCompany = await newCompany.save();
+
+    logger.info('Company created successfully:', { companyId: savedCompany._id });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: true,
+      message: 'Company created successfully',
+      company: savedCompany
+    });
   } catch (error) {
     logger.error('Error creating company:', error);
-    res.status(500).json({ error: 'Failed to create company' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies/create`, {
+      success: false,
+      message: 'Failed to create company',
+      error: error.message
+    });
   }
 };
 
-const getCompanyDetails = async (req, res) => {
-  try {
-    const { companyId } = req.params;
+exports.getCompanyDetails = async (req, res) => {
+  const { companyId } = req.params;
 
+  try {
     if (!companyId) {
-      return res.status(400).json({ error: 'Company ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+        success: false,
+        message: 'Company ID is required'
+      });
     }
 
     const company = await Company.findById(companyId);
     if (!company) {
-      return res.status(404).json({ error: 'Company not found' });
+      logger.warn('Company not found:', { companyId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+        success: false,
+        message: 'Company not found'
+      });
     }
 
-    res.status(200).json(company);
+    logger.info('Fetched company details:', { companyId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies/${companyId}`, {
+      success: true,
+      company
+    });
   } catch (error) {
-    logger.error('Error fetching company details:', error);
-    res.status(500).json({ error: 'Failed to fetch company details' });
+    logger.error(`Error fetching company details with ID ${companyId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: false,
+      message: 'Failed to fetch company details',
+      error: error.message
+    });
   }
 };
 
-const updateCompany = async (req, res) => {
-  try {
-    const {
-      companyId,
-      name,
-      description,
-      industry,
-      headquarters,
-      foundedDate,
-      employees,
-      website,
-    } = req.body;
+exports.updateCompany = async (req, res) => {
+  const { companyId } = req.params;
+  const updateData = req.body;
 
+  try {
     if (!companyId) {
-      return res.status(400).json({ error: 'Company ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+        success: false,
+        message: 'Company ID is required'
+      });
     }
 
     const company = await Company.findById(companyId);
     if (!company) {
-      return res.status(404).json({ error: 'Company not found' });
+      logger.warn('Company not found for update:', { companyId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+        success: false,
+        message: 'Company not found'
+      });
     }
 
-    if (name) company.name = name;
-    if (description) company.description = description;
-    if (industry) company.industry = industry;
-    if (headquarters) company.headquarters = headquarters;
-    if (foundedDate) company.foundedDate = foundedDate;
-    if (employees) company.employees = employees;
-    if (website) company.website = website;
-
+    Object.assign(company, updateData);
     company.updatedDate = Date.now();
 
-    await company.save();
-    res.status(200).json({ message: 'Company updated successfully', company });
+    const updatedCompany = await company.save();
+
+    logger.info('Company updated successfully:', { companyId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: true,
+      message: 'Company updated successfully',
+      company: updatedCompany
+    });
   } catch (error) {
-    logger.error('Error updating company:', error);
-    res.status(500).json({ error: 'Failed to update company' });
+    logger.error(`Error updating company with ID ${companyId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies/edit/${companyId}`, {
+      success: false,
+      message: 'Failed to update company',
+      error: error.message
+    });
   }
 };
 
-const deleteCompany = async (req, res) => {
-  try {
-    const { companyId } = req.body;
+exports.deleteCompany = async (req, res) => {
+  const { companyId } = req.params;
 
+  try {
     if (!companyId) {
-      return res.status(400).json({ error: 'Company ID is required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+        success: false,
+        message: 'Company ID is required'
+      });
     }
 
     const company = await Company.findById(companyId);
     if (!company) {
-      return res.status(404).json({ error: 'Company not found' });
+      logger.warn('Company not found for deletion:', { companyId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+        success: false,
+        message: 'Company not found'
+      });
     }
 
     await company.remove();
-    res.status(200).json({ message: 'Company deleted successfully' });
-  } catch (error) {
-    logger.error('Error deleting company:', error);
-    res.status(500).json({ error: 'Failed to delete company' });
-  }
-};
 
-module.exports = {
-  listCompanies,
-  createCompany,
-  getCompanyDetails,
-  updateCompany,
-  deleteCompany,
+    logger.info('Company deleted successfully:', { companyId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: true,
+      message: 'Company deleted successfully'
+    });
+  } catch (error) {
+    logger.error(`Error deleting company with ID ${companyId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/companies`, {
+      success: false,
+      message: 'Failed to delete company',
+      error: error.message
+    });
+  }
 };

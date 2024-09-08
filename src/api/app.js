@@ -65,7 +65,7 @@ const storyRoutes = require('./routes/storyRoutes');
 const customerRoutes = require('./routes/customerRoutes');
 const customerOrderRoutes = require('./routes/customerOrderRoutes');
 const productRoutes = require('./routes/productRoutes');
-const orderRoutes = require('./routes/orderRoutes');
+//const orderRoutes = require('./routes/orderRoutes');
 const returnRoutes = require('./routes/returnRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
@@ -73,7 +73,6 @@ const controlRoutes = require('./routes/controlRoutes');
 const securityRoutes = require('./routes/securityRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 const proxmoxRoutes = require('./routes/proxmoxRoutes');
-const appleRoutes = require('./routes/appleRoutes');
 const plexRoutes = require('./routes/plexRoutes');
 const faceitRoutes = require('./routes/faceitRoutes');
 const steamRoutes = require('./routes/steamRoutes');
@@ -114,7 +113,7 @@ api.use('/api/stories', storyRoutes);
 api.use('/api/customers', customerRoutes);
 api.use('/api/customers/orders', customerOrderRoutes);
 api.use('/api/products', productRoutes);
-api.use('/api/orders', orderRoutes);
+//api.use('/api/orders', orderRoutes);
 api.use('/api/returns', returnRoutes);
 api.use('/api/tickets', ticketRoutes);
 api.use('/api/feedbacks', feedbackRoutes);
@@ -122,7 +121,6 @@ api.use('/api/controls', controlRoutes);
 api.use('/api/securities', securityRoutes);
 api.use('/api/logs', logRoutes);
 api.use('/api/proxmox', proxmoxRoutes);
-api.use('/api/apple', appleRoutes);
 api.use('/api/plex', plexRoutes);
 api.use('/api/faceit', faceitRoutes);
 api.use('/api/steam', steamRoutes);
@@ -136,7 +134,7 @@ const startApi = () => {
   const baseURL = process.env.API_BASE_URL || 'localhost';
 
   if (process.env.NODE_ENV === 'production') {
-    api.listen(port, () => {
+    api.listen( () => {
       logger.info(`API is running on https://${baseURL}`);
     });
   } else if (process.env.NODE_ENV === 'development') {

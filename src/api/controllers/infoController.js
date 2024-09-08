@@ -2,6 +2,8 @@ const os = require('os');
 const checkDiskSpace = require('check-disk-space').default;
 const logger = require('../services/loggerService');
 
+// TODO: Information Controller
+
 const getSystemInfo = async (req, res) => {
   try {
     const cpuInfo = os.cpus();

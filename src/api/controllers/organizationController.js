@@ -1,33 +1,52 @@
 const Organization = require('../../models/organizationModel');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
 exports.getAllOrganizations = async (req, res) => {
   try {
     const organizations = await Organization.find();
     logger.info('Fetched all organizations successfully');
-    res.status(200).json({ success: true, data: organizations });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations`, {
+      success: true,
+      data: organizations
+    });
   } catch (err) {
     logger.error('Error fetching organizations:', err);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations`, {
+      success: false,
+      message: 'Failed to fetch organizations',
+      error: err.message
+    });
   }
 };
 
 exports.getOrganizationById = async (req, res) => {
+  const { organizationId } = req.params;
+
   try {
-    const organization = await Organization.findById(req.params.id).populate(
-      'members'
-    );
+    const organization = await Organization.findById(organizationId).populate('members');
+
     if (!organization) {
-      logger.warn(`Organization with ID ${req.params.id} not found`);
-      return res
-        .status(404)
-        .json({ success: false, message: 'Organization not found' });
+      logger.warn(`Organization with ID ${organizationId} not found`);
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/${organizationId}`, {
+        success: false,
+        message: 'Organization not found'
+      });
     }
-    logger.info(`Fetched organization with ID ${req.params.id}`);
-    res.status(200).json({ success: true, data: organization });
+
+    logger.info(`Fetched organization with ID ${organizationId}`);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/${organizationId}`, {
+      success: true,
+      data: organization
+    });
   } catch (err) {
     logger.error('Error fetching organization by ID:', err);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/${organizationId}`, {
+      success: false,
+      message: 'Failed to fetch organization details',
+      error: err.message
+    });
   }
 };
 
@@ -36,51 +55,78 @@ exports.createOrganization = async (req, res) => {
     const organization = new Organization(req.body);
     await organization.save();
     logger.info('Created new organization:', organization._id);
-    res.status(201).json({ success: true, data: organization });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations`, {
+      success: true,
+      data: organization
+    });
   } catch (err) {
     logger.error('Error creating organization:', err);
-    res.status(400).json({ success: false, message: 'Bad Request' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/create`, {
+      success: false,
+      message: 'Failed to create organization',
+      error: err.message
+    });
   }
 };
 
 exports.updateOrganization = async (req, res) => {
+  const { organizationId } = req.params;
+
   try {
     const organization = await Organization.findByIdAndUpdate(
-      req.params.id,
+      organizationId,
       req.body,
       { new: true, runValidators: true }
     );
+
     if (!organization) {
-      logger.warn(`Organization with ID ${req.params.id} not found for update`);
-      return res
-        .status(404)
-        .json({ success: false, message: 'Organization not found' });
+      logger.warn(`Organization with ID ${organizationId} not found for update`);
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/${organizationId}/edit`, {
+        success: false,
+        message: 'Organization not found'
+      });
     }
-    logger.info(`Updated organization with ID ${req.params.id}`);
-    res.status(200).json({ success: true, data: organization });
+
+    logger.info(`Updated organization with ID ${organizationId}`);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/${organizationId}`, {
+      success: true,
+      data: organization
+    });
   } catch (err) {
     logger.error('Error updating organization:', err);
-    res.status(400).json({ success: false, message: 'Bad Request' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations/${organizationId}/edit`, {
+      success: false,
+      message: 'Failed to update organization',
+      error: err.message
+    });
   }
 };
 
 exports.deleteOrganization = async (req, res) => {
+  const { organizationId } = req.params;
+
   try {
-    const organization = await Organization.findByIdAndDelete(req.params.id);
+    const organization = await Organization.findByIdAndDelete(organizationId);
+
     if (!organization) {
-      logger.warn(
-        `Organization with ID ${req.params.id} not found for deletion`
-      );
-      return res
-        .status(404)
-        .json({ success: false, message: 'Organization not found' });
+      logger.warn(`Organization with ID ${organizationId} not found for deletion`);
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations`, {
+        success: false,
+        message: 'Organization not found'
+      });
     }
-    logger.info(`Deleted organization with ID ${req.params.id}`);
-    res
-      .status(200)
-      .json({ success: true, message: 'Organization deleted successfully' });
+
+    logger.info(`Deleted organization with ID ${organizationId}`);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations`, {
+      success: true,
+      message: 'Organization deleted successfully'
+    });
   } catch (err) {
     logger.error('Error deleting organization:', err);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/organizations`, {
+      success: false,
+      message: 'Failed to delete organization',
+      error: err.message
+    });
   }
 };

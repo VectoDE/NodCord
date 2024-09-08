@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const bugController = require('../controllers/bugController');
 
-router.post('/create', bugController.createBug);
-
 router.get('/', bugController.getAllBugs);
 
-router.get('/:id', bugController.getBugById);
+router.get('/:bugId', bugController.getBugById);
 
-router.put('/update/:id', bugController.updateBug);
+router.post('/create', bugController.createBug);
 
-router.delete('/delete/:id', bugController.deleteBug);
+router.post('/:bugId/update', bugController.updateBug);
+
+router.post('/:bugId/delete', bugController.deleteBug);
 
 module.exports = router;

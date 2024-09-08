@@ -8,6 +8,12 @@ router.use(authMiddleware(true));
 
 router.get('/', roleMiddleware(['admin']), roleController.getAllRoles);
 
-router.post('/', roleMiddleware(['admin']), roleController.createRole);
+router.get('/:roleId', roleMiddleware(['admin']), roleController.getRoleById);
+
+router.post('/create', roleMiddleware(['admin']), roleController.createRole);
+
+router.post('/:roleId/update', roleMiddleware(['admin']), roleController.updateRole);
+
+router.post('/:roleId/delete', roleMiddleware(['admin']), roleController.deleteRole);
 
 module.exports = router;

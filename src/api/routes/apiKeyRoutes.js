@@ -4,12 +4,12 @@ const apiKeyController = require('../controllers/apiKeyController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const developerProgramMiddleware = require('../middlewares/developerProgramMiddleware');
 
-router.post('/create', authMiddleware, developerProgramMiddleware, apiKeyController.createApiKey);
-
-router.delete('/delete/:id', authMiddleware, developerProgramMiddleware, apiKeyController.deleteApiKey);
-
 router.get('/', authMiddleware, developerProgramMiddleware, apiKeyController.getApiKeys);
 
-router.put('/update/:id', authMiddleware, developerProgramMiddleware, apiKeyController.updateApiKey);
+router.post('/create', authMiddleware, developerProgramMiddleware, apiKeyController.createApiKey);
+
+router.put('/:keyId/update', authMiddleware, developerProgramMiddleware, apiKeyController.updateApiKey);
+
+router.delete('/:keyId/delete', authMiddleware, developerProgramMiddleware, apiKeyController.deleteApiKey);
 
 module.exports = router;

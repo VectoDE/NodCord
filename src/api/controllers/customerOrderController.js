@@ -1,9 +1,12 @@
+require('dotenv').config();
+const nodemailerService = require('../services/nodemailerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
+const logger = require('../services/loggerService');
 const Customer = require('../../models/customerModel');
 const CustomerOrder = require('../../models/customerOrderModel');
-const nodemailerService = require('../services/nodemailerService');
-const logger = require('../services/loggerService');
 
-const createOrder = async (req, res) => {
+exports.createOrder = async (req, res) => {
   try {
     const {
       customerId,
@@ -22,7 +25,8 @@ const createOrder = async (req, res) => {
       !shippingAddress ||
       !billingAddress
     ) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/orders/create`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Missing required fields',
       });
@@ -41,7 +45,8 @@ const createOrder = async (req, res) => {
 
     const customer = await Customer.findById(customerId);
     if (!customer) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/orders/create`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Customer not found',
       });
@@ -53,14 +58,16 @@ const createOrder = async (req, res) => {
       orderDetails
     );
 
-    res.status(201).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Order created successfully.',
       order: newOrder,
     });
   } catch (error) {
     logger.error('Error creating order:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders/create`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,
@@ -68,18 +75,20 @@ const createOrder = async (req, res) => {
   }
 };
 
-const getAllOrders = async (req, res) => {
+exports.getAllOrders = async (req, res) => {
   try {
     const orders = await CustomerOrder.find()
       .populate('customerId', 'name email')
       .populate('items.productId', 'name price');
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       orders,
     });
   } catch (error) {
     logger.error('Error fetching orders:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,
@@ -87,24 +96,27 @@ const getAllOrders = async (req, res) => {
   }
 };
 
-const getOrderById = async (req, res) => {
+exports.getOrderById = async (req, res) => {
   try {
-    const order = await CustomerOrder.findById(req.params.id)
+    const order = await CustomerOrder.findById(req.params.customerOrderId)
       .populate('customerId', 'name email')
       .populate('items.productId', 'name price');
     if (!order) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Order not found.',
       });
     }
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders/${req.params.customerOrderId}`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       order,
     });
   } catch (error) {
     logger.error('Error fetching order:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,
@@ -112,24 +124,26 @@ const getOrderById = async (req, res) => {
   }
 };
 
-const updateOrder = async (req, res) => {
+exports.updateOrder = async (req, res) => {
   try {
     const { status } = req.body;
     if (!status) {
-      return res.status(400).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/orders/${req.params.customerOrderId}/edit`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Status is required',
       });
     }
 
     const updatedOrder = await CustomerOrder.findByIdAndUpdate(
-      req.params.id,
+      req.params.customerOrderId,
       { status },
       { new: true, runValidators: true }
     );
 
     if (!updatedOrder) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Order not found.',
       });
@@ -138,7 +152,8 @@ const updateOrder = async (req, res) => {
     if (status === 'Shipped') {
       const customer = await Customer.findById(updatedOrder.customerId);
       if (!customer) {
-        return res.status(404).json({
+        const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+        return sendResponse(req, res, redirectUrl, {
           success: false,
           message: 'Customer not found',
         });
@@ -150,13 +165,15 @@ const updateOrder = async (req, res) => {
       );
     }
 
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       order: updatedOrder,
     });
   } catch (error) {
     logger.error('Error updating order:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders/${req.params.customerOrderId}/edit`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,
@@ -164,33 +181,28 @@ const updateOrder = async (req, res) => {
   }
 };
 
-const deleteOrder = async (req, res) => {
+exports.deleteOrder = async (req, res) => {
   try {
-    const deletedOrder = await CustomerOrder.findByIdAndDelete(req.params.id);
+    const deletedOrder = await CustomerOrder.findByIdAndDelete(req.params.customerOrderId);
     if (!deletedOrder) {
-      return res.status(404).json({
+      const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'Order not found.',
       });
     }
-    res.status(200).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Order deleted successfully.',
     });
   } catch (error) {
     logger.error('Error deleting order:', error);
-    res.status(500).json({
+    const redirectUrl = `${getBaseUrl()}/dashboard/orders`;
+    return sendResponse(req, res, redirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message,
     });
   }
-};
-
-module.exports = {
-  createOrder,
-  getAllOrders,
-  getOrderById,
-  updateOrder,
-  deleteOrder,
 };

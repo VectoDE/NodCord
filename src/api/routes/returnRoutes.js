@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const returnController = require('../controllers/returnController');
 
-router.post('/', returnController.createReturn);
-
 router.get('/', returnController.getAllReturns);
 
-router.get('/:id', returnController.getReturnById);
+router.get('/:returnId', returnController.getReturnById);
 
-router.put('/:id', returnController.updateReturn);
+router.post('/create', returnController.createReturn);
 
-router.delete('/:id', returnController.deleteReturn);
+router.post('/:returnId/update', returnController.updateReturn);
+
+router.post('/:returnId/delete', returnController.deleteReturn);
 
 module.exports = router;

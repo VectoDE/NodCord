@@ -4,14 +4,14 @@ const ticketController = require('../controllers/ticketController');
 
 router.get('/', ticketController.listTickets);
 
-router.post('/', ticketController.createTicket);
-
-router.put('/close', ticketController.closeTicket);
-
 router.get('/:ticketId', ticketController.getTicketDetails);
 
-router.put('/update', ticketController.updateTicket);
+router.post('/create', ticketController.createTicket);
 
-router.post('/response', ticketController.addTicketResponse);
+router.post('/:ticketId/response', ticketController.addTicketResponse);
+
+router.post('/:ticketId/update', ticketController.updateTicket);
+
+router.post('/:ticketId/close', ticketController.closeTicket);
 
 module.exports = router;

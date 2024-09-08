@@ -81,7 +81,7 @@ const startClient = () => {
   const baseURL = process.env.CLIENT_BASE_URL || 'localhost';
 
   if (process.env.NODE_ENV === 'production') {
-    client.listen(port, () => {
+    client.listen( () => {
       logger.info(`[CLIENT] Frontend is running on https://${baseURL}`);
     });
   } else if (process.env.NODE_ENV === 'development') {

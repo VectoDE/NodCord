@@ -1,18 +1,28 @@
 const Newsletter = require('../../models/newsletterModel');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const addSubscriber = async (req, res) => {
+exports.addSubscriber = async (req, res) => {
   try {
     const { email, name } = req.body;
 
     if (!email || !name) {
-      return res.status(400).json({ message: 'Email and name are required' });
+      logger.warn('Email and name are required');
+      return sendResponse(req, res, `${getBaseUrl()}/newsletter/add`, {
+        success: false,
+        message: 'Email and name are required'
+      });
     }
 
     const existingSubscriber = await Newsletter.findOne({ email });
     if (existingSubscriber) {
-      return res.status(400).json({ message: 'Email is already subscribed' });
+      logger.warn(`Email is already subscribed: ${email}`);
+      return sendResponse(req, res, `${getBaseUrl()}/newsletter/add`, {
+        success: false,
+        message: 'Email is already subscribed'
+      });
     }
 
     const newSubscriber = new Newsletter({ email, name });
@@ -21,49 +31,71 @@ const addSubscriber = async (req, res) => {
     await nodemailerService.sendSubscriptionConfirmation(email, name);
 
     logger.info(`New subscriber added: ${email}`);
-    res.status(201).json(newSubscriber);
+    return sendResponse(req, res, `${getBaseUrl()}/newsletter/${newSubscriber._id}`, {
+      success: true,
+      data: newSubscriber
+    });
   } catch (error) {
     logger.error('Error adding subscriber:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/newsletter/add`, {
+      success: false,
+      message: 'Failed to add subscriber',
+      error: error.message
+    });
   }
 };
 
-const getSubscribers = async (req, res) => {
+exports.getSubscribers = async (req, res) => {
   try {
     const subscribers = await Newsletter.find();
     logger.info('Fetched all subscribers successfully');
-    res.status(200).json(subscribers);
+    return sendResponse(req, res, `${getBaseUrl()}/newsletter`, {
+      success: true,
+      data: subscribers
+    });
   } catch (error) {
     logger.error('Error fetching subscribers:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/newsletter`, {
+      success: false,
+      message: 'Failed to fetch subscribers',
+      error: error.message
+    });
   }
 };
 
-const removeSubscriber = async (req, res) => {
-  try {
-    const { email } = req.params;
+exports.removeSubscriber = async (req, res) => {
+  const { email } = req.params;
 
+  try {
     if (!email) {
-      return res.status(400).json({ message: 'Email is required' });
+      logger.warn('Email is required');
+      return sendResponse(req, res, `${getBaseUrl()}/newsletter/remove/${email}`, {
+        success: false,
+        message: 'Email is required'
+      });
     }
 
     const deletedSubscriber = await Newsletter.findOneAndDelete({ email });
 
     if (!deletedSubscriber) {
       logger.warn(`Subscriber not found for email: ${email}`);
-      return res.status(404).json({ message: 'Subscriber not found' });
+      return sendResponse(req, res, `${getBaseUrl()}/newsletter/remove/${email}`, {
+        success: false,
+        message: 'Subscriber not found'
+      });
     }
 
     logger.info(`Subscriber removed successfully: ${email}`);
-    res.status(200).json({ message: 'Subscriber removed successfully' });
+    return sendResponse(req, res, `${getBaseUrl()}/newsletter/remove/${email}`, {
+      success: true,
+      message: 'Subscriber removed successfully'
+    });
   } catch (error) {
     logger.error('Error removing subscriber:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/newsletter/remove/${email}`, {
+      success: false,
+      message: 'Failed to remove subscriber',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  addSubscriber,
-  getSubscribers,
-  removeSubscriber,
 };

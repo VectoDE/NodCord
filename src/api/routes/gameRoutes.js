@@ -4,12 +4,12 @@ const gameController = require('../controllers/gameController');
 
 router.get('/', gameController.getAllGames);
 
-router.get('/:id', gameController.getGameById);
+router.get('/:gameId', gameController.getGameById);
 
-router.post('/', gameController.createGame);
+router.post('/create', gameController.createGame);
 
-router.put('/:id', gameController.updateGame);
+router.post('/:gameId/update', gameController.updateGame);
 
-router.delete('/:id', gameController.deleteGame);
+router.post('/:gameId/delete', gameController.deleteGame);
 
 module.exports = router;

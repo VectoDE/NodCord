@@ -5,6 +5,8 @@ const cloudNetService = new CloudNetService(
   'your-cloudnet-api-key'
 );
 
+// TODO: Function Controller
+
 exports.getStatus = async (req, res) => {
   try {
     const status = await cloudNetService.getCloudNetStatus();

@@ -2,6 +2,8 @@ const FaceitService = require('../services/faceitService');
 
 const faceitService = new FaceitService('your-faceit-api-key');
 
+// TODO: Function Controller
+
 exports.getPlayerInfo = async (req, res) => {
   const { nickname } = req.params;
 

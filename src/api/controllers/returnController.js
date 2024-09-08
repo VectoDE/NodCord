@@ -3,26 +3,30 @@ const nodemailerService = require('../services/nodemailerService');
 const CustomerOrder = require('../../models/customerOrderModel');
 const Customer = require('../../models/customerModel');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-// Create a new return
-const createReturn = async (req, res) => {
+exports.createReturn = async (req, res) => {
   try {
     const { orderId, returnNumber, reason, items } = req.body;
 
-    // Validate input
     if (!orderId || !returnNumber || !reason || !items) {
       logger.warn('Invalid input for creating return: Missing required fields');
-      return res.status(400).json({ message: 'All fields are required.' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/create`, {
+        success: false,
+        message: 'All fields are required.'
+      });
     }
 
-    // Check if the order exists
     const order = await CustomerOrder.findById(orderId);
     if (!order) {
       logger.warn(`Order not found with ID: ${orderId}`);
-      return res.status(404).json({ message: 'Order not found.' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/create`, {
+        success: false,
+        message: 'Order not found.'
+      });
     }
 
-    // Create and save the return
     const newReturn = new Return({
       orderId,
       returnNumber,
@@ -31,7 +35,6 @@ const createReturn = async (req, res) => {
     });
     await newReturn.save();
 
-    // Send notification email
     const customer = await Customer.findById(order.customerId);
     if (customer) {
       const returnDetails = `Return Number: ${returnNumber}\nReason: ${reason}`;
@@ -45,95 +48,135 @@ const createReturn = async (req, res) => {
     }
 
     logger.info(`Return created successfully with ID: ${newReturn._id}`);
-    res
-      .status(201)
-      .json({ message: 'Return created successfully.', return: newReturn });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns`, {
+      success: true,
+      message: 'Return created successfully.',
+      return: newReturn
+    });
   } catch (error) {
     logger.error('Error creating return:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/create`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-// Get all returns
-const getAllReturns = async (req, res) => {
+exports.getAllReturns = async (req, res) => {
   try {
     const returns = await Return.find()
       .populate('orderId')
       .populate('items.productId');
     logger.info('Fetched all returns successfully');
-    res.status(200).json(returns);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns`, {
+      success: true,
+      data: returns
+    });
   } catch (error) {
     logger.error('Error fetching returns:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-// Get a return by ID
-const getReturnById = async (req, res) => {
+exports.getReturnById = async (req, res) => {
+  const { returnId } = req.params;
+
   try {
-    const returnItem = await Return.findById(req.params.id)
+    const returnItem = await Return.findById(returnId)
       .populate('orderId')
       .populate('items.productId');
     if (!returnItem) {
-      logger.warn(`Return not found with ID: ${req.params.id}`);
-      return res.status(404).json({ message: 'Return not found.' });
+      logger.warn(`Return not found with ID: ${returnId}`);
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}`, {
+        success: false,
+        message: 'Return not found.'
+      });
     }
-    logger.info(`Fetched return by ID: ${req.params.id}`);
-    res.status(200).json(returnItem);
+    logger.info(`Fetched return by ID: ${returnId}`);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}`, {
+      success: true,
+      data: returnItem
+    });
   } catch (error) {
     logger.error('Error fetching return:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-// Update a return
-const updateReturn = async (req, res) => {
+exports.updateReturn = async (req, res) => {
+  const { returnId } = req.params;
+  const { status } = req.body;
+
   try {
-    const { status } = req.body;
     if (!status) {
       logger.warn('Invalid input for updating return: Missing status');
-      return res.status(400).json({ message: 'Status is required.' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}/edit`, {
+        success: false,
+        message: 'Status is required.'
+      });
     }
 
     const updatedReturn = await Return.findByIdAndUpdate(
-      req.params.id,
+      returnId,
       { status },
       { new: true, runValidators: true }
     );
 
     if (!updatedReturn) {
-      logger.warn(`Return not found with ID: ${req.params.id}`);
-      return res.status(404).json({ message: 'Return not found.' });
+      logger.warn(`Return not found with ID: ${returnId}`);
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}/edit`, {
+        success: false,
+        message: 'Return not found.'
+      });
     }
 
-    logger.info(`Return updated successfully with ID: ${req.params.id}`);
-    res.status(200).json(updatedReturn);
+    logger.info(`Return updated successfully with ID: ${returnId}`);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}`, {
+      success: true,
+      data: updatedReturn
+    });
   } catch (error) {
     logger.error('Error updating return:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns/${returnId}/edit`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-// Delete a return
-const deleteReturn = async (req, res) => {
+exports.deleteReturn = async (req, res) => {
+  const { returnId } = req.params;
+
   try {
-    const deletedReturn = await Return.findByIdAndDelete(req.params.id);
+    const deletedReturn = await Return.findByIdAndDelete(returnId);
     if (!deletedReturn) {
-      logger.warn(`Return not found with ID: ${req.params.id}`);
-      return res.status(404).json({ message: 'Return not found.' });
+      logger.warn(`Return not found with ID: ${returnId}`);
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns`, {
+        success: false,
+        message: 'Return not found.'
+      });
     }
-    logger.info(`Return deleted successfully with ID: ${req.params.id}`);
-    res.status(200).json({ message: 'Return deleted successfully.' });
+    logger.info(`Return deleted successfully with ID: ${returnId}`);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns`, {
+      success: true,
+      message: 'Return deleted successfully.'
+    });
   } catch (error) {
     logger.error('Error deleting return:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/returns`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  createReturn,
-  getAllReturns,
-  getReturnById,
-  updateReturn,
-  deleteReturn,
 };

@@ -5,6 +5,8 @@ const logger = require('../services/loggerService');
 
 const API_KEYS_FILE = path.join(__dirname, '../../public/keys/apiKeys.json');
 
+// TODO: Function Controller
+
 const generateApiKey = (req, res) => {
   try {
     const apiKey = crypto.randomBytes(32).toString('hex');

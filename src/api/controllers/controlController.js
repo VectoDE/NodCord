@@ -2,6 +2,8 @@ const botStatusService = require('../services/botStatusService');
 const apiStatusService = require('../services/apiStatusService');
 const logger = require('../services/loggerService');
 
+// TODO: Function Controller
+
 exports.startBot = (req, res) => {
   try {
     botStatusService.startBot();

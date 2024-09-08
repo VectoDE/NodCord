@@ -1,22 +1,28 @@
 const Subscriber = require('../../models/subscriberModel');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const createSubscriber = async (req, res) => {
+exports.createSubscriber = async (req, res) => {
   try {
     const { email, name } = req.body;
 
     if (!email || !name) {
-      logger.warn('Missing required fields in create subscriber request:', {
-        body: req.body,
+      logger.warn('Missing required fields in create subscriber request:', { body: req.body });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/create`, {
+        success: false,
+        message: 'Email and name are required.'
       });
-      return res.status(400).json({ message: 'Email and name are required.' });
     }
 
     const existingSubscriber = await Subscriber.findOne({ email });
     if (existingSubscriber) {
       logger.info('Subscriber already exists:', { email });
-      return res.status(400).json({ message: 'Subscriber already exists.' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/create`, {
+        success: false,
+        message: 'Subscriber already exists.'
+      });
     }
 
     const newSubscriber = new Subscriber({ email, name });
@@ -24,95 +30,131 @@ const createSubscriber = async (req, res) => {
 
     await nodemailerService.sendSubscriptionConfirmation(email, name);
 
-    logger.info('Subscriber created and confirmation email sent:', {
-      email,
-      name,
+    logger.info('Subscriber created and confirmation email sent:', { email, name });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers`, {
+      success: true,
+      message: 'Subscriber created and confirmation email sent.'
     });
-    res
-      .status(201)
-      .json({ message: 'Subscriber created and confirmation email sent.' });
   } catch (error) {
     logger.error('Error creating subscriber:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/create`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const getAllSubscribers = async (req, res) => {
+exports.getAllSubscribers = async (req, res) => {
   try {
     const subscribers = await Subscriber.find();
     logger.info('Fetched all subscribers:', { count: subscribers.length });
-    res.status(200).json(subscribers);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers`, {
+      success: true,
+      data: subscribers
+    });
   } catch (error) {
     logger.error('Error fetching subscribers:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const getSubscriberById = async (req, res) => {
+exports.getSubscriberById = async (req, res) => {
+  const { subscriberId } = req.params;
+
   try {
-    const subscriber = await Subscriber.findById(req.params.id);
+    const subscriber = await Subscriber.findById(subscriberId);
     if (!subscriber) {
-      logger.warn('Subscriber not found by ID:', { id: req.params.id });
-      return res.status(404).json({ message: 'Subscriber not found.' });
+      logger.warn('Subscriber not found by ID:', { subscriberId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}`, {
+        success: false,
+        message: 'Subscriber not found.'
+      });
     }
-    logger.info('Fetched subscriber by ID:', { id: req.params.id });
-    res.status(200).json(subscriber);
+    logger.info('Fetched subscriber by ID:', { subscriberId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}`, {
+      success: true,
+      data: subscriber
+    });
   } catch (error) {
     logger.error('Error fetching subscriber by ID:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const updateSubscriber = async (req, res) => {
+exports.updateSubscriber = async (req, res) => {
+  const { subscriberId } = req.params;
+  const { email, name } = req.body;
+
   try {
-    const { email, name } = req.body;
     if (!email && !name) {
-      logger.warn('No fields to update in update subscriber request:', {
-        body: req.body,
+      logger.warn('No fields to update in update subscriber request:', { body: req.body });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}/edit`, {
+        success: false,
+        message: 'At least one field is required to update.'
       });
-      return res
-        .status(400)
-        .json({ message: 'At least one field is required to update.' });
     }
 
     const updatedSubscriber = await Subscriber.findByIdAndUpdate(
-      req.params.id,
+      subscriberId,
       { email, name },
       { new: true, runValidators: true }
     );
 
     if (!updatedSubscriber) {
-      logger.warn('Subscriber not found for update:', { id: req.params.id });
-      return res.status(404).json({ message: 'Subscriber not found.' });
+      logger.warn('Subscriber not found for update:', { subscriberId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}/edit`, {
+        success: false,
+        message: 'Subscriber not found.'
+      });
     }
 
-    logger.info('Subscriber updated:', { id: req.params.id, email, name });
-    res.status(200).json(updatedSubscriber);
+    logger.info('Subscriber updated:', { subscriberId, email, name });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}`, {
+      success: true,
+      data: updatedSubscriber
+    });
   } catch (error) {
     logger.error('Error updating subscriber:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers/${subscriberId}/edit`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
 };
 
-const deleteSubscriber = async (req, res) => {
+exports.deleteSubscriber = async (req, res) => {
+  const { subscriberId } = req.params;
+
   try {
-    const deletedSubscriber = await Subscriber.findByIdAndDelete(req.params.id);
+    const deletedSubscriber = await Subscriber.findByIdAndDelete(subscriberId);
     if (!deletedSubscriber) {
-      logger.warn('Subscriber not found for deletion:', { id: req.params.id });
-      return res.status(404).json({ message: 'Subscriber not found.' });
+      logger.warn('Subscriber not found for deletion:', { subscriberId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers`, {
+        success: false,
+        message: 'Subscriber not found.'
+      });
     }
-    logger.info('Subscriber deleted:', { id: req.params.id });
-    res.status(200).json({ message: 'Subscriber deleted.' });
+    logger.info('Subscriber deleted:', { subscriberId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers`, {
+      success: true,
+      message: 'Subscriber deleted.'
+    });
   } catch (error) {
     logger.error('Error deleting subscriber:', error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/subscribers`, {
+      success: false,
+      message: 'Internal Server Error',
+      error: error.message
+    });
   }
-};
-
-module.exports = {
-  createSubscriber,
-  getAllSubscribers,
-  getSubscriberById,
-  updateSubscriber,
-  deleteSubscriber,
 };

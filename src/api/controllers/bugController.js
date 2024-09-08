@@ -1,78 +1,102 @@
+require('dotenv').config();
 const Bug = require('../../models/bugModel');
 const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 
-const createBug = async (req, res) => {
+exports.createBug = async (req, res) => {
   try {
     const { title, description, severity, status, project } = req.body;
 
     if (!title || !description || !severity || !status || !project) {
-      return res.status(400).json({ error: 'All fields are required' });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/create`, {
+        success: false,
+        message: 'All fields are required'
+      });
     }
 
     const newBug = new Bug({ title, description, severity, status, project });
     const savedBug = await newBug.save();
 
-    res.status(201).json({
+    logger.info('Bug created successfully:', { bugId: savedBug._id });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: true,
       message: 'Bug created successfully.',
-      bug: savedBug,
+      bug: savedBug
     });
   } catch (error) {
     logger.error('Error creating bug:', error);
-    res.status(500).json({
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/create`, {
+      success: false,
       message: 'Internal Server Error',
-      details: error.message,
+      error: error.message
     });
   }
 };
 
-const getAllBugs = async (req, res) => {
+exports.getAllBugs = async (req, res) => {
   try {
     const bugs = await Bug.find().populate('project');
-    res.status(200).json(bugs);
+    logger.info('Fetched all bugs:', { count: bugs.length });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: true,
+      bugs
+    });
   } catch (error) {
     logger.error('Error fetching bugs:', error);
-    res.status(500).json({
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: false,
       message: 'Internal Server Error',
-      details: error.message,
+      error: error.message
     });
   }
 };
 
-const getBugById = async (req, res) => {
-  const { id } = req.params;
+exports.getBugById = async (req, res) => {
+  const { bugId } = req.params;
 
   try {
-    const bug = await Bug.findById(id).populate('project');
+    const bug = await Bug.findById(bugId).populate('project');
     if (!bug) {
-      return res.status(404).json({
-        message: 'Bug not found.',
+      logger.warn('Bug not found:', { bugId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+        success: false,
+        message: 'Bug not found.'
       });
     }
-    res.status(200).json(bug);
+
+    logger.info('Fetched bug details:', { bugId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/${bugId}`, {
+      success: true,
+      bug
+    });
   } catch (error) {
-    logger.error(`Error fetching bug with ID ${id}:`, error);
-    res.status(500).json({
+    logger.error(`Error fetching bug with ID ${bugId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: false,
       message: 'Internal Server Error',
-      details: error.message,
+      error: error.message
     });
   }
 };
 
-const updateBug = async (req, res) => {
-  const { id } = req.params;
+exports.updateBug = async (req, res) => {
+  const { bugId } = req.params;
   const { title, description, severity, status } = req.body;
 
   try {
     const updatedBug = await Bug.findByIdAndUpdate(
-      id,
+      bugId,
       { title, description, severity, status },
       { new: true, runValidators: true }
     );
 
     if (!updatedBug) {
-      return res.status(404).json({
-        message: 'Bug not found.',
+      logger.warn('Bug not found for update:', { bugId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+        success: false,
+        message: 'Bug not found.'
       });
     }
 
@@ -83,45 +107,46 @@ const updateBug = async (req, res) => {
       );
     }
 
-    res.status(200).json({
+    logger.info('Bug updated successfully:', { bugId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: true,
       message: 'Bug updated successfully.',
-      bug: updatedBug,
+      bug: updatedBug
     });
   } catch (error) {
-    logger.error(`Error updating bug with ID ${id}:`, error);
-    res.status(500).json({
+    logger.error(`Error updating bug with ID ${bugId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/edit/${bugId}`, {
+      success: false,
       message: 'Internal Server Error',
-      details: error.message,
+      error: error.message
     });
   }
 };
 
-const deleteBug = async (req, res) => {
-  const { id } = req.params;
+exports.deleteBug = async (req, res) => {
+  const { bugId } = req.params;
 
   try {
-    const deletedBug = await Bug.findByIdAndDelete(id);
+    const deletedBug = await Bug.findByIdAndDelete(bugId);
     if (!deletedBug) {
-      return res.status(404).json({
-        message: 'Bug not found.',
+      logger.warn('Bug not found for deletion:', { bugId });
+      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+        success: false,
+        message: 'Bug not found.'
       });
     }
-    res.status(200).json({
-      message: 'Bug deleted successfully.',
+
+    logger.info('Bug deleted successfully:', { bugId });
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: true,
+      message: 'Bug deleted successfully.'
     });
   } catch (error) {
-    logger.error(`Error deleting bug with ID ${id}:`, error);
-    res.status(500).json({
+    logger.error(`Error deleting bug with ID ${bugId}:`, error);
+    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      success: false,
       message: 'Internal Server Error',
-      details: error.message,
+      error: error.message
     });
   }
-};
-
-module.exports = {
-  createBug,
-  getAllBugs,
-  getBugById,
-  updateBug,
-  deleteBug,
 };

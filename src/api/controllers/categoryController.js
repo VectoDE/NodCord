@@ -1,83 +1,148 @@
+require('dotenv').config();
 const Category = require('../../models/categoryModel');
+const getBaseUrl = require('../helpers/getBaseUrlHelper');
+const sendResponse = require('../helpers/sendResponseHelper');
 const logger = require('../services/loggerService');
 
 exports.createCategory = async (req, res) => {
   try {
     const category = new Category(req.body);
     const savedCategory = await category.save();
-    res.status(201).json(savedCategory);
+
+    logger.info('Category created successfully:', { categoryId: savedCategory._id });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Category created successfully',
+      category: savedCategory
+    });
   } catch (error) {
     logger.error('Error creating category:', error);
-    res
-      .status(400)
-      .json({ error: 'Failed to create category', details: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories/create`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to create category',
+      error: error.message
+    });
   }
 };
 
 exports.getCategories = async (req, res) => {
   try {
     const categories = await Category.find();
-    res.status(200).json(categories);
+
+    logger.info('Fetched categories:', { count: categories.length });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      categories
+    });
   } catch (error) {
     logger.error('Error fetching categories:', error);
-    res
-      .status(500)
-      .json({ error: 'Failed to fetch categories', details: error.message });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to fetch categories',
+      error: error.message
+    });
   }
 };
 
 exports.getCategoryById = async (req, res) => {
-  const { id } = req.params;
+  const { categoryId } = req.params;
 
   try {
-    const category = await Category.findById(id);
+    const category = await Category.findById(categoryId);
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      logger.warn('Category not found:', { categoryId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Category not found'
+      });
     }
-    res.status(200).json(category);
+
+    logger.info('Category fetched by ID:', { categoryId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories/${categoryId}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      category
+    });
   } catch (error) {
-    logger.error(`Error fetching category with ID ${id}:`, error);
-    res
-      .status(500)
-      .json({ error: 'Failed to fetch category', details: error.message });
+    logger.error(`Error fetching category with ID ${categoryId}:`, error);
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to fetch category',
+      error: error.message
+    });
   }
 };
 
 exports.updateCategory = async (req, res) => {
-  const { id } = req.params;
+  const { categoryId } = req.params;
   const updateData = req.body;
 
   try {
-    const category = await Category.findByIdAndUpdate(id, updateData, {
+    const category = await Category.findByIdAndUpdate(categoryId, updateData, {
       new: true,
       runValidators: true,
     });
 
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      logger.warn('Category not found for update:', { categoryId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Category not found'
+      });
     }
-    res.status(200).json(category);
+
+    logger.info('Category updated successfully:', { categoryId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Category updated successfully',
+      category
+    });
   } catch (error) {
-    logger.error(`Error updating category with ID ${id}:`, error);
-    res
-      .status(400)
-      .json({ error: 'Failed to update category', details: error.message });
+    logger.error(`Error updating category with ID ${categoryId}:`, error);
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories/edit/${categoryId}`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to update category',
+      error: error.message
+    });
   }
 };
 
 exports.deleteCategory = async (req, res) => {
-  const { id } = req.params;
+  const { categoryId } = req.params;
 
   try {
-    const category = await Category.findByIdAndDelete(id);
+    const category = await Category.findByIdAndDelete(categoryId);
     if (!category) {
-      return res.status(404).json({ error: 'Category not found' });
+      logger.warn('Category not found for deletion:', { categoryId });
+      const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+      return sendResponse(req, res, redirectUrl, {
+        success: false,
+        message: 'Category not found'
+      });
     }
-    res.status(200).json({ message: 'Category deleted successfully' });
+
+    logger.info('Category deleted successfully:', { categoryId });
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: true,
+      message: 'Category deleted successfully'
+    });
   } catch (error) {
-    logger.error(`Error deleting category with ID ${id}:`, error);
-    res
-      .status(500)
-      .json({ error: 'Failed to delete category', details: error.message });
+    logger.error(`Error deleting category with ID ${categoryId}:`, error);
+    const redirectUrl = `${getBaseUrl()}/dashboard/categories`;
+    return sendResponse(req, res, redirectUrl, {
+      success: false,
+      message: 'Failed to delete category',
+      error: error.message
+    });
   }
 };
