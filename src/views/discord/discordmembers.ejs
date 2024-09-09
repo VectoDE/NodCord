@@ -2,68 +2,149 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Discord Members ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon" />
   <link rel="stylesheet" href="/assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-bg {
+      background-image: url('/assets/img/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+
+    .member-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .member-card:hover .actions {
+      display: block;
+    }
+
+    .actions {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 1rem;
+      text-align: center;
+    }
+
+    .blur-sm {
+      filter: blur(4px);
+    }
+  </style>
 </head>
 
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
-  <%- include('./partials/header'); %>
-  <main class="p-6">
-    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 mb-6">
-      <h1 class="text-3xl font-bold mb-4">Discord Members</h1>
-      <div class="mb-6 text-lg">
-        <span class="font-semibold">Total Members:</span>
-        <span><%= memberCount %></span>
-      </div>
-      <% if (members && members.length > 0) { %>
-        <div class="overflow-x-auto">
-          <table class="w-full border-collapse mb-4">
-            <thead>
-              <tr class="bg-gray-100 dark:bg-gray-700">
-                <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Avatar</th>
-                <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Username</th>
-                <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Display Name</th>
-                <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Badges</th>
-                <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Hashname</th>
-                <th class="border px-2 py-1 sm:px-4 sm:py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="bg-white dark:bg-gray-800">
-              <% members.forEach(member => { %>
-                <tr>
-                  <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center">
-                    <img class="w-10 h-10 rounded-full" src="<%= member.avatar %>" alt="<%= member.username %>'s Avatar">
-                  </td>
-                  <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.username %></td>
-                  <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.displayName %></td>
-                  <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.badges.join(', ') %></td>
-                  <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center"><%= member.hashname %></td>
-                  <td class="border px-2 py-1 sm:px-4 sm:py-2 text-center">
-                    <a class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 text-sm" href="https://discord.com/users/<%= member.hashname %>" target="_blank">
-                      <i class="bi bi-eye-fill"></i> Show
-                    </a>
-                    <a class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 ml-2 text-sm" href="https://discord.com/users/@me" target="_blank" onclick="addFriend('<%= member.username %>', '<%= member.hashname %>')">
-                      <i class="bi bi-person-plus-fill"></i> Add Friend
-                    </a>
-                  </td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+  <%- include('../partials/header'); %>
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-bg text-white py-12 lg:py-16">
+        <div class="container mx-auto px-6 text-center">
+          <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">
+            Explore Discord Members
+          </h1>
+          <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+            Find and connect with members on NodCord
+          </p>
+          <div class="mt-4 text-lg text-center">
+            <span class="font-semibold">Total Members:</span>
+            <span>
+              <%= memberData.length %>
+            </span>
+          </div>
         </div>
-      <% } else { %>
-        <p class="text-lg">No members found.</p>
-      <% } %>
-    </div>
-  </main>
-  <%- include('./partials/footer'); %>
-</body>
+      </section>
 
+      <!-- Member List Section -->
+      <section class="bg-white dark:bg-gray-900 py-8 lg:py-12">
+        <div class="container mx-auto px-6">
+          <div class="mt-8 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+            <% if (memberData.length> 0) { %> <% memberData.forEach(member=> {
+                %>
+                <div class="member-card bg-gray-200 dark:bg-gray-800">
+                  <img src="<%= member.avatar %>" alt="<%= member.username %>'s Avatar"
+                    class="w-24 h-24 object-cover rounded-full mx-auto mb-4" />
+                  <h3 class="text-xl font-semibold text-gray-800 dark:text-white">
+                    <%= member.username %>
+                  </h3>
+                  <p class="text-base mb-1">
+                    <strong>Display Name:</strong>
+                    <%= member.displayName %>
+                  </p>
+                  <% if (isAuthenticated) { %>
+                    <p class="text-base mb-1">
+                      <strong>ID:</strong>
+                      <span class="cursor-pointer text-blue-500" onclick="toggleIdVisibility('<%= member.id %>')">
+                        <span id="member-id-<%= member.id %>" class="blur-sm">Click to show</span>
+                      </span>
+                    </p>
+                    <% } else { %>
+                      <p class="text-base mb-1">
+                        <strong>ID:</strong> <span class="blur-sm">Hidden</span>
+                      </p>
+                      <% } %>
+                        <p class="text-base mb-1">
+                          <strong>Badges:</strong>
+                          <% if (member.badges.length> 0) { %> <%= member.badges.join(', ') %> <% } else { %> No Badges <% } %>
+							    </p>
+							<p class="text-base mb-1">
+								<strong>Hashname:</strong>
+								<% if (member.hashname !== ' N/A') { %>
+                              <%= member.hashname %>
+                                <% } else { %> N/A <% } %>
+                        </p>
+                        <div class="actions">
+                          <a class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm"
+                            href="<%= member.profileUrl %>" target="_blank">
+                            <i class="bi bi-eye-fill"></i> Show
+                          </a>
+                          <a class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm ml-2"
+                            href="https://discord.com/users/@me" target="_blank"
+                            onclick="event.preventDefault(); addFriend('<%= member.username %>', '<%= member.hashname %>', '<%= member.id %>')">
+                            <i class="bi bi-person-plus-fill"></i> Add Friend
+                          </a>
+                        </div>
+                </div>
+                <% }) %>
+                  <% } else { %>
+                    <p class="text-lg text-center">No members found.</p>
+                    <% } %>
+          </div>
+        </div>
+      </section>
+    </main>
+    <%- include('../partials/footer'); %>
+</body>
 <script src="/assets/js/script.js"></script>
+<script>
+  function addFriend(username, hashname, memberId) {
+    const discordUrl = `https://discord.com/users/${memberId}`;
+
+    window.open(discordUrl, '_blank');
+
+    alert(
+      `You have been redirected to Discord to send a friend request to ${username} (${hashname}).`
+    );
+  }
+
+  function toggleIdVisibility(id) {
+    const element = document.getElementById(`member-id-${id}`);
+    element.classList.toggle('blur-sm');
+    element.textContent = element.classList.contains('blur-sm') ? 'Click to show' : id;
+  }
+</script>
+
 </html>

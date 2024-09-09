@@ -1,48 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Servers ~ NodCord</title>
+    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .hero-bg {
+        background-image: url('/assets/img/hero-bg.jpg');
+        background-size: cover;
+        background-position: center;
+      }
+      .server-card:hover .join-btn {
+        display: block;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Discord Servers ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
+  <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+    <%- include('../partials/header'); %>
+    <main>
+      <!-- Hero Section -->
+      <section class="hero-bg text-white py-12 lg:py-16">
+        <div class="container mx-auto px-6 text-center">
+          <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">
+            Explore Discord Servers
+          </h1>
+          <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+            Find and join the best communities on NodCord
+          </p>
+          <div class="mt-4 text-lg text-center">
+            <span class="font-semibold">Total Servers:</span>
+            <span><%= serverCount %></span>
+          </div>
+        </div>
+      </section>
 
-<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
-  <%- include('./partials/header'); %>
-  <main class="p-6">
-    <div class="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 mb-6">
-      <h1 class="text-3xl font-bold mb-4">Discord Servers</h1>
-      <div class="mb-6 text-lg">
-        <span class="font-semibold">Total Servers:</span>
-        <span><%= serverCount %></span>
-      </div>
-      <div class="flex flex-wrap gap-6">
-        <% if (servers.length > 0) { %>
-          <% servers.forEach(server => { %>
-            <div class="bg-gray-200 dark:bg-gray-800 border border-gray-300 rounded-lg shadow-md p-4 flex flex-col flex-grow basis-1/4">
-              <img src="<%= server.icon %>" alt="<%= server.name %>" class="w-full h-32 object-cover rounded-lg mb-4">
-              <div>
-                <h2 class="text-xl font-semibold mb-2"><%= server.name %></h2>
-                <p class="text-base mb-1"><strong>ID:</strong> <%= server.id %></p>
-                <p class="text-base mb-1"><strong>Owner:</strong> <%= server.owner %></p>
-                <p class="text-base mb-1"><strong>Created At:</strong> <%= server.createdAt.toDateString() %></p>
-                <p class="text-base mb-1"><strong>Members:</strong> <%= server.memberCount %></p>
-              </div>
-            </div>
-          <% }) %>
-        <% } else { %>
-          <p class="text-lg">No servers found.</p>
-        <% } %>
-      </div>
-    </div>
-  </main>
-  <%- include('./partials/footer'); %>
-</body>
+      <!-- Server List Section -->
+      <section class="bg-white dark:bg-gray-900 text-white py-8 lg:py-12">
+        <div class="container mx-auto px-6">
+          <div class="mt-8 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+            <% if (servers.length > 0) { %>
+              <% servers.forEach(server => { %>
+                <div class="server-card p-6 bg-white dark:bg-gray-800 rounded-lg shadow-lg text-center relative">
+                  <img src="<%= server.icon ? server.icon : '/assets/img/default-image.png' %>" alt="<%= server.name %>" class="w-24 h-24 object-cover rounded-full mx-auto mb-4">
+                  <h3 class="text-xl font-semibold text-gray-800 dark:text-white"><%= server.name %></h3>
+                  <% if (isAuthenticated) { %>
+                    <p class="text-base mb-1">
+                      <strong>ID:</strong>
+                      <span class="cursor-pointer text-blue-500" onclick="toggleIdVisibility('<%= server.id %>')">
+                        <span id="server-id-<%= server.id %>" class="blur-sm">Click to show</span>
+                      </span>
+                    </p>
+                  <% } else { %>
+                    <p class="text-base mb-1">
+                      <strong>ID:</strong> <span class="blur-sm">Hidden</span>
+                    </p>
+                  <% } %>
+                  <p class="text-base mb-1"><strong>Owner:</strong> <%= server.owner %></p>
+                  <p class="text-base mb-1"><strong>Members:</strong> <%= server.memberCount %></p>
+                  <p class="text-base mb-1"><strong>Created At:</strong> <%= new Date(server.createdAt).toDateString() %></p>
 
-<script src="/assets/js/script.js"></script>
+                  <a href="<%= server.inviteLink %>" target="_blank" class="join-btn bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full mt-4 absolute inset-x-0 bottom-4 mx-auto text-center w-32 hidden">
+                    Join Server
+                  </a>
+                </div>
+              <% }) %>
+            <% } else { %>
+              <p class="text-lg text-center">No servers found.</p>
+            <% } %>
+          </div>
+        </div>
+      </section>
+    </main>
+    <%- include('../partials/footer'); %>
+  </body>
+
+  <script src="/assets/js/script.js"></script>
+  <script>
+    function toggleIdVisibility(id) {
+      const element = document.getElementById(`server-id-${id}`);
+      element.classList.toggle('blur-sm');
+      element.textContent = element.classList.contains('blur-sm') ? 'Click to show' : id;
+    }
+  </script>
 </html>

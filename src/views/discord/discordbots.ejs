@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discord Bots ~ NodCord</title>
+  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+  <link rel="stylesheet" href="/assets/css/styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hero-bg {
+      background-image: url('/assets/img/hero-bg.jpg');
+      background-size: cover;
+      background-position: center;
+    }
+    .bot-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .bot-card:hover .actions {
+      display: block;
+    }
+    .actions {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 1rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+  <%- include('../partials/header'); %>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-bg text-white py-12 lg:py-16">
+      <div class="container mx-auto px-6 text-center">
+        <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">
+          Explore Discord Bots
+        </h1>
+        <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+          Find and learn more about the bots on NodCord
+        </p>
+      </div>
+    </section>
+
+    <!-- Bot List Section -->
+    <section class="bg-white dark:bg-gray-900 py-8 lg:py-12">
+      <div class="container mx-auto px-6">
+        <div class="mt-8 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+          <% if (botData.length > 0) { %>
+            <% botData.forEach(bot => { %>
+              <div class="bot-card bg-gray-200 dark:bg-gray-800">
+                <img src="<%= bot.avatar %>" alt="<%= bot.username %>'s Avatar" class="w-24 h-24 object-cover rounded-full mx-auto mb-4">
+                <h3 class="text-xl font-semibold text-gray-800 dark:text-white"><%= bot.username %></h3>
+                <p class="text-base mb-1"><strong>Display Name:</strong> <%= bot.displayName %></p>
+                <% if (isAuthenticated) { %>
+                  <p class="text-base mb-1">
+                    <strong>ID:</strong>
+                    <span class="text-base mb-1 cursor-pointer text-blue-500" onclick="toggleIdVisibility('<%= bot.id %>')">
+                      <span id="bot-id-<%= bot.id %>" class="blur-sm">Click to show</span>
+                    </span>
+                  </p>
+                  <% } else { %>
+                    <p class="text-base mb-1">
+                      <strong>ID:</strong> <span class="blur-sm">Hidden</span>
+                    </p>
+                    <% } %>
+                <p class="text-base mb-1"><strong>Hashname:</strong> <%= bot.hashname %></p>
+                <p class="text-base mb-1"><strong>Status:</strong> <%= bot.botStatus %></p>
+                <p class="text-base mb-1"><strong>Activity:</strong> <%= bot.botActivity %></p>
+                <p class="text-base mb-1"><strong>Tag:</strong> <%= bot.botTag %></p>
+                <p class="text-base mb-1"><strong>Presence:</strong> <%= bot.botPresence %></p>
+                <p class="text-base mb-1"><strong>Joined At:</strong> <%= bot.botJoinedAt !== 'N/A' ? new Date(bot.botJoinedAt).toDateString() : bot.botJoinedAt %></p>
+                <p class="text-base mb-1"><strong>Creation Date:</strong> <%= new Date(bot.botCreationDate).toDateString() %></p>
+                <div class="actions">
+                  <a class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-full text-sm" href="<%= bot.inviteLink %>" target="_blank">
+                    <i class="bi bi-link"></i> Invite
+                  </a>
+                </div>
+              </div>
+            <% }) %>
+          <% } else { %>
+            <p class="text-lg text-center">No bots found.</p>
+          <% } %>
+        </div>
+      </div>
+    </section>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+<script src="/assets/js/script.js"></script>
+<script>
+  function toggleIdVisibility(id) {
+    const element = document.getElementById(`bot-id-${id}`);
+    element.classList.toggle('blur-sm');
+    element.textContent = element.classList.contains('blur-sm') ? 'Click to show' : id;
+  }
+</script>
+</html>

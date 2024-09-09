@@ -77,47 +77,78 @@ const getBots = async () => {
   try {
     for (const guild of client.guilds.cache.values()) {
       const members = await guild.members.fetch();
-      members.forEach((member) => {
+      for (const member of members.values()) {
         if (member.user.bot) {
+          const presence = member.presence || {};
+          const status = presence.status || 'offline';
+          const activities = presence.activities || [];
+          const activityNames = activities.length > 0 ? activities.map(activity =>
+            `${activity.type === 0 ? 'Playing' : activity.type === 1 ? 'Streaming' : activity.type === 2 ? 'Listening' : 'Watching'}: ${activity.name}`
+          ).join(', ') : 'none';
+
+          const inviteLink = await client.generateInvite({
+            scopes: ['bot'],
+            permissions: [
+              PermissionsBitField.Flags.SendMessages,
+              PermissionsBitField.Flags.ReadMessageHistory
+            ],
+          });
+
           botData.push({
             token: client.token,
             guild: guild.name,
-            username: client.user.username,
-            displayName: client.displayName,
-            avatar: client.user.displayAvatarURL(),
-            hashname: `${client.user.username}#${client.user.discriminator}`,
-            id: client.user.id,
+            guildId: guild.id,
+            username: member.user.username,
+            displayName: member.displayName,
+            avatar: member.user.displayAvatarURL(),
+            hashname: `${member.user.username}#${member.user.discriminator}`,
+            id: member.user.id,
+            botCreationDate: new Date(member.user.createdTimestamp).toISOString(),
+            botStatus: status,
+            botActivity: activityNames,
+            botJoinedAt: member.joinedAt ? new Date(member.joinedAt).toISOString() : 'N/A',
+            botPermissions: member.permissions.toArray().join(', '),
+            botTag: member.user.tag,
+            botPresence: status,
+            inviteLink: inviteLink,
           });
         }
-      });
+      }
     }
   } catch (error) {
     logger.error('[BOT] Error fetching bots:', error);
   }
-  return botData;
+  return { botData };
 };
 
 const getMembers = async () => {
   let memberData = [];
+
   try {
     for (const guild of client.guilds.cache.values()) {
       const members = await guild.members.fetch();
+
       members.forEach((member) => {
+        const usernameWithHash = member.user.tag;
+        const hashname = usernameWithHash.includes('#') ? usernameWithHash.split('#')[1] : 'N/A';
+
         memberData.push({
-          guild: guild.name,
+          id: member.id,
           username: member.user.username,
           displayName: member.displayName,
           avatar: member.user.displayAvatarURL(),
-          badges: member.user.flags.toArray(),
-          hashname: member.user.id,
-          memberCount: members.size,
+          badges: member.user.flags?.toArray() || [],
+          hashname: hashname,
+          profileUrl: `https://discord.com/users/${member.user.id}`,
+          canSendFriendRequest: true,
         });
       });
     }
   } catch (error) {
     logger.error('[BOT] Error fetching members:', error);
   }
-  return memberData;
+
+  return { memberData };
 };
 
 const getServers = async () => {
@@ -126,15 +157,24 @@ const getServers = async () => {
     for (const guild of client.guilds.cache.values()) {
       const owner = await client.users.fetch(guild.ownerId);
 
-      const members = await guild.members.fetch();
-
-      const memberData = members.map((member) => ({
-        avatar: member.user.displayAvatarURL(),
-        username: member.user.username,
-        displayName: member.displayName,
-        badges: member.user.flags.toArray(),
-        hashname: `${member.user.username}#${member.user.discriminator}`,
-      }));
+      let inviteLink;
+      try {
+        const invites = await guild.invites.fetch();
+        if (invites.size > 0) {
+          inviteLink = invites.first().url;
+        } else {
+          const channel = guild.channels.cache.find(channel =>
+            channel.type === 'GUILD_TEXT' && channel.permissionsFor(guild.me).has('CREATE_INSTANT_INVITE')
+          );
+          if (channel) {
+            const invite = await channel.createInvite({ maxAge: 0, maxUses: 0 });
+            inviteLink = invite.url;
+          }
+        }
+      } catch (err) {
+        logger.error(`[BOT] Error fetching or creating invite for guild ${guild.id}:`, err);
+        inviteLink = 'No invite available';
+      }
 
       serverData.push({
         id: guild.id,
@@ -142,8 +182,8 @@ const getServers = async () => {
         icon: guild.iconURL(),
         owner: owner ? owner.username : 'Unknown',
         createdAt: guild.createdAt,
-        members: memberData,
         memberCount: guild.memberCount,
+        inviteLink: inviteLink || 'No invite available',
       });
     }
   } catch (error) {

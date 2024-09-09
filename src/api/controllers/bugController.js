@@ -10,7 +10,8 @@ exports.createBug = async (req, res) => {
     const { title, description, severity, status, project } = req.body;
 
     if (!title || !description || !severity || !status || !project) {
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/create`, {
+      const redirectUrl = `${getBaseUrl()}/dashboard/bugs/create`;
+      return sendResponse(req, res, redirectUrl, {
         success: false,
         message: 'All fields are required'
       });
@@ -20,14 +21,17 @@ exports.createBug = async (req, res) => {
     const savedBug = await newBug.save();
 
     logger.info('Bug created successfully:', { bugId: savedBug._id });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+
+    const redirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Bug created successfully.',
       bug: savedBug
     });
   } catch (error) {
     logger.error('Error creating bug:', error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/create`, {
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/bugs/create`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message
@@ -39,13 +43,16 @@ exports.getAllBugs = async (req, res) => {
   try {
     const bugs = await Bug.find().populate('project');
     logger.info('Fetched all bugs:', { count: bugs.length });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+
+    const redirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       bugs
     });
   } catch (error) {
     logger.error('Error fetching bugs:', error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message
@@ -60,20 +67,23 @@ exports.getBugById = async (req, res) => {
     const bug = await Bug.findById(bugId).populate('project');
     if (!bug) {
       logger.warn('Bug not found:', { bugId });
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      const notFoundRedirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+      return sendResponse(req, res, notFoundRedirectUrl, {
         success: false,
         message: 'Bug not found.'
       });
     }
 
     logger.info('Fetched bug details:', { bugId });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/${bugId}`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/bugs/${bugId}`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       bug
     });
   } catch (error) {
     logger.error(`Error fetching bug with ID ${bugId}:`, error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message
@@ -94,7 +104,8 @@ exports.updateBug = async (req, res) => {
 
     if (!updatedBug) {
       logger.warn('Bug not found for update:', { bugId });
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      const notFoundRedirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+      return sendResponse(req, res, notFoundRedirectUrl, {
         success: false,
         message: 'Bug not found.'
       });
@@ -108,14 +119,16 @@ exports.updateBug = async (req, res) => {
     }
 
     logger.info('Bug updated successfully:', { bugId });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Bug updated successfully.',
       bug: updatedBug
     });
   } catch (error) {
     logger.error(`Error updating bug with ID ${bugId}:`, error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs/edit/${bugId}`, {
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/bugs/edit/${bugId}`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message
@@ -130,20 +143,23 @@ exports.deleteBug = async (req, res) => {
     const deletedBug = await Bug.findByIdAndDelete(bugId);
     if (!deletedBug) {
       logger.warn('Bug not found for deletion:', { bugId });
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+      const notFoundRedirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+      return sendResponse(req, res, notFoundRedirectUrl, {
         success: false,
         message: 'Bug not found.'
       });
     }
 
     logger.info('Bug deleted successfully:', { bugId });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Bug deleted successfully.'
     });
   } catch (error) {
     logger.error(`Error deleting bug with ID ${bugId}:`, error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/bugs`, {
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/bugs`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
       error: error.message

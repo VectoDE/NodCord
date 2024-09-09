@@ -9,27 +9,30 @@ exports.createBlog = async (req, res) => {
     const { title, content, author, tags } = req.body;
 
     if (!title || !content || !author) {
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/create`, {
+      const errorRedirectUrl = `${getBaseUrl()}/dashboard/blogs/create`;
+      return sendResponse(req, res, errorRedirectUrl, {
         success: false,
         message: 'Title, content, and author are required'
       });
     }
 
-    const newBlog = new Blog({ title, content, author, tags });
-    const savedBlog = await newBlog.save();
+    const blog = new Blog({ title, content, author, tags });
+    const savedBlog = await blog.save();
 
     logger.info('Blog created successfully:', { blogId: savedBlog._id });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Blog created successfully',
       blog: savedBlog
     });
-  } catch (error) {
-    logger.error('Error creating blog:', error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/create`, {
+  } catch (err) {
+    logger.error('Error creating blog:', err);
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/blogs/create`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
-      error: error.message
+      error: err.message
     });
   }
 };
@@ -37,18 +40,20 @@ exports.createBlog = async (req, res) => {
 exports.getAllBlogs = async (req, res) => {
   try {
     const blogs = await Blog.find();
-
     logger.info('Fetched all blogs:', { count: blogs.length });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+
+    const redirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       blogs
     });
-  } catch (error) {
-    logger.error('Error fetching blogs:', error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+  } catch (err) {
+    logger.error('Error fetching blogs:', err);
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Internal Server Error',
-      error: error.message
+      error: err.message
     });
   }
 };
@@ -60,23 +65,26 @@ exports.getBlogById = async (req, res) => {
     const blog = await Blog.findById(blogId);
     if (!blog) {
       logger.warn('Blog not found:', { blogId });
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      const notFoundRedirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+      return sendResponse(req, res, notFoundRedirectUrl, {
         success: false,
         message: 'Blog not found'
       });
     }
 
     logger.info('Blog fetched by ID:', { blogId });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/${blogId}`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/blogs/${blogId}`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       blog
     });
-  } catch (error) {
-    logger.error(`Error fetching blog with ID ${blogId}:`, error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+  } catch (err) {
+    logger.error(`Error fetching blog with ID ${blogId}:`, err);
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Failed to fetch blog',
-      error: error.message
+      error: err.message
     });
   }
 };
@@ -93,24 +101,27 @@ exports.updateBlog = async (req, res) => {
 
     if (!updatedBlog) {
       logger.warn('Blog not found for update:', { blogId });
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      const notFoundRedirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+      return sendResponse(req, res, notFoundRedirectUrl, {
         success: false,
         message: 'Blog not found'
       });
     }
 
     logger.info('Blog updated successfully:', { blogId });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Blog updated successfully',
       blog: updatedBlog
     });
-  } catch (error) {
-    logger.error(`Error updating blog with ID ${blogId}:`, error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs/edit/${blogId}`, {
+  } catch (err) {
+    logger.error(`Error updating blog with ID ${blogId}:`, err);
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/blogs/edit/${blogId}`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Failed to update blog',
-      error: error.message
+      error: err.message
     });
   }
 };
@@ -123,23 +134,26 @@ exports.deleteBlog = async (req, res) => {
 
     if (!deletedBlog) {
       logger.warn('Blog not found for deletion:', { blogId });
-      return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+      const notFoundRedirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+      return sendResponse(req, res, notFoundRedirectUrl, {
         success: false,
         message: 'Blog not found'
       });
     }
 
     logger.info('Blog deleted successfully:', { blogId });
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+    const redirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, redirectUrl, {
       success: true,
       message: 'Blog deleted successfully'
     });
-  } catch (error) {
-    logger.error(`Error deleting blog with ID ${blogId}:`, error);
-    return sendResponse(req, res, `${getBaseUrl()}/dashboard/blogs`, {
+  } catch (err) {
+    logger.error(`Error deleting blog with ID ${blogId}:`, err);
+    const errorRedirectUrl = `${getBaseUrl()}/dashboard/blogs`;
+    return sendResponse(req, res, errorRedirectUrl, {
       success: false,
       message: 'Failed to delete blog',
-      error: error.message
+      error: err.message
     });
   }
 };

@@ -1,6 +1,8 @@
+require('dotenv').config();
 const http = require('http');
 
 const packageInfo = require('../package.json');
+
 const { api, startApi } = require('./api/app');
 const { bot, startBot } = require('./bot/index');
 const { client, startClient } = require('./client/main');
@@ -23,12 +25,12 @@ const startServer = async () => {
 
     const apiPort = process.env.API_PORT || 3000;
     const apiBaseURL = process.env.API_BASE_URL || 'localhost';
-    const clientPort = process.env.CLIENT_PORT || 3001;
+    const clientPort = process.env.CLIENT_PORT || 4000;
     const clientBaseURL = process.env.CLIENT_BASE_URL || 'localhost';
 
     if (process.env.NODE_ENV === 'production') {
-      http.createServer(api).listen( () => {
-        logger.info(`[HTTP] Started and running on https://${apiBaseURL}`);
+      http.createServer(api).listen(apiPort, () => {
+        logger.info(`[HTTP] Started and running on https://${apiBaseURL}:${apiPort}`);
       });
     } else if (process.env.NODE_ENV === 'development') {
       http.createServer(api).listen(apiPort, () => {
@@ -39,8 +41,8 @@ const startServer = async () => {
     startBot();
 
     if (process.env.NODE_ENV === 'production') {
-      http.createServer(client).listen( () => {
-        logger.info(`[HTTP] Started and running on https://${clientBaseURL}`);
+      http.createServer(client).listen(clientPort, () => {
+        logger.info(`[HTTP] Started and running on https://${clientBaseURL}:${clientPort}`);
       });
     } else if (process.env.NODE_ENV === 'development') {
       http.createServer(client).listen(clientPort, () => {

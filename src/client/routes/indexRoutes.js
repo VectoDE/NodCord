@@ -14,6 +14,7 @@ const botStatusService = require('../../api/services/botStatusService');
 const dbStatusService = require('../../api/services/dbStatusService');
 const infoService = require('../../api/services/infoService');
 
+const Blog = require('../../models/blogModel');
 const Version = require('../../models/versionModel');
 
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -49,7 +50,7 @@ router.get('/', async (req, res) => {
 
 router.get('/news', async (req, res) => {
   try {
-    const blogs = await blogController.getAllBlogs();
+    const blogs = await Blog.find();
     res.render('blog', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
@@ -80,7 +81,7 @@ router.get('/news', async (req, res) => {
 
 router.get('/news/:id', async (req, res) => {
   try {
-    const blog = await blogController.getBlogById(req.params.id);
+    const blog = await Blog.findById(req.params.id);
     if (!blog) {
       return res.status(404).render('blogPost', {
         isAuthenticated: res.locals.isAuthenticated,
@@ -258,11 +259,11 @@ router.get('/versions', async (req, res) => {
   });
 });
 
-router.get('/discord-members', async (req, res) => {
+router.get('/discord-bots', async (req, res) => {
   try {
-    const servers = await bot.getServers();
-    res.render('discordmembers', {
-      servers,
+    const { botData } = await bot.getBots();
+    res.render('discord/discordbots', {
+      botData,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       errorstack: null,
@@ -273,7 +274,27 @@ router.get('/discord-members', async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error fetching servers:', error);
+    console.error('Error fetching bots:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+router.get('/discord-members', async (req, res) => {
+  try {
+    const { memberData } = await bot.getMembers();
+    res.render('discord/discordmembers', {
+      memberData,
+      isAuthenticated: res.locals.isAuthenticated,
+      logoImage: '/assets/img/logo.png',
+      errorstack: null,
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching members:', error);
     res.status(500).send('Internal Server Error');
   }
 });
@@ -282,7 +303,7 @@ router.get('/discord-servers', async (req, res) => {
   try {
     const servers = await bot.getServers();
     const serverCount = servers.length;
-    res.render('discordservers', {
+    res.render('discord/discordservers', {
       servers,
       serverCount,
       isAuthenticated: res.locals.isAuthenticated,

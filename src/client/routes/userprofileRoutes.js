@@ -194,21 +194,34 @@ router.post('/profile/:username/edit', upload.single('profilePicture'), async (r
   }
 });
 
-router.get('/profile/:username/settings', (req, res) => {
-  if (!isAuthenticated) {
+router.get('/profile/:username/settings', async (req, res) => {
+  const username = req.params.username;
+
+  if (!res.locals.isAuthenticated) {
     return res.redirect('/login');
   }
 
-  res.render('userprofile/settings', {
-    user: res.locals.user,
-    logoImage: '/assets/img/logo.png',
-    isAuthenticated: res.locals.isAuthenticated,
-    api: {
-      https: process.env.API_HTTPS,
-      baseURL: process.env.API_BASE_URL,
-      port: process.env.API_PORT,
-    },
-  });
+  try {
+    const user = await User.findOne({ username: username });
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    res.render('userprofile/settings', {
+      user: user,
+      logoImage: '/assets/img/logo.png',
+      isAuthenticated: res.locals.isAuthenticated,
+      api: {
+        https: process.env.API_HTTPS,
+        baseURL: process.env.API_BASE_URL,
+        port: process.env.API_PORT,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).send('Internal server error');
+  }
 });
 
 router.post('/profile/:username/settings', async (req, res) => {
@@ -219,11 +232,9 @@ router.post('/profile/:username/settings', async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
 
-    const { email, fullname, username, password } = req.body;
+    const { email, password } = req.body;
 
     if (email) user.email = email;
-    if (fullname) user.fullname = fullname;
-    if (username) user.username = username;
     if (password) user.password = await bcrypt.hash(password, 10);
 
     await user.save();

@@ -10,90 +10,439 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .tab-button {
+      border: 1px solid #d1d5db;
+    }
+
+    .tab-button.active {
+      border-bottom: none;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content:not(.hidden) {
+      display: block;
+    }
+
+    .tab-button:hover {
+      background-color: #e5e7eb;
+    }
+
+    .tab-button.active {
+      background-color: #3b82f6;
+      color: white;
+    }
+  </style>
 </head>
 
 <body class="bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
   <%- include('../partials/header'); %>
 
-  <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-    <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
+    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold mb-8">Account Settings</h1>
 
-    <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/settings" method="POST" enctype="multipart/form-data" class="space-y-6">
-      <div>
-        <label for="thumbnail" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Thumbnail Image</label>
-        <input type="file" name="thumbnail" id="thumbnail" class="mt-1 block w-full text-gray-900 dark:text-gray-200">
-        <img src="<%= user.thumbnail %>" alt="Current Thumbnail" class="mt-2 w-32 h-32 object-cover rounded-lg border">
-      </div>
+      <form
+        action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/settings"
+        method="POST" enctype="multipart/form-data" class="space-y-6">
+        <!-- Existing form fields -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Email</label>
+          <input type="email" name="email" id="email"
+            class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            value="<%= user.email %>" required>
+        </div>
 
-      <div>
-        <label for="profilePicture" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Profile Picture</label>
-        <input type="file" name="profilePicture" id="profilePicture" class="mt-1 block w-full text-gray-900 dark:text-gray-200">
-        <img src="<%= user.profilePicture %>" alt="Current Profile Picture" class="mt-2 w-32 h-32 object-cover rounded-full border">
-      </div>
+        <div class="mt-6">
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Change Password</h2>
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200">New
+              Password</label>
+            <input type="password" name="password" id="password"
+              class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+          <div class="mt-4">
+            <label for="passwordConfirmation" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Confirm
+              Password</label>
+            <input type="password" name="passwordConfirmation" id="passwordConfirmation"
+              class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+            <p class="text-sm text-gray-500 mt-1">Both passwords must match.</p>
+          </div>
+        </div>
 
-      <div>
-        <label for="fullname" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Full Name</label>
-        <input type="text" name="fullname" id="fullname" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.fullname %>" required>
-      </div>
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Address</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="street" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Street</label>
+              <input type="text" name="street" id="street"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.street %>">
+            </div>
+            <div>
+              <label for="houseNumber" class="block text-sm font-medium text-gray-700 dark:text-gray-200">House
+                Number</label>
+              <input type="text" name="houseNumber" id="houseNumber"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.houseNumber %>">
+            </div>
+            <div>
+              <label for="state" class="block text-sm font-medium text-gray-700 dark:text-gray-200">State</label>
+              <input type="text" name="state" id="state"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.state %>">
+            </div>
+            <div>
+              <label for="postcode" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Postcode</label>
+              <input type="text" name="postcode" id="postcode"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.postcode %>">
+            </div>
+            <div>
+              <label for="country" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Country</label>
+              <input type="text" name="country" id="country"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.country %>">
+            </div>
+          </div>
+        </div>
 
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Username</label>
-        <input type="text" name="username" id="username" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.username %>" required>
-      </div>
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Phone Numbers</h2>
+          <div class="space-y-4">
+            <div>
+              <label for="mobile" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Mobile
+                Phone</label>
+              <input type="tel" name="mobile" id="mobile"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.mobile %>">
+            </div>
+            <div>
+              <label for="landline" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Landline</label>
+              <input type="tel" name="landline" id="landline"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.landline %>">
+            </div>
+            <div>
+              <label for="business" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Business
+                Phone</label>
+              <input type="tel" name="business" id="business"
+                class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                value="<%= user.business %>">
+            </div>
+          </div>
+        </div>
 
-      <div>
-        <label for="bio" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Bio</label>
-        <textarea name="bio" id="bio" rows="4" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"><%= user.bio %></textarea>
-      </div>
-
-      <div>
-        <label for="twitter" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Twitter</label>
-        <input type="url" name="twitter" id="twitter" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.twitter %>">
-      </div>
-
-      <div>
-        <label for="linkedin" class="block text-sm font-medium text-gray-700 dark:text-gray-200">LinkedIn</label>
-        <input type="url" name="linkedin" id="linkedin" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.linkedin %>">
-      </div>
-
-      <div>
-        <label for="github" class="block text-sm font-medium text-gray-700 dark:text-gray-200">GitHub</label>
-        <input type="url" name="github" id="github" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.github %>">
-      </div>
-
-      <div>
-        <label for="website" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Website</label>
-        <input type="url" name="website" id="website" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" value="<%= user.socialLinks.website %>">
-      </div>
+        <div>
+          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600">Save
+            Changes</button>
+        </div>
+      </form>
 
       <div class="mt-6">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Change Password</h2>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-200">New Password</label>
-          <input type="password" name="password" id="password" class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-          <p class="text-sm text-gray-500 mt-1">Leave blank to keep your current password.</p>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Payment Methods</h2>
+        <ul id="paymentMethodsList" class="space-y-4">
+          <% user.paymentMethods.forEach(function(method) { %>
+            <li class="flex items-center space-x-2">
+              <span class="text-gray-900 dark:text-gray-200">
+                <%= method %>
+              </span>
+              <button type="button" class="text-red-600 hover:underline"
+                onclick="removePaymentMethod(this)">Remove</button>
+            </li>
+            <% }); %>
+        </ul>
+        <button type="button" id="addPaymentMethodBtn"
+          class="bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600"
+          onclick="openPaymentMethodModal()">Add Payment Method</button>
+      </div>
+
+      <!-- Modal -->
+      <div id="paymentMethodModal"
+        class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-11/12 max-w-lg p-6">
+          <h3 class="text-2xl font-semibold mb-4">Add Payment Method</h3>
+          <div class="tabs mb-4 flex space-x-4">
+            <button
+              class="tab-button px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+              onclick="showTab('creditCard')">Credit Card</button>
+            <button
+              class="tab-button px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none"
+              onclick="showTab('bankCard')">Bank Card</button>
+            <button
+              class="tab-button px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-300 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none"
+              onclick="showTab('paypal')">PayPal</button>
+          </div>
+          <div id="creditCardTab" class="tab-content">
+            <label for="ccNumber" class="block text-sm font-medium text-gray-700 dark:text-gray-200">Credit Card
+              Number</label>
+            <input type="text" id="ccNumber"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
+            <label for="ccHolder" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-4">Cardholder
+              Name</label>
+            <input type="text" id="ccHolder"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
+            <label for="ccExpiry" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-4">Expiry
+              Date</label>
+            <input type="text" id="ccExpiry" placeholder="MM/YY"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
+            <label for="ccCvv" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-4">CVV</label>
+            <input type="text" id="ccCvv"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+          <div id="bankCardTab" class="tab-content hidden">
+            <label for="iban" class="block text-sm font-medium text-gray-700 dark:text-gray-200">IBAN</label>
+            <input type="text" id="iban"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+
+            <label for="bankHolder" class="block text-sm font-medium text-gray-700 dark:text-gray-200 mt-4">Account
+              Holder</label>
+            <input type="text" id="bankHolder"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+          <div id="paypalTab" class="tab-content hidden">
+            <label for="paypalEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-200">PayPal
+              Email</label>
+            <input type="email" id="paypalEmail"
+              class="mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+          </div>
+          <div class="mt-4">
+            <button type="button" class="bg-blue-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-600"
+              onclick="savePaymentMethod()">Save</button>
+            <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-600 ml-2"
+              onclick="closePaymentMethodModal()">Cancel</button>
+          </div>
         </div>
       </div>
 
       <div class="mt-6">
-        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Manage Sessions</h2>
-        <a href="/user/profile/logout-all-sessions" class="text-blue-600 hover:underline">Log out from all sessions</a>
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Browser Sessions</h2>
+        <ul id="sessionsList" class="space-y-4">
+          <% if (user.sessions.length) { %>
+            <% user.sessions.forEach(function(session) { %>
+              <li class="flex items-center justify-between space-x-2">
+                <span class="text-gray-900 dark:text-gray-200">
+                  <%= session.browser %> - <%= session.date %>
+                </span>
+                <button type="button" class="text-red-600 hover:underline"
+                  onclick="logoutSession('<%= session.id %>')">Logout</button>
+              </li>
+              <% }); %>
+                <% } else { %>
+                  <li class="text-gray-500 dark:text-gray-400">No active sessions.</li>
+                  <% } %>
+        </ul>
+        <% if (user.sessions.length) { %>
+          <button type="button" id="logoutAllSessionsBtn"
+            class="bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700 mt-4">Logout
+            All Sessions</button>
+          <% } %>
       </div>
 
+      <!-- New section for account deletion -->
       <div class="mt-6">
-        <h2 class="text-xl font-semibold text-red-600 mb-4">Danger Zone</h2>
-        <button type="button" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700" onclick="document.getElementById('deleteAccountForm').submit()">Delete Account</button>
+        <h2 class="text-xl font-semibold text-red-600 dark:text-red-400 mb-4">Delete Account</h2>
+        <p class="text-gray-700 dark:text-gray-300 mb-4">Deleting your account is permanent and cannot be undone. All
+          your
+          data will be lost.</p>
+        <button type="button" id="deleteAccountBtn"
+          class="bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700">Delete
+          Account</button>
       </div>
+    </main>
 
-      <input type="hidden" name="_method" value="PUT">
-    </form>
+    <!-- Modal for account deletion -->
+    <div id="deleteAccountModal"
+      class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 hidden">
+      <div class="bg-white dark:bg-gray-700 p-6 rounded-md shadow-lg w-full max-w-sm">
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-200">Confirm Account Deletion</h3>
+        <p class="text-gray-700 dark:text-gray-300 mt-2 mb-4">Please enter your username to confirm account deletion.
+        </p>
+        <form id="confirmDeleteForm" action="/api/user/profile/delete" method="POST">
+          <label for="confirmUsername"
+            class="block text-sm font-medium text-gray-700 dark:text-gray-200">Username</label>
+          <input type="text" name="confirmUsername" id="confirmUsername"
+            class="text-gray-900 mt-1 p-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            required>
+          <div class="mt-4 flex justify-end space-x-2">
+            <button type="button" id="cancelDeleteBtn"
+              class="bg-gray-500 text-white px-4 py-2 rounded-md shadow-sm hover:bg-gray-600">Cancel</button>
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-red-700">Delete
+              Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
 
-    <form id="deleteAccountForm" action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/user/profile/delete-account" method="POST">
-      <input type="hidden" name="_method" value="DELETE">
-    </form>
-  </main>
+    <%- include('../partials/footer') %>
 
-  <%- include('../partials/footer'); %>
-  <script src="/assets/js/script.js"></script>
+      <script>
+        document.getElementById('deleteAccountBtn').addEventListener('click', function () {
+          document.getElementById('deleteAccountModal').classList.remove('hidden');
+        });
+
+        document.getElementById('cancelDeleteBtn').addEventListener('click', function () {
+          document.getElementById('deleteAccountModal').classList.add('hidden');
+        });
+
+        document.getElementById('confirmDeleteForm').addEventListener('submit', function (event) {
+          event.preventDefault();
+          const username = document.getElementById('confirmUsername').value;
+
+          const currentUsername = '<%= user.username %>';
+
+          if (username === currentUsername) {
+            this.submit();
+          } else {
+            alert('Username does not match. Please try again.');
+          }
+        });
+
+        function removePaymentMethod(button) {
+          const listItem = button.closest('li');
+          listItem.remove();
+        }
+
+        function logoutSession(sessionId) {
+          if (confirm('Are you sure you want to log out of this session?')) {
+            fetch(`/api/user/profile/logoutSession/${sessionId}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({})
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  document.querySelector(`[data-session-id="${sessionId}"]`).remove();
+                } else {
+                  alert('Failed to log out of this session.');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while logging out of this session.');
+              });
+          }
+        }
+
+        document.getElementById('logoutAllSessionsBtn').addEventListener('click', function () {
+          if (confirm('Are you sure you want to log out of all sessions?')) {
+            fetch('/api/user/profile/logoutAllSessions', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({})
+            })
+              .then(response => response.json())
+              .then(data => {
+                if (data.success) {
+                  location.reload();
+                } else {
+                  alert('Failed to log out of all sessions.');
+                }
+              })
+              .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while logging out of all sessions.');
+              });
+          }
+        });
+
+        function openPaymentMethodModal() {
+          document.getElementById('paymentMethodModal').classList.remove('hidden');
+        }
+
+        function closePaymentMethodModal() {
+          document.getElementById('paymentMethodModal').classList.add('hidden');
+        }
+
+        function showTab(tabId) {
+          const tabs = document.querySelectorAll('.tab-content');
+          tabs.forEach(tab => {
+            if (tab.id === `${tabId}Tab`) {
+              tab.classList.remove('hidden');
+            } else {
+              tab.classList.add('hidden');
+            }
+          });
+
+          const buttons = document.querySelectorAll('.tab-button');
+          buttons.forEach(button => {
+            if (button.textContent.toLowerCase() === tabId) {
+              button.classList.add('active');
+            } else {
+              button.classList.remove('active');
+            }
+          });
+        }
+
+        function savePaymentMethod() {
+          const selectedTab = document.querySelector('.tab-content:not(.hidden)');
+          let paymentMethodData;
+
+          if (selectedTab.id === 'creditCardTab') {
+            paymentMethodData = {
+              type: 'creditCard',
+              number: document.getElementById('ccNumber').value,
+              holder: document.getElementById('ccHolder').value,
+              expiry: document.getElementById('ccExpiry').value,
+              cvv: document.getElementById('ccCvv').value
+            };
+          } else if (selectedTab.id === 'bankCardTab') {
+            paymentMethodData = {
+              type: 'bankCard',
+              iban: document.getElementById('iban').value,
+              holder: document.getElementById('bankHolder').value
+            };
+          } else if (selectedTab.id === 'paypalTab') {
+            paymentMethodData = {
+              type: 'paypal',
+              email: document.getElementById('paypalEmail').value
+            };
+          }
+
+          fetch('/api/user/profile/addPaymentMethod', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(paymentMethodData)
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                const paymentMethodsList = document.getElementById('paymentMethodsList');
+                const newMethod = document.createElement('li');
+                newMethod.className = 'flex items-center space-x-2';
+                newMethod.innerHTML = `
+        <span class="text-gray-900 dark:text-gray-200">
+          ${data.method}
+        </span>
+        <button type="button" class="text-red-600 hover:underline"
+          onclick="removePaymentMethod(this)">Remove</button>
+      `;
+                paymentMethodsList.appendChild(newMethod);
+
+                closePaymentMethodModal();
+              } else {
+                alert('Failed to add payment method.');
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while adding the payment method.');
+            });
+        }
+      </script>
 </body>
+
 </html>

@@ -162,6 +162,63 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
+const addressSchema = new mongoose.Schema({
+  street: {
+    type: String,
+    default: ''
+  },
+  houseNumber: {
+    type: String,
+    default: ''
+  },
+  state: {
+    type: String,
+    default: ''
+  },
+  postcode: {
+    type: String,
+    default: ''
+  },
+  country: {
+    type: String,
+    default: ''
+  }
+});
+
+const phoneNumbersSchema = new mongoose.Schema({
+  mobile: {
+    type: String,
+    default: ''
+  },
+  landline: {
+    type: String,
+    default: ''
+  },
+  business: {
+    type: String,
+    default: ''
+  }
+});
+
+const paymentMethodsSchema = new mongoose.Schema({
+  method: {
+    type: String,
+    enum: ['creditCard', 'debitCard', 'paypal'],
+    required: true
+  }
+});
+
+const sessionSchema = new mongoose.Schema({
+  browser: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 const userSchema = new mongoose.Schema({
   profilePicture: {
     type: String,
@@ -197,6 +254,10 @@ const userSchema = new mongoose.Schema({
     default: '',
     trim: true,
   },
+  address: addressSchema,
+  phoneNumbers: phoneNumbersSchema,
+  paymentMethods: [paymentMethodsSchema],
+  sessions: [sessionSchema],
   socialLinks: {
     type: socialLinksSchema,
     default: {},

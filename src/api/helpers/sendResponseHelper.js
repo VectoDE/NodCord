@@ -1,8 +1,11 @@
-const sendResponse = (req, res, redirectUrl, jsonData) => {
+const sendResponse = (req, res, redirectUrl, response) => {
+  if (!req || !res) {
+    throw new Error('Request or Response object is undefined');
+  }
   if (req.accepts('html')) {
     res.redirect(redirectUrl);
-  } else if (req.accepts('json')) {
-    res.json(jsonData);
+  } else {
+    res.json(response);
   }
 };
 
