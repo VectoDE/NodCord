@@ -26,8 +26,9 @@ router.use((req, res, next) => {
 });
 
 router.get('/profile', (req, res) => {
-  if (isAuthenticated && res.locals.user) {
-    return res.redirect(`/user/profile/${res.locals.user.username}`);
+  const currentUser = req.user;
+  if (isAuthenticated && currentUser) {
+    return res.redirect(`/user/profile/${currentUser}`);
   } else {
     res.redirect('/login');
   }
@@ -112,6 +113,7 @@ router.get('/profile/:username/edit', async (req, res) => {
 
   try {
     const { username } = req.params;
+    const currentUser = req.user;
     const user = await User.findOne({ username: username });
 
     if (!user || user._id.toString() !== res.locals.user._id.toString()) {
@@ -121,7 +123,8 @@ router.get('/profile/:username/edit', async (req, res) => {
         errortitle: 'Access Denied',
         errormessage: 'You are not authorized to edit this profile.',
         errorstatus: 403,
-        errorstack: null
+        errorstack: null,
+        currentUser,
       });
     }
 
@@ -134,6 +137,7 @@ router.get('/profile/:username/edit', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching profile for editing:', error);
@@ -143,7 +147,8 @@ router.get('/profile/:username/edit', async (req, res) => {
       errortitle: 'Internal Server Error',
       errormessage: 'An unexpected error occurred while fetching the profile for editing.',
       errorstatus: 500,
-      errorstack: error.stack
+      errorstack: error.stack,
+      currentUser,
     });
   }
 });
@@ -155,6 +160,7 @@ router.post('/profile/:username/edit', upload.single('profilePicture'), async (r
 
   try {
     const { username } = req.params;
+    const currentUser = req.user;
     const user = await User.findOne({ username: username });
 
     if (!user || user._id.toString() !== res.locals.user._id.toString()) {
@@ -164,7 +170,8 @@ router.post('/profile/:username/edit', upload.single('profilePicture'), async (r
         errortitle: 'Access Denied',
         errormessage: 'You are not authorized to edit this profile.',
         errorstatus: 403,
-        errorstack: null
+        errorstack: null,
+        currentUser,
       });
     }
 
@@ -189,7 +196,8 @@ router.post('/profile/:username/edit', upload.single('profilePicture'), async (r
       errortitle: 'Internal Server Error',
       errormessage: 'An unexpected error occurred while updating the user profile.',
       errorstatus: 500,
-      errorstack: error.stack
+      errorstack: error.stack,
+      currentUser,
     });
   }
 });
@@ -200,6 +208,8 @@ router.get('/profile/:username/settings', async (req, res) => {
   if (!res.locals.isAuthenticated) {
     return res.redirect('/login');
   }
+
+  const currentUser = req.user;
 
   try {
     const user = await User.findOne({ username: username });
@@ -217,6 +227,7 @@ router.get('/profile/:username/settings', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching user data:', error);
@@ -228,6 +239,8 @@ router.post('/profile/:username/settings', async (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
   }
+
+  const currentUser = req.user;
 
   try {
     const user = await User.findById(req.user._id);
@@ -252,6 +265,7 @@ router.post('/profile/:username/settings', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   }
 });
@@ -260,6 +274,8 @@ router.get('/profile/:username/send-verification', async (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
   }
+
+  const currentUser = req.user;
 
   try {
     const user = await User.findById(req.user._id);
@@ -276,6 +292,7 @@ router.get('/profile/:username/send-verification', async (req, res) => {
           baseURL: process.env.API_BASE_URL,
           port: process.env.API_PORT,
         },
+        currentUser,
       });
     }
 
@@ -304,6 +321,7 @@ router.get('/profile/:username/send-verification', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   }
 });
@@ -312,6 +330,8 @@ router.get('/profile/:username/logout-all-sessions', async (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
   }
+
+  const currentUser = req.user;
 
   try {
     req.logout();
@@ -329,6 +349,7 @@ router.get('/profile/:username/logout-all-sessions', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   }
 });
@@ -338,6 +359,8 @@ router.post('/profile/delete-account', async (req, res) => {
   if (!isAuthenticated) {
     return res.redirect('/login');
   }
+
+  const currentUser = req.user;
 
   try {
     await User.findByIdAndDelete(req.user._id);
@@ -356,6 +379,7 @@ router.post('/profile/delete-account', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   }
 });

@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const router = express.Router();
 const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
@@ -7,7 +8,6 @@ const apiConfig = require('../../config/apiConfig');
 const serverConfig = require('../../config/serverConfig');
 const bot = require('../../bot/index');
 const authController = require('../../api/controllers/authController');
-const blogController = require('../../api/controllers/blogController');
 const authMiddleware = require('../../api/middlewares/authMiddleware');
 const apiStatusService = require('../../api/services/apiStatusService');
 const botStatusService = require('../../api/services/botStatusService');
@@ -36,7 +36,9 @@ router.use((req, res, next) => {
 });
 
 router.get('/', async (req, res) => {
-  res.render('index', {
+  const currentUser = req.user;
+
+  res.render('index/index', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     errorstack: null,
@@ -45,13 +47,15 @@ router.get('/', async (req, res) => {
       baseURL: process.env.API_BASE_URL,
       port: process.env.API_PORT,
     },
+    currentUser,
   });
 });
 
 router.get('/news', async (req, res) => {
+  const currentUser = req.user;
   try {
     const blogs = await Blog.find();
-    res.render('blog', {
+    res.render('index/blog', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blogs,
@@ -61,10 +65,11 @@ router.get('/news', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching blog posts:', error);
-    res.status(500).render('blog', {
+    res.status(500).render('index/blog', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blogs: [],
@@ -75,15 +80,17 @@ router.get('/news', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   }
 });
 
 router.get('/news/:id', async (req, res) => {
+  const currentUser = req.user;
   try {
     const blog = await Blog.findById(req.params.id);
     if (!blog) {
-      return res.status(404).render('blogPost', {
+      return res.status(404).render('index/blogPost', {
         isAuthenticated: res.locals.isAuthenticated,
         logoImage: '/assets/img/logo.png',
         blog: null,
@@ -93,9 +100,10 @@ router.get('/news/:id', async (req, res) => {
           baseURL: process.env.API_BASE_URL,
           port: process.env.API_PORT,
         },
+        currentUser,
       });
     }
-    res.render('blogPost', {
+    res.render('index/blogPost', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blog,
@@ -105,10 +113,11 @@ router.get('/news/:id', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching blog post:', error);
-    res.status(500).render('blogPost', {
+    res.status(500).render('index/blogPost', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       blog: null,
@@ -118,12 +127,14 @@ router.get('/news/:id', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   }
 });
 
 router.get('/docs', (req, res) => {
-  res.render('documentation', {
+  const currentUser = req.user;
+  res.render('index/documentation', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     errorstack: null,
@@ -132,10 +143,12 @@ router.get('/docs', (req, res) => {
       baseURL: process.env.API_BASE_URL,
       port: process.env.API_PORT,
     },
+    currentUser,
   });
 });
 
 router.get('/status', async (req, res) => {
+  const currentUser = req.user;
   try {
     const apiStatus = apiStatusService.getStatus();
     const apiStatusMessage =
@@ -157,7 +170,7 @@ router.get('/status', async (req, res) => {
     const dbStatusMessage =
       dbStatus === 'online' ? 'Datenbank ist online' : 'Datenbank ist offline';
 
-    res.render('status', {
+    res.render('index/status', {
       apiStatus,
       apiStatusMessage,
       botStatus,
@@ -172,6 +185,7 @@ router.get('/status', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching status:', error);
@@ -180,6 +194,7 @@ router.get('/status', async (req, res) => {
 });
 
 router.get('/info', async (req, res) => {
+  const currentUser = req.user;
   try {
     const botInfo = await infoService.getBotInfo();
 
@@ -193,7 +208,7 @@ router.get('/info', async (req, res) => {
 
     const systemInfo = await infoService.getSystemInfo();
 
-    res.render('info', {
+    res.render('index/info', {
       bot: botInfo,
       api: apiInfo,
       system: systemInfo,
@@ -205,6 +220,7 @@ router.get('/info', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching info:', error);
@@ -244,9 +260,11 @@ router.get('/versions', async (req, res) => {
     },
   ];
 
+  const currentUser = req.user;
+
   const versions = await Version.find();
 
-  res.render('versions', {
+  res.render('index/versions', {
     versions,
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
@@ -256,10 +274,12 @@ router.get('/versions', async (req, res) => {
       baseURL: process.env.API_BASE_URL,
       port: process.env.API_PORT,
     },
+    currentUser,
   });
 });
 
 router.get('/discord-bots', async (req, res) => {
+  const currentUser = req.user;
   try {
     const { botData } = await bot.getBots();
     res.render('discord/discordbots', {
@@ -272,6 +292,7 @@ router.get('/discord-bots', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching bots:', error);
@@ -280,6 +301,7 @@ router.get('/discord-bots', async (req, res) => {
 });
 
 router.get('/discord-members', async (req, res) => {
+  const currentUser = req.user;
   try {
     const { memberData } = await bot.getMembers();
     res.render('discord/discordmembers', {
@@ -292,6 +314,7 @@ router.get('/discord-members', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching members:', error);
@@ -300,6 +323,7 @@ router.get('/discord-members', async (req, res) => {
 });
 
 router.get('/discord-servers', async (req, res) => {
+  const currentUser = req.user;
   try {
     const servers = await bot.getServers();
     const serverCount = servers.length;
@@ -314,6 +338,7 @@ router.get('/discord-servers', async (req, res) => {
         baseURL: process.env.API_BASE_URL,
         port: process.env.API_PORT,
       },
+      currentUser,
     });
   } catch (error) {
     console.error('Error fetching servers:', error);
@@ -341,10 +366,11 @@ router.post('/contact', async (req, res) => {
 });
 
 router.get('/contact', async (req, res) => {
+  const currentUser = req.user;
   const successMessage = req.query.success === 'true' ? 'Vielen Dank für Ihre Nachricht. Wir werden uns bald bei Ihnen melden.' : null;
   const errorMessage = req.query.error === 'true' ? 'Es gab ein Problem beim Senden Ihrer Nachricht. Bitte versuchen Sie es später erneut.' : null;
 
-  res.render('contact', {
+  res.render('index/contact', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     successMessage,
@@ -355,11 +381,13 @@ router.get('/contact', async (req, res) => {
       baseURL: process.env.API_BASE_URL,
       port: process.env.API_PORT,
     },
+    currentUser,
   });
 });
 
 router.get('/about', async (req, res) => {
-  res.render('about', {
+  const currentUser = req.user;
+  res.render('index/about', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     errorstack: null,
@@ -368,6 +396,7 @@ router.get('/about', async (req, res) => {
       baseURL: process.env.API_BASE_URL,
       port: process.env.API_PORT,
     },
+    currentUser,
   });
 });
 
@@ -413,6 +442,7 @@ router.get('/register', (req, res) => {
 router.get('/verify-email/:token', authController.verifyEmail);
 
 router.get('/beta-verify', authMiddleware(true), (req, res) => {
+  const currentUser = req.user;
   res.render('verification/beta-verify', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
@@ -423,6 +453,7 @@ router.get('/beta-verify', authMiddleware(true), (req, res) => {
       baseURL: process.env.API_BASE_URL,
       port: process.env.API_PORT,
     },
+    currentUser,
   });
 });
 

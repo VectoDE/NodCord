@@ -13,8 +13,8 @@ module.exports = {
     'guild_messages',
     'guild_message_reactions',
   ],
-  prefix: process.env.BOT_PREFIX || '!',
-  ownerID: process.env.OWNER_ID || '335228120816943114',
+  prefix: process.env.DISCORD_BOT_PREFIX || '!',
+  ownerID: process.env.DISCORD_BOT_OWNER_ID || '335228120816943114',
   devGuild: process.env.DISCORD_DEV_GUILD_ID,
   activity: {
     name: process.env.BOT_ACTIVITY_NAME || 'NodCord',

@@ -28,3 +28,6 @@ web_modules/
 
 # Optional stylelint cache
 .stylelintcache
+
+# Sentry Config File
+.sentryclirc

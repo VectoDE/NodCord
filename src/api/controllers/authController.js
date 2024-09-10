@@ -5,63 +5,65 @@ const nodemailerService = require('../services/nodemailerService');
 const logger = require('../services/loggerService');
 const getBaseUrl = require('../helpers/getBaseUrlHelper');
 const sendResponse = require('../helpers/sendResponseHelper');
+const passport = require('passport');
 
-exports.register = async (req, res) => {
+exports.googleCallback = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword, fullname, terms } = req.body;
+    if (req.user) {
+      req.user.recentActivity = new Date();
 
-    if (!username || !email || !password || !confirmPassword || !fullname || !terms) {
-      const redirectUrl = `${getBaseUrl()}/register`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'All fields are required, including accepting the terms and conditions.'
+      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
       });
-    }
+      req.user.isAuthenticated = true;
+      await req.user.save();
 
-    if (password !== confirmPassword) {
-      const redirectUrl = `${getBaseUrl()}/register`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Passwords do not match'
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
       });
+
+      // Weiterleiten zum Benutzerprofil oder Dashboard basierend auf der Rolle
+      const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
+      return res.redirect(redirectUrl);
+    } else {
+      // Fehlgeschlagene Authentifizierung
+      return res.redirect(`${getBaseUrl()}/login`);
     }
-
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
-    if (existingUser) {
-      const redirectUrl = `${getBaseUrl()}/register`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'User already exists'
-      });
-    }
-
-    const user = new User({
-      username,
-      email,
-      password,
-      fullname,
-      termsAccepted: true,
-      termsAcceptedAt: new Date()
-    });
-
-    await user.save();
-
-    const redirectUrl = `${getBaseUrl()}/login`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: 'Registration successful, you can now log in.'
-    });
   } catch (err) {
-    logger.error('Error during registration:', err.message);
-    const redirectUrl = `${getBaseUrl()}/register`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Internal Server Error',
-      error: err.message
-    });
+    logger.error('Google authentication error:', err.message);
+    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
   }
 };
 
+exports.githubCallback = async (req, res) => {
+  try {
+    if (req.user) {
+      req.user.recentActivity = new Date();
+
+      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
+      });
+      req.user.isAuthenticated = true;
+      await req.user.save();
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
+
+      const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
+      return res.redirect(redirectUrl);
+    } else {
+      return res.redirect(`${getBaseUrl()}/login`);
+    }
+  } catch (err) {
+    logger.error('GitHub authentication error:', err.message);
+    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+  }
+};
+
+// Email verification
 exports.verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
@@ -97,92 +99,15 @@ exports.verifyEmail = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
-  try {
-    const { emailOrUsername, password } = req.body;
-    const user = await User.findOne({
-      $or: [{ email: emailOrUsername }, { username: emailOrUsername }],
-    });
-
-    if (!user || !(await user.comparePassword(password))) {
-      logger.warn('Login failed: Invalid credentials');
-      const redirectUrl = `${getBaseUrl()}/login`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Invalid credentials'
-      });
+// User logout
+exports.logout = (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      logger.error('Error during logout:', err.message);
+      return res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
-
-    user.recentActivity = new Date();
-
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-    user.isAuthenticated = true;
-    await user.save();
-
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-    });
-
-    logger.info(`User ${user.username} successfully logged in.`);
-
-    const redirectUrl = user.role === 'user' ? `/user/profile/${user.username}` : '/dashboard';
-    return sendResponse(req, res, `${getBaseUrl()}${redirectUrl}`, {
-      success: true,
-      message: 'Login successful',
-      user
-    });
-  } catch (err) {
-    logger.error('Login error:', err.message);
-    const redirectUrl = `${getBaseUrl()}/login`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Internal Server Error',
-      error: err.message
-    });
-  }
-};
-
-exports.logout = async (req, res) => {
-  try {
-    const token = req.cookies.token;
-    if (!token) {
-      const redirectUrl = `${getBaseUrl()}/login`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'No token found, unable to log out.'
-      });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id);
-
-    if (!user) {
-      const redirectUrl = `${getBaseUrl()}/login`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Invalid user'
-      });
-    }
-
-    user.isAuthenticated = false;
-    await user.save();
 
     res.clearCookie('token');
-    const redirectUrl = `${getBaseUrl()}/`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: 'Logout successful'
-    });
-  } catch (err) {
-    logger.error('Logout error:', err.message);
-    const redirectUrl = `${getBaseUrl()}/`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Internal Server Error',
-      error: err.message
-    });
-  }
+    return res.redirect(`${getBaseUrl()}/`);
+  });
 };

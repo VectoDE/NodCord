@@ -22,64 +22,17 @@
 </head>
 
 <body class="text-gray-200">
-  <%- include('../partials/header'); %>
+  <%- include('../partials/header/header'); %>
   <main class="flex justify-center items-center min-h-screen py-8">
     <div class="max-w-md w-full p-8 rounded-lg shadow-lg register-container">
       <h1 class="text-2xl font-bold text-gray-100 mb-6">Register</h1>
-      <% if (errorMessage) { %>
-        <div class="text-red-500 mb-4">
-          <%= errorMessage %>
-        </div>
-      <% } %>
-
-      <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/register" method="POST" class="space-y-6">
-        <div>
-          <label for="fullname" class="block text-sm font-medium text-gray-300">Full Name</label>
-          <input type="text" id="fullname" name="fullname" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
-        </div>
-        <div>
-          <label for="username" class="block text-sm font-medium text-gray-300">Username</label>
-          <input type="text" id="username" name="username" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
-        </div>
-        <div>
-          <label for="email" class="block text-sm font-medium text-gray-300">Email</label>
-          <input type="email" id="email" name="email" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
-        </div>
-        <div>
-          <label for="password" class="block text-sm font-medium text-gray-300">Password</label>
-          <input type="password" id="password" name="password" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
-        </div>
-        <div>
-          <label for="confirmPassword" class="block text-sm font-medium text-gray-300">Confirm Password</label>
-          <input type="password" id="confirmPassword" name="confirmPassword" required class="mt-1 block w-full px-3 py-2 border border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm bg-gray-700 text-gray-200">
-        </div>
-        <div class="flex items-start">
-          <div class="flex items-center h-5">
-            <input id="terms" name="terms" type="checkbox" required class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-600 rounded">
-          </div>
-          <div class="ml-3 text-sm">
-            <label for="terms" class="font-medium text-gray-300">I agree to the <a href="/legal/terms-of-service" class="text-indigo-500 hover:text-indigo-400" target="_blank">Terms of Service</a> and <a href="/legal/privacy-policy" class="text-indigo-500 hover:text-indigo-400" target="_blank">Privacy Policy</a>.</label>
-          </div>
-        </div>
-        <div>
-          <button type="submit" class="w-full bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">Register</button>
-        </div>
-      </form>
-
-      <div class="text-center my-6">
-        <p class="text-gray-400">---- OR ----</p>
-      </div>
-
       <!-- Social Register Buttons -->
       <div class="flex flex-col gap-4 mb-6">
-        <a href="/auth/google" class="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">
+        <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/google" class="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">
           <i class="bi bi-google mr-2"></i> Register with Google
         </a>
-        <a href="/auth/github" class="flex items-center justify-center bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-300">
+        <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/github" class="flex items-center justify-center bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-300">
           <i class="bi bi-github mr-2"></i> Register with GitHub
-        </a>
-        <a href="/auth/apple" class="flex items-center justify-center bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black transition duration-300">
-          <i class="bi bi-apple mr-2"></i> Register with Apple
         </a>
       </div>
       <div class="text-center">
@@ -87,7 +40,7 @@
       </div>
     </div>
   </main>
-  <%- include('../partials/footer'); %>
+  <%- include('../partials/footer/footer'); %>
 </body>
 
 </html>

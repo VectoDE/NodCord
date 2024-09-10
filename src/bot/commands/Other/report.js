@@ -17,7 +17,7 @@ module.exports = {
     const user = interaction.user;
     const tag = user.tag;
     const name = guild;
-    const channel = await client.channels.cache.get(process.env.REPORT_CHANNEL);
+    const channel = await client.channels.cache.get(process.env.DISCORD_REPORT_CHANNEL);
 
     const embed = new EmbedBuilder()
     .setColor('Random')

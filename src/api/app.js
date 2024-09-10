@@ -1,10 +1,13 @@
 require('dotenv').config();
+require('./utils/passportUtil');
 const express = require('express');
+const session = require('express-session');
 const fs = require('fs');
 const path = require('path');
 const morgan = require('morgan');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
+const passport = require('passport');
 const logger = require('./services/loggerService');
 const corsMiddleware = require('./middlewares/corsMiddleware');
 const compressionMiddleware = require('./middlewares/compressionMiddleware');
@@ -23,6 +26,12 @@ api.use(corsMiddleware);
 api.use(compressionMiddleware);
 api.use(rateLimiter);
 
+api.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false,
+}));
+
 morgan.token('remote-addr', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
 morgan.token('url', (req) => req.originalUrl);
 
@@ -32,6 +41,9 @@ api.use(morgan(logFormat, { stream: { write: (message) => logger.info(message.tr
 api.set('view engine', 'ejs');
 api.set('views', path.join(__dirname, '../views'));
 api.use(express.static(path.join(__dirname, '../public')));
+
+api.use(passport.initialize());
+api.use(passport.session());
 
 const authRoutes = require('./routes/authRoutes');
 const betaRoutes = require('./routes/betaRoutes');

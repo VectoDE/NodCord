@@ -60,7 +60,7 @@ const startBot = () => {
 
 // Prefix Command Handler
 client.on('messageCreate', async (message) => {
-  const prefix = process.env.BOT_PREFIX;
+  const prefix = process.env.DISCORD_BOT_PREFIX;
 
   if (!message.content.startsWith(prefix) || message.author.bot) return;
   const args = message.content.slice(prefix.length).trim().split(/ +/);

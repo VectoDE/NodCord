@@ -1,10 +1,12 @@
 require('dotenv').config();
 const express = require('express');
+const passport = require('passport');
 const fs = require('fs');
 const path = require('path');
 const morgan = require('morgan');
 const flash = require('connect-flash');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const logger = require('../api/services/loggerService');
 const corsMiddleware = require('../api/middlewares/corsMiddleware');
 
@@ -15,6 +17,17 @@ client.set('trust proxy', 1);
 client.use(express.urlencoded({ extended: true }));
 client.use(express.json());
 client.use(cookieParser());
+
+client.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: false,
+  cookie: { secure: process.env.NODE_ENV === 'production' }
+}));
+
+client.use(passport.initialize());
+client.use(passport.session());
+
 client.use(flash());
 
 client.use(corsMiddleware);
@@ -44,15 +57,21 @@ client.use('/dashboard', dashRoutes);
 client.use('/', maintenanceRoutes);
 
 client.use((req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
+
+client.use((req, res, next) => {
   const err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
 client.use((err, req, res, next) => {
+  const currentUser = req.user;
   const statusCode = err.status || 500;
   res.status(statusCode);
-  logger.error(`Error ${statusCode}: ${err.message}`, { stack: err.stack });
+  logger.error(`[CLIENT] Error ${statusCode}: ${err.message}`, { stack: err.stack });
 
   if (req.xhr || req.headers.accept.includes('application/json')) {
     res.status(statusCode).json({
@@ -62,9 +81,10 @@ client.use((err, req, res, next) => {
         status: statusCode,
         stack: client.get('env') === 'development' ? err.stack : null,
       },
+      currentUser,
     });
   } else {
-    res.status(statusCode).render('error', {
+    res.status(statusCode).render('index/error', {
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       logo404: '/assets/img/404.png',
@@ -72,6 +92,7 @@ client.use((err, req, res, next) => {
       errormessage: err.message,
       errorstatus: statusCode,
       errorstack: client.get('env') === 'development' ? err.stack : null,
+      currentUser,
     });
   }
 });
