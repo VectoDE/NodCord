@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["../../../src/api/helpers/sendResponseHelper.js"],
+  "sourcesContent": ["const sendResponse = (req, res, redirectUrl, response) => {\n  if (!req || !res) {\n    throw new Error('Request or Response object is undefined');\n  }\n  if (req.accepts('html')) {\n    res.redirect(redirectUrl);\n  } else {\n    res.json(response);\n  }\n};\n\nmodule.exports = sendResponse;\n"],
+  "mappings": "AAAA,IAAMA,EAAe,CAACC,EAAKC,EAAKC,EAAaC,IAAa,CACxD,GAAI,CAACH,GAAO,CAACC,EACX,MAAM,IAAI,MAAM,yCAAyC,EAEvDD,EAAI,QAAQ,MAAM,EACpBC,EAAI,SAASC,CAAW,EAExBD,EAAI,KAAKE,CAAQ,CAErB,EAEA,OAAO,QAAUJ",
+  "names": ["sendResponse", "req", "res", "redirectUrl", "response"]
+}
