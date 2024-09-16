@@ -1,12 +1,24 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const productModel = new mongoose.Schema({
-  name: {
+  id: {
+    type: String,
+    unique: true,
+  },
+  picture: {
+    type: String,
+    required: false,
+  },
+  title: {
     type: String,
     required: true,
-    trim: true,
   },
-  description: {
+  shortDescription: {
+    type: String,
+    required: true,
+  },
+  detailDescription: {
     type: String,
     default: '',
   },
@@ -30,6 +42,13 @@ const productModel = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+productModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Product-${uuidv4()}`;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Product', productModel);

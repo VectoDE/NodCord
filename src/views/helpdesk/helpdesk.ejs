@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Helpdesk ~ NodCord</title>
+    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .helpdesk-bg {
+            background-image: url('/assets/img/helpdesk-bg.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+    <%- include('../partials/header/header'); %>
+    <main>
+        <!-- Helpdesk Hero Section -->
+        <section class="helpdesk-bg text-white py-16 lg:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">Welcome to the NodCord Helpdesk</h1>
+                <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+                    Get the assistance you need for NodCord with helpful guides and support options.
+                </p>
+            </div>
+        </section>
+
+        <!-- How to Get Help Section -->
+        <section class="bg-white dark:bg-gray-900 text-white py-16 lg:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold">How to Get Help</h2>
+                    <p class="mt-4 text-lg">You can explore our knowledge base or create a ticket for specific assistance.</p>
+                </div>
+
+                <!-- Support Options Section -->
+                <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-2">
+                    <!-- Support Section -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-book text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Browse Support Articles</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Check our knowledge base for guides, FAQs, and tutorials on common issues.
+                        </p>
+                        <a href="/helpdesk/support" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Support Articles
+                        </a>
+                    </div>
+
+                    <!-- Create Ticket Section -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-pencil-square text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Submit a Support Ticket</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            If you can't find the answer to your problem, submit a ticket to our support team.
+                        </p>
+                        <a href="/helpdesk/createTicket" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            Create a Ticket
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ or Common Areas Section -->
+        <section class="bg-white dark:bg-gray-900 py-16 lg:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-gray-800 dark:text-white">Common Issues and Topics</h2>
+                    <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+                        Here are some of the most common areas where you might need help:
+                    </p>
+                </div>
+
+                <!-- List of Common Topics -->
+                <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Common Topic 1 -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-gear text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Integration Issues</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Having trouble integrating NodCord with your Discord server? Find out how to resolve it here.
+                        </p>
+                    </div>
+
+                    <!-- Common Topic 2 -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-credit-card text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Payment & Billing</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Questions about your subscription or payment? Check out the billing FAQ for more info.
+                        </p>
+                    </div>
+
+                    <!-- Common Topic 3 -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-shield-lock text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Account & Security</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Need help managing your account or ensuring security? Visit our security guide for more details.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../partials/footer/footer'); %>
+    <script src="/assets/js/script.js"></script>
+</body>
+</html>

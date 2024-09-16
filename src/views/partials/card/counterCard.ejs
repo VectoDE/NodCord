@@ -1,0 +1,13 @@
+<div class="bg-white shadow-md rounded-lg overflow-hidden max-w-xs sm:max-w-sm">
+  <div class="px-1 py-2 flex flex-col items-center text-center">
+    <div class="text-4xl font-bold mb-2 flex items-center">
+      <%= count || '0' %>
+      <% if (change === 'up') { %>
+        <i class="bi bi-arrow-up text-green-500 ml-2"></i>
+      <% } else if (change === 'down') { %>
+        <i class="bi bi-arrow-down text-red-500 ml-2"></i>
+      <% } %>
+    </div>
+    <p class="text-gray-600 mb-4"><%= label || 'Counter Label' %></p>
+  </div>
+</div>

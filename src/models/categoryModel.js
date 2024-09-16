@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const categorySchema = new mongoose.Schema(
+const categoryModel = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      unique: true,
+    },
     name: {
       type: String,
       required: true,
@@ -16,4 +21,11 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Category', categorySchema);
+categoryModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Category-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Category', categoryModel);

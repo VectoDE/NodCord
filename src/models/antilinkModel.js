@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-let antilinkSchema = new mongoose.Schema({
+let antilinkModel = new mongoose.Schema({
   Guild: {
     type: String,
   },
@@ -9,4 +9,4 @@ let antilinkSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Antilink', antilinkSchema);
+module.exports = mongoose.model('Antilink', antilinkModel);

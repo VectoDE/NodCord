@@ -25,8 +25,6 @@ const startServer = async () => {
 
     const apiPort = process.env.API_PORT || 3000;
     const apiBaseURL = process.env.API_BASE_URL || 'localhost';
-    const clientPort = process.env.CLIENT_PORT || 4000;
-    const clientBaseURL = process.env.CLIENT_BASE_URL || 'localhost';
 
     if (process.env.NODE_ENV === 'production') {
       http.createServer(api).listen(apiPort, () => {
@@ -40,16 +38,7 @@ const startServer = async () => {
 
     startBot();
 
-    if (process.env.NODE_ENV === 'production') {
-      http.createServer(client).listen(clientPort, () => {
-        logger.info(`[HTTP] Started and running on https://${clientBaseURL}:${clientPort}`);
-      });
-    } else if (process.env.NODE_ENV === 'development') {
-      http.createServer(client).listen(clientPort, () => {
-        logger.info(`[HTTP] Started and running on https://${clientBaseURL}:${clientPort}`);
-      });
-    }
-    //startClient();
+    startClient();
 
   } catch (err) {
     logger.error('[Server] Error starting server:', err);

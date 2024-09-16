@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const DeveloperProgramSchema = new mongoose.Schema(
+const developerProgramModel = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      unique: true,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -17,4 +22,11 @@ const DeveloperProgramSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('DeveloperProgram', DeveloperProgramSchema);
+developerProgramModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `DeveloperProgram-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('DeveloperProgram', developerProgramModel);

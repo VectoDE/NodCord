@@ -1,8 +1,13 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const roleSchema = new mongoose.Schema(
+const roleModel = new mongoose.Schema(
   {
-    roleName: {
+    id: {
+      type: String,
+      unique: true,
+    },
+    name: {
       type: String,
       required: true,
       unique: true,
@@ -11,6 +16,11 @@ const roleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    color: {
+      type: String,
+      default: '#000000',
+      match: /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/,
+    },
     description: {
       type: String,
     },
@@ -18,4 +28,11 @@ const roleSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Role', roleSchema);
+roleModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Role-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Role', roleModel);

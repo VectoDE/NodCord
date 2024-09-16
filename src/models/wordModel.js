@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
-
-const wordSchema = new mongoose.Schema({
+const wordModel = new mongoose.Schema({
   guildId: {
     type: String,
     required: true,
@@ -13,4 +12,4 @@ const wordSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Word', wordSchema);
+module.exports = mongoose.model('Word', wordModel);

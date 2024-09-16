@@ -400,6 +400,68 @@ router.get('/about', async (req, res) => {
   });
 });
 
+// Helpdesk
+router.get('/helpdesk', async (req, res) => {
+  const currentUser = req.user;
+  res.render('helpdesk/helpdesk', {
+    isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
+    errorstack: null,
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+    currentUser,
+  });
+});
+
+router.get('/helpdesk/support', async (req, res) => {
+  const currentUser = req.user;
+  res.render('helpdesk/support', {
+    isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
+    errorstack: null,
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+    currentUser,
+  });
+});
+
+router.get('/helpdesk/ticket/create', async (req, res) => {
+  const currentUser = req.user;
+  res.render('helpdesk/createTicket', {
+    isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
+    errorstack: null,
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+    currentUser,
+  });
+});
+
+router.get('/helpdesk/ticket/:ticketId', async (req, res) => {
+  const currentUser = req.user;
+  res.render('helpdesk/viewTicket', {
+    isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
+    errorstack: null,
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+    currentUser,
+  });
+});
+
+// Authentication
 router.get('/login', (req, res) => {
   if (res.locals.isAuthenticated) {
     return res.redirect('/dashboard');
@@ -407,26 +469,6 @@ router.get('/login', (req, res) => {
 
   const errorMessage = req.query.errorMessage || null;
   res.render('auth/login', {
-    isAuthenticated: res.locals.isAuthenticated,
-    logoImage: '/assets/img/logo.png',
-    errorMessage: errorMessage,
-    errorstack: null,
-    api: {
-      https: process.env.API_HTTPS,
-      baseURL: process.env.API_BASE_URL,
-      port: process.env.API_PORT,
-    },
-  });
-});
-
-router.get('/register', (req, res) => {
-  if (res.locals.isAuthenticated) {
-    return res.redirect('/login');
-  }
-
-  const errorMessage = req.query.errorMessage || null;
-
-  res.render('auth/register', {
     isAuthenticated: res.locals.isAuthenticated,
     logoImage: '/assets/img/logo.png',
     errorMessage: errorMessage,
@@ -459,6 +501,27 @@ router.get('/beta-verify', authMiddleware(true), (req, res) => {
 
 router.get('/logout', authController.logout, (req, res) => {
   res.redirect('/');
+});
+
+router.get('/partials/overview', async (req, res) => {
+  const currentUser = req.user;
+  res.render('test/partialsView', {
+    isAuthenticated: res.locals.isAuthenticated,
+    logoImage: '/assets/img/logo.png',
+    errorstack: null,
+    api: {
+      https: process.env.API_HTTPS,
+      baseURL: process.env.API_BASE_URL,
+      port: process.env.API_PORT,
+    },
+    currentUser,
+    pageDescription: 'The overview about all partials with its own design and configuration sample of the partials.',
+    pageKeywords: 'partials, overview, tailwindcss, merakiui',
+    pageTitle: 'Partial Overview',
+    pageContent: 'Templates of the partials that used in this project.',
+    pageUrl: null,
+    ogImage: '/assets/img/logo.png'
+  });
 });
 
 module.exports = router;

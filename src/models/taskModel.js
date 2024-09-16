@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const taskModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   title: {
     type: String,
     required: true,
@@ -21,12 +26,12 @@ const taskModel = new mongoose.Schema({
   },
   assignedTo: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Assuming there's a User model
+    ref: 'User',
     required: true,
   },
   team: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Team', // Assuming there's a Team model
+    ref: 'Team',
     required: true,
   },
   dueDate: {
@@ -36,6 +41,13 @@ const taskModel = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+});
+
+taskModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Task-${uuidv4()}`;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Task', taskModel);

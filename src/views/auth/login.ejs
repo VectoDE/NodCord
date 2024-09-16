@@ -25,21 +25,25 @@
   <%- include('../partials/header/header'); %>
   <main class="flex justify-center items-center min-h-screen py-8">
     <div class="max-w-md w-full p-8 rounded-lg shadow-lg login-container">
-      <h1 class="text-2xl font-bold text-gray-100 mb-6">Login</h1>
       <!-- Social Login Buttons -->
-      <div class="flex flex-col gap-4 mb-6">
+      <div class="flex flex-col gap-4">
+        <!-- Login with Google -->
         <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/google" class="flex items-center justify-center bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-300">
           <i class="bi bi-google mr-2"></i> Login with Google
         </a>
+
+        <!-- Login with GitHub -->
         <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/github" class="flex items-center justify-center bg-gray-800 text-white py-2 px-4 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition duration-300">
           <i class="bi bi-github mr-2"></i> Login with GitHub
         </a>
-      </div>
-      <div class="text-center">
-        <a href="/register" class="text-sm text-indigo-400 hover:text-indigo-300">Du hast noch keinen Account?</a>
-      </div>
+
+        <!-- Login with Discord -->
+        <a href="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/auth/discord" class="flex items-center justify-center bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-300">
+          <i class="bi bi-discord mr-2"></i> Login with Discord
+        </a>
     </div>
   </main>
+
   <%- include('../partials/footer/footer'); %>
   <script src="/assets/js/script.js"></script>
 </body>

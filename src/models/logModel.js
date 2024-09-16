@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const logSchema = new mongoose.Schema({
+const logModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   message: {
     type: String,
     required: true,
@@ -19,4 +24,11 @@ const logSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Log', logSchema);
+logModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Log-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Log', logModel);

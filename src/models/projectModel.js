@@ -1,12 +1,25 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const projectModel = new mongoose.Schema({
-  name: {
+  id: {
+    type: String,
+    unique: true,
+  },
+  picture: {
+    type: String,
+    required: false,
+  },
+  title: {
     type: String,
     required: true,
     trim: true,
   },
-  description: {
+  shortDescription: {
+    type: String,
+    required: true,
+  },
+  detailDescription: {
     type: String,
     default: '',
   },
@@ -26,19 +39,26 @@ const projectModel = new mongoose.Schema({
   members: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Member', // Referenz auf ein Member-Modell
+      ref: 'Member',
     },
   ],
   tags: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tag', // Referenz auf ein Tag-Modell
+      ref: 'Tag',
     },
   ],
   createdDate: {
     type: Date,
     default: Date.now,
   },
+});
+
+projectModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Project-${uuidv4()}`;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Project', projectModel);

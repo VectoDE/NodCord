@@ -1,0 +1,19 @@
+<div id="editBetaKeyModal" class="modal fade" tabindex="-1" aria-labelledby="editBetaKeyModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-gray-800 text-white">
+      <div class="modal-header border-b border-gray-700">
+        <h5 class="modal-title" id="editBetaKeyModalLabel">Edit Beta Key</h5>
+        <button type="button" class="btn-close text-gray-400" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editBetaKeyForm">
+          <div class="mb-3">
+            <label for="editBetaKeyName" class="form-label">Beta Key Name</label>
+            <input type="text" class="form-control" id="editBetaKeyName" value="<%= betaKeyName %>" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Beta Key</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

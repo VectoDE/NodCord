@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const muteSchema = new mongoose.Schema({
+const muteModel = new mongoose.Schema({
   guildId: {
     type: String,
     required: true,
@@ -27,4 +27,4 @@ const muteSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Mute', muteSchema);
+module.exports = mongoose.model('Mute', muteModel);

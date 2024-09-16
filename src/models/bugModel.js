@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Definiere das Schema für Bug
-const bugSchema = new mongoose.Schema({
+const bugModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   title: {
     type: String,
     required: true,
@@ -21,6 +25,11 @@ const bugSchema = new mongoose.Schema({
     enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
     default: 'Open',
   },
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -29,18 +38,18 @@ const bugSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  project: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project',
-    required: true,
-  },
 });
 
-// Aktualisiere `updatedAt` bei Änderungen
-bugSchema.pre('save', function (next) {
+bugModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Bug-${uuidv4()}`;
+  }
+  next();
+});
+
+bugModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Erstelle das Modell aus dem Schema
-module.exports = mongoose.model('Bug', bugSchema);
+module.exports = mongoose.model('Bug', bugModel);

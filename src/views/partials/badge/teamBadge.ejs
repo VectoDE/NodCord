@@ -1,0 +1,14 @@
+<% if (user.team) { %>
+  <span class="inline-flex items-center text-sm font-medium px-2.5 py-0.5 rounded"
+    <% if (user.team.color) { %>
+      style="background-color: <%= user.team.color %>; color: white;"
+    <% } else { %>
+      class="bg-gray-800 text-gray-800"
+    <% } %>
+  >
+    <% if (user.team.logoUrl) { %>
+      <img src="<%= user.team.logoUrl %>" alt="<%= user.team.name %>" class="w-5 h-5 mr-1 rounded-full">
+    <% } %>
+    <%= user.team.name %>
+  </span>
+<% } %>

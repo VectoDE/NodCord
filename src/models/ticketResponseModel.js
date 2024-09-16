@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const ticketResponseSchema = new mongoose.Schema({
+const ticketResponseModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   ticketId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Ticket',
@@ -20,4 +25,11 @@ const ticketResponseSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('TicketResponse', ticketResponseSchema);
+ticketResponseModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `TicketResponse-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('TicketResponse', ticketResponseModel);

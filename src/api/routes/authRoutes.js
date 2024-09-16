@@ -11,6 +11,10 @@ router.get('/google/callback', passport.authenticate('google', { session: false 
 router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
 router.get('/github/callback', passport.authenticate('github', { session: false }), authController.githubCallback);
 
+// Discord authentication
+router.get('/discord', passport.authenticate('discord', { scope: ['identify', 'email'] }));
+router.get('/discord/callback', passport.authenticate('discord', { session: false }), authController.discordCallback);
+
 // Route zur Verifizierung der E-Mail
 router.get('/verify-email/:token', authController.verifyEmail);
 

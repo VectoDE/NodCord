@@ -1,0 +1,24 @@
+<table class="min-w-full divide-y divide-gray-200">
+  <thead class="bg-gray-50">
+    <tr>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project Name</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Updated</th>
+      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+    </tr>
+  </thead>
+  <tbody class="bg-white divide-y divide-gray-200">
+    <% projects.forEach(project => { %>
+      <tr>
+        <td class="px-6 py-4 whitespace-nowrap"><%= project.id %></td>
+        <td class="px-6 py-4 whitespace-nowrap"><%= project.name %></td>
+        <td class="px-6 py-4 whitespace-nowrap"><%= project.created_at %></td>
+        <td class="px-6 py-4 whitespace-nowrap"><%= project.updated_at %></td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <!-- Actions like view, edit, delete -->
+        </td>
+      </tr>
+    <% }) %>
+  </tbody>
+</table>

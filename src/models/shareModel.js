@@ -1,20 +1,25 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const shareSchema = new mongoose.Schema({
+const shareModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Verweist auf das User-Modell
+    ref: 'User',
     required: true,
   },
   blog: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog', // Verweist auf das Blog-Modell
+    ref: 'Blog',
     required: true,
   },
   platform: {
     type: String,
     required: true,
-    enum: ['Facebook', 'Twitter', 'LinkedIn', 'Other'], // Plattformen zum Teilen
+    enum: ['Facebook', 'Twitter', 'LinkedIn', 'Other'],
   },
   createdAt: {
     type: Date,
@@ -22,4 +27,11 @@ const shareSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Share', shareSchema);
+shareModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Share-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Share', shareModel);

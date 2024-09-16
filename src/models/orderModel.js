@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const orderSchema = new mongoose.Schema({
+const orderModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   customer: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Customer',
@@ -37,4 +42,11 @@ const orderSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Order', orderSchema);
+orderModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Order-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Order', orderModel);

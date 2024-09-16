@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Definiere das Schema für Issue
-const issueSchema = new mongoose.Schema({
+const issueModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   title: {
     type: String,
     required: true,
@@ -31,11 +35,16 @@ const issueSchema = new mongoose.Schema({
   },
 });
 
-// Aktualisiere `updatedAt` bei Änderungen
-issueSchema.pre('save', function (next) {
+issueModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Issue-${uuidv4()}`;
+  }
+  next();
+});
+
+issueModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Erstelle das Modell aus dem Schema
-module.exports = mongoose.model('Issue', issueSchema);
+module.exports = mongoose.model('Issue', issueModel);

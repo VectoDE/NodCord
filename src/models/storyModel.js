@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Definiere das Schema für Story
-const storySchema = new mongoose.Schema({
+const storyModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   title: {
     type: String,
     required: true,
@@ -36,11 +40,17 @@ const storySchema = new mongoose.Schema({
   },
 });
 
-// Aktualisiere `updatedAt` bei Änderungen
-storySchema.pre('save', function (next) {
+storyModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Story-${uuidv4()}`;
+  }
+  next();
+});
+
+
+storyModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Erstelle das Modell aus dem Schema
-module.exports = mongoose.model('Story', storySchema);
+module.exports = mongoose.model('Story', storyModel);

@@ -1,0 +1,8 @@
+<ul class="divide-y divide-gray-200 list-group">
+  <% users.forEach(user => { %>
+    <li class="py-4 flex justify-between items-center list-group-item d-flex justify-content-between align-items-center">
+      <span><%= user.name %></span>
+      <span class="bg-blue-500 text-white rounded-full px-3 py-1 badge badge-primary rounded-pill"><%= user.role %></span>
+    </li>
+  <% }) %>
+</ul>

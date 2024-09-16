@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const slowmodeSchema = new mongoose.Schema({
+const slowmodeMode = new mongoose.Schema({
   channelId: {
     type: String,
     required: true,
@@ -20,4 +20,4 @@ const slowmodeSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Slowmode', slowmodeSchema);
+module.exports = mongoose.model('Slowmode', slowmodeMode);

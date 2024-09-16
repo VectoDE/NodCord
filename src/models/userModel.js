@@ -1,8 +1,9 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 const bcrypt = require('bcrypt');
 const findOrCreate = require('mongoose-findorcreate');
 
-const socialLinksSchema = new mongoose.Schema({
+const socialLinkModel = new mongoose.Schema({
   facebook: { type: String, default: '' },
   twitter: { type: String, default: '' },
   google: { type: String, default: '' },
@@ -10,10 +11,9 @@ const socialLinksSchema = new mongoose.Schema({
   instagram: { type: String, default: '' },
   github: { type: String, default: '' },
   discord: { type: String, default: '' },
-  apple: { type: String, default: '' },
 });
 
-const oauthProvidersSchema = new mongoose.Schema({
+const oauthProvidersModel = new mongoose.Schema({
   github: {
     id: { type: String, default: '' },
     token: {
@@ -30,13 +30,13 @@ const oauthProvidersSchema = new mongoose.Schema({
   },
 });
 
-const friendSchema = new mongoose.Schema({
+const friendModel = new mongoose.Schema({
   follower: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   followed: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   followedAt: { type: Date, default: Date.now },
 });
 
-const postSchema = new mongoose.Schema({
+const postModel = new mongoose.Schema({
   picture: { type: String, default: '' },
   title: { type: String, required: true },
   description: { type: String, required: true },
@@ -45,7 +45,7 @@ const postSchema = new mongoose.Schema({
   tags: [{ type: String }],
 });
 
-const projectSchema = new mongoose.Schema({
+const projectModel = new mongoose.Schema({
   picture: { type: String, default: '' },
   title: { type: String, required: true },
   shortDescription: { type: String, required: true },
@@ -58,7 +58,7 @@ const projectSchema = new mongoose.Schema({
   published: { type: Date, default: Date.now },
 });
 
-const addressSchema = new mongoose.Schema({
+const addressModel = new mongoose.Schema({
   street: { type: String, default: '' },
   houseNumber: { type: String, default: '' },
   state: { type: String, default: '' },
@@ -66,22 +66,23 @@ const addressSchema = new mongoose.Schema({
   country: { type: String, default: '' },
 });
 
-const phoneNumbersSchema = new mongoose.Schema({
+const phoneNumbersModel = new mongoose.Schema({
   mobile: { type: String, default: '' },
   landline: { type: String, default: '' },
   business: { type: String, default: '' },
 });
 
-const paymentMethodsSchema = new mongoose.Schema({
+const paymentMethodsModel = new mongoose.Schema({
   method: { type: String, enum: ['creditCard', 'debitCard', 'paypal'], required: true }
 });
 
-const sessionSchema = new mongoose.Schema({
+const sessionModel = new mongoose.Schema({
   browser: { type: String, required: true },
   date: { type: Date, default: Date.now },
 });
 
-const userSchema = new mongoose.Schema({
+const userModel = new mongoose.Schema({
+  id: { type: String, unique: true, },
   profilePicture: { type: String, required: false },
   fullname: { type: String, required: true },
   username: { type: String, required: true, unique: true },
@@ -89,11 +90,11 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: false },
   role: { type: String, default: 'user', enum: ['user', 'admin', 'moderator'] },
   bio: { type: String, default: '', trim: true },
-  address: addressSchema,
-  phoneNumbers: phoneNumbersSchema,
-  paymentMethods: [paymentMethodsSchema],
-  sessions: [sessionSchema],
-  socialLinks: { type: socialLinksSchema, default: {} },
+  address: addressModel,
+  phoneNumbers: phoneNumbersModel,
+  paymentMethods: [paymentMethodsModel],
+  sessions: [sessionModel],
+  socialLinks: { type: socialLinkModel, default: {} },
   recentActivity: { type: Date, default: Date.now },
   verificationToken: { type: String, default: '' },
   verificationTokenExpires: { type: Date, default: null },
@@ -101,22 +102,29 @@ const userSchema = new mongoose.Schema({
   isAuthenticated: { type: Boolean, default: false },
   accessToken: { type: String },
   refreshToken: { type: String },
-  oauthProviders: { type: oauthProvidersSchema, default: {} },
-  apiKey: { type: mongoose.Schema.Types.ObjectId, ref: 'ApiKeySchema', sparse: true },
+  oauthProviders: { type: oauthProvidersModel, default: {} },
+  apiKey: { type: mongoose.Schema.Types.ObjectId, ref: 'ApiKey', sparse: true },
   betaKey: { type: mongoose.Schema.Types.ObjectId, ref: 'BetaKey', sparse: true },
   isBetaTester: { type: Boolean, default: false },
   termsAccepted: { type: Boolean, default: false },
   termsAcceptedAt: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  posts: [postSchema],
-  projects: [projectSchema],
-  friends: [friendSchema],
+  posts: [postModel],
+  projects: [projectModel],
+  friends: [friendModel],
 });
 
-userSchema.plugin(findOrCreate);
+userModel.plugin(findOrCreate);
 
-userSchema.pre('save', async function (next) {
+userModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `User-${uuidv4()}`;
+  }
+  next();
+});
+
+userModel.pre('save', async function (next) {
   this.updatedAt = Date.now();
   if (!this.isModified('password')) {
     return next();
@@ -131,8 +139,8 @@ userSchema.pre('save', async function (next) {
   }
 });
 
-userSchema.methods.comparePassword = function (candidatePassword) {
+userModel.methods.comparePassword = function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userModel);

@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
-  <%- include('../../partials/dashboardHeader'); %>
+  <%- include('../../partials/header/dashboardHeader'); %>
 
   <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <div class="container mx-auto">
@@ -31,6 +31,7 @@
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">ID</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Description</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Members</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
             </tr>
           </thead>
@@ -41,6 +42,7 @@
                   <td class="py-3 px-4"><%= group.id %></td>
                   <td class="py-3 px-4"><%= group.name %></td>
                   <td class="py-3 px-4"><%= group.description %></td>
+                  <td class="py-3 px-4"><%= group.member %></td>
                   <td class="py-3 px-4 flex space-x-2">
                     <a href="/dashboard/groups/update/<%= group._id %>" class="text-blue-500 hover:text-blue-700 transition duration-300">
                       <i class="bi bi-pencil-square"></i> Edit

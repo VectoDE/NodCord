@@ -1,0 +1,16 @@
+<% if (user.socialProfiles && user.socialProfiles.length) { %>
+  <div class="inline-flex space-x-2 mt-2">
+    <% user.socialProfiles.forEach(profile => { %>
+      <a href="<%= profile.url %>" target="_blank" class="inline-flex items-center text-sm font-medium px-2.5 py-0.5 rounded
+        <% if (profile.platform === 'facebook') { %> bg-blue-600 text-white <% } %>
+        <% if (profile.platform === 'twitter') { %> bg-blue-400 text-white <% } %>
+        <% if (profile.platform === 'google') { %> bg-red-500 text-white <% } %>
+        <% if (profile.platform === 'linkedin') { %> bg-blue-700 text-white <% } %>
+        <% if (profile.platform === 'instagram') { %> bg-pink-500 text-white <% } %>
+        <% if (profile.platform === 'github') { %> bg-gray-800 text-white <% } %>
+        <% if (profile.platform === 'discord') { %> bg-blurple text-white <% } %>">
+        <i class="bi bi-<%= profile.platform === 'facebook' ? 'facebook' : profile.platform === 'twitter' ? 'twitter' : profile.platform === 'google' ? 'google' : profile.platform === 'linkedin' ? 'linkedin' : profile.platform === 'instagram' ? 'instagram' : profile.platform === 'github' ? 'github' : profile.platform === 'discord' ? 'discord' : '' %> mr-1"></i> <%= profile.platform.charAt(0).toUpperCase() + profile.platform.slice(1) %>
+      </a>
+    <% }); %>
+  </div>
+<% } %>

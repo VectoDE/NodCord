@@ -1,0 +1,10 @@
+<div class="max-w-sm bg-white shadow-md rounded-lg overflow-hidden">
+  <img class="w-full h-48 object-cover" src="<%= image || '/assets/img/default-image.png' %>" alt="<%= title || 'Game Image' %>">
+  <div class="p-4">
+    <h2 class="text-xl font-semibold mb-2"><%= title || 'Game Title' %></h2>
+    <p class="text-gray-600 mb-4"><%= description || 'Game description goes here...' %></p>
+    <a href="<%= link || '#' %>" class="btn btn-primary bg-green-500 text-white hover:bg-green-600 rounded px-4 py-2 inline-flex items-center">
+      <i class="bi bi-controller mr-2"></i> Play Now
+    </a>
+  </div>
+</div>

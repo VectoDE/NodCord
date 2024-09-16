@@ -1,64 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Support ~ NodCord</title>
-  <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support ~ NodCord</title>
+    <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 flex flex-col items-center py-10">
-  <div class="bg-white p-8 rounded-lg shadow-lg max-w-3xl w-full">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Your Support Tickets</h1>
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+    <%- include('../partials/header/header'); %>
 
-    <div class="flex justify-end mb-4">
-      <a href="/helpdesk/createTicket"
-        class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-        <i class="bi bi-plus-circle-fill mr-2"></i> Create New Ticket
-      </a>
-    </div>
+    <main>
+        <!-- Support Hero Section -->
+        <section class="bg-blue-500 text-white py-16 lg:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">Support Center</h1>
+                <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+                    Find articles and guides to help you get the most out of NodCord.
+                </p>
+            </div>
+        </section>
 
-    <div class="space-y-4">
-      <% if (tickets.length> 0) { %>
-        <table class="min-w-full bg-white border border-gray-300">
-          <thead>
-            <tr>
-              <th class="py-2 px-4 border-b">Ticket ID</th>
-              <th class="py-2 px-4 border-b">Subject</th>
-              <th class="py-2 px-4 border-b">Status</th>
-              <th class="py-2 px-4 border-b">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% tickets.forEach(ticket=> { %>
-              <tr>
-                <td class="py-2 px-4 border-b">
-                  <%= ticket.id %>
-                </td>
-                <td class="py-2 px-4 border-b">
-                  <%= ticket.subject %>
-                </td>
-                <td class="py-2 px-4 border-b">
-                  <%= ticket.status %>
-                </td>
-                <td class="py-2 px-4 border-b">
-                  <a href="/helpdesk/viewTicket/<%= ticket.id %>" class="text-blue-600 hover:underline"><i
-                      class="bi bi-eye-fill"></i> View</a>
-                </td>
-              </tr>
-              <% }); %>
-          </tbody>
-        </table>
-        <% } else { %>
-          <p class="text-gray-600">You have no tickets yet.</p>
-          <% } %>
-    </div>
-  </div>
+        <!-- Support Categories Section -->
+        <section class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 py-16 lg:py-24">
+            <div class="container mx-auto px-6">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold">Browse Support Categories</h2>
+                    <p class="mt-4 text-lg">Select a category below to find related articles and troubleshooting steps.</p>
+                </div>
+
+                <!-- Support Categories -->
+                <div class="mt-12 grid gap-12 md:grid-cols-2 lg:grid-cols-3">
+                    <!-- Category 1: Integration Issues -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-gear text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Integration Issues</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Having trouble integrating NodCord with Discord or other platforms? Click here to find related solutions.
+                        </p>
+                        <a href="/helpdesk/support/integration" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Articles
+                        </a>
+                    </div>
+
+                    <!-- Category 2: Payment & Billing -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-credit-card text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Payment & Billing</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Questions about subscriptions, payments, or refunds? Check out our billing FAQ and guides.
+                        </p>
+                        <a href="/helpdesk/support/payment" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Articles
+                        </a>
+                    </div>
+
+                    <!-- Category 3: Account & Security -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-shield-lock text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Account & Security</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Need help managing your account or ensuring its security? Click here to view our account-related articles.
+                        </p>
+                        <a href="/helpdesk/support/account" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Articles
+                        </a>
+                    </div>
+
+                    <!-- Category 4: Feature Requests -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-lightbulb text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Feature Requests</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Have an idea or feature you'd like to see in NodCord? Submit your suggestions or browse previous requests.
+                        </p>
+                        <a href="/helpdesk/support/feature" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Articles
+                        </a>
+                    </div>
+
+                    <!-- Category 5: Troubleshooting -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-wrench text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">Troubleshooting</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Encountering errors or bugs? Browse our troubleshooting guides to find solutions.
+                        </p>
+                        <a href="/helpdesk/support/troubleshooting" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Articles
+                        </a>
+                    </div>
+
+                    <!-- Category 6: General Help -->
+                    <div class="p-6 bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg text-center">
+                        <i class="bi bi-info-circle text-4xl text-blue-500"></i>
+                        <h3 class="mt-4 text-xl font-semibold">General Help</h3>
+                        <p class="mt-2 text-gray-600 dark:text-gray-400">
+                            Have general questions about using NodCord? Explore our general help section.
+                        </p>
+                        <a href="/helpdesk/support/general" class="mt-4 inline-block bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600">
+                            View Articles
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <%- include('../partials/footer/footer'); %>
+    <script src="/assets/js/script.js"></script>
 </body>
-
 </html>

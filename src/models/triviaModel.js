@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const triviaQuestionSchema = new mongoose.Schema({
+const triviaQuestionModel = new mongoose.Schema({
   question: {
     type: String,
     required: true,
@@ -19,7 +19,7 @@ const triviaQuestionSchema = new mongoose.Schema({
   },
 });
 
-const triviaAnswerSchema = new mongoose.Schema({
+const triviaAnswerModel = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -43,7 +43,7 @@ const triviaAnswerSchema = new mongoose.Schema({
   },
 });
 
-const triviaStatsSchema = new mongoose.Schema({
+const triviaStatsModel = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -62,8 +62,8 @@ const triviaStatsSchema = new mongoose.Schema({
   },
 });
 
-const TriviaQuestion = mongoose.model('TriviaQuestion', triviaQuestionSchema);
-const TriviaAnswer = mongoose.model('TriviaAnswer', triviaAnswerSchema);
-const TriviaStats = mongoose.model('TriviaStats', triviaStatsSchema);
+const TriviaQuestionModel = mongoose.model('TriviaQuestion', triviaQuestionModel);
+const TriviaAnswerModel = mongoose.model('TriviaAnswer', triviaAnswerModel);
+const TriviaStatsModel = mongoose.model('TriviaStats', triviaStatsModel);
 
-module.exports = { TriviaQuestion, TriviaAnswer, TriviaStats };
+module.exports = { TriviaQuestionModel, TriviaAnswerModel, TriviaStatsModel };

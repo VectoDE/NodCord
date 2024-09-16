@@ -1,0 +1,29 @@
+<% if (user.role) { %>
+  <span class="inline-flex items-center text-sm font-medium px-2.5 py-0.5 rounded
+    <% if (user.role === 'admin') { %> bg-red-100 text-red-800 <% } %>
+    <% if (user.role === 'moderator') { %> bg-yellow-100 text-yellow-800 <% } %>
+    <% if (user.role === 'developer') { %> bg-blue-100 text-blue-800 <% } %>
+    <% if (user.role === 'content') { %> bg-purple-100 text-purple-800 <% } %>
+    <% if (user.role === 'supporter') { %> bg-teal-100 text-teal-800 <% } %>
+    <% if (user.role === 'premium') { %> bg-pink-100 text-pink-800 <% } %>
+    <% if (user.role === 'vip') { %> bg-indigo-100 text-indigo-800 <% } %>
+    <% if (user.role === 'user') { %> bg-gray-100 text-gray-800 <% } %>">
+    <% if (user.role==='admin' ) { %>
+      <i class="bi bi-shield-check mr-1"></i> Admin
+    <% } else if (user.role==='moderator' ) { %>
+      <i class="bi bi-shield mr-1"></i> Moderator
+    <% } else if (user.role==='developer' ) { %>
+      <i class="bi bi-braces mr-1"></i> Developer
+    <% } else if (user.role==='content' ) { %>
+      <i class="bi bi-file-text mr-1"></i> Content
+    <% } else if (user.role==='supporter' ) { %>
+      <i class="bi bi-heart mr-1"></i> Supporter
+    <% } else if (user.role==='premium' ) { %>
+      <i class="bi bi-gem mr-1"></i> Premium
+    <% } else if (user.role==='vip' ) { %>
+      <i class="bi bi-crown mr-1"></i> VIP
+    <% } else if (user.role==='user' ) { %>
+      <i class="bi bi-person-circle mr-1"></i> User
+    <% } %>
+  </span>
+<% } %>

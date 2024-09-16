@@ -1,0 +1,8 @@
+<ul class="divide-y divide-gray-200 list-group">
+  <% tournaments.forEach(tournament => { %>
+    <li class="py-4 flex justify-between items-center list-group-item d-flex justify-content-between align-items-center">
+      <span><%= tournament.name %></span>
+      <span class="bg-orange-500 text-white rounded-full px-3 py-1 badge badge-warning rounded-pill">Date: <%= tournament.date %></span>
+    </li>
+  <% }) %>
+</ul>

@@ -1,0 +1,8 @@
+<ul class="divide-y divide-gray-200 list-group">
+  <% games.forEach(game => { %>
+    <li class="py-4 flex justify-between items-center list-group-item d-flex justify-content-between align-items-center">
+      <span><%= game.title %></span>
+      <span class="bg-purple-500 text-white rounded-full px-3 py-1 badge badge-secondary rounded-pill">Genre: <%= game.genre %></span>
+    </li>
+  <% }) %>
+</ul>

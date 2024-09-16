@@ -1,11 +1,17 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const versionSchema = new mongoose.Schema({
-  name: {
+const versionModel = new mongoose.Schema({
+  id: {
     type: String,
-    required: true,
+    unique: true,
   },
-  tag: {
+  picture: {
+    type: String,
+    default: '',
+    required: false,
+  },
+  title: {
     type: String,
     required: true,
   },
@@ -13,7 +19,11 @@ const versionSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  detailedDescription: {
+  detailDescription: {
+    type: String,
+    required: true,
+  },
+  versionTag: {
     type: String,
     required: true,
   },
@@ -33,6 +43,19 @@ const versionSchema = new mongoose.Schema({
     type: [String],
     default: [],
   },
+  developers: {
+    type: [String],
+    required: true,
+  },
+  githublink: {
+    type: String,
+    default: '',
+    required: false,
+  },
+  downloadLink: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -41,14 +64,13 @@ const versionSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  developers: {
-    type: [String],
-    required: true,
-  },
-  downloadLink: {
-    type: String,
-    required: true,
-  },
 });
 
-module.exports = mongoose.model('Version', versionSchema);
+versionModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Version-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Version', versionModel);

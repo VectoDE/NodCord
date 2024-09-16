@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const betaKeySchema = new mongoose.Schema({
+const betaKeyModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   key: {
     type: String,
     required: true,
@@ -24,4 +29,11 @@ const betaKeySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('BetaKey', betaKeySchema);
+betaKeyModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `BetaKey-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('BetaKey', betaKeyModel);

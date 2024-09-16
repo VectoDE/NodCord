@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const banSchema = new mongoose.Schema({
+const banModel = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -23,4 +23,4 @@ const banSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Ban', banSchema);
+module.exports = mongoose.model('Ban', banModel);

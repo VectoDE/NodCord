@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const newsletterSchema = new mongoose.Schema({
+const newsletterModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   email: {
     type: String,
     required: true,
@@ -16,4 +21,11 @@ const newsletterSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Newsletter', newsletterSchema);
+newsletterModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Newsletter-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Newsletter', newsletterModel);

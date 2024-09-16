@@ -1,0 +1,12 @@
+<% if (user.tags && user.tags.length) { %>
+  <div class="inline-flex space-x-2 mt-2">
+    <% user.tags.forEach(tag => { %>
+      <span class="inline-flex items-center text-sm font-medium px-2.5 py-0.5 rounded"style="background-color: <%= tag.color %>; color: <%= tag.textColor %>;">
+        <% if (tag.icon) { %>
+          <i class="bi bi-<%= tag.icon %> mr-1"></i>
+        <% } %>
+        <%= tag.name %>
+      </span>
+    <% }); %>
+  </div>
+<% } %>

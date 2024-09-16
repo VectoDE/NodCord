@@ -1,0 +1,19 @@
+<div id="editNewPaymentMethodModal" class="modal fade" tabindex="-1" aria-labelledby="editNewPaymentMethodModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-gray-800 text-white">
+      <div class="modal-header border-b border-gray-700">
+        <h5 class="modal-title" id="editNewPaymentMethodModalLabel">Edit Payment Method</h5>
+        <button type="button" class="btn-close text-gray-400" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editPaymentMethodForm">
+          <div class="mb-3">
+            <label for="editPaymentMethod" class="form-label">Payment Method</label>
+            <input type="text" class="form-control" id="editPaymentMethod" value="<%= paymentMethod %>" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Payment Method</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const fileSchema = new mongoose.Schema({
+const fileModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   filename: {
     type: String,
     required: true,
@@ -23,16 +28,23 @@ const fileSchema = new mongoose.Schema({
   },
 });
 
-fileSchema.virtual('url').get(function() {
+fileModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `File-${uuidv4()}`;
+  }
+  next();
+});
+
+fileModel.virtual('url').get(function() {
   return `${process.env.BASE_URL}/${this.path}`;
 });
 
-fileSchema.virtual('name').get(function() {
+fileModel.virtual('name').get(function() {
   return this.filename;
 });
 
-fileSchema.virtual('createdAt').get(function() {
+fileModel.virtual('createdAt').get(function() {
   return this.uploadedAt.toLocaleDateString();
 });
 
-module.exports = mongoose.model('File', fileSchema);
+module.exports = mongoose.model('File', fileModel);

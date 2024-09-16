@@ -1,13 +1,27 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const tournamentSchema = new mongoose.Schema(
+const tournamentModel = new mongoose.Schema(
   {
-    name: {
+    id: {
+      type: String,
+      unique: true,
+    },
+    picture: {
+      type: String,
+      required: false,
+    },
+    title: {
       type: String,
       required: true,
     },
-    description: {
+    shortDescription: {
       type: String,
+      required: true,
+    },
+    detailDescription: {
+      type: String,
+      required: true,
     },
     startDate: {
       type: Date,
@@ -20,17 +34,24 @@ const tournamentSchema = new mongoose.Schema(
     teams: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Team',
+        ref: 'TournamentTeams',
       },
     ],
     matches: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Match',
+        ref: 'TournamentMatches',
       },
     ],
   },
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Tournament', tournamentSchema);
+tournamentModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Tournament-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Tournament', tournamentModel);

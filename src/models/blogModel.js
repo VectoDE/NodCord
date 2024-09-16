@@ -1,24 +1,39 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const blogSchema = new mongoose.Schema({
+const blogModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   picture: {
-
+    type: String,
+    required: false,
   },
   title: {
     type: String,
     required: true,
     trim: true,
   },
-  content: {
+  shortDescription: {
     type: String,
     required: true,
+  },
+  detailDescription: {
+    type: String,
+    required: true,
+  },
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    required: false,
   },
   author: {
     type: String,
     required: true,
   },
   tags: {
-    type: [String], // Array of strings
+    type: [String],
     default: [],
   },
   createdAt: {
@@ -31,10 +46,17 @@ const blogSchema = new mongoose.Schema({
   },
 });
 
+blogModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Blog-${uuidv4()}`;
+  }
+  next();
+});
+
 // Update `updatedAt` on save
-blogSchema.pre('save', function (next) {
+blogModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Blog', blogSchema);
+module.exports = mongoose.model('Blog', blogModel);

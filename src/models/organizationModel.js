@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const organizationSchema = new mongoose.Schema({
+const organizationModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -17,9 +22,16 @@ const organizationSchema = new mongoose.Schema({
   members: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Assuming there's a User model
+      ref: 'User',
     },
   ],
 });
 
-module.exports = mongoose.model('Organization', organizationSchema);
+organizationModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Organization-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Organization', organizationModel);

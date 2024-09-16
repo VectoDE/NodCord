@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const ticketSchema = new mongoose.Schema({
+const ticketModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   guildId: {
     type: String,
     required: true,
@@ -52,9 +57,16 @@ const ticketSchema = new mongoose.Schema({
   },
 });
 
-ticketSchema.pre('save', function (next) {
+ticketModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Ticket-${uuidv4()}`;
+  }
+  next();
+});
+
+ticketModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Ticket', ticketSchema);
+module.exports = mongoose.model('Ticket', ticketModel);

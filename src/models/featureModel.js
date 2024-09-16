@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Definiere das Schema für Feature
-const featureSchema = new mongoose.Schema({
+const featureModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   title: {
     type: String,
     required: true,
@@ -36,11 +40,16 @@ const featureSchema = new mongoose.Schema({
   },
 });
 
-// Aktualisiere `updatedAt` bei Änderungen
-featureSchema.pre('save', function (next) {
+featureModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Feature-${uuidv4()}`;
+  }
+  next();
+});
+
+featureModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Erstelle das Modell aus dem Schema
-module.exports = mongoose.model('Feature', featureSchema);
+module.exports = mongoose.model('Feature', featureModel);

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const timeoutSchema = new mongoose.Schema({
+const timeoutModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   userId: {
     type: String,
     required: true,
@@ -27,4 +32,4 @@ const timeoutSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Timeout', timeoutSchema);
+module.exports = mongoose.model('Timeout', timeoutModel);

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const ApiKeySchema = new mongoose.Schema({
+const apiKeyModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -25,4 +30,11 @@ const ApiKeySchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('ApiKeySchema', ApiKeySchema);
+apiKeyModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `ApiKey-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('ApiKey', apiKeyModel);

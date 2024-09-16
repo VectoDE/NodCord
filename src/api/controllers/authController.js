@@ -23,11 +23,9 @@ exports.googleCallback = async (req, res) => {
         secure: process.env.NODE_ENV === 'production',
       });
 
-      // Weiterleiten zum Benutzerprofil oder Dashboard basierend auf der Rolle
       const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
       return res.redirect(redirectUrl);
     } else {
-      // Fehlgeschlagene Authentifizierung
       return res.redirect(`${getBaseUrl()}/login`);
     }
   } catch (err) {
@@ -59,6 +57,33 @@ exports.githubCallback = async (req, res) => {
     }
   } catch (err) {
     logger.error('GitHub authentication error:', err.message);
+    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
+  }
+};
+
+exports.discordCallback = async (req, res) => {
+  try {
+    if (req.user) {
+      req.user.recentActivity = new Date();
+
+      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
+        expiresIn: '1h',
+      });
+      req.user.isAuthenticated = true;
+      await req.user.save();
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+      });
+
+      const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
+      return res.redirect(redirectUrl);
+    } else {
+      return res.redirect(`${getBaseUrl()}/login`);
+    }
+  } catch (err) {
+    logger.error('Discord authentication error:', err.message);
     return res.status(500).json({ message: 'Internal Server Error', error: err.message });
   }
 };

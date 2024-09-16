@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Schema für eine Nachricht
-const messageSchema = new mongoose.Schema({
+const messageModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   senderId: {
     type: String,
     required: true,
@@ -16,20 +20,37 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-// Schema für einen Chat
-const chatSchema = new mongoose.Schema({
+const chatModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   participants: [
     {
       type: String,
       required: true,
     },
-  ], // Array von Teilnehmer-IDs
-  messages: [messageSchema], // Array von Nachrichten
+  ],
+  messages: [messageModel],
   type: {
     type: String,
     enum: ['member_to_member', 'member_to_organization', 'member_to_group'],
     required: true,
-  }, // Chat-Typ
+  },
 });
 
-module.exports = mongoose.model('Chat', chatSchema);
+messageModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Message-${uuidv4()}`;
+  }
+  next();
+});
+
+chatModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Chat-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Chat', chatModel);

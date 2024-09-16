@@ -1,10 +1,22 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const apiSystemSchema = new mongoose.Schema({
+const apiSystemModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   isActive: {
     type: Boolean,
     default: true,
   },
 });
 
-module.exports = mongoose.model('ApiSystem', apiSystemSchema);
+apiSystemModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `ApiSystem-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('ApiSystem', apiSystemModel);

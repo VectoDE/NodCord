@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Definiere das Schema für Customer
-const customerSchema = new mongoose.Schema({
+const customerModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -31,11 +35,16 @@ const customerSchema = new mongoose.Schema({
   },
 });
 
-// Aktualisiere `updatedAt` bei Änderungen
-customerSchema.pre('save', function (next) {
+customerModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Customer-${uuidv4()}`;
+  }
+  next();
+});
+
+customerModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Erstelle das Modell aus dem Schema
-module.exports = mongoose.model('Customer', customerSchema);
+module.exports = mongoose.model('Customer', customerModel);

@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const commentSchema = new mongoose.Schema({
+const commentModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   content: {
     type: String,
     required: true,
@@ -21,4 +26,11 @@ const commentSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Comment', commentSchema);
+commentModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Comment-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Comment', commentModel);

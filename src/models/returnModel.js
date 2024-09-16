@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const returnSchema = new mongoose.Schema({
+const returnModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   orderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CustomerOrder',
@@ -47,9 +52,16 @@ const returnSchema = new mongoose.Schema({
   },
 });
 
-returnSchema.pre('save', function (next) {
+returnModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Return-${uuidv4()}`;
+  }
+  next();
+});
+
+returnModel.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-module.exports = mongoose.model('Return', returnSchema);
+module.exports = mongoose.model('Return', returnModel);

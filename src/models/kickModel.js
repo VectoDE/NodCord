@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const kickSchema = new mongoose.Schema({
+const kickModel = new mongoose.Schema({
   userId: {
     type: String,
     required: true,
@@ -23,4 +23,4 @@ const kickSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Kick', kickSchema);
+module.exports = mongoose.model('Kick', kickModel);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const warnSchema = new mongoose.Schema({
+const warnModel = new mongoose.Schema({
   guildId: {
     type: String,
     required: true,
@@ -23,4 +23,4 @@ const warnSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Warn', warnSchema);
+module.exports = mongoose.model('Warn', warnModel);

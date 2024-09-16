@@ -1,18 +1,28 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const gameSchema = new mongoose.Schema({
+const gameModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
+  picture: {
+    type: String,
+    required: false,
+  },
   title: {
     type: String,
     required: true,
-    trim: true,
   },
-  description: {
+  shortDescription: {
     type: String,
-    trim: true,
+    required: true,
+  },
+  detailDescription: {
+    type: String,
   },
   genre: {
     type: String,
-    trim: true,
   },
   releaseDate: {
     type: Date,
@@ -23,20 +33,33 @@ const gameSchema = new mongoose.Schema({
   },
   developer: {
     type: String,
-    trim: true,
   },
   platforms: [
     {
-      type: String,
-      trim: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Platform',
     },
   ],
   ratings: [
     {
-      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      rating: { type: Number, min: 1, max: 10 },
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+      },
+      rating: {
+        type: Number,
+        min: 1,
+        max: 5
+      },
     },
   ],
 });
 
-module.exports = mongoose.model('Game', gameSchema);
+gameModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Game-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Game', gameModel);

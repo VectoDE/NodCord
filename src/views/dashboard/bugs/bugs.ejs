@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
-  <%- include('../../partials/dashboardHeader'); %>
+  <%- include('../../partials/header/dashboardHeader'); %>
 
   <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <div class="container mx-auto">
@@ -28,6 +28,7 @@
         <table class="min-w-full bg-white dark:bg-gray-900">
           <thead>
             <tr class="w-full bg-gray-200 dark:bg-gray-800">
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">ID</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Title</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Description</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Severity</th>
@@ -40,6 +41,7 @@
             <% if (bugs && bugs.length > 0) { %>
               <% bugs.forEach(bug => { %>
                 <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <td class="py-3 px-4"><%= bug._id %></td>
                   <td class="py-3 px-4"><%= bug.title %></td>
                   <td class="py-3 px-4"><%= bug.description %></td>
                   <td class="py-3 px-4"><%= bug.severity %></td>

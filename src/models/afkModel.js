@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-let afkSchema = new mongoose.Schema({
+let afkModel = new mongoose.Schema({
   User: {
     type: String,
   },
@@ -12,4 +12,4 @@ let afkSchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('AFK', afkSchema);
+module.exports = mongoose.model('AFK', afkModel);

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const autoresponderSchema = new mongoose.Schema({
+const autoresponderModel = new mongoose.Schema({
   guildId: {
     type: String,
   },
@@ -12,4 +12,4 @@ const autoresponderSchema = new mongoose.Schema({
   ]
 });
 
-module.exports = mongoose.model('AutoResponder', autoresponderSchema);
+module.exports = mongoose.model('AutoResponder', autoresponderModel);

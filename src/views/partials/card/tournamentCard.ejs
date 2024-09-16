@@ -1,0 +1,10 @@
+<div class="bg-white shadow-md rounded-lg overflow-hidden p-4 max-w-sm">
+  <img class="w-full h-48 object-cover rounded-t-lg" src="<%= image || '/assets/img/default-image.png' %>" alt="<%= title || 'Tournament Image' %>">
+  <div class="p-4 text-center">
+    <h2 class="text-xl font-semibold mb-2"><%= title || 'Tournament Title' %></h2>
+    <p class="text-gray-600 mb-4"><%= description || 'Tournament description goes here...' %></p>
+    <a href="<%= link || '#' %>" class="inline-flex items-center bg-orange-500 text-white hover:bg-orange-600 rounded px-4 py-2 mx-auto">
+      <i class="bi bi-trophy mr-2"></i> Join Tournament
+    </a>
+  </div>
+</div>

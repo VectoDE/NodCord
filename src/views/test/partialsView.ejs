@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <%- include('../partials/head') %>
+
+  <body>
+    <%- include('../partials/header/header') %>
+
+    <main class="p-8">
+      <h1 class="text-2xl font-bold mb-6">Partials View</h1>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Error Alert</h2>
+        <%- include('../partials/alert/errorAlert', { message: 'An unexpected error has occurred.' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Info Alert</h2>
+        <%- include('../partials/alert/infoAlert', { message: 'This is an informational message.' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Success Alert</h2>
+        <%- include('../partials/alert/successAlert', { message: 'Operation completed successfully!' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Warning Alert</h2>
+        <%- include('../partials/alert/warningAlert', { message: 'This is a warning message.' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Role Badge</h2>
+        <%- include('../partials/badge/roleBadge', { user: { role: 'admin' } }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Beta Badge</h2>
+        <%- include('../partials/badge/betaBadge', { user: { isBetaTester: true } }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Social Badge</h2>
+        <%- include('../partials/badge/socialBadge', { user: { socialProfiles: [{ url: 'https://twitter.com', platform: 'twitter' }, { url: 'https://github.com', platform: 'github' }] } }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Tag Badge</h2>
+        <%- include('../partials/badge/tagBadge', {
+          user: {
+            tags: [
+              { name: 'Developer', color: '#4CAF50', textColor: '#FFFFFF', icon: 'code' },
+              { name: 'Open Source', color: '#FF5722', textColor: '#FFFFFF', icon: 'git' }
+            ]
+          }
+        }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Team Badge</h2>
+        <%- include('../partials/badge/teamBadge', {
+          user: {
+            team: {
+              name: 'Team Alpha',
+              logoUrl: 'http://localhost:4000/assets/img/logo.png',
+              color: '#3488db'
+            }
+          }
+        }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Tournament Badge</h2>
+        <%- include('../partials/badge/tournamentBadge', {
+          user: {
+            tournaments: [
+              {
+                name: 'Championship 2024',
+                position: '1st Place',
+                thumbnailUrl: 'http://localhost:4000/assets/img/cta-bg.jpg',
+                logoUrl: 'http://localhost:4000/assets/img/logo.png',
+                url: 'http://localhost:4000/championship/2024'
+              },
+              {
+                name: 'Summer Cup',
+                position: '2nd Place',
+                thumbnailUrl: 'http://localhost:4000/assets/img/cta-bg.jpg',
+                logoUrl: 'http://localhost:4000/assets/img/logo.png',
+                url: 'http://localhost:4000/summer-cup/2024'
+              },
+              {
+                name: 'Open Cup',
+                position: '3rd Place',
+                thumbnailUrl: 'http://localhost:4000/assets/img/cta-bg.jpg',
+                logoUrl: 'http://localhost:4000/assets/img/logo.png',
+                url: 'http://localhost:4000/summer-cup/2024'
+              },
+              {
+                name: 'FFA Cup',
+                position: '4th Place',
+                thumbnailUrl: 'http://localhost:4000/assets/img/cta-bg.jpg',
+                logoUrl: 'http://localhost:4000/assets/img/logo.png',
+                url: 'http://localhost:4000/summer-cup/2024'
+              }
+            ]
+          }
+        }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Accept Button</h2>
+        <%- include('../partials/button/acceptButton', { label: 'Accept', attributes: 'data-test="accept"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Create Button</h2>
+        <%- include('../partials/button/createButton', { label: 'Create', attributes: 'data-test="create"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Delete Button</h2>
+        <%- include('../partials/button/deleteButton', { label: 'Delete', attributes: 'data-test="delete"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Download Button</h2>
+        <%- include('../partials/button/downloadButton', { label: 'Download', attributes: 'data-test="download"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Edit Button</h2>
+        <%- include('../partials/button/editButton', { label: 'Edit', attributes: 'data-test="edit"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Notify Button</h2>
+        <%- include('../partials/button/getNotifyButton', { label: 'Notify', attributes: 'data-test="notify"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Join Button</h2>
+        <%- include('../partials/button/joinButton', { label: 'Join', attributes: 'data-test="join"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Left Button</h2>
+        <%- include('../partials/button/leftButton', { label: 'Left', attributes: 'data-test="left"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Reject Button</h2>
+        <%- include('../partials/button/rejectButton', { label: 'Reject', attributes: 'data-test="reject"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Transparent Button</h2>
+        <%- include('../partials/button/transparentButton', { label: 'Transparent', attributes: 'data-test="transparent"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Update Button</h2>
+        <%- include('../partials/button/updateButton', { label: 'Update', attributes: 'data-test="update"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Upload Button</h2>
+        <%- include('../partials/button/uploadButton', { label: 'Upload', attributes: 'data-test="upload"' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Blog Card</h2>
+        <%- include('../partials/card/blogCard', { image: '/assets/img/default-image.png', title: 'Hello World', description: 'Hello World Post For Tests', link: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Counter Card</h2>
+        <%- include('../partials/card/counterCard', { count: '233', change: 'up', label: 'Users' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Game Card</h2>
+        <%- include('../partials/card/gameCard', { image: '/assets/img/default-image.png', title: 'GTA V', description: 'The best game ever!', link: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Profile Card</h2>
+        <%- include('../partials/card/profileCard', { image: '/assets/img/default-profile.png', name: 'Pascal Wegner', bio: 'A Millionair person' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Project Card</h2>
+        <%- include('../partials/card/projectCard', { image: '/assets/img/default-image.png', title: 'NodCord', description: 'A Application with API Bot and Frontend', link: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Setting Card</h2>
+        <%- include('../partials/card/settingCard', { title: 'Change E-Mail', description: 'Changing the mail of your account.', link: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Tournament Card</h2>
+        <%- include('../partials/card/tournamentCard', { image: '/assets/img/default-image.png', title: 'Championship 2024', description: 'The championship 2024', link: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Version Card</h2>
+        <%- include('../partials/card/versionCard', { version: '1.0.0', description: 'The first version of the application.', link: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Contact CTA</h2>
+        <%- include('../partials/cta/contactCTA', { contactLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">E-Mail CTA</h2>
+        <%- include('../partials/cta/emailCTA', { subscribeLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Explore CTA</h2>
+        <%- include('../partials/cta/exploreCTA', { exploreLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Join CTA</h2>
+        <%- include('../partials/cta/joinCTA', { joinLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">News CTA</h2>
+        <%- include('../partials/cta/newsCTA', { newsLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Register CTA</h2>
+        <%- include('../partials/cta/registerCTA', { registerLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Status CTA</h2>
+        <%- include('../partials/cta/statusCTA', { statusLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Version CTA</h2>
+        <%- include('../partials/cta/versionCTA', { versionLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Contact Form</h2>
+        <%- include('../partials/forms/contactForm', {  }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Feedback Form</h2>
+        <%- include('../partials/forms/feedbackForm', {  }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Login Form</h2>
+        <%- include('../partials/forms/loginForm', {  }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Register Form</h2>
+        <%- include('../partials/forms/registerForm', {  }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Pagination</h2>
+        <%- include('../partials/pagination/pagination', { pages: '10' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Discord Widget</h2>
+        <%- include('../partials/widget/discordWidget', { discordLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">GitHub Widget</h2>
+        <%- include('../partials/widget/githubWidget', { githubLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Twitter Widget</h2>
+        <%- include('../partials/widget/twitterWidget', { twitterLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">YouTube Widget</h2>
+        <%- include('../partials/widget/youtubeWidget', { youtubeLink: '#' }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">Project Table</h2>
+        <%- include('../partials/tables/projectTable', {
+          projects: [
+            {
+              id: '56456456',
+              name: 'hi',
+              created_at: '22.11.2000',
+              updated_at: '22.11.2000'
+            },
+            {
+              id: '56456457',
+              name: 'hi2',
+              created_at: '23.11.2000',
+              updated_at: '23.11.2000'
+            },
+            {
+              id: '56456458',
+              name: 'hi3',
+              created_at: '24.11.2000',
+              updated_at: '24.11.2000'
+            }
+          ]
+        }) %>
+      </section>
+
+      <section class="mb-8">
+        <h2 class="text-xl font-semibold mb-4">User Table</h2>
+        <%- include('../partials/tables/userTable', {
+          users: [
+            {
+              id: '1',
+              name: 'John Doe',
+              email: 'john.doe@example.com',
+              role: 'Admin'
+            },
+            {
+              id: '2',
+              name: 'Jane Smith',
+              email: 'jane.smith@example.com',
+              role: 'User'
+            },
+            {
+              id: '3',
+              name: 'Alice Johnson',
+              email: 'alice.johnson@example.com',
+              role: 'Moderator'
+            }
+          ]
+        }) %>
+      </section>
+
+    </main>
+
+    <%- include('../partials/footer/footer') %>
+  </body>
+</html>

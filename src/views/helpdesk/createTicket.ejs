@@ -1,49 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Create Ticket ~ NodCord</title>
     <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
-  <link rel="stylesheet" href="/assets/css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
-  <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100 flex flex-col items-center py-10">
-    <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create a New Ticket</h1>
 
-        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/helpdesk/createTicket" method="POST" class="space-y-4">
-            <div>
-                <label for="subject" class="block text-gray-700">Subject</label>
-                <input
-                    type="text"
-                    id="subject"
-                    name="subject"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-                />
+<body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200">
+    <%- include('../partials/header/header'); %>
+
+    <main>
+        <!-- Create Ticket Hero Section -->
+        <section class="bg-blue-500 text-white py-16 lg:py-24">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl font-bold md:text-5xl lg:text-6xl">Submit a Support Ticket</h1>
+                <p class="mt-4 text-lg md:text-xl lg:text-2xl">
+                    Need help? Submit a ticket and we'll get back to you as soon as possible.
+                </p>
             </div>
+        </section>
 
-            <div>
-                <label for="message" class="block text-gray-700">Message</label>
-                <textarea
-                    id="message"
-                    name="message"
-                    rows="5"
-                    required
-                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300 focus:outline-none"
-                ></textarea>
+        <!-- Ticket Form Section -->
+        <section class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-200 py-16 lg:py-24">
+            <div class="container mx-auto px-6">
+                <div class="max-w-3xl mx-auto bg-gray-100 dark:bg-gray-800 rounded-lg shadow-lg p-8">
+                    <h2 class="text-3xl font-bold text-center">Create a New Ticket</h2>
+                    <p class="mt-4 text-center text-lg text-gray-600 dark:text-gray-400">
+                        Please fill out the form below to describe your issue or question.
+                    </p>
+
+                    <form action="/helpdesk/submitTicket" method="POST" class="mt-8">
+                        <!-- Name -->
+                        <div class="mb-6">
+                            <label for="name" class="block mb-2 text-sm font-medium">Your Name</label>
+                            <input type="text" id="name" name="name" class="w-full px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none" required />
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-6">
+                            <label for="email" class="block mb-2 text-sm font-medium">Your Email</label>
+                            <input type="email" id="email" name="email" class="w-full px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none" required />
+                        </div>
+
+                        <!-- Subject -->
+                        <div class="mb-6">
+                            <label for="subject" class="block mb-2 text-sm font-medium">Subject</label>
+                            <input type="text" id="subject" name="subject" class="w-full px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none" required />
+                        </div>
+
+                        <!-- Category -->
+                        <div class="mb-6">
+                            <label for="category" class="block mb-2 text-sm font-medium">Category</label>
+                            <select id="category" name="category" class="w-full px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none" required>
+                                <option value="integration">Integration Issues</option>
+                                <option value="payment">Payment & Billing</option>
+                                <option value="account">Account & Security</option>
+                                <option value="feature">Feature Requests</option>
+                                <option value="troubleshooting">Troubleshooting</option>
+                                <option value="general">General Help</option>
+                            </select>
+                        </div>
+
+                        <!-- Description -->
+                        <div class="mb-6">
+                            <label for="description" class="block mb-2 text-sm font-medium">Description</label>
+                            <textarea id="description" name="description" rows="6" class="w-full px-4 py-2 rounded-lg bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-200 focus:outline-none" required></textarea>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center">
+                            <button type="submit" class="bg-blue-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-600 focus:outline-none">
+                                Submit Ticket
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
+        </section>
+    </main>
 
-            <button
-                type="submit"
-                class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition duration-300"
-            >
-                <i class="bi bi-send-fill mr-2"></i> Submit Ticket
-            </button>
-        </form>
-    </div>
+    <%- include('../partials/footer/footer'); %>
+    <script src="/assets/js/script.js"></script>
 </body>
 </html>

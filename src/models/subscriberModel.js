@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-// Definiere das Schema für den Subscriber
-const subscriberSchema = new mongoose.Schema({
+const subscriberModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   email: {
     type: String,
     required: true,
@@ -19,5 +23,11 @@ const subscriberSchema = new mongoose.Schema({
   },
 });
 
-// Erstelle das Modell aus dem Schema
-module.exports = mongoose.model('Subscriber', subscriberSchema);
+subscriberModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Subscriber-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Subscriber', subscriberModel);

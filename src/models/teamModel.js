@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
 const teamModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -16,7 +21,7 @@ const teamModel = new mongoose.Schema({
   members: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Assuming there's a User model
+      ref: 'User',
     },
   ],
   status: {
@@ -33,6 +38,13 @@ const teamModel = new mongoose.Schema({
     type: String,
     default: 'default-team-logo.png', // A fallback logo
   },
+});
+
+teamModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Team-${uuidv4()}`;
+  }
+  next();
 });
 
 module.exports = mongoose.model('Team', teamModel);

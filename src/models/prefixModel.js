@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const prefixSchema = new mongoose.Schema({
+const prefixModel = new mongoose.Schema({
   guildId: {
     type: String,
     required: true,
@@ -12,4 +12,4 @@ const prefixSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Prefix', prefixSchema);
+module.exports = mongoose.model('Prefix', prefixModel);

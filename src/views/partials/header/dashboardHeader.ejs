@@ -16,7 +16,7 @@
     <!-- Dashboard Navigation Menu -->
     <div class="nav-container mt-4 space-y-4 px-2 lg:px-4 flex-1 overflow-y-auto">
       <a href="/dashboard" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'overview' ? 'true' : 'false' %>">
-        <i class="fas fa-home"></i>
+        <i class="bi bi-house"></i>
         <span class="hidden lg:inline">Overview</span>
         <span class="nav-underline"></span>
       </a>
@@ -24,29 +24,9 @@
       <hr class="border-gray-700 dark:border-gray-800" />
       <p class="hidden lg:block text-sm font-semibold">CRUD</p>
       <!-- Example CRUD items -->
-      <a href="/dashboard/users" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'users' ? 'true' : 'false' %>">
-        <i class="bi bi-person"></i>
-        <span class="hidden lg:inline">Users</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/groups" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'groups' ? 'true' : 'false' %>">
-        <i class="bi bi-people"></i>
-        <span class="hidden lg:inline">Groups</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/categories" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'categories' ? 'true' : 'false' %>">
-        <i class="bi bi-bookmark"></i>
-        <span class="hidden lg:inline">Categories</span>
-        <span class="nav-underline"></span>
-      </a>
       <a href="/dashboard/blogs" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'blogs' ? 'true' : 'false' %>">
         <i class="bi bi-postage"></i>
         <span class="hidden lg:inline">Blogs</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/companies" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'companies' ? 'true' : 'false' %>">
-        <i class="bi bi-building"></i>
-        <span class="hidden lg:inline">Companies</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/bugs" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'bugs' ? 'true' : 'false' %>">
@@ -54,9 +34,64 @@
         <span class="hidden lg:inline">Bugs</span>
         <span class="nav-underline"></span>
       </a>
+      <a href="/dashboard/categories" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'categories' ? 'true' : 'false' %>">
+        <i class="bi bi-bookmark"></i>
+        <span class="hidden lg:inline">Categories</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/companies" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'companies' ? 'true' : 'false' %>">
+        <i class="bi bi-building"></i>
+        <span class="hidden lg:inline">Companies</span>
+        <span class="nav-underline"></span>
+      </a>
       <a href="/dashboard/games" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'games' ? 'true' : 'false' %>">
         <i class="bi bi-joystick"></i>
         <span class="hidden lg:inline">Games</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/groups" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'groups' ? 'true' : 'false' %>">
+        <i class="bi bi-people"></i>
+        <span class="hidden lg:inline">Groups</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/organizations" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'organizations' ? 'true' : 'false' %>">
+        <i class="bi bi-buildings"></i>
+        <span class="hidden lg:inline">Organizations</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/projects" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'projects' ? 'true' : 'false' %>">
+        <i class="bi bi-kanban"></i>
+        <span class="hidden lg:inline">Projects</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/roles" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'roles' ? 'true' : 'false' %>">
+        <i class="bi bi-person-rolodex"></i>
+        <span class="hidden lg:inline">Roles</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/tags" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tags' ? 'true' : 'false' %>">
+        <i class="bi bi-tags"></i>
+        <span class="hidden lg:inline">Tags</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/tasks" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tasks' ? 'true' : 'false' %>">
+        <i class="bi bi-list-task"></i>
+        <span class="hidden lg:inline">Tasks</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/teams" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'teams' ? 'true' : 'false' %>">
+        <i class="bi bi-microsoft-teams"></i>
+        <span class="hidden lg:inline">Teams</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/tickets" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tickets' ? 'true' : 'false' %>">
+        <i class="bi bi-ticket-perforated"></i>
+        <span class="hidden lg:inline">Tickets</span>
+        <span class="nav-underline"></span>
+      </a>
+      <a href="/dashboard/users" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'users' ? 'true' : 'false' %>">
+        <i class="bi bi-person"></i>
+        <span class="hidden lg:inline">Users</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/versions" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'versions' ? 'true' : 'false' %>">
@@ -65,78 +100,43 @@
         <span class="nav-underline"></span>
       </a>
       <p class="hidden lg:block text-sm font-semibold">~ Coming Soon</p>
-      <a href="/dashboard/tickets" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tickets' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tickets</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/teams" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'teams' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Teams</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/tasks" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tasks' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tasks</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/tags" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tags' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Tags</span>
-        <span class="nav-underline"></span>
-      </a>
       <a href="/dashboard/subscribers" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'subscribers' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-file-person"></i>
         <span class="hidden lg:inline">Subscribers</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/stories" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'stories' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-clock-history"></i>
         <span class="hidden lg:inline">Stories</span>
         <span class="nav-underline"></span>
       </a>
-      <a href="/dashboard/roles" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'roles' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Roles</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/projects" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'projects' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Projects</span>
-        <span class="nav-underline"></span>
-      </a>
-      <a href="/dashboard/organizations" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'organizations' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
-        <span class="hidden lg:inline">Organizations</span>
-        <span class="nav-underline"></span>
-      </a>
       <a href="/dashboard/issues" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'issues' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-exclamation-diamond"></i>
         <span class="hidden lg:inline">Issues</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/files" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'files' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-file-earmark"></i>
         <span class="hidden lg:inline">Files</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/feedbacks" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'feedbacks' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-yelp"></i>
         <span class="hidden lg:inline">Feedbacks</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/features" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'features' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-gear-wide-connected"></i>
         <span class="hidden lg:inline">Features</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/favorites" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'favorites' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-star"></i>
         <span class="hidden lg:inline">Favorites</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/comments" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'comments' ? 'true' : 'false' %>">
-        <i class="fas fa-trophy"></i>
+        <i class="bi bi-chat-dots"></i>
         <span class="hidden lg:inline">Comments</span>
         <span class="nav-underline"></span>
       </a>
@@ -189,6 +189,11 @@
         <span class="hidden lg:inline">Tournaments</span>
         <span class="nav-underline"></span>
       </a>
+      <a href="/dashboard/tournaments/games" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tournaments-matches' ? 'true' : 'false' %>">
+        <i class="bi bi-joystick"></i>
+        <span class="hidden lg:inline">Games</span>
+        <span class="nav-underline"></span>
+      </a>
       <a href="/dashboard/tournaments/matches" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tournaments-matches' ? 'true' : 'false' %>">
         <i class="bi bi-controller"></i>
         <span class="hidden lg:inline">Matches</span>
@@ -218,7 +223,7 @@
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/faceit" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'faceit' ? 'true' : 'false' %>">
-        <i class="fas fa-server"></i>
+        <i class="bi bi-suit-heart"></i>
         <span class="hidden lg:inline">FaceIt</span>
         <span class="nav-underline"></span>
       </a>
@@ -269,42 +274,42 @@
       <hr class="border-gray-700 dark:border-gray-800" />
       <p class="hidden lg:block text-sm font-semibold">CMS</p>
       <a href="/dashboard/youtube" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'youtube' ? 'true' : 'false' %>">
-        <i class="fab fa-youtube"></i>
+        <i class="bi bi-youtube"></i>
         <span class="hidden lg:inline">YouTube</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/twitch" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'twitch' ? 'true' : 'false' %>">
-        <i class="fab fa-twitch"></i>
+        <i class="bi bi-twitch"></i>
         <span class="hidden lg:inline">Twitch</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/instgram" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'instgram' ? 'true' : 'false' %>">
-        <i class="fab fa-instagram"></i>
+        <i class="bi bi-instagram"></i>
         <span class="hidden lg:inline">Instagram</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/tiktok" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'tiktok' ? 'true' : 'false' %>">
-        <i class="fab fa-tiktok"></i>
+        <i class="bi bi-tiktok"></i>
         <span class="hidden lg:inline">TikTok</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/twitter" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'twitter' ? 'true' : 'false' %>">
-        <i class="fab fa-twitter"></i>
+        <i class="bi bi-twitter"></i>
         <span class="hidden lg:inline">Twitter (X)</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/github" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'github' ? 'true' : 'false' %>">
-        <i class="fab fa-github"></i>
+        <i class="bi bi-github"></i>
         <span class="hidden lg:inline">GitHub</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/discord" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'discord' ? 'true' : 'false' %>">
-        <i class="fab fa-discord"></i>
+        <i class="bi bi-discord"></i>
         <span class="hidden lg:inline">Discord</span>
         <span class="nav-underline"></span>
       </a>
       <a href="/dashboard/linkedin" class="nav-item flex items-center space-x-2 relative hover:text-yellow-400 transition duration-300" data-active="<%= currentPage === 'linkedin' ? 'true' : 'false' %>">
-        <i class="fab fa-linkedin"></i>
+        <i class="bi bi-linkedin"></i>
         <span class="hidden lg:inline">LinkedIn</span>
         <span class="nav-underline"></span>
       </a>

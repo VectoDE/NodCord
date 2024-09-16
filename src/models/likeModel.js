@@ -1,14 +1,19 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const likeSchema = new mongoose.Schema({
+const likeModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User', // Verweist auf das User-Modell
+    ref: 'User',
     required: true,
   },
   blog: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog', // Verweist auf das Blog-Modell
+    ref: 'Blog',
     required: true,
   },
   createdAt: {
@@ -17,4 +22,11 @@ const likeSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Like', likeSchema);
+likeModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Like-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Like', likeModel);

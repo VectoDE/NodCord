@@ -11,7 +11,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
-  <%- include('../../partials/dashboardHeader'); %>
+  <%- include('../../partials/header/dashboardHeader'); %>
 
   <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
     <div class="container mx-auto">
@@ -28,9 +28,13 @@
         <table class="min-w-full bg-white dark:bg-gray-900">
           <thead>
             <tr class="w-full bg-gray-200 dark:bg-gray-800">
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">ID</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Name</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Industry</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Headquarters</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Employees</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Website</th>
+              <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Founded</th>
               <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
             </tr>
           </thead>
@@ -38,9 +42,13 @@
             <% if (companies && companies.length > 0) { %>
               <% companies.forEach(company => { %>
                 <tr class="border-t border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700">
+                  <td class="py-3 px-4"><%= company._id %></td>
                   <td class="py-3 px-4"><%= company.name %></td>
                   <td class="py-3 px-4"><%= company.industry %></td>
                   <td class="py-3 px-4"><%= company.headquarters %></td>
+                  <td class="py-3 px-4"><%= company.employees %></td>
+                  <td class="py-3 px-4"><%= company.website %></td>
+                  <td class="py-3 px-4"><%= company.foundedDate %></td>
                   <td class="py-3 px-4 flex space-x-2">
                     <a href="/dashboard/companies/<%= company._id %>/edit" class="text-blue-500 hover:text-blue-700 transition duration-300">
                       <i class="bi bi-pencil-square"></i> Edit

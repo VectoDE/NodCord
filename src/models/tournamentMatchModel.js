@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const matchSchema = new mongoose.Schema(
+const tournamentMatchModel = new mongoose.Schema(
   {
+    id: {
+      type: String,
+      unique: true,
+    },
     tournament: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Tournament',
@@ -23,4 +28,11 @@ const matchSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Match', matchSchema);
+tournamentMatchModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `TournamentMatches-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('TournamentMatches', tournamentMatchModel);

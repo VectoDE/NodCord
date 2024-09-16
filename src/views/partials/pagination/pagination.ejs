@@ -1,0 +1,19 @@
+<nav class="flex justify-center" aria-label="Page navigation">
+  <ul class="inline-flex items-center -space-x-px pagination">
+    <li class="page-item">
+      <a href="#" class="px-3 py-2 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700 page-link" aria-label="Previous">
+        <span aria-hidden="true">&laquo;</span>
+      </a>
+    </li>
+    <% for(let i = 1; i <= pages; i++) { %>
+      <li class="page-item">
+        <a href="/page/<%= i %>" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 page-link"><%= i %></a>
+      </li>
+    <% } %>
+    <li class="page-item">
+      <a href="#" class="px-3 py-2 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 page-link" aria-label="Next">
+        <span aria-hidden="true">&raquo;</span>
+      </a>
+    </li>
+  </ul>
+</nav>

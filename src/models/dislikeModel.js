@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
+const { v4: uuidv4 } = require('uuid');
 
-const dislikeSchema = new mongoose.Schema({
+const dislikeModel = new mongoose.Schema({
+  id: {
+    type: String,
+    unique: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User', // Verweist auf das User-Modell
@@ -17,4 +22,11 @@ const dislikeSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Dislike', dislikeSchema);
+dislikeModel.pre('save', function (next) {
+  if (!this.id) {
+    this.id = `Dislike-${uuidv4()}`;
+  }
+  next();
+});
+
+module.exports = mongoose.model('Dislike', dislikeModel);
