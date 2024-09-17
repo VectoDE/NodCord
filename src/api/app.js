@@ -142,16 +142,17 @@ api.use('/api/teamspeak', teamspeakRoutes);
 api.use('/api/files', fileRoutes);
 
 const startApi = () => {
+  const https = process.env.API_HTTPS || 'http';
   const port = process.env.API_PORT || '3000';
   const baseURL = process.env.API_BASE_URL || 'localhost';
 
   if (process.env.NODE_ENV === 'production') {
     api.listen(port, () => {
-      logger.info(`API is running on https://${baseURL}:${port}`);
+      logger.info(`API is running on ${https}://${baseURL}:${port}`);
     });
   } else if (process.env.NODE_ENV === 'development') {
     api.listen(port, () => {
-      logger.info(`API is running on https://${baseURL}:${port}`);
+      logger.info(`API is running on ${https}://${baseURL}:${port}`);
     });
   }
 };

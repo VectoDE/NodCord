@@ -14,13 +14,11 @@
   <%- include('../../partials/header/dashboardHeader'); %>
   <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
     <div class="container mx-auto">
-      <h1 class="text-3xl font-semibold mb-6">Create New Feature</h1>
-
       <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
         <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/features/create" method="POST">
           <div class="mb-4">
-            <label for="name" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Name</label>
-            <input type="text" id="name" name="name" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+            <label for="title" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Title</label>
+            <input type="text" id="title" name="title" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
           </div>
 
           <div class="mb-4">
@@ -28,7 +26,44 @@
             <textarea id="description" name="description" rows="4" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required></textarea>
           </div>
 
-          <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Feature</button>
+          <div class="mb-4">
+            <label for="status" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Status</label>
+            <select id="status" name="status" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+              <option value="Planned">Planned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="priority" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Priority</label>
+            <select id="priority" name="priority" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <label for="project" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Project</label>
+            <select id="project" name="project" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required>
+              <% if (projects.length === 0) { %>
+                <option value="" disabled>No projects available</option>
+              <% } else { %>
+                <% projects.forEach(project => { %>
+                  <option value="<%= project._id %>"><%= project.name %></option>
+                <% }) %>
+              <% } %>
+            </select>
+          </div>
+
+          <!-- Add a flex container for the buttons -->
+          <div class="flex justify-between items-center mt-6">
+            <a href="/dashboard/features" class="text-blue-500 hover:text-blue-700 text-white px-4 py-2 rounded">
+              <i class="bi bi-arrow-left"></i> Back
+            </a>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Feature</button>
+          </div>
         </form>
       </div>
     </div>

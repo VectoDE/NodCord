@@ -98,16 +98,17 @@ client.use((err, req, res, next) => {
 });
 
 const startClient = () => {
+  const https = process.env.CLIENT_HTTPS || 'http';
   const port = process.env.CLIENT_PORT || '4000';
   const baseURL = process.env.CLIENT_BASE_URL || 'localhost';
 
   if (process.env.NODE_ENV === 'production') {
     client.listen(port, () => {
-      logger.info(`[CLIENT] Frontend is running on https://${baseURL}:${port}`);
+      logger.info(`[CLIENT] Frontend is running on ${https}://${baseURL}:${port}`);
     });
   } else if (process.env.NODE_ENV === 'development') {
     client.listen(port, () => {
-      logger.info(`[CLIENT] Frontend is running on https://${baseURL}:${port}`);
+      logger.info(`[CLIENT] Frontend is running on ${https}://${baseURL}:${port}`);
     });
   }
 };

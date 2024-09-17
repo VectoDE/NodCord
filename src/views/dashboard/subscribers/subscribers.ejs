@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Subscribers</title>
     <link rel="shortcut icon" href="/assets/img/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="/assets/css/styles.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+    </style>
   </head>
   <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
     <%- include('../../partials/header/dashboardHeader'); %>
@@ -18,8 +26,8 @@
       <div class="container mx-auto">
         <!-- Title and Create Button -->
         <div class="flex justify-between items-center mb-6">
-          <h1 class="text-3xl font-semibold">Subscribers</h1>
-          <a href="/dashboard/subscribers/create" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
+          <h1 class="text-3xl font-semibold">Subscribers Overview</h1>
+          <a href="/dashboard/subscribers/create" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow-md transition duration-300">
             <i class="bi bi-plus-circle"></i> Add New Subscriber
           </a>
         </div>
@@ -30,6 +38,7 @@
             <thead>
               <tr class="w-full bg-gray-200 dark:bg-gray-800">
                 <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Subscriber ID</th>
+                <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Profile</th>
                 <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Username</th>
                 <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Email</th>
                 <th class="text-left py-3 px-4 uppercase font-semibold text-sm">Actions</th>
@@ -40,6 +49,9 @@
                 <% subscribers.forEach(subscriber => { %>
                   <tr class="border-t border-gray-200 dark:border-gray-700">
                     <td class="py-3 px-4"><%= subscriber._id %></td>
+                    <td class="py-3 px-4">
+                      <img src="<%= subscriber.profilePicture || '/assets/img/default-profile.png' %>" alt="Profile Picture" class="profile-img" />
+                    </td>
                     <td class="py-3 px-4"><%= subscriber.username %></td>
                     <td class="py-3 px-4"><%= subscriber.email %></td>
                     <td class="py-3 px-4 flex space-x-2">
@@ -56,7 +68,7 @@
                 <% }) %>
               <% } else { %>
                 <tr>
-                  <td colspan="4" class="text-center py-3 px-4 text-gray-500 dark:text-gray-400">No subscribers found.</td>
+                  <td colspan="5" class="text-center py-3 px-4 text-gray-500 dark:text-gray-400">No subscribers found.</td>
                 </tr>
               <% } %>
             </tbody>

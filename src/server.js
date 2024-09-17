@@ -23,16 +23,17 @@ const startServer = async () => {
     await seedRolesIfNotExist();
     await seedUsersIfNotExist();
 
+    const apiHttps = process.env.API_HTTPS || 'http';
     const apiPort = process.env.API_PORT || 3000;
     const apiBaseURL = process.env.API_BASE_URL || 'localhost';
 
     if (process.env.NODE_ENV === 'production') {
       http.createServer(api).listen(apiPort, () => {
-        logger.info(`[HTTP] Started and running on https://${apiBaseURL}:${apiPort}`);
+        logger.info(`[HTTP] Started and running on ${apiHttps}://${apiBaseURL}:${apiPort}`);
       });
     } else if (process.env.NODE_ENV === 'development') {
       http.createServer(api).listen(apiPort, () => {
-        logger.info(`[HTTP] Started and running on https://${apiBaseURL}:${apiPort}`);
+        logger.info(`[HTTP] Started and running on ${apiHttps}://${apiBaseURL}:${apiPort}`);
       });
     }
 

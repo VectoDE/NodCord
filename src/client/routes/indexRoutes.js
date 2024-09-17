@@ -282,8 +282,10 @@ router.get('/discord-bots', async (req, res) => {
   const currentUser = req.user;
   try {
     const { botData } = await bot.getBots();
+    const botCount = botData.length;
     res.render('discord/discordbots', {
       botData,
+      botCount,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       errorstack: null,
@@ -304,8 +306,10 @@ router.get('/discord-members', async (req, res) => {
   const currentUser = req.user;
   try {
     const { memberData } = await bot.getMembers();
+    const memberCount = memberData.length;
     res.render('discord/discordmembers', {
       memberData,
+      memberCount,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',
       errorstack: null,
@@ -325,10 +329,10 @@ router.get('/discord-members', async (req, res) => {
 router.get('/discord-servers', async (req, res) => {
   const currentUser = req.user;
   try {
-    const servers = await bot.getServers();
-    const serverCount = servers.length;
+    const { serverData } = await bot.getServers();
+    const serverCount = serverData.length;
     res.render('discord/discordservers', {
-      servers,
+      serverData,
       serverCount,
       isAuthenticated: res.locals.isAuthenticated,
       logoImage: '/assets/img/logo.png',

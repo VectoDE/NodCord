@@ -24,7 +24,8 @@ const versionModel = new mongoose.Schema({
     required: true,
   },
   versionTag: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'VersionTag',
     required: true,
   },
   features: {

@@ -190,7 +190,7 @@ const getServers = async () => {
     logger.error('[BOT] Error fetching servers:', error);
   }
 
-  return serverData;
+  return { serverData };
 };
 
 // Join Role System

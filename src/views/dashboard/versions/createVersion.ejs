@@ -10,96 +10,132 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="https://unpkg.com/@merakiui/merakiui/dist/merakiui.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Quill CSS -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <style>
+    /* Add custom styles for Quill editor containers */
+    #shortDescriptionContainer, #detailedDescriptionContainer {
+      min-height: 200px; /* Adjust height as needed */
+      resize: vertical; /* Allow vertical resizing */
+    }
+  </style>
 </head>
 
 <body class="bg-gray-200 text-gray-900 dark:bg-gray-800 dark:text-gray-200 flex">
   <%- include('../../partials/header/dashboardHeader'); %>
-
-    <!-- Main Content -->
-    <main class="flex-1 ml-64 lg:ml-72 p-6 space-y-8 overflow-auto">
-      <div class="container mx-auto">
+  <main class="flex-1 ml-64 lg:ml-72 p-5 space-y-8 overflow-auto">
+    <div class="container mx-auto">
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6">
         <h1 class="text-3xl font-semibold mb-6">Create New Version</h1>
-        <form
-          action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/versions/create"
-          method="POST" class="bg-white dark:bg-gray-900 shadow-md rounded-lg p-6 space-y-4">
-          <div>
-            <label for="name" class="block text-gray-700 dark:text-gray-200">Version Name</label>
-            <input type="text" name="name" id="name"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500"
-              required />
+        <form action="<%= api.https %>://<%= api.baseURL %><% if (process.env.NODE_ENV === 'development') { %>:<%= api.port %><% } %>/api/versions/create" method="POST" class="space-y-4">
+          <div class="mb-4">
+            <label for="name" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Version Name</label>
+            <input type="text" name="name" id="name" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required />
           </div>
 
-          <div>
-            <label for="tag" class="block text-gray-700 dark:text-gray-200">Version Tag</label>
-            <input type="text" name="tag" id="tag"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500"
-              required />
+          <div class="mb-4">
+            <label for="tag" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Version Tag</label>
+            <select name="tag" id="tag" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+              <option value="" selected>Select a tag or type your own</option>
+              <% versionTags.forEach(tag => { %>
+                <option value="<%= tag.tag %>"><%= tag.tag %></option>
+              <% }) %>
+            </select>
+            <input type="text" name="customTag" id="customTag" placeholder="Or type your own" class="block w-full mt-2 px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" />
           </div>
 
-          <div>
-            <label for="shortDescription" class="block text-gray-700 dark:text-gray-200">Short Description</label>
-            <textarea name="shortDescription" id="shortDescription"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500"
-              required></textarea>
+          <div class="mb-4">
+            <label for="shortDescription" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Short Description</label>
+            <div id="shortDescriptionContainer" class="block w-full border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"></div>
+            <textarea name="shortDescription" id="shortDescription" class="hidden"></textarea>
           </div>
 
-          <div>
-            <label for="detailedDescription" class="block text-gray-700 dark:text-gray-200">Detailed Description</label>
-            <textarea name="detailedDescription" id="detailedDescription"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500"
-              required></textarea>
+          <div class="mb-4">
+            <label for="detailedDescription" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Detailed Description</label>
+            <div id="detailedDescriptionContainer" class="block w-full border border-gray-300 rounded-md shadow-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"></div>
+            <textarea name="detailedDescription" id="detailedDescription" class="hidden"></textarea>
           </div>
 
-          <div>
-            <label for="features" class="block text-gray-700 dark:text-gray-200">Features (comma-separated)</label>
-            <input type="text" name="features" id="features"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" />
+          <div class="mb-4">
+            <label for="features" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Features (comma-separated)</label>
+            <input type="text" name="features" id="features" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" />
           </div>
 
-          <div>
-            <label for="added" class="block text-gray-700 dark:text-gray-200">Added (comma-separated)</label>
-            <input type="text" name="added" id="added"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" />
+          <div class="mb-4">
+            <label for="added" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Added (comma-separated)</label>
+            <input type="text" name="added" id="added" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" />
           </div>
 
-          <div>
-            <label for="fixed" class="block text-gray-700 dark:text-gray-200">Fixed (comma-separated)</label>
-            <input type="text" name="fixed" id="fixed"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" />
+          <div class="mb-4">
+            <label for="fixed" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Fixed (comma-separated)</label>
+            <input type="text" name="fixed" id="fixed" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" />
           </div>
 
-          <div>
-            <label for="bugs" class="block text-gray-700 dark:text-gray-200">Bugs (comma-separated)</label>
-            <input type="text" name="bugs" id="bugs"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" />
+          <div class="mb-4">
+            <label for="bugs" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Bugs (comma-separated)</label>
+            <input type="text" name="bugs" id="bugs" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" />
           </div>
 
-          <div>
-            <label for="releasedAt" class="block text-gray-700 dark:text-gray-200">Released At</label>
-            <input type="date" name="releasedAt" id="releasedAt"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500"
-              required />
+          <div class="mb-4">
+            <label for="releasedAt" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Released At</label>
+            <input type="date" name="releasedAt" id="releasedAt" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required />
           </div>
 
-          <div>
-            <label for="developers" class="block text-gray-700 dark:text-gray-200">Developers (comma-separated)</label>
-            <input type="text" name="developers" id="developers"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500" />
+          <div class="mb-4">
+            <label for="developers" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Developers (comma-separated)</label>
+            <input type="text" name="developers" id="developers" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" />
           </div>
 
-          <div>
-            <label for="downloadLink" class="block text-gray-700 dark:text-gray-200">Download Link</label>
-            <input type="url" name="downloadLink" id="downloadLink"
-              class="mt-1 block w-full border border-gray-300 dark:border-gray-700 rounded-md shadow-sm focus:ring focus:ring-blue-500 focus:border-blue-500"
-              required />
+          <div class="mb-4">
+            <label for="downloadLink" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Download Link</label>
+            <input type="url" name="downloadLink" id="downloadLink" class="block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" required />
           </div>
 
-          <button type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded shadow-md hover:bg-blue-600 transition duration-300">Create
-            Version</button>
+          <div class="flex justify-between items-center mt-6">
+            <a href="/dashboard/versions" class="text-blue-500 hover:text-blue-700 text-white px-4 py-2 rounded">
+              <i class="bi bi-arrow-left"></i> Back
+            </a>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Create Version</button>
+          </div>
         </form>
       </div>
-    </main>
+    </div>
+  </main>
+
+  <!-- Quill JS -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script>
+    var shortDescriptionEditor = new Quill('#shortDescriptionContainer', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          ['bold', 'italic', 'underline'],
+          [{ 'align': [] }],
+          ['link']
+        ]
+      }
+    });
+
+    var detailedDescriptionEditor = new Quill('#detailedDescriptionContainer', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          ['bold', 'italic', 'underline'],
+          [{ 'align': [] }],
+          ['link']
+        ]
+      }
+    });
+
+    document.querySelector('form').addEventListener('submit', function() {
+      document.getElementById('shortDescription').value = shortDescriptionEditor.root.innerHTML;
+      document.getElementById('detailedDescription').value = detailedDescriptionEditor.root.innerHTML;
+    });
+  </script>
 </body>
 
 </html>

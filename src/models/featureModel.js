@@ -15,6 +15,11 @@ const featureModel = new mongoose.Schema({
     type: String,
     required: true,
   },
+  project: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Project',
+    required: true,
+  },
   status: {
     type: String,
     enum: ['Planned', 'In Progress', 'Completed'],
@@ -32,11 +37,6 @@ const featureModel = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now,
-  },
-  project: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Project',
-    required: true,
   },
 });
 

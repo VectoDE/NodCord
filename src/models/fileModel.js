@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
+// Define the file schema
 const fileModel = new mongoose.Schema({
   id: {
     type: String,
@@ -13,6 +14,9 @@ const fileModel = new mongoose.Schema({
   path: {
     type: String,
     required: true,
+  },
+  url: {
+    type: String,
   },
   size: {
     type: Number,
@@ -32,11 +36,10 @@ fileModel.pre('save', function (next) {
   if (!this.id) {
     this.id = `File-${uuidv4()}`;
   }
+  const baseURL = process.env.BASE_URL;
+  const port = process.env.NODE_ENV === 'development' ? `:${process.env.API_PORT}` : '';
+  this.url = `${baseURL}${port}/${this.path}`;
   next();
-});
-
-fileModel.virtual('url').get(function() {
-  return `${process.env.BASE_URL}/${this.path}`;
 });
 
 fileModel.virtual('name').get(function() {

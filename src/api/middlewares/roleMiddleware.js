@@ -49,7 +49,7 @@ const checkRole = (roles) => {
 
       req.user = user;
       req.userRole = userRole;
-      logger.info(`[MIDDLEWARE] Benutzer mit ID ${user._id} und Rolle ${user.role} autorisiert. Weiterleitung zur nächsten Middleware.`);
+      logger.info(`[MIDDLEWARE] Benutzer mit ID ${user._id}, Namen ${user.username} und Rolle ${user.role} autorisiert. Weiterleitung zur nächsten Middleware.`);
       next();
     } catch (err) {
       logger.error('[MIDDLEWARE] Fehler beim Überprüfen der Rolle:', err);
