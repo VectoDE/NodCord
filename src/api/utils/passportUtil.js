@@ -3,8 +3,6 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
 const DiscordStrategy = require('passport-discord').Strategy;
-const TwitchStrategy = require('passport-twitch').Strategy;
-const LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 const User = require('../../models/userModel');
 
 // Helper function to generate a unique username
@@ -22,7 +20,7 @@ const generateUniqueUsername = async (baseUsername) => {
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID,
   clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: `http://localhost:3000/api/auth/google/callback`
+  callbackURL: `${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/api/auth/google/callback`
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
@@ -59,7 +57,7 @@ async (accessToken, refreshToken, profile, done) => {
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: `http://localhost:3000/api/auth/github/callback`
+  callbackURL: `${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/api/auth/github/callback`
 },
 async (accessToken, refreshToken, profile, done) => {
   try {
@@ -96,7 +94,7 @@ async (accessToken, refreshToken, profile, done) => {
 passport.use(new DiscordStrategy({
   clientID: process.env.DISCORD_CLIENT_ID,
   clientSecret: process.env.DISCORD_CLIENT_SECRET,
-  callbackURL: `http://localhost:3000/api/auth/discord/callback`,
+  callbackURL: `${process.env.CLIENT_HTTPS}://${process.env.CLIENT_BASE_URL}:${process.env.CLIENT_PORT}/api/auth/discord/callback`,
   scope: ['identify', 'email']
 },
 async (accessToken, refreshToken, profile, done) => {
