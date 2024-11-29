@@ -11,24 +11,7 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .env
 .env.local
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-tests/
-
 # Dependency directories
 node_modules/
 build/
-
-# Snowpack dependency directory (https://snowpack.dev/)
-web_modules/
-
-# Optional npm cache directory
-.npm
-
-# Optional eslint cache
-.eslintcache
-
-# Optional stylelint cache
-.stylelintcache
-
-# Sentry Config File
-.sentryclirc
+dist/
