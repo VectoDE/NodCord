@@ -109,7 +109,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
     "mongodb": "^6.8.0",
-    "mongoose": "^8.5.2",
+    "mongoose": "^8.8.3",
     "mongoose-findorcreate": "^4.0.0",
     "morgan": "^1.10.0",
     "msal-node": "^0.0.1-security",
