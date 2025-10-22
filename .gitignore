@@ -2,24 +2,21 @@
 logs
 *.log
 npm-debug.log*
-
-# Diagnostic reports (https://nodejs.org/api/report.html)
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
-# misc
-.DS_Store
-.env
-.env.local
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
-tests/
+dist/
 
 # Dependency directories
 node_modules/
-build/
+jspm_packages/
+@types/
 
-# Snowpack dependency directory (https://snowpack.dev/)
-web_modules/
+# TypeScript cache
+*.tsbuildinfo
 
 # Optional npm cache directory
 .npm
@@ -29,6 +26,13 @@ web_modules/
 
 # Optional stylelint cache
 .stylelintcache
+
+# dotenv environment variable files
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
 
 # Sentry Config File
 .sentryclirc
