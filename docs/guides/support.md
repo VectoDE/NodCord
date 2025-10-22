@@ -6,7 +6,7 @@ Wenn du Hilfe zu NodCord benötigst, gibt es mehrere Möglichkeiten, Unterstütz
 
 ### Dokumentation
 
-Lies die [DOCUMENTATION.md](DOCUMENTATION.md) für detaillierte Anweisungen zur Installation, Konfiguration und Nutzung des Projekts.
+Lies die ausführliche [Projekt-Dokumentation](../reference/documentation.md) für detaillierte Anweisungen zur Installation, Konfiguration und Nutzung des Projekts.
 
 ### GitHub Issues
 
