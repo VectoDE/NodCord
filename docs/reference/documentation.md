@@ -2,32 +2,34 @@
 
 ## Einführung
 
-NodCord ist eine Express-basierte Node.js-API mit integriertem Discord-Bot. Die Plattform kombiniert klassische REST-Endpunkte mit Bot-Funktionalität, damit Automatisierungen sowohl per HTTP als auch direkt im Discord-Ökosystem steuerbar sind. Dieses Dokument fasst die wichtigsten Arbeitsabläufe und Projektstrukturen zusammen.
+NodCord ist eine Express-basierte API mit integriertem Discord-Bot, geschrieben in TypeScript. Die Persistenz erfolgt über Prisma gegen eine MySQL-Datenbank. Dieses Dokument fasst die wichtigsten Arbeitsabläufe, Werkzeuge und Projektstrukturen zusammen.
 
-## Installation
+## Installation & Setup
 
 ### Voraussetzungen
 
-- Node.js >= 16 (Node 18 LTS empfohlen)
-- npm >= 8
-- Eine MongoDB-Instanz (lokal oder gehostet)
-- Optional: Redis-Instanz für Caching/Sessions
+- Node.js >= 18 (LTS empfohlen)
+- npm >= 9
+- Zugriff auf eine MySQL 8.x oder kompatible Instanz
+- Optional: Redis für Sessions/Caching
 
-### Installationsschritte
+### Setup-Schritte
 
 1. Repository klonen:
    ```bash
    git clone https://github.com/vectode/NodCord.git
-   ```
-2. Projektverzeichnis betreten:
-   ```bash
    cd NodCord
    ```
-3. Abhängigkeiten installieren:
+2. Abhängigkeiten installieren:
    ```bash
    npm install
    ```
-4. Eine `.env`-Datei auf Basis der bereitgestellten Beispielvariablen anlegen und die benötigten Secrets (Discord-Token, Datenbank-URLs etc.) pflegen.
+3. Prisma vorbereiten:
+   ```bash
+   npx prisma generate
+   npx prisma migrate deploy
+   ```
+4. `.env` anhand der Beispielvariablen anlegen (siehe README) und MySQL-/Discord-Zugangsdaten pflegen.
 
 ## Entwicklungs- und Betriebs-Workflows
 
@@ -35,24 +37,28 @@ NodCord ist eine Express-basierte Node.js-API mit integriertem Discord-Bot. Die 
 
 - Entwicklung mit automatischem Reload:
   ```bash
-  npm run start:dev
+  npm run dev
   ```
-- Produktion ohne Build-Artefakte (direkt aus dem Quellcode):
+- Produktion nach Build (lädt kompilierten Code aus `dist/`):
   ```bash
+  npm run build
   npm start
   ```
-- Produktion nach Erstellung eines Builds (siehe unten):
-  ```bash
-  npm run start:prod
-  ```
 
-### Build & Packaging
+### Prisma & Datenbank
 
-- Produktions-Build erzeugen (führt `build.js` aus, räumt alte Artefakte auf und erstellt das `build/`-Verzeichnis):
+- Migrationen deployen:
   ```bash
-  npm run start:build
+  npm run prisma:migrate
   ```
-- Nach dem Build startet `npm run start:prod` den Server aus dem `build/`-Verzeichnis.
+- Prisma Client neu generieren (bei Schemaänderungen):
+  ```bash
+  npm run prisma:generate
+  ```
+- Prisma Studio öffnen:
+  ```bash
+  npm run prisma:studio
+  ```
 
 ### Tests & Code-Stil
 
@@ -60,70 +66,38 @@ NodCord ist eine Express-basierte Node.js-API mit integriertem Discord-Bot. Die 
   ```bash
   npm test
   ```
-- Code-Formatierung vereinheitlichen:
+- Formatierung prüfen bzw. anwenden:
   ```bash
-  npm run prettify
+  npm run lint
+  npm run format
   ```
 
 ## API-Referenz (Kurzüberblick)
 
-Die vollständigen Controller und Routen befinden sich unter `src/api`. Häufig genutzte Endpunkte sind unter anderem:
+Die Controller und Routen liegen unter `src/api`. Häufig genutzte Endpunkte:
 
-- `GET /api/discord/status` – gibt den aktuellen Status des Discord-Bots zurück.
-- `POST /api/discord/message` – sendet eine Nachricht an einen angegebenen Kanal.
+- `GET /api/discord/status` – Status des Discord-Bots.
+- `POST /api/discord/message` – Sendet eine Nachricht an einen Kanal.
 
-Ergänzende Module (z. B. Authentifizierung, Blog, Tickets, Commerce) sind jeweils in eigenen Controllern und Routen gekapselt. Die Dateien in `src/api/routes` bilden den Einstiegspunkt für weitere Endpunkte.
+Weitere Module (Auth, Commerce, Tickets, Integrationen) werden sukzessive auf Prisma-basierte Services migriert. Einstiegspunkte sind `src/api/routes` sowie die zugehörigen Controller.
 
-## Discord-Bot (Kurzüberblick)
+## Discord-Bot
 
-Der Discord-Bot wird über `src/bot/index.js` initialisiert. Befehle und Events sind modular aufgebaut:
+Der Bot startet derzeit über `src/bot/index.js` (Migration nach TypeScript ist in Arbeit) und nutzt gemeinsam genutzte Services. Kommandos und Events werden unter `src/bot/commands` bzw. `src/bot/events` verwaltet.
 
-- Prefix-/Slash-Kommandos: `src/bot/commands/`
-- Ereignishandler: `src/bot/events/`
-- Hilfsfunktionen: `src/bot/functions/`
+## Prisma Schema & Datenmodelle
 
-Standardbefehle wie `!ping` oder `!info` stehen bereit und können über weitere Module ergänzt werden.
+- Schema-Datei: `prisma/schema.prisma`
+- Standardmodelle: `User`, `Role`, `Project`, `Ticket` (erweiterbar)
+- Migrationen: `prisma/migrations/`
+- Seeds: `prisma/seed.ts` oder TypeScript-Dateien unter `src/seeds/`
 
 ## Verzeichnisstruktur
 
-```text
-NodCord/
-├── CODE_OF_CONDUCT.md
-├── README.md
-├── build.js
-├── docs/
-│   ├── guides/
-│   │   ├── faq.md
-│   │   ├── installation.md
-│   │   └── support.md
-│   ├── meta/
-│   │   └── folder-structure.md
-│   ├── overview/
-│   │   └── architecture.md
-│   ├── planning/
-│   │   ├── detailed-todo.md
-│   │   └── todo.md
-│   ├── process/
-│   │   ├── changelog.md
-│   │   ├── contributing.md
-│   │   └── release.md
-│   └── reference/
-│       └── documentation.md
-├── nodemon.json
-├── package-lock.json
-├── package.json
-├── tsconfig.json
-└── src/
-    ├── api/
-    ├── bot/
-    ├── client/
-    ├── config/
-    ├── database/
-    ├── models/
-    ├── public/
-    ├── scripts/
-    ├── seeds/
-    └── views/
-```
+Siehe [`docs/meta/folder-structure.md`](../meta/folder-structure.md) für eine vollständige Übersicht.
 
-Weitere Details zu den einzelnen Teilbereichen finden sich in den spezialisierten Dokumenten innerhalb des `docs/`-Ordners.
+## Weitere Ressourcen
+
+- [Contributing Guide](../process/contributing.md)
+- [Migrationsfahrplan](../planning/todo.md)
+- [Architekturübersicht](../overview/architecture.md)

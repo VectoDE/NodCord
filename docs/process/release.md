@@ -5,24 +5,32 @@ Dieser Leitfaden beschreibt den Prozess zur Erstellung eines neuen Releases von 
 ### Schritte
 
 1. **Version aktualisieren**
+   - Aktualisiere die Version in der `package.json`.
+   - Ergänze den Eintrag im `docs/process/changelog.md` mit Versionsnummer und Datum.
 
-   - Aktualisiere die Version in der `package.json` Datei.
-   - Erstelle eine neue Zeile im `CHANGELOG.md` mit der neuen Versionsnummer und dem Datum.
+2. **Prisma prüfen**
+   - Stelle sicher, dass alle Migrationen committed sind (`prisma/migrations`).
+   - Führe `npm run prisma:migrate` gegen eine frische MySQL-Instanz aus.
+   - Generiere den Prisma Client neu (`npm run prisma:generate`).
 
-2. **Tests ausführen**
+3. **Tests & Builds**
+   - `npm run build`
+   - `npm test`
+   - Optional: Smoke-Tests gegen eine Staging-Umgebung durchführen.
 
-   - Stelle sicher, dass alle Tests erfolgreich sind.
-   - Führe manuelle Tests durch, um sicherzustellen, dass alle Funktionen wie erwartet arbeiten.
+4. **Code einfrieren**
+   - Keine neuen Features mehr, nur kritische Fixes.
+   - Prüfe offene Pull Requests und Issues.
 
-3. **Code einfrieren**
+5. **Release erstellen**
+   - Tag auf GitHub setzen (`git tag vX.Y.Z && git push origin vX.Y.Z`).
+   - Release Notes aus dem Changelog übernehmen.
 
-   - Keine neuen Funktionen oder Änderungen mehr, außer kritische Fehlerbehebungen.
+6. **Veröffentlichen**
+   - Merge des Release-Branches in `main`.
+   - Prisma Migrationen auf Produktion ausführen.
+   - Monitoring und Alerts aktivieren.
 
-4. **Release erstellen**
-
-   - Erstelle ein neues Release auf GitHub und tagge es mit der neuen Versionsnummer.
-   - Füge die Änderungen aus dem `CHANGELOG.md` zur Release-Beschreibung hinzu.
-
-5. **Veröffentlichen**
-   - Merge den Release-Branch in den Hauptbranch (`main` oder `master`).
-   - Stelle sicher, dass die neue Version auf allen Plattformen verfügbar ist.
+7. **Nachbereitung**
+   - Release in der Roadmap markieren.
+   - Feedback aus der Community sammeln.

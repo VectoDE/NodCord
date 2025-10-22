@@ -24,7 +24,11 @@ Beispiele für inakzeptables Verhalten:
 
 ### Durchsetzung
 
-Vorfälle von missbräuchlichem, belästigendem oder anderweitig inakzeptablem Verhalten können den Projektverantwortlichen unter [Kontaktadresse einfügen] gemeldet werden. Alle Beschwerden werden geprüft und untersucht und werden zu einer Antwort führen, die den Umständen entsprechend notwendig und angemessen erscheint. Das Projektteam ist verpflichtet, über die Berichtenden von Vorfällen die Vertraulichkeit zu wahren.
+Vorfälle von missbräuchlichem, belästigendem oder anderweitig inakzeptablem Verhalten können den Projektverantwortlichen unter [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) oder per Discord (`vecto.`) gemeldet werden. Alle Beschwerden werden geprüft und untersucht und führen zu einer Antwort, die den Umständen entsprechend notwendig und angemessen erscheint. Das Projektteam verpflichtet sich, über die Berichtenden von Vorfällen die Vertraulichkeit zu wahren.
+
+### Kollaboratives Arbeiten
+
+NodCord setzt auf eine enge Zusammenarbeit zwischen API-, Bot- und Datenbank-Teams. Bitte respektiere die vereinbarten Review-Prozesse für TypeScript-Code, Prisma-Schemata und MySQL-Migrationen, um konsistente Ergebnisse zu gewährleisten.
 
 ### Attribution
 

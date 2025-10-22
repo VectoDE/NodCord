@@ -1,46 +1,49 @@
 ## Installation
 
-Diese Anleitung führt dich durch die Installation von NodCord.
+Diese Anleitung führt dich durch die Installation von NodCord auf Basis von TypeScript, Prisma und MySQL.
 
 ### Voraussetzungen
 
-- Node.js (Version 14 oder höher)
-- npm (Node Package Manager)
+- Node.js (Version 18 oder höher)
+- npm (Version 9 oder höher)
+- MySQL 8.x oder kompatibel (z. B. MariaDB ≥ 10.6)
 - Git
 
 ### Schritte
 
-1. Klone das Repository:
-
+1. Repository klonen:
    ```sh
    git clone https://github.com/deinbenutzername/NodCord.git
    ```
 
-2. Navigiere in das Projektverzeichnis:
-
+2. In das Projektverzeichnis wechseln:
    ```sh
    cd NodCord
    ```
 
-3. Installiere die Abhängigkeiten:
-
+3. Abhängigkeiten installieren:
    ```sh
    npm install
    ```
 
-4. Erstelle eine `.env`-Datei im Stammverzeichnis und füge die folgenden Variablen hinzu:
-
+4. Prisma Client generieren und Migrationen anwenden:
+   ```sh
+   npx prisma generate
+   npx prisma migrate deploy
    ```
+
+5. `.env` Datei anlegen und mindestens folgende Werte setzen:
+   ```env
+   DATABASE_URL="mysql://user:pass@localhost:3306/nodcord"
    DISCORD_TOKEN=dein_discord_token
-   CLIENT_ID=dein_client_id
-   GUILD_ID=dein_guild_id
+   DISCORD_CLIENT_ID=deine_client_id
+   DISCORD_GUILD_ID=deine_guild_id
    PORT=3000
    ```
 
-5. Starte den Server:
-
+6. Entwicklungsserver starten:
    ```sh
-   npm start
+   npm run dev
    ```
 
-6. Der Server läuft nun auf `http://localhost:3000`.
+Der Server läuft anschließend unter `http://localhost:3000`. Für Produktionsumgebungen führe zuvor `npm run build` aus und starte anschließend mit `npm start`.

@@ -1,16 +1,18 @@
 {
   "name": "nodcord",
   "version": "0.4.7",
-  "description": "Eine Node.js-API mit Express.js und einem integrierten Discord-Bot",
-  "main": "src/app.js",
+  "description": "Eine TypeScript-basierte Express-API mit integriertem Discord-Bot und Prisma-MySQL-Backend",
+  "main": "dist/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "start:dev": "nodemon src/server.js",
-    "start:test": "",
-    "start:build": "node build.js",
-    "start:prod": "node build/server.js",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc --project tsconfig.json",
+    "start": "node dist/server.js",
     "test": "jest",
-    "prettify": "prettier --write ."
+    "lint": "prettier --check .",
+    "format": "prettier --write .",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate deploy",
+    "prisma:studio": "prisma studio"
   },
   "browserslist": {
     "production": [
@@ -38,11 +40,9 @@
     "discord",
     "api",
     "bot",
-    "mongodb",
-    "ejs",
-    "jest",
-    "pm2",
-    "nodemon"
+    "typescript",
+    "prisma",
+    "mysql"
   ],
   "author": "Vecto. (Tim Hauke)",
   "contributors": [
@@ -52,21 +52,24 @@
   "license": "MIT",
   "files": [
     "src",
-    "build.js",
+    "dist",
     "docs",
+    "prisma",
     "README.md",
     "LICENSE",
-    "SECURITY.md"
+    "SECURITY.md",
+    "CONTRIBUTING.md"
   ],
   "engines": {
-    "node": ">=14.0.0",
-    "npm": ">=6.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "dependencies": {
     "@azure/msal-node": "^2.12.0",
     "@babel/plugin-transform-runtime": "^7.25.4",
     "@babel/preset-react": "^7.24.7",
     "@pm2/io": "^6.0.1",
+    "@prisma/client": "^5.18.0",
     "@sentry/cli": "^2.36.1",
     "@sentry/node": "^8.29.0",
     "@sentry/profiling-node": "^8.29.0",
@@ -109,6 +112,7 @@
     "morgan": "^1.10.0",
     "msal-node": "^0.0.1-security",
     "multer": "^1.4.4",
+    "mysql2": "^3.11.0",
     "net-tools": "^1.0.1",
     "node-teamspeak": "^1.0.10",
     "nodemailer": "^6.9.14",
@@ -162,7 +166,10 @@
     "html-webpack-plugin": "^5.6.0",
     "nodemon": "^2.0.19",
     "prettier": "^2.5.1",
+    "prisma": "^5.18.0",
     "style-loader": "^3.3.4",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^4.10.0"
   },
