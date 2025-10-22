@@ -1,5 +1,5 @@
-// Prisma Schema für NodCord
-// MySQL ist die primäre Datenbank. Passe Models bei Bedarf an die aktuellen Anforderungen an.
+// Prisma Schema for NodCord
+// Generated to mirror the Mongoose models with production-grade defaults and constraints
 
 generator client {
   provider = "prisma-client-js"
@@ -10,63 +10,1016 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id            String   @id @default(cuid())
-  email         String   @unique
-  username      String
-  passwordHash  String
-  discordId     String?  @unique
-  roles         UserRole[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  projects      Project[]
-  tickets       Ticket[]
+enum BugSeverity {
+  LOW    @map("Low")
+  MEDIUM @map("Medium")
+  HIGH   @map("High")
 }
 
-model Role {
-  id          Int        @id @default(autoincrement())
-  name        String     @unique
-  description String?
-  users       UserRole[]
-  createdAt   DateTime   @default(now())
+enum BugStatus {
+  OPEN        @map("Open")
+  IN_PROGRESS @map("In Progress")
+  RESOLVED    @map("Resolved")
+  CLOSED      @map("Closed")
 }
 
-model UserRole {
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String
-  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
-  roleId Int
-
-  @@id([userId, roleId])
+enum ChatType {
+  MEMBER_TO_MEMBER       @map("member_to_member")
+  MEMBER_TO_ORGANIZATION @map("member_to_organization")
+  MEMBER_TO_GROUP        @map("member_to_group")
 }
 
-model Project {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  ownerId     String
-  tickets     Ticket[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+enum CustomerOrderStatus {
+  PENDING   @map("Pending")
+  SHIPPED   @map("Shipped")
+  DELIVERED @map("Delivered")
+  CANCELLED @map("Cancelled")
 }
 
-model Ticket {
-  id          String    @id @default(cuid())
-  title       String
-  content     String
-  status      TicketStatus @default(OPEN)
-  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId    String
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  projectId   String
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+enum FavoriteType {
+  PROJECT @map("project")
+  PRODUCT @map("product")
+  TASK    @map("task")
+  COMPANY @map("company")
+}
+
+enum FeatureStatus {
+  PLANNED     @map("Planned")
+  IN_PROGRESS @map("In Progress")
+  COMPLETED   @map("Completed")
+}
+
+enum LogLevel {
+  INFO  @map("info")
+  WARN  @map("warn")
+  ERROR @map("error")
+}
+
+enum OrderStatus {
+  PENDING   @map("Pending")
+  SHIPPED   @map("Shipped")
+  DELIVERED @map("Delivered")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD   @map("credit_card")
+  APPLE_PAY     @map("apple_pay")
+  GOOGLE_PAY    @map("google_pay")
+  AMAZON_PAY    @map("amazon_pay")
+  STRIPE        @map("stripe")
+  PAYPAL        @map("paypal")
+  BANK_TRANSFER @map("bank_transfer")
+}
+
+enum PaymentStatus {
+  PENDING   @map("pending")
+  COMPLETED @map("completed")
+  FAILED    @map("failed")
+}
+
+enum PriorityLevel {
+  LOW    @map("Low")
+  MEDIUM @map("Medium")
+  HIGH   @map("High")
+}
+
+enum ProjectStatus {
+  NOT_STARTED @map("Not Started")
+  IN_PROGRESS @map("In Progress")
+  COMPLETED   @map("Completed")
+  ON_HOLD     @map("On Hold")
+}
+
+enum ReturnStatus {
+  REQUESTED @map("Requested")
+  APPROVED  @map("Approved")
+  REJECTED  @map("Rejected")
+  COMPLETED @map("Completed")
+}
+
+enum SharePlatform {
+  FACEBOOK @map("Facebook")
+  TWITTER  @map("Twitter")
+  LINKEDIN @map("LinkedIn")
+  OTHER    @map("Other")
+}
+
+enum StoryStatus {
+  BACKLOG     @map("Backlog")
+  IN_PROGRESS @map("In Progress")
+  COMPLETED   @map("Completed")
+}
+
+enum TaskCategory {
+  DEVELOPMENT @map("development")
+  MARKETING   @map("marketing")
+  DESIGN      @map("design")
+  MANAGEMENT  @map("management")
+  OTHER       @map("other")
+}
+
+enum TaskStatus {
+  PENDING     @map("pending")
+  IN_PROGRESS @map("in-progress")
+  COMPLETED   @map("completed")
+  ON_HOLD     @map("on-hold")
+}
+
+enum TeamStatus {
+  ACTIVE   @map("active")
+  INACTIVE @map("inactive")
+}
+
+enum TeamType {
+  PROJECT    @map("project")
+  DEPARTMENT @map("department")
+  ESPORTS    @map("esports")
+  OTHER      @map("other")
 }
 
 enum TicketStatus {
-  OPEN
-  IN_PROGRESS
-  RESOLVED
-  CLOSED
+  OPEN   @map("open")
+  CLOSED @map("closed")
+}
+
+enum UserRole {
+  USER      @map("user")
+  ADMIN     @map("admin")
+  MODERATOR @map("moderator")
+}
+
+model Afk {
+  id      String  @id @default(uuid())
+  user    String  @map("User")
+  guild   String  @map("Guild")
+  message String? @map("Message")
+
+  @@unique([guild, user])
+  @@map("AFK")
+}
+
+model Antilink {
+  id    String @id @default(uuid())
+  guild String @map("Guild")
+  perms String @map("Perms")
+
+  @@unique([guild])
+  @@map("Antilink")
+}
+
+model ApiKey {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  key       String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  user User @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("ApiKey")
+}
+
+model ApiSystem {
+  id        String   @id @default(uuid())
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("ApiSystem")
+}
+
+model Autoresponder {
+  id            String   @id @default(uuid())
+  guildId       String
+  autoresponses Json     @default("[]")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([guildId])
+  @@map("AutoResponder")
+}
+
+model Balance {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  balance     Decimal  @default(100) @db.Decimal(18, 2)
+  lastUpdated DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("Balance")
+}
+
+model Ban {
+  id       String   @id @default(uuid())
+  userId   String
+  username String
+  guildId  String
+  reason   String
+  bannedAt DateTime @default(now())
+
+  @@index([guildId])
+  @@map("Ban")
+}
+
+model BetaKey {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  name      String
+  isActive  Boolean  @default(true)
+  userId    String?
+  createdAt DateTime @default(now())
+
+  user User? @relation("UserBetaKeys", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@map("BetaKey")
+}
+
+model BetaSystem {
+  id        String   @id @default(uuid())
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("BetaSystem")
+}
+
+model Blog {
+  id                String   @id @default(uuid())
+  picture           String?
+  title             String
+  shortDescription  String
+  detailDescription String   @db.Text
+  projectId         String?
+  author            String
+  tags              Json     @default("[]")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  project  Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  comments Comment[]
+  likes    Like[]
+  dislikes Dislike[]
+  shares   Share[]
+
+  @@index([projectId])
+  @@map("Blog")
+}
+
+model Bug {
+  id          String      @id @default(uuid())
+  title       String
+  description String      @db.Text
+  severity    BugSeverity @default(MEDIUM)
+  status      BugStatus   @default(OPEN)
+  projectId   String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("Bug")
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("Category")
+}
+
+model Chat {
+  id           String   @id @default(uuid())
+  participants Json     @default("[]")
+  type         ChatType
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  messages Message[]
+
+  @@map("Chat")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String   @db.Text
+  authorId  String
+  blogId    String
+  createdAt DateTime @default(now())
+
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  blog   Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([authorId])
+  @@index([blogId])
+  @@map("Comment")
+}
+
+model Company {
+  id           String   @id @default(uuid())
+  name         String
+  description  String   @default("") @db.Text
+  industry     String   @default("")
+  headquarters String   @default("")
+  foundedDate  String   @default("")
+  employees    Int      @default(0)
+  website      String   @default("")
+  createdDate  DateTime @default(now())
+  updatedDate  DateTime @updatedAt
+
+  @@index([name], map: "idx_company_name")
+  @@map("Company")
+}
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  phone     String?
+  address   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders         Order[]
+  customerOrders CustomerOrder[]
+
+  @@map("Customer")
+}
+
+model CustomerOrder {
+  id              String              @id @default(uuid())
+  customerId      String
+  orderNumber     String              @unique
+  orderDate       DateTime            @default(now())
+  status          CustomerOrderStatus @default(PENDING)
+  items           Json                @default("[]")
+  totalAmount     Decimal             @db.Decimal(18, 2)
+  shippingAddress String
+  billingAddress  String
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  returns  Return[]
+
+  @@index([customerId])
+  @@map("CustomerOrder")
+}
+
+model DeveloperProgram {
+  id        String   @id @default(uuid())
+  userId    String
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("DeveloperProgram")
+}
+
+model Dislike {
+  id        String   @id @default(uuid())
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+  @@index([blogId])
+  @@map("Dislike")
+}
+
+model Favorite {
+  id          String       @id @default(uuid())
+  userId      String
+  type        FavoriteType
+  itemId      String
+  createdDate DateTime     @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("Favorite")
+}
+
+model Feature {
+  id          String        @id @default(uuid())
+  title       String
+  description String        @db.Text
+  projectId   String
+  status      FeatureStatus @default(PLANNED)
+  priority    PriorityLevel @default(MEDIUM)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("Feature")
+}
+
+model Feedback {
+  id           String   @id @default(uuid())
+  userId       String
+  guildId      String
+  feedbackText String   @db.Text
+  createdAt    DateTime @default(now())
+
+  @@index([guildId])
+  @@map("Feedback")
+}
+
+model File {
+  id         String   @id @default(uuid())
+  filename   String
+  path       String
+  url        String?
+  size       Int
+  mimetype   String
+  uploadedAt DateTime @default(now())
+
+  @@unique([path])
+  @@map("File")
+}
+
+model Game {
+  id                String    @id @default(uuid())
+  picture           String?
+  title             String
+  shortDescription  String
+  detailDescription String?
+  genre             String?
+  releaseDate       DateTime?
+  createdAt         DateTime  @default(now())
+  developer         String?
+  platforms         Json      @default("[]")
+  ratings           Json      @default("[]")
+
+  @@map("Game")
+}
+
+model Group {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  members     Json     @default("[]")
+  createdAt   DateTime @default(now())
+
+  @@map("Group")
+}
+
+model Issue {
+  id          String    @id @default(uuid())
+  title       String
+  description String    @db.Text
+  status      BugStatus @default(OPEN)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  projectId   String
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("Issue")
+}
+
+model JoinRole {
+  id       String @id @default(uuid())
+  guild    String @map("Guild")
+  roleId   String @map("RoleID")
+  roleName String @map("RoleName")
+
+  @@unique([guild, roleId])
+  @@map("JoinRole")
+}
+
+model Kick {
+  id       String   @id @default(uuid())
+  userId   String
+  username String
+  guildId  String
+  reason   String
+  kickedAt DateTime @default(now())
+
+  @@index([guildId])
+  @@map("Kick")
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  blogId    String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, blogId])
+  @@index([blogId])
+  @@map("Like")
+}
+
+model Log {
+  id             String   @id @default(uuid())
+  message        String   @db.Text
+  level          LogLevel @default(INFO)
+  timestamp      DateTime @default(now())
+  additionalData Json?
+
+  @@map("Log")
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  chatId    String
+  senderId  String
+  content   String   @db.Text
+  timestamp DateTime @default(now())
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+
+  @@index([chatId])
+  @@map("Message")
+}
+
+model Mute {
+  id        String    @id @default(uuid())
+  guildId   String
+  userId    String
+  reason    String    @default("No reason provided")
+  mutedAt   DateTime  @default(now())
+  duration  Int
+  unmutedAt DateTime?
+
+  @@index([guildId])
+  @@map("Mute")
+}
+
+model Newsletter {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String?
+  subscribedAt DateTime @default(now())
+
+  @@map("Newsletter")
+}
+
+model Order {
+  id             String      @id @default(uuid())
+  customerId     String
+  products       Json        @default("[]")
+  totalAmount    Decimal     @db.Decimal(18, 2)
+  status         OrderStatus @default(PENDING)
+  trackingNumber String?
+  createdAt      DateTime    @default(now())
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId])
+  @@map("Order")
+}
+
+model Organization {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  foundedDate DateTime @default(now())
+  members     Json     @default("[]")
+
+  @@map("Organization")
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  userId        String
+  amount        Decimal       @db.Decimal(18, 2)
+  method        PaymentMethod
+  status        PaymentStatus @default(PENDING)
+  transactionId String?
+  createdDate   DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("Payment")
+}
+
+model Platform {
+  id          String    @id @default(uuid())
+  picture     String?
+  title       String
+  description String?
+  releaseDate DateTime?
+  createdAt   DateTime  @default(now())
+
+  @@map("Platform")
+}
+
+model Prefix {
+  id      String @id @default(uuid())
+  guildId String @unique
+  prefix  String
+
+  @@map("Prefix")
+}
+
+model Product {
+  id                String   @id @default(uuid())
+  picture           String?
+  title             String
+  shortDescription  String
+  detailDescription String   @default("") @db.Text
+  price             Decimal  @db.Decimal(18, 2)
+  category          String   @default("")
+  stock             Int      @default(0)
+  createdDate       DateTime @default(now())
+  updatedDate       DateTime @updatedAt
+
+  @@map("Product")
+}
+
+model Project {
+  id                String        @id @default(uuid())
+  picture           String?
+  title             String
+  shortDescription  String
+  detailDescription String        @default("") @db.Text
+  status            ProjectStatus @default(NOT_STARTED)
+  startDate         DateTime      @default(now())
+  endDate           DateTime?
+  members           Json          @default("[]")
+  tags              Json          @default("[]")
+  createdDate       DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  blogs    Blog[]
+  bugs     Bug[]
+  features Feature[]
+  issues   Issue[]
+  stories  Story[]
+
+  @@index([status])
+  @@map("Project")
+}
+
+model Report {
+  id             String   @id @default(uuid())
+  userId         String
+  guildId        String
+  reportedUserId String
+  reason         String   @db.Text
+  createdAt      DateTime @default(now())
+
+  @@index([guildId])
+  @@map("Report")
+}
+
+model Return {
+  id           String       @id @default(uuid())
+  orderId      String
+  returnNumber String       @unique
+  returnDate   DateTime     @default(now())
+  reason       String
+  status       ReturnStatus @default(REQUESTED)
+  items        Json         @default("[]")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  order CustomerOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("Return")
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  displayName String
+  color       String   @default("#000000")
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("Role")
+}
+
+model Roleplay {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  characterName    String
+  characterLevel   Int      @default(1)
+  experiencePoints Int      @default(0)
+  lastRoleplayDate DateTime @default(now())
+
+  @@map("Roleplay")
+}
+
+model Share {
+  id        String        @id @default(uuid())
+  userId    String
+  blogId    String
+  platform  SharePlatform
+  createdAt DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([blogId])
+  @@map("Share")
+}
+
+model Slowmode {
+  id        String   @id @default(uuid())
+  channelId String   @unique
+  duration  Int
+  setBy     String
+  setAt     DateTime @default(now())
+
+  @@map("Slowmode")
+}
+
+model Story {
+  id          String        @id @default(uuid())
+  title       String
+  description String        @db.Text
+  status      StoryStatus   @default(BACKLOG)
+  priority    PriorityLevel @default(MEDIUM)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  projectId   String
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("Story")
+}
+
+model Subscriber {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String?
+  subscribedAt DateTime @default(now())
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("Subscriber")
+}
+
+model Tag {
+  id          String   @id @default(uuid())
+  name        String   @unique
+  description String   @default("")
+  createdDate DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("Tag")
+}
+
+model Task {
+  id           String       @id @default(uuid())
+  title        String
+  description  String       @default("") @db.Text
+  category     TaskCategory @default(OTHER)
+  status       TaskStatus   @default(PENDING)
+  assignedToId String
+  teamId       String
+  dueDate      DateTime?
+  createdDate  DateTime     @default(now())
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  assignedTo User @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: Cascade)
+  team       Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([assignedToId])
+  @@index([teamId])
+  @@map("Task")
+}
+
+model Team {
+  id          String     @id @default(uuid())
+  name        String
+  description String     @default("") @db.Text
+  createdDate DateTime   @default(now())
+  members     Json       @default("[]")
+  status      TeamStatus @default(ACTIVE)
+  type        TeamType   @default(OTHER)
+  logo        String     @default("default-team-logo.png")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  tasks Task[]
+
+  @@map("Team")
+}
+
+model Ticket {
+  id          String       @id @default(uuid())
+  guildId     String
+  userId      String
+  title       String
+  description String       @default("No description provided") @db.Text
+  status      TicketStatus @default(OPEN)
+  messages    Json         @default("[]")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  responses TicketResponse[]
+
+  @@index([guildId])
+  @@index([userId])
+  @@map("Ticket")
+}
+
+model TicketResponse {
+  id        String   @id @default(uuid())
+  ticketId  String
+  userId    String
+  response  String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@map("TicketResponse")
+}
+
+model Timeout {
+  id        String   @id @default(uuid())
+  userId    String
+  username  String
+  guildId   String
+  reason    String
+  duration  Int
+  timeoutAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("Timeout")
+}
+
+model TriviaAnswer {
+  id         String   @id @default(uuid())
+  userId     String
+  questionId String
+  answer     String
+  correct    Boolean
+  answeredAt DateTime @default(now())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  question TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("TriviaAnswer")
+}
+
+model TriviaQuestion {
+  id            String   @id @default(uuid())
+  question      String   @db.Text
+  options       Json     @default("[]")
+  correctAnswer String
+  category      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  answers TriviaAnswer[]
+
+  @@map("TriviaQuestion")
+}
+
+model TriviaStats {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  correctAnswers   Int      @default(0)
+  incorrectAnswers Int      @default(0)
+  totalQuestions   Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("TriviaStats")
+}
+
+model User {
+  id                       String    @id @default(uuid())
+  profilePicture           String?
+  fullname                 String
+  username                 String    @unique
+  email                    String
+  password                 String?
+  role                     UserRole  @default(USER)
+  bio                      String    @default("") @db.Text
+  address                  Json      @default("{}")
+  phoneNumbers             Json      @default("{}")
+  paymentMethods           Json      @default("[]")
+  sessions                 Json      @default("[]")
+  socialLinks              Json      @default("{}")
+  recentActivity           DateTime  @default(now())
+  verificationToken        String    @default("")
+  verificationTokenExpires DateTime?
+  isVerified               Boolean   @default(false)
+  isAuthenticated          Boolean   @default(false)
+  accessToken              String?
+  refreshToken             String?
+  oauthProviders           Json      @default("{}")
+  apiKeyId                 String?   @map("apiKey")
+  betaKeyId                String?   @map("betaKey")
+  isBetaTester             Boolean   @default(false)
+  termsAccepted            Boolean   @default(false)
+  termsAcceptedAt          DateTime?
+  posts                    Json      @default("[]")
+  projects                 Json      @default("[]")
+  friends                  Json      @default("[]")
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  apiKeys           ApiKey[]           @relation("UserApiKeys")
+  betaKeys          BetaKey[]          @relation("UserBetaKeys")
+  balance           Balance?
+  developerPrograms DeveloperProgram[]
+  favorites         Favorite[]
+  likes             Like[]
+  dislikes          Dislike[]
+  shares            Share[]
+  comments          Comment[]
+  payments          Payment[]
+  tasksAssigned     Task[]             @relation("TaskAssignee")
+
+  @@index([email])
+  @@map("User")
+}
+
+model Version {
+  id                String   @id @default(uuid())
+  picture           String   @default("")
+  title             String
+  shortDescription  String
+  detailDescription String   @db.Text
+  versionTagId      String
+  features          Json     @default("[]")
+  added             Json     @default("[]")
+  fixed             Json     @default("[]")
+  bugs              Json     @default("[]")
+  developers        Json     @default("[]")
+  githublink        String   @default("")
+  downloadLink      String
+  releasedAt        DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  versionTag VersionTag @relation(fields: [versionTagId], references: [id], onDelete: Cascade)
+
+  @@index([versionTagId])
+  @@map("Version")
+}
+
+model VersionTag {
+  id          String   @id @default(uuid())
+  title       String
+  description String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  versions Version[]
+
+  @@map("VersionTag")
+}
+
+model Warn {
+  id          String   @id @default(uuid())
+  guildId     String
+  userId      String
+  moderatorId String
+  reason      String   @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("Warn")
+}
+
+model Word {
+  id        String   @id @default(uuid())
+  guildId   String
+  word      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([guildId])
+  @@map("Word")
 }
