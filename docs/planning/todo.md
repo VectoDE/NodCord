@@ -7,7 +7,7 @@
 - Einheitliche Build-/Deploy-Pipeline (ESBuild/TS-Compiler), Tests und Dokumentation für die Versionen Alpha → Beta → LTS.
 
 ## Phase 0 – Analyse & Infrastrukturvorbereitung
-- [ ] Projektinventur abschließen: Funktionsbereiche, externe Dienste und sensiblen Code aus allen Ordnern `src/api`, `src/bot`, `src/client`, `src/models`, `src/database`, `src/seeds`, `src/public`, `src/views`, `markdown` erfassen und dokumentieren.
+- [ ] Projektinventur abschließen: Funktionsbereiche, externe Dienste und sensiblen Code aus allen Ordnern `src/api`, `src/bot`, `src/client`, `src/models`, `src/database`, `src/seeds`, `src/public`, `src/views`, `docs` erfassen und dokumentieren.
 - [ ] Abhängigkeiten prüfen (`package.json`): nicht mehr benötigte Pakete markieren (z. B. `mongoose`, `mongodb`, `mongoose-findorcreate`) und fehlende Typdefinitionen erfassen.
 - [ ] Build-/Runtime-Ziele festlegen (Node-Version, TS-Compiler, Linting, Test-Framework) und in Architektur-Notiz festhalten.
 - [ ] Datenbank-Mapping vorbereiten: für jedes Mongoose-Schema in `src/models` eine Zielstruktur für Prisma entwerfen (inkl. Beziehungen, Enums, Indizes, Default-Werte).
@@ -49,7 +49,7 @@
 
 ### 1.6 Alpha-Abschluss
 - [ ] Smoke-Tests (API Healthcheck, Auth-Login, Bot-Login) durchführen und dokumentieren.
-- [ ] Alpha-Release-Notes (Migration, Breaking Changes, Setup-Anleitung) im `markdown/`-Ordner festhalten.
+- [ ] Alpha-Release-Notes (Migration, Breaking Changes, Setup-Anleitung) im `docs/`-Bereich festhalten.
 
 ## Phase 2 – NodCord 2.0.0 Beta (Feature-Parität & Stabilität)
 ### 2.1 Vollständige Modulportierung

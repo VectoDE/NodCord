@@ -52,16 +52,11 @@
   "license": "MIT",
   "files": [
     "src",
-    "public",
     "build.js",
-    "start.js",
-    "start.sh",
-    "stop.sh",
-    "restart.sh",
+    "docs",
     "README.md",
-    "DOCUMENTATION.md",
-    "ROADMAP.md",
-    "Todo.md"
+    "LICENSE",
+    "SECURITY.md"
   ],
   "engines": {
     "node": ">=14.0.0",

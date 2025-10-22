@@ -1,6 +1,6 @@
 # NodCord 2.0.0 – Detailplan zur vollständigen Migration
 
-Dieser Plan ergänzt die high-level Roadmap in `TODO.md` und listet jede konkrete Code-Stelle auf, die für eine produktionsreife TypeScript-/Prisma-/MySQL-Version angepasst werden muss. Alle Aufgaben sind als iterative, überprüfbare Schritte formuliert.
+Dieser Plan ergänzt die high-level Roadmap in [`todo.md`](./todo.md) und listet jede konkrete Code-Stelle auf, die für eine produktionsreife TypeScript-/Prisma-/MySQL-Version angepasst werden muss. Alle Aufgaben sind als iterative, überprüfbare Schritte formuliert.
 
 ## Globale Grundlagen
 - [ ] Tooling vereinheitlichen: ESLint/Prettier/TSConfig und Pfad-Aliase für alle Teilbereiche (`src/api`, `src/bot`, `src/client`).

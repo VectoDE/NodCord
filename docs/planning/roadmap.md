@@ -27,8 +27,8 @@ Diese Roadmap skizziert die geplanten Features, Verbesserungen und Meilensteine 
 - [x] Abruf von Systeminformationen mit dem `os`-Paket
 - [x] Dokumentation
   - [x] README.md
-  - [x] Todo.md
-  - [x] DOCUMENTATION.md
+  - [x] docs/planning/todo.md
+  - [x] docs/reference/documentation.md
 
 ### Version 1.1.0 - Verbesserungen und neue Features
 
@@ -61,7 +61,7 @@ Diese Roadmap skizziert die geplanten Features, Verbesserungen und Meilensteine 
 
 ## Mitwirken
 
-Wir begrüßen Beiträge aus der Community! Wenn du Ideen für Features, Verbesserungen oder Fehlerbehebungen hast, eröffne bitte ein Issue oder reiche einen Pull Request ein. Schau dir unbedingt unsere [CONTRIBUTING.md](CONTRIBUTING.md) für Richtlinien an, wie du anfangen kannst.
+Wir begrüßen Beiträge aus der Community! Wenn du Ideen für Features, Verbesserungen oder Fehlerbehebungen hast, eröffne bitte ein Issue oder reiche einen Pull Request ein. Schau dir unbedingt unsere [Contributing-Richtlinien](../process/contributing.md) für Hinweise an, wie du anfangen kannst.
 
 ## Kontakt
 

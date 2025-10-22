@@ -81,6 +81,14 @@ GUILD_ID=dein_guild_id
 PORT=3000
 ```
 
+## Dokumentation
+
+Ausführliche Architekturhinweise, Installationsanleitungen, Roadmaps und Prozessbeschreibungen befinden sich jetzt im Ordner [`docs/`](./docs). Die wichtigsten Einstiegspunkte sind:
+
+- [`docs/guides/`](./docs/guides) für Installations- und Support-Anleitungen
+- [`docs/planning/`](./docs/planning) für Roadmaps und detaillierte Aufgabenlisten
+- [`docs/reference/`](./docs/reference) für technische Nachschlagewerke
+
 ## Contributing
 
 Beiträge sind willkommen! Bitte erstelle einen Fork des Repositories und öffne einen Pull Request mit deinen Änderungen.
