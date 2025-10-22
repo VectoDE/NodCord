@@ -16,9 +16,9 @@ Wenn du ein Problem hast, das nicht durch die Dokumentation abgedeckt ist, öffn
 ### Community
 
 Tritt unserer Community auf Discord bei, um Hilfe von anderen Benutzern und Entwicklern zu erhalten:
-[Einladungslink zu deinem Discord Server]
+[Discord-Einladung (auf Anfrage)](mailto:tim.hauke@hauknetz.de?subject=NodCord%20Discord%20Invite)
 
 ### E-Mail Support
 
 Du kannst auch direkt per E-Mail Unterstützung erhalten:
-[deine E-Mail-Adresse]
+[security@nodcord.dev](mailto:security@nodcord.dev) oder [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de)

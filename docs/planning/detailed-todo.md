@@ -1,119 +1,61 @@
 # NodCord 2.0.0 – Detailplan zur vollständigen Migration
 
-Dieser Plan ergänzt die high-level Roadmap in [`todo.md`](./todo.md) und listet jede konkrete Code-Stelle auf, die für eine produktionsreife TypeScript-/Prisma-/MySQL-Version angepasst werden muss. Alle Aufgaben sind als iterative, überprüfbare Schritte formuliert.
+Dieser Plan ergänzt den high-level Fahrplan in [`todo.md`](./todo.md) und beschreibt konkrete Schritte für eine produktionsreife TypeScript-/Prisma-/MySQL-Version. Jede Aufgabe ist so formuliert, dass sie nachvollziehbar getestet werden kann.
 
-## Globale Grundlagen
-- [ ] Tooling vereinheitlichen: ESLint/Prettier/TSConfig und Pfad-Aliase für alle Teilbereiche (`src/api`, `src/bot`, `src/client`).
-- [ ] `prisma/schema.prisma` modellieren (Äquivalente zu allen Mongoose-Schemas in `src/models/*.ts`, inklusive Relationen, Unique-Indizes, Default-Werten, Enums).
-- [ ] Prisma-Client-Setup erstellen (`src/database/prismaClient.ts`) und in `src/server.ts`, API, Bot und Client injizieren.
-- [ ] Gemeinsame Fehler- und Antworttypen definieren (`src/types/http.ts`, `src/types/domain/*.ts`), die von Controllern, Services, Middlewares genutzt werden.
-- [ ] `src/api/helpers/sendResponseHelper.js` → `sendResponseHelper.ts` refaktorieren und als zentrale Response-Utility typisieren.
-- [ ] Security/Config: `.env.example` für MySQL/Redis/Mail/etc. erweitern, Secrets-Handling dokumentieren.
+## 1. Tooling & Infrastruktur
 
-## Backend – Express-Anwendung
-### Bootstrap & Infrastruktur
-- [ ] `src/api/app.js` → `app.ts`: Express-Setup, Session-Store, Passport-/JWT-Anbindung, EJS-Konfiguration mit TypeScript-Typen.
-- [ ] `src/server.ts`: Server-Bootstrap auf Prisma-/TypeScript-Build anpassen (HTTP, Socket.io falls benötigt, Shutdown-Hooks für Prisma).
-- [ ] `src/database/connectDB.js` entfernen, MySQL/Prisma-Verbindung in neuem Prisma-Client kapseln.
+- [ ] **TypeScript Tooling vereinheitlichen**: `tsconfig.json` finalisieren, gemeinsame ESLint-/Prettier-Konfiguration ergänzen, Pfad-Aliasse für `src/api`, `src/bot`, `src/client` festlegen.
+- [ ] **Dev-Server standardisieren**: `npm run dev` (ts-node-dev) als Single-Entry-Point beibehalten, Hot-Reload für API und Bot sicherstellen.
+- [ ] **Prisma Projektstruktur**: `prisma/` Ordner mit `schema.prisma`, Migrationen und optionalen Seeds pflegen; Skripte `npm run prisma:*` nutzen.
+- [ ] **Environment Management**: `.env.example` aktualisieren (MySQL, Redis, OAuth, Bot), Secrets-Handling dokumentieren, dotenv-Ladepunkte prüfen.
+- [ ] **CI/CD-Erweiterung**: Pipeline definieren (Build, Test, Prisma Migrate, Prisma Generate). GitHub Actions vorbereiten.
 
-### Middlewares (`src/api/middlewares`)
-- [ ] `apiKeyMiddleware.js`, `authMiddleware.js`, `betaMiddleware.js`, `compressionMiddleware.js`, `corsMiddleware.js`, `developerProgramMiddleware.js`, `rateLimiterMiddleware.js`, `roleMiddleware.js` zu `.ts` portieren; Request/User-Kontext typisieren; Mongo-Abhängigkeiten durch Prisma-Aufrufe ersetzen.
+## 2. Datenmodell & Persistenz
 
-### Helpers (`src/api/helpers`)
-- [ ] `getBaseUrlHelper.js`, `jwtHelper.js`, `overviewControl.js`, `routesCollector.js`, `sendResponseHelper.js` nach TypeScript übertragen; JWT- und Routing-Logik auf neue Services/Typen abstimmen.
+- [ ] **Prisma-Schema ausbauen**: Alle bisherigen Mongoose-Modelle (`src/models/*.ts`) nach `prisma/schema.prisma` übersetzen, inklusive Relationen, Enums und Default-Werten.
+- [ ] **Migrationsstrategie**: Für jedes Modul (Auth, Commerce, Tickets, Developer Program, Analytics, Integrationen) eigene Migrationen erstellen. Historische Datenmigration (Mongo → MySQL) planen.
+- [ ] **Prisma Client Integration**: Zentrale Instanz (`src/database/prismaClient.ts`) erstellen, in API/Bot Services injizieren, Lifecycle-Hooks (Shutdown, Error Handling) ergänzen.
+- [ ] **Repository Layer**: Abstraktionen für wiederkehrende Queries bauen (z. B. `UserRepository`, `ProjectRepository`) und gemeinsam nutzen.
+- [ ] **Seeds & Testdaten**: `prisma/seed.ts` etablieren, modulare Seeds in `src/seeds/` an Prisma anpassen, automatisierte Sample-Daten für E2E-Tests bereitstellen.
 
-### Utils (`src/api/utils`)
-- [ ] `multerUtil.js` und `passportUtil.js` typisieren, Speicherpfade/Konfiguration auf MySQL-/Prisma-Backends und neue Auth-Strategien abstimmen.
+## 3. API & Services
 
-## Backend – Routen & Controller
-Für jede Route ist die zugehörige Controller-Logik auf Prisma-Queries umzustellen, Input/Output zu typisieren, Validierungen zu ergänzen und Tests/Swagger-Einträge (falls geplant) vorzubereiten. Alle nachfolgenden Punkte umfassen: `routes/*.js` → `.ts`, `controllers/*.js` → `.ts`, Services auf Prisma umstellen, Mongoose-Modelle aus `src/models` ablösen.
+### 3.1 Infrastruktur
 
-- [ ] API Keys (`src/api/routes/apiKeyRoutes.js`, `src/api/controllers/apiKeyController.js`) – Prisma-Tabellen `ApiKey`, `User` nutzen; Key-Generierung in Service kapseln.
-- [ ] Auth (`authRoutes.js`, `authController.js`) – Login/Registration auf Prisma-User, Passwort-Hashing, Session-/Token-Handling via TypeScript.
-- [ ] Beta (`betaRoutes.js`, `betaController.js`) – Beta-Key-Verwaltung (`betaKeyModel.ts`, `betaSystemModel.ts`) nach Prisma migrieren, Status-Flags typisieren.
-- [ ] Blog (`blogRoutes.js`, `blogController.js`) – Blog-Posts/Tags/Comments über Prisma-Relationen (`blogModel.ts`, `commentModel.ts`, `tagModel.ts`).
-- [ ] Bug Tracking (`bugRoutes.js`, `bugController.js`) – Bug-Modelle, Status, User-Zuordnung mit Prisma.
-- [ ] Categories (`categoryRoutes.js`, `categoryController.js`) – Kategorietypen, Slugs, Sortierung.
-- [ ] Chat (`chatRoutes.js`, `chatController.js`) – ChatRooms/Messages via Prisma, ggf. Socket.io-Schnittstellen prüfen.
-- [ ] CloudNet (`cloudnetRoutes.js`, `cloudnetController.js`) – API-Aufrufe typisieren, Credentials in Prisma-hinterlegten Tabellen speichern.
-- [ ] Comments (`commentRoutes.js`, `commentController.js`) – Kommentare/Replies mit Prisma und referenzierten Entities.
-- [ ] Company (`companyRoutes.js`, `companyController.js`) – Firmenprofile, zugehörige Users/Organizations.
-- [ ] Control Panel (`controlRoutes.js`, `controlController.js`) – Admin-/Dashboard-Endpunkte, Stats aus Prisma aggregieren.
-- [ ] Customers (`customerRoutes.js`, `customerController.js`) – Kundenstammdaten, Relationen zu Orders (`customerOrderModel.ts`).
-- [ ] Customer Orders (`customerOrderRoutes.js`, `customerOrderController.js`) – Aufträge, Status-Übergänge, Payment-Verknüpfung.
-- [ ] Developer Program (`developerProgramRoutes.js`, `developerProgramController.js`) – Programm-Anmeldungen, Token-Handling.
-- [ ] Dislikes (`dislikeRoutes.js`, `dislikeController.js`) – Like/Dislike-Systeme vereinheitlichen, Prisma Unique-Constraints.
-- [ ] Faceit (`faceitRoutes.js`, `faceitController.js`) – API-Keys, Account-Verknüpfungen, Prisma Storage.
-- [ ] Favorites (`favoriteRoutes.js`, `favoriteController.js`) – Favoritenlisten und Bezüge zu Projekten/Posts.
-- [ ] Feature Requests (`featureRoutes.js`, `featureController.js`) – Request-Verwaltung, Voting.
-- [ ] Feedback (`feedbackRoutes.js`, `feedbackController.js`) – Feedback-Entries, Status, Replies.
-- [ ] File Storage (`fileRoutes.js`, `fileController.js`) – Upload-Handling (Multer), Metadaten in Prisma.
-- [ ] Game (`gameRoutes.js`, `gameController.js`) – Game-Datensätze, Plattformen (`gameModel.ts`, `platformModel.ts`).
-- [ ] GitHub (`githubRoutes.js`, `githubController.js`) – OAuth-Flow, Repo-Data, Token-Storage.
-- [ ] Group (`groupRoutes.js`, `groupController.js`) – Gruppen, Mitglieder, Rollen.
-- [ ] Info (`infoRoutes.js`, `infoController.js`) – Info/Status-Endpunkte, Prisma-Statistiken.
-- [ ] Issue Tracker (`issueRoutes.js`, `issueController.js`) – Tickets, Status, Kommentare, Zuweisungen.
-- [ ] Like (`likeRoutes.js`, `likeController.js`) – Likes analog zu Dislikes/Favorites.
-- [ ] Log (`logRoutes.js`, `logController.js`) – Audit/Activity Logs, Prisma Logging-Tabelle.
-- [ ] Newsletter (`newsletterRoutes.js`, `newsletterController.js`) – Subscriber-Verwaltung, Opt-In.
-- [ ] Order (`orderRoutes.js`, `orderController.js`) – Shop-Bestellungen, Payment-Schnittstellen.
-- [ ] Organization (`organizationRoutes.js`, `organizationController.js`) – Organisationsstruktur, Teams.
-- [ ] Payment (`paymentRoutes.js`, `paymentController.js`) – Provider-Integrationen, Payment-Records.
-- [ ] Plex (`plexRoutes.js`, `plexController.js`) – Token/Session-Management, Device-Registrierung.
-- [ ] Product (`productRoutes.js`, `productController.js`) – Produktkatalog, Preise, Varianten.
-- [ ] Profile (`profileRoutes.js`, `profileController.js`) – Benutzerprofile, Privacy-Einstellungen.
-- [ ] Project (`projectRoutes.js`, `projectController.js`) – Projekte, Status, Mitwirkende.
-- [ ] Proxmox (`proxmoxRoutes.js`, `proxmoxController.js`) – Cluster-/Node-Verwaltung, Token-Storage.
-- [ ] Returns (`returnRoutes.js`, `returnController.js`) – Rücksendungen, Status-Handling.
-- [ ] Role (`roleRoutes.js`, `roleController.js`) – Rollenverwaltung, Rechte mit Prisma.
-- [ ] Security (`securityRoutes.js`, `securityController.js`) – Sicherheitsfeatures, 2FA, Logs.
-- [ ] Share (`shareRoutes.js`, `shareController.js`) – Sharing-Links, Expiration-Handling.
-- [ ] Steam (`steamRoutes.js`, `steamController.js`) – Steam-API-Key-Verwaltung, User-Verknüpfung.
-- [ ] Story (`storyRoutes.js`, `storyController.js`) – Stories/Timeline-Features.
-- [ ] Subscriber (`subscriberRoutes.js`, `subscriberController.js`) – Abonnenten-Handling (Blog/Newsletter).
-- [ ] Tag (`tagRoutes.js`, `tagController.js`) – Tags, Zuweisungen zu Content.
-- [ ] Task (`taskRoutes.js`, `taskController.js`) – Aufgabenverwaltung, Statuswechsel.
-- [ ] Team (`teamRoutes.js`, `teamController.js`) – Teams, Mitglieder, Rollen.
-- [ ] Teamspeak (`teamspeakRoutes.js`, `teamspeakController.js`) – Server-Verknüpfungen, Auth.
-- [ ] Ticket (`ticketRoutes.js`, `ticketController.js`) – Support-Tickets, Antworten (`ticketResponseModel.ts`).
-- [ ] User (`userRoutes.js`, `userController.js`) – Benutzerverwaltung, Rollen, Passwort-Resets.
-- [ ] Version (`versionRoutes.js`, `versionController.js`) – Versioning, Release-Notes, Tags (`versionTagModel.ts`).
+- [ ] `src/api/app.ts` und `src/server.ts` auf Prisma vorbereiten: Datenbank-Healthchecks, Graceful Shutdown, gemeinsame Logger.
+- [ ] Middleware-Schicht (`src/api/middlewares`) auf TypeScript-Definitionen aktualisieren, Request/User-Kontext sauber typisieren.
+- [ ] Helpers (`src/api/helpers`) für Responses, JWT, Uploads etc. auf Prisma-basierte Services umstellen.
+- [ ] Utility-Funktionen (`src/api/utils`) mit Typed Configs versehen, Dateiupload-/Auth-Flows modernisieren.
 
-## Backend – Services (`src/api/services`)
-- [ ] `apiStatusService.js`, `dbStatusService.js` auf Prisma-/MySQL-Gesundheitschecks umstellen.
-- [ ] Kommunikations-/Integration-Services (`botStatusService.js`, `cloudnetService.js`, `faceitService.js`, `githubService.js`, `googleService.js`, `plexService.js`, `proxmoxService.js`, `steamService.js`, `teamspeakService.js`) typisieren und Secrets via Prisma gespeicherte Credentials beziehen.
-- [ ] Content/Business-Services (`appleService.js`, `blogService.js`, `infoService.js`, `logService.js`, `nodemailerService.js`) refaktorieren: Abhängigkeiten injizieren, Prisma verwenden, Fehlerbehandlung zentralisieren.
-- [ ] `loggerService.js` auf strukturiertes Logging mit gemeinsamen Typen/Tracing erweitern.
+### 3.2 Feature-Module (Auswahl)
 
-## Datenmodelle (`src/models`)
-- [ ] Für jedes bestehende Mongoose-Schema (`*.ts`) Prisma-Modelle definieren und Mongoose-Implementierungen entfernen. Sicherstellen, dass alle Referenzen (z. B. `userId`, `projectId`, `guildId`) als Prisma-Relationen oder Foreign Keys modelliert werden.
-- [ ] Migration-Skripte für Alt-Daten erstellen (Mongo → MySQL) pro Modellgruppe: Benutzer/Rollen, Commerce (Products/Orders/Returns), Tickets, Blog, Games, Developer Program etc.
+Für jedes Modul gilt: Routes → Controller → Services → Prisma-Repositories → Tests.
 
-## Seeds & Skripte
-- [ ] `src/seeds/rolesSeed.ts`, `src/seeds/usersSeed.ts` auf Prisma-Seeding (`prisma db seed`) umstellen, zusätzliche Seeds für kritische Tabellen ergänzen.
-- [ ] `src/scripts` (falls vorhanden) auf TypeScript + Prisma refaktorieren, Deployment-Skripte aktualisieren.
+- [ ] **Auth & User Management**: Passport-/Session-Integration auf Prisma-Usermodelle anpassen, Password-Reset & OAuth berücksichtigen.
+- [ ] **Role & Permission System**: Prisma-Relationen für Rollen/Rechte implementieren, Guard-Middlewares aktualisieren.
+- [ ] **Commerce (Products, Orders, Returns)**: Zahlungs- und Order-Logik über Prisma-Transaktionen abbilden.
+- [ ] **Content (Blog, Comments, Tags)**: Prisma-Relationen für Posts, Kommentare, Tags modellieren, Caching-Strategien prüfen.
+- [ ] **Support & Tickets**: Ticket-System an Prisma-Tabellen anbinden, Bot-Befehle synchronisieren.
+- [ ] **Integrationen (GitHub, Steam, Proxmox, CloudNet, Faceit, Teamspeak)**: Credential-Speicherung über Prisma, Secrets verschlüsseln.
+- [ ] **Analytics & Logging**: Prisma-Tabellen für Audit-Logs, Statistiken, Event-Tracking aufbauen.
 
-## Discord-Bot (`src/bot`)
-- [ ] `src/bot/index.js` → `.ts` (Bot-Initialisierung, Login, Prisma-Anbindung für Persistenz).
-- [ ] Kommandos unter `src/bot/commands`, `src/bot/prefix` und Events unter `src/bot/events` nach TypeScript portieren; Datenzugriffe (z. B. Prefixe, Logs, Warns) über Prisma statt direkte Modelle.
-- [ ] Hilfsfunktionen unter `src/bot/functions` typisieren und mit gemeinsamen Domain-Typen teilen.
+## 4. Discord-Bot & Client
 
-## Client (`src/client`)
-- [ ] Einstieg `src/client/main.js` → `.ts`; Frontend-Build (Webpack/Vite) auf TypeScript vorbereiten.
-- [ ] Routes, Services, Stores im Client nach TypeScript migrieren; API-Aufrufe an neue Prisma-basierten Endpunkte anpassen.
-- [ ] Gemeinsame UI-Typen und Interfaces definieren, Response-Objekte synchron mit Backend halten.
+- [ ] Bot-Kommandos (`src/bot/commands`, `src/bot/events`) vollständig auf TypeScript portieren, gemeinsame Services nutzen.
+- [ ] Datenzugriffe des Bots über Prisma-Services abstrahieren (z. B. Ticket-Erstellung, User-Informationen).
+- [ ] Client/Frontend-Module (falls aktiv) auf API-Änderungen abstimmen, Shared Types verwenden.
 
-## Views & Public Assets
-- [ ] EJS-Templates unter `src/views` auf geänderte Datenmodelle/Controller-Outputs anpassen.
-- [ ] Statische Assets in `src/public` prüfen und ggf. Build-Pipeline (hashing, CDN) ergänzen.
+## 5. Qualitätssicherung
 
-## Tests & Qualitätssicherung
-- [ ] Unit-/Integrationstests für jede API-Route erstellen (Jest/Vitest + Supertest) mit Prisma-Testdatenbank.
-- [ ] Bot- und Client-Tests (Mock Discord.js, API-Mocks) hinzufügen.
-- [ ] End-to-End-Tests für kritische Flows (Auth, Orders, Tickets).
+- [ ] **Testing**: Jest-Konfiguration aktualisieren, Integrationstests für Prisma (mit Test-DB) aufsetzen, Bot-Kommandos mit Mocks testen.
+- [ ] **Linting & Formatting**: Prettier/ESLint in CI verankern, Husky/Commit Hooks optional vorbereiten.
+- [ ] **Dokumentation**: Nach jeder größeren Änderung README, `docs/reference/`, `docs/guides/` und `docs/overview/` aktualisieren.
+- [ ] **Release Notes & Change Tracking**: `docs/process/changelog.md` pflegen, Breaking Changes klar kommunizieren.
 
-## DevOps & Betrieb
-- [ ] CI/CD-Workflows (Lint/Test/Build/Prisma Migrate) konfigurieren.
-- [ ] Docker-/Compose-Setup für Node + MySQL + Redis vorbereiten.
-- [ ] Monitoring/Alerting (Healthchecks, Prisma-Metrics) implementieren.
-- [ ] Release-Checklisten für Alpha → Beta → LTS dokumentieren (Rollout-Plan, Migrationsschritte, Kommunikationspakete).
+## 6. Kommunikation & Organisation
+
+- [ ] Contribution-Flow laut [`CONTRIBUTING.md`](../../CONTRIBUTING.md) anwenden, Reviews mit Fokus auf TypeScript-Typisierung und Prisma-Migration durchführen.
+- [ ] Community-Feedback über Discord/GitHub sammeln und priorisieren.
+- [ ] Security-Audits für neue Datenmodelle durchführen (siehe [`SECURITY.md`](../../SECURITY.md)).
+
+Mit diesen Schritten schaffen wir eine stabile Grundlage für NodCord 2.0.0 auf TypeScript und Prisma. Jede erledigte Checkbox sollte mit PR-Referenzen und Tests dokumentiert werden.

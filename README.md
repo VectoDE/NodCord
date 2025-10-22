@@ -1,100 +1,141 @@
+# NodCord
+
 ![NodCord Logo with Text](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
 
-NodCord ist eine Node.js API mit Express.js, die einen integrierten Discord Bot beinhaltet. Die API enthält einen Discord Service mit Controller und Router, um den Bot auch über die API steuern zu können.
+NodCord ist eine in **TypeScript** geschriebene Service-Plattform rund um Discord-Automatisierung. Die REST-API basiert auf Express.js, der integrierte Bot nutzt discord.js und sämtliche Persistenz erfolgt über **Prisma** mit einer MySQL-Datenbank. Ziel ist eine einheitliche Codebasis, die API, Bot und begleitende Tools auf denselben Datenquellen aufbaut.
+
+> 💡 Die Anwendung befindet sich in einer laufenden Migration von älteren JavaScript-/Mongoose-Komponenten. Neue Beiträge sollten sich am beschriebenen TypeScript/Prisma-Stack orientieren.
 
 ## Inhaltsverzeichnis
 
-- [Inhaltsverzeichnis](#inhaltsverzeichnis)
+- [Features](#features)
+- [Technologien](#technologien)
 - [Installation](#installation)
 - [Verwendung](#verwendung)
-- [API Endpoints](#api-endpoints)
-  - [GET /api/discord/status](#get-apidiscordstatus)
-  - [POST /api/discord/message](#post-apidiscordmessage)
-  - [Weitere Endpoints werden bald hinzugefügt...](#weitere-endpoints-werden-bald-hinzugefügt)
-- [Discord Bot Befehle](#discord-bot-befehle)
-  - [Weitere Befehle werden bald hinzugefügt...](#weitere-befehle-werden-bald-hinzugefügt)
+- [Datenbank & Prisma](#datenbank--prisma)
 - [Konfiguration](#konfiguration)
+- [Dokumentation](#dokumentation)
 - [Contributing](#contributing)
+- [Sicherheit](#sicherheit)
 - [Lizenz](#lizenz)
+
+## Features
+
+- REST-API mit TypeScript-Controller-Layer und klaren Response-Typen
+- Discord Bot mit gemeinsam genutzten Services und Datenbankzugriff über Prisma
+- MySQL als zentrale Datenquelle (lokal via Docker oder gehostete Instanz)
+- Modularer Aufbau (API, Bot, Client, Seeds, Scripts) für einfache Erweiterungen
+- Ausführliche Projekt- und Migrationsdokumentation im `docs/` Verzeichnis
+
+## Technologien
+
+| Bereich         | Stack                                                                 |
+| --------------- | --------------------------------------------------------------------- |
+| Laufzeit        | Node.js ≥ 18                                                           |
+| Sprache         | TypeScript (strict mode)                                              |
+| Framework       | Express.js                                                             |
+| Datenbank       | MySQL 8.x oder kompatibel (MariaDB ≥ 10.6 getestet)                    |
+| ORM/Client      | Prisma                                                                |
+| Discord         | discord.js                                                             |
+| Tooling         | ts-node-dev, Jest, Prettier, Prisma CLI                                |
 
 ## Installation
 
-1. Klone das Repository:
-   ```sh
+### Voraussetzungen
+
+- Node.js **>= 18** und npm **>= 9**
+- Laufende MySQL-Instanz (z. B. Docker: `docker run --name nodcord-mysql -e MYSQL_ROOT_PASSWORD=secret -p 3306:3306 -d mysql:8`)
+- Git
+
+### Schritte
+
+1. Repository klonen:
+   ```bash
    git clone https://github.com/deinbenutzername/NodCord.git
    ```
-2. Navigiere in das Projektverzeichnis:
-   ```sh
+2. Projektverzeichnis betreten:
+   ```bash
    cd NodCord
    ```
-3. Installiere die Abhängigkeiten:
-   ```sh
+3. Abhängigkeiten installieren:
+   ```bash
    npm install
+   ```
+4. Prisma Client generieren (erstellt `node_modules/@prisma/client` anhand des Schemas):
+   ```bash
+   npx prisma generate
+   ```
+5. Erste Migration gegen die MySQL-Datenbank ausführen:
+   ```bash
+   npx prisma migrate deploy
+   ```
+6. Entwicklungsserver starten:
+   ```bash
+   npm run dev
    ```
 
 ## Verwendung
 
-1. Starte den Server:
-
-   ```sh
-   npm start
-   ```
-
-2. Der Server läuft nun auf `http://localhost:3000`.
-
-## API Endpoints
-
-### GET /api/discord/status
-
-Gibt den aktuellen Status des Discord Bots zurück.
-
-### POST /api/discord/message
-
-Sendet eine Nachricht an einen bestimmten Discord Channel.
-
-**Request Body:**
+Die wichtigsten npm-Skripte:
 
 ```json
 {
-  "channelId": "123456789012345678",
-  "message": "Hallo Welt!"
+  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+  "build": "tsc --project tsconfig.json",
+  "start": "node dist/server.js",
+  "prisma:migrate": "prisma migrate deploy",
+  "prisma:studio": "prisma studio"
 }
 ```
 
-### Weitere Endpoints werden bald hinzugefügt...
+- `npm run dev` startet den Server mit Hot-Reloading (ts-node-dev).
+- `npm run build` erzeugt ein `dist/` Verzeichnis mit kompilierter JS-Ausgabe.
+- `npm start` führt den Build im Produktionsmodus aus.
+- `npm run prisma:migrate` deployt Migrationen in die konfigurierte Datenbank.
+- `npm run prisma:studio` öffnet die Prisma Oberfläche zur Dateninspektion.
 
-## Discord Bot Befehle
+## Datenbank & Prisma
 
-- **!ping** - Antwortet mit "Pong!"
-- **!info** - Gibt Informationen über den Bot zurück.
+Das Prisma Schema befindet sich unter [`prisma/schema.prisma`](./prisma/schema.prisma). Es definiert alle Models (z. B. Benutzer, Rollen, Projekte) und beschreibt Relationen sowie Constraints für MySQL. Weitere Hinweise:
 
-### Weitere Befehle werden bald hinzugefügt...
+- Leg die Datenbank-URL in der `.env` Datei als `DATABASE_URL` ab, z. B. `mysql://user:password@localhost:3306/nodcord`.
+- Verwende `npx prisma db push`, wenn du das Schema während der Entwicklung schnell synchronisieren möchtest.
+- Seeds werden über `prisma db seed` ausgeführt und greifen auf die Dateien in `src/seeds/` zurück.
 
 ## Konfiguration
 
-Erstelle eine `.env`-Datei im Stammverzeichnis und füge die folgenden Variablen hinzu:
+Erstelle eine `.env` Datei im Projektstamm und fülle mindestens folgende Variablen aus:
 
 ```
+DATABASE_URL="mysql://user:password@localhost:3306/nodcord"
 DISCORD_TOKEN=dein_discord_token
-CLIENT_ID=dein_client_id
-GUILD_ID=dein_guild_id
+DISCORD_CLIENT_ID=deine_client_id
+DISCORD_GUILD_ID=deine_guild_id
 PORT=3000
 ```
 
+Erweiterte Konfigurationswerte (Mail, OAuth, Storage, Rate Limiting etc.) findest du in den Modul-spezifischen Dateien unter `src/config/`.
+
 ## Dokumentation
 
-Ausführliche Architekturhinweise, Installationsanleitungen, Roadmaps und Prozessbeschreibungen befinden sich jetzt im Ordner [`docs/`](./docs). Die wichtigsten Einstiegspunkte sind:
+Ausführliche Architekturhinweise, Installationsanleitungen, Roadmaps und Prozessbeschreibungen befinden sich im Ordner [`docs/`](./docs). Wichtige Einstiegspunkte:
 
-- [`docs/guides/`](./docs/guides) für Installations- und Support-Anleitungen
-- [`docs/planning/`](./docs/planning) für Roadmaps und detaillierte Aufgabenlisten
-- [`docs/reference/`](./docs/reference) für technische Nachschlagewerke
+- [`docs/guides/`](./docs/guides) – Installations-, FAQ- und Support-Anleitungen
+- [`docs/overview/`](./docs/overview) – Architektur, Komponenten und Datenflüsse
+- [`docs/planning/`](./docs/planning) – Migrationsfahrpläne Richtung vollständiger Prisma-Nutzung
+- [`docs/reference/`](./docs/reference) – Technische Referenzen und Arbeitsabläufe
+- [`docs/process/`](./docs/process) – Contributing-, Release- und Change-Management
 
 ## Contributing
 
-Beiträge sind willkommen! Bitte erstelle einen Fork des Repositories und öffne einen Pull Request mit deinen Änderungen.
+Beiträge sind willkommen! Lies bitte die [CONTRIBUTING.md](./CONTRIBUTING.md), bevor du Pull Requests öffnest. Dort findest du Informationen zu Branch-Strategie, Coding-Guidelines für TypeScript sowie zum Umgang mit Prisma Migrationen.
+
+## Sicherheit
+
+Sicherheitsrelevante Hinweise findest du in der [SECURITY.md](./SECURITY.md). Melde Schwachstellen vertraulich, damit wir die MySQL-/Prisma-Infrastruktur schnell absichern können.
 
 ## Lizenz
 
-Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe die [LICENSE](LICENSE)-Datei für weitere Details.
+Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe die [LICENSE](./LICENSE)-Datei für weitere Details.
 
 ![NodCord Logo](https://imgur.com/dCl3Q6H.png)

@@ -5,15 +5,10 @@ Die folgende Übersicht zeigt die wichtigsten Ordner und Dateien im Projekt und 
 ```text
 NodCord/
 ├── CODE_OF_CONDUCT.md
+├── CONTRIBUTING.md
 ├── LICENSE
 ├── README.md
 ├── SECURITY.md
-├── build.js                # Skript zum Erstellen eines produktionsfähigen Builds
-├── node_modules/
-├── nodemon.json            # Konfiguration für den Entwicklungs-Reload
-├── package-lock.json
-├── package.json
-├── tsconfig.json
 ├── docs/                   # Dokumentation, Leitfäden und Planungsunterlagen
 │   ├── guides/             # Schritt-für-Schritt-Anleitungen (Installation, FAQ, Support)
 │   ├── meta/               # Meta-Dokumente wie diese Strukturübersicht
@@ -21,13 +16,19 @@ NodCord/
 │   ├── planning/           # Roadmaps, Aufgabenlisten und detaillierte Migrationspläne
 │   ├── process/            # Projektprozesse (Changelog, Release-Plan, Contribution-Richtlinien)
 │   └── reference/          # Technische Referenzen und tiefere Beschreibungen
-└── src/                    # Anwendungscode (bitte nicht ohne Abstimmung ändern)
+├── nodemon.json            # Dev-Server-Konfiguration für ts-node-dev
+├── package.json            # Projektabhängigkeiten und Skripte
+├── prisma/                 # Prisma-Schema, Migrationen und Seeds
+│   └── schema.prisma       # MySQL-Modelldefinitionen
+├── tsconfig.json           # TypeScript-Compiler-Einstellungen
+├── dist/                   # Kompilierte Ausgabedateien (wird beim Build erstellt)
+└── src/                    # Anwendungscode (API, Bot, Client, Seeds etc.)
     ├── api/                # Express-App, Controller, Routen, Middlewares, Helper & Services
     ├── bot/                # Discord-Bot mit Commands, Events und Utility-Funktionen
     ├── client/             # Frontend-Code/Assets für das Dashboard
     ├── config/             # Konfigurationsdateien für API, Bot und Server
     ├── database/           # Verbindungslogik und Datenbank-spezifische Hilfen
-    ├── models/             # Mongoose-Modelle für die verschiedenen Domänenobjekte
+    ├── models/             # Übergangsweise vorhandene Mongoose-Modelle (werden durch Prisma ersetzt)
     ├── public/             # Statische Assets (CSS, Bilder, hochgeladene Dateien)
     ├── scripts/            # Automatisierungs- und Wartungsskripte
     ├── seeds/              # Seed-Daten und Initialisierungsskripte
@@ -35,4 +36,4 @@ NodCord/
     └── views/              # EJS-Templates für serverseitiges Rendering
 ```
 
-> **Hinweis:** Der `src/`-Bereich bleibt in der aktuellen Arbeitsanweisung unangetastet. Änderungen konzentrieren sich auf Dokumentation und Projektorganisation.
+> **Hinweis:** Der Fokus aktueller Arbeiten liegt auf der Konsolidierung des TypeScript-Codes und der Migration von MongoDB/Mongoose zu Prisma + MySQL. Änderungen am `src/`-Bereich sollten eng mit dem Maintainer-Team abgestimmt werden.
