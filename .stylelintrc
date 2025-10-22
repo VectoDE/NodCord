@@ -1,8 +1,20 @@
 {
-  "extends": "stylelint-config-standard",
+  "$schema": "https://json.schemastore.org/stylelintrc",
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-prettier"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-prettier"
+  ],
   "rules": {
-    "indentation": 2,
+    "prettier/prettier": true,
+    "order/properties-alphabetical-order": true,
+    "color-no-invalid-hex": true,
+    "block-no-empty": true,
+    "selector-max-id": 0,
     "no-empty-source": null,
-    "color-no-invalid-hex": true
+    "function-url-quotes": "always"
   }
 }
