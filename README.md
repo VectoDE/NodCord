@@ -98,23 +98,26 @@ Die wichtigsten npm-Skripte:
 
 Das Prisma Schema befindet sich unter [`prisma/schema.prisma`](./prisma/schema.prisma). Es definiert alle Models (z. B. Benutzer, Rollen, Projekte) und beschreibt Relationen sowie Constraints für MySQL. Weitere Hinweise:
 
-- Leg die Datenbank-URL in der `.env` Datei als `DATABASE_URL` ab, z. B. `mysql://user:password@localhost:3306/nodcord`.
+- Lege eine `.env`-Datei im Projektstamm an und definiere darin `DATABASE_URL`, z. B. `mysql://user:password@localhost:3306/nodcord`.
 - Verwende `npx prisma db push`, wenn du das Schema während der Entwicklung schnell synchronisieren möchtest.
 - Seeds werden über `prisma db seed` ausgeführt und greifen auf die Dateien in `src/seeds/` zurück.
 
 ## Konfiguration
 
-Erstelle eine `.env` Datei im Projektstamm und fülle mindestens folgende Variablen aus:
+1. Lege eine neue Datei `.env` im Projektstamm an (oder befülle die von deinem Secrets-Management-System ausgerollte Variante).
+2. Trage alle benötigten Variablen aus den folgenden Kategorien ein:
+   - **Core Runtime:** `VERSION`, `NODE_ENV`, `SERVER_NAME`, `LOG_LEVEL`, `TZ`
+   - **Server & API:** `PORT`, `BASE_URL`, `API_HTTPS`, `API_BASE_URL`, `API_PORT`
+   - **Datenbanken:** `DATABASE_URL`, `MONGO_URI`
+   - **Security & Monitoring:** `SESSION_SECRET`, `JWT_SECRET`, `JWT_SESSION_SECRET`, `SENTRY_AUTH_TOKEN`
+   - **Client-Routing:** `CLIENT_HTTPS`, `CLIENT_BASE_URL`, `CLIENT_PORT`
+   - **Discord & Bot:** `DISCORD_*`, `BOT_ACTIVITY_*`, `OWNER_ID`
+   - **OAuth:** `GOOGLE_*`, `GITHUB_*`, `LINKEDIN_*`
+   - **Payments:** `STRIPE_SECRET_KEY`, `PAYPAL_CLIENT_*`
+   - **Mail & Kontakt:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`
+   - **Infrastruktur:** `TS_*`
 
-```
-DATABASE_URL="mysql://user:password@localhost:3306/nodcord"
-DISCORD_TOKEN=dein_discord_token
-DISCORD_CLIENT_ID=deine_client_id
-DISCORD_GUILD_ID=deine_guild_id
-PORT=3000
-```
-
-Erweiterte Konfigurationswerte (Mail, OAuth, Storage, Rate Limiting etc.) findest du in den Modul-spezifischen Dateien unter `src/config/`.
+Weitere Erläuterungen findest du in den Modul-spezifischen Dateien unter `src/config/` sowie in den Referenzdokumenten im Ordner `docs/`.
 
 ## Dokumentation
 

@@ -10,7 +10,7 @@
 - [ ] Bestandsaufnahme aller Module (`src/api`, `src/bot`, `src/client`, `src/models`, `src/database`, `src/seeds`).
 - [ ] Abhängigkeiten prüfen (`package.json`): veraltete Pakete markieren, Prisma/TypeScript-Setup finalisieren.
 - [ ] Datenbank-Mapping vorbereiten: Mongoose-Schemas den Prisma-Modellen im `prisma/schema.prisma` gegenüberstellen.
-- [ ] `.env`-Vorlage für MySQL, Redis, Discord, OAuth und externe Integrationen erstellen.
+- [ ] Secrets-Quelle für MySQL, Redis, Discord, OAuth und externe Integrationen pflegen (z. B. zentrale `.env`-Vorlage im Secret-Manager).
 
 ## Phase 1 – Alpha (Grundfunktionalität lauffähig)
 - [ ] TypeScript-Konfiguration und ts-node-dev Setup abschließen (`npm run dev`).

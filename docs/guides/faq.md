@@ -12,7 +12,7 @@
 ### Wie verbinde ich NodCord mit meiner MySQL-Datenbank?
 
 - Lege eine Datenbank an, z. B. `nodcord`.
-- Trage die Zugangsdaten in der `.env` Datei als `DATABASE_URL` ein, z. B. `mysql://user:pass@localhost:3306/nodcord`.
+- Trage die Zugangsdaten in deiner `.env`-Datei als `DATABASE_URL` ein, z. B. `mysql://user:pass@localhost:3306/nodcord`.
 - Führe `npx prisma migrate deploy` aus, um das Schema zu installieren.
 - Starte den Server mit `npm run dev`.
 
