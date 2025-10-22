@@ -7,7 +7,7 @@ Dieser Plan ergänzt den high-level Fahrplan in [`todo.md`](./todo.md) und besch
 - [ ] **TypeScript Tooling vereinheitlichen**: `tsconfig.json` finalisieren, gemeinsame ESLint-/Prettier-Konfiguration ergänzen, Pfad-Aliasse für `src/api`, `src/bot`, `src/client` festlegen.
 - [ ] **Dev-Server standardisieren**: `npm run dev` (ts-node-dev) als Single-Entry-Point beibehalten, Hot-Reload für API und Bot sicherstellen.
 - [ ] **Prisma Projektstruktur**: `prisma/` Ordner mit `schema.prisma`, Migrationen und optionalen Seeds pflegen; Skripte `npm run prisma:*` nutzen.
-- [ ] **Environment Management**: `.env.example` aktualisieren (MySQL, Redis, OAuth, Bot), Secrets-Handling dokumentieren, dotenv-Ladepunkte prüfen.
+- [ ] **Environment Management**: Zentrale `.env`-Baseline im Secrets-Management pflegen (MySQL, Redis, OAuth, Bot), Secrets-Handling dokumentieren, dotenv-Ladepunkte prüfen.
 - [ ] **CI/CD-Erweiterung**: Pipeline definieren (Build, Test, Prisma Migrate, Prisma Generate). GitHub Actions vorbereiten.
 
 ## 2. Datenmodell & Persistenz

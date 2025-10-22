@@ -32,14 +32,9 @@ Diese Anleitung führt dich durch die Installation von NodCord auf Basis von Typ
    npx prisma migrate deploy
    ```
 
-5. `.env` Datei anlegen und mindestens folgende Werte setzen:
-   ```env
-   DATABASE_URL="mysql://user:pass@localhost:3306/nodcord"
-   DISCORD_TOKEN=dein_discord_token
-   DISCORD_CLIENT_ID=deine_client_id
-   DISCORD_GUILD_ID=deine_guild_id
-   PORT=3000
-   ```
+5. Konfigurationsdatei vorbereiten:
+   - Lege eine `.env`-Datei an (z. B. per `touch .env` oder durch Ausrollen über dein Secret-Management).
+   - Trage die benötigten Variablen ein. Die wichtigsten Blöcke findest du im Abschnitt „Server & API“, „Datenbanken“, „Sicherheit“, „Discord & Bot“, „OAuth & Payments“, „E-Mail“ und „Infrastruktur“ der README.
 
 6. Entwicklungsserver starten:
    ```sh

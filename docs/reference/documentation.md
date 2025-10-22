@@ -29,7 +29,7 @@ NodCord ist eine Express-basierte API mit integriertem Discord-Bot, geschrieben 
    npx prisma generate
    npx prisma migrate deploy
    ```
-4. `.env` anhand der Beispielvariablen anlegen (siehe README) und MySQL-/Discord-Zugangsdaten pflegen.
+4. Eine `.env`-Datei anlegen (z. B. über dein Secrets-Management-System) und dort die MySQL-/Discord-Zugangsdaten eintragen (siehe README).
 
 ## Entwicklungs- und Betriebs-Workflows
 
