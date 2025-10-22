@@ -4,18 +4,31 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 lerna-debug.log*
-.pnpm-debug.log*
 
-# Compiled binary addons (https://nodejs.org/api/addons.html)
-dist/
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+tmp/
+
+# Build directories
+/dist/
+/build/
+/.cache/
+/.tmp/
+coverage/
+.nyc_output/
 
 # Dependency directories
-node_modules/
-jspm_packages/
-@types/
+/node_modules/
+/jspm_packages/
+.pnp
+.pnp.js
 
-# TypeScript cache
+# TypeScript
 *.tsbuildinfo
 
 # Optional npm cache directory
@@ -29,10 +42,28 @@ jspm_packages/
 
 # dotenv environment variable files
 .env
-.env.development.local
-.env.test.local
-.env.production.local
 .env.local
+.env.*.local
+.env.development
+.env.test
+.env.production
+
+# Prisma artifacts
+prisma/migrations/
+.prisma/
 
 # Sentry Config File
 .sentryclirc
+
+# IDE directories and files
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Test output
+reports/
+
+# PM2 logs
+.pm2/

@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./.tmp/tests",
+    "types": ["node", "jest"],
+    "noEmit": false,
+    "incremental": false,
+    "declaration": false,
+    "sourceMap": true
+  },
+  "include": [
+    "src/**/*.ts",
+    "prisma/**/*.ts",
+    "tests/**/*.ts",
+    "**/*.test.ts",
+    "**/*.spec.ts",
+    "jest.setup.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
