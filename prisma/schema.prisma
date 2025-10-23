@@ -77,6 +77,124 @@ enum PaymentStatus {
   FAILED    @map("failed")
 }
 
+enum BillingCycle {
+  DAILY       @map("daily")
+  WEEKLY      @map("weekly")
+  MONTHLY     @map("monthly")
+  QUARTERLY   @map("quarterly")
+  SEMI_ANNUAL @map("semi_annual")
+  YEARLY      @map("yearly")
+}
+
+enum SubscriptionTier {
+  FREE       @map("free")
+  STANDARD   @map("standard")
+  PREMIUM    @map("premium")
+  ENTERPRISE @map("enterprise")
+}
+
+enum InvoiceStatus {
+  DRAFT    @map("draft")
+  PENDING  @map("pending")
+  SENT     @map("sent")
+  PAID     @map("paid")
+  OVERDUE  @map("overdue")
+  VOID     @map("void")
+  REFUNDED @map("refunded")
+}
+
+enum InvoiceDeliveryMethod {
+  EMAIL        @map("email")
+  PDF_DOWNLOAD @map("pdf_download")
+  WEBHOOK      @map("webhook")
+  PORTAL       @map("portal")
+}
+
+enum TaxType {
+  VAT         @map("vat")
+  GST         @map("gst")
+  SALES       @map("sales")
+  SERVICE     @map("service")
+  DIGITAL     @map("digital")
+  WITHHOLDING @map("withholding")
+  NONE        @map("none")
+}
+
+enum TaxJurisdictionType {
+  COUNTRY  @map("country")
+  STATE    @map("state")
+  PROVINCE @map("province")
+  CITY     @map("city")
+  COUNTY   @map("county")
+  DISTRICT @map("district")
+}
+
+enum DiscountType {
+  PERCENTAGE   @map("percentage")
+  FIXED_AMOUNT @map("fixed_amount")
+  FREE_TRIAL   @map("free_trial")
+  CREDIT       @map("credit")
+}
+
+enum UsageAggregation {
+  COUNT    @map("count")
+  DURATION @map("duration")
+  VOLUME   @map("volume")
+  CUSTOM   @map("custom")
+}
+
+enum AnalyticsEventCategory {
+  ENGAGEMENT  @map("engagement")
+  MODERATION  @map("moderation")
+  ECONOMY     @map("economy")
+  SYSTEM      @map("system")
+  INTEGRATION @map("integration")
+  AUTOMATION  @map("automation")
+}
+
+enum ReportFrequency {
+  DAILY     @map("daily")
+  WEEKLY    @map("weekly")
+  MONTHLY   @map("monthly")
+  QUARTERLY @map("quarterly")
+  YEARLY    @map("yearly")
+  CUSTOM    @map("custom")
+}
+
+enum BillingContactType {
+  PRIMARY   @map("primary")
+  TECHNICAL @map("technical")
+  FINANCE   @map("finance")
+  LEGAL     @map("legal")
+  SUPPORT   @map("support")
+}
+
+enum GatewayProvider {
+  STRIPE    @map("stripe")
+  PAYPAL    @map("paypal")
+  BRAINTREE @map("braintree")
+  ADYEN     @map("adyen")
+  SQUARE    @map("square")
+  CUSTOM    @map("custom")
+}
+
+enum InvoiceLineType {
+  PRODUCT    @map("product")
+  SERVICE    @map("service")
+  DISCOUNT   @map("discount")
+  TAX        @map("tax")
+  FEE        @map("fee")
+  ADJUSTMENT @map("adjustment")
+}
+
+enum SubscriptionCycleStatus {
+  PENDING  @map("pending")
+  ACTIVE   @map("active")
+  INVOICED @map("invoiced")
+  CLOSED   @map("closed")
+  FAILED   @map("failed")
+}
+
 enum PriorityLevel {
   LOW    @map("low")
   MEDIUM @map("medium")
@@ -268,6 +386,11 @@ enum RoleplayStatus {
 
 enum SubscriptionStatus {
   ACTIVE        @map("active")
+  TRIALING      @map("trialing")
+  PAST_DUE      @map("past_due")
+  CANCELLED     @map("cancelled")
+  SUSPENDED     @map("suspended")
+  EXPIRED       @map("expired")
   UNSUBSCRIBED  @map("unsubscribed")
   BOUNCED       @map("bounced")
 }
@@ -306,8 +429,24 @@ model Tenant {
   orders         Order[]
   organizations  Organization[]
   payments       Payment[]
+  paymentGateways PaymentGateway[]
+  paymentPayouts  PaymentPayout[]
+  paymentReconciliations PaymentReconciliation[]
   products       Product[]
   projects       Project[]
+  billingProfiles BillingProfile[]
+  subscriptionPlans SubscriptionPlan[]
+  subscriptionAddons SubscriptionAddon[]
+  subscriptions  Subscription[]
+  invoices       Invoice[]
+  taxJurisdictions TaxJurisdiction[]
+  financialReports FinancialReport[]
+  financialSnapshots FinancialSnapshot[]
+  analyticsSessions AnalyticsSession[]
+  analyticsEvents   AnalyticsEvent[]
+  analyticsDashboards AnalyticsDashboardWidget[]
+  analyticsReports AnalyticsReport[]
+  analyticsGoals   AnalyticsGoal[]
   afkRecords     Afk[]
   antiLinkRules  Antilink[]
   autoResponders Autoresponder[]
@@ -1628,26 +1767,34 @@ model OrganizationMemberHistory {
 }
 
 model Payment {
-  id            String        @id @default(uuid())
-  userId        String
-  amount        Decimal       @db.Decimal(18, 2)
-  method        PaymentMethod
-  status        PaymentStatus @default(PENDING)
-  transactionId String?
-  tenantId      String?
-  processedAt   DateTime?
-  isArchived    Boolean       @default(false)
-  deletedAt     DateTime?
-  metadata      Json          @default("{}")
-  createdDate   DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id                String        @id @default(uuid())
+  userId            String
+  amount            Decimal       @db.Decimal(18, 2)
+  method            PaymentMethod
+  status            PaymentStatus @default(PENDING)
+  transactionId     String?
+  tenantId          String?
+  billingProfileId  String?
+  invoiceId         String?
+  processedAt       DateTime?
+  isArchived        Boolean       @default(false)
+  deletedAt         DateTime?
+  metadata          Json          @default("{}")
+  createdDate       DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user           User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant         Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  billingProfile BillingProfile? @relation(fields: [billingProfileId], references: [id], onDelete: SetNull)
+  invoice        Invoice?        @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
   metadataRecords PaymentMetadata[]
+  reconciliationRecords PaymentReconciliation[]
+  receipts       Receipt[]
 
   @@index([userId])
   @@index([tenantId])
+  @@index([billingProfileId], map: "idx_payment_billing_profile")
+  @@index([invoiceId], map: "idx_payment_invoice")
   @@index([status])
   @@index([isArchived])
   @@index([createdDate])
@@ -1668,6 +1815,845 @@ model PaymentMetadata {
   @@index([paymentId], map: "idx_payment_metadata_payment")
   @@unique([paymentId, key], map: "uq_payment_metadata_key")
   @@map("payment_metadata")
+}
+
+model BillingProfile {
+  id                     String         @id @default(uuid())
+  tenantId               String?
+  userId                 String?
+  companyName            String?
+  legalName              String?
+  taxId                  String?
+  address                Json           @default("{}")
+  billingEmail           String?
+  phoneNumber            String?
+  currency               String         @default("USD")
+  preferredPaymentMethod PaymentMethod?
+  metadata               Json           @default("{}")
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
+
+  tenant        Tenant?        @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user          User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  paymentMethods BillingProfilePaymentMethod[]
+  contacts       BillingContact[]
+  subscriptions  Subscription[]
+  invoices       Invoice[]
+  taxExemptions  TaxExemption[]
+
+  @@index([tenantId], map: "idx_billing_profile_tenant")
+  @@index([userId], map: "idx_billing_profile_user")
+  @@unique([tenantId, userId], map: "uq_billing_profile_owner")
+  @@map("billing_profile")
+}
+
+model BillingProfilePaymentMethod {
+  id                String         @id @default(uuid())
+  billingProfileId  String
+  type              PaymentMethod
+  gatewayProvider   GatewayProvider?
+  externalReference String?
+  displayName       String?
+  isDefault         Boolean        @default(false)
+  details           Json           @default("{}")
+  metadata          Json           @default("{}")
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  billingProfile BillingProfile @relation(fields: [billingProfileId], references: [id], onDelete: Cascade)
+
+  @@index([billingProfileId], map: "idx_billing_profile_payment_profile")
+  @@index([isDefault], map: "idx_billing_profile_payment_default")
+  @@map("billing_profile_payment_method")
+}
+
+model BillingContact {
+  id               String             @id @default(uuid())
+  billingProfileId String
+  type             BillingContactType @default(PRIMARY)
+  name             String
+  email            String?
+  phone            String?
+  notes            String?            @db.Text
+  metadata         Json               @default("{}")
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+
+  billingProfile BillingProfile @relation(fields: [billingProfileId], references: [id], onDelete: Cascade)
+
+  @@index([billingProfileId], map: "idx_billing_contact_profile")
+  @@index([type], map: "idx_billing_contact_type")
+  @@map("billing_contact")
+}
+
+model SubscriptionPlan {
+  id               String           @id @default(uuid())
+  tenantId         String?
+  name             String
+  tier             SubscriptionTier @default(STANDARD)
+  description      String?          @db.Text
+  baseCurrency     String           @default("USD")
+  basePrice        Decimal          @db.Decimal(18, 2) @default(0)
+  baseBillingCycle BillingCycle     @default(MONTHLY)
+  trialPeriodDays  Int              @default(0)
+  isActive         Boolean          @default(true)
+  maxMembers       Int?
+  metadata         Json             @default("{}")
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  tenant        Tenant?                  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  features      SubscriptionPlanFeature[]
+  prices        SubscriptionPlanPrice[]
+  subscriptions Subscription[]
+  addons        SubscriptionAddon[]
+
+  @@index([tenantId], map: "idx_subscription_plan_tenant")
+  @@index([tier], map: "idx_subscription_plan_tier")
+  @@index([isActive], map: "idx_subscription_plan_active")
+  @@unique([tenantId, name], map: "uq_subscription_plan_name")
+  @@map("subscription_plan")
+}
+
+model SubscriptionPlanFeature {
+  id               String              @id @default(uuid())
+  planId           String
+  key              String
+  label            String
+  description      String?             @db.Text
+  limitValue       Int?
+  usageAggregation UsageAggregation    @default(COUNT)
+  metadata         Json                @default("{}")
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+
+  plan        SubscriptionPlan      @relation(fields: [planId], references: [id], onDelete: Cascade)
+  usageLimits SubscriptionUsageLimit[]
+  usageRecords SubscriptionUsage[]
+
+  @@index([planId], map: "idx_subscription_plan_feature_plan")
+  @@unique([planId, key], map: "uq_subscription_plan_feature_key")
+  @@map("subscription_plan_feature")
+}
+
+model SubscriptionPlanPrice {
+  id           String        @id @default(uuid())
+  planId       String
+  billingCycle BillingCycle
+  amount       Decimal       @db.Decimal(18, 2) @default(0)
+  currency     String        @default("USD")
+  isPrimary    Boolean       @default(false)
+  metadata     Json          @default("{}")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  plan SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  @@index([planId], map: "idx_subscription_plan_price_plan")
+  @@index([billingCycle], map: "idx_subscription_plan_price_cycle")
+  @@unique([planId, billingCycle], map: "uq_subscription_plan_price_cycle")
+  @@map("subscription_plan_price")
+}
+
+model SubscriptionAddon {
+  id           String       @id @default(uuid())
+  planId       String?
+  tenantId     String?
+  name         String
+  description  String?      @db.Text
+  amount       Decimal      @db.Decimal(18, 2) @default(0)
+  currency     String       @default("USD")
+  billingCycle BillingCycle @default(MONTHLY)
+  isRecurring  Boolean      @default(true)
+  isActive     Boolean      @default(true)
+  metadata     Json         @default("{}")
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  plan        SubscriptionPlan? @relation(fields: [planId], references: [id], onDelete: SetNull)
+  tenant      Tenant?           @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  assignments SubscriptionAddonAssignment[]
+
+  @@index([planId], map: "idx_subscription_addon_plan")
+  @@index([tenantId], map: "idx_subscription_addon_tenant")
+  @@index([isActive], map: "idx_subscription_addon_active")
+  @@unique([tenantId, name], map: "uq_subscription_addon_tenant_name")
+  @@map("subscription_addon")
+}
+
+model SubscriptionAddonAssignment {
+  id             String             @id @default(uuid())
+  subscriptionId String
+  addonId        String
+  quantity       Int                @default(1)
+  startedAt      DateTime           @default(now())
+  endedAt        DateTime?
+  metadata       Json               @default("{}")
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  subscription Subscription     @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  addon        SubscriptionAddon @relation(fields: [addonId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId], map: "idx_subscription_addon_assignment_subscription")
+  @@index([addonId], map: "idx_subscription_addon_assignment_addon")
+  @@unique([subscriptionId, addonId], map: "uq_subscription_addon_assignment_unique")
+  @@map("subscription_addon_assignment")
+}
+
+model Subscription {
+  id                  String             @id @default(uuid())
+  tenantId            String?
+  userId              String?
+  billingProfileId    String?
+  planId              String
+  status              SubscriptionStatus @default(TRIALING)
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelAtPeriodEnd   Boolean            @default(false)
+  cancelledAt         DateTime?
+  trialEndsAt         DateTime?
+  renewalBillingCycle BillingCycle       @default(MONTHLY)
+  renewalAmount       Decimal?           @db.Decimal(18, 2)
+  currency            String             @default("USD")
+  usageSummary        Json               @default("{}")
+  metadata            Json               @default("{}")
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
+
+  tenant         Tenant?          @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user           User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  billingProfile BillingProfile?  @relation(fields: [billingProfileId], references: [id], onDelete: SetNull)
+  plan           SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  cycles         SubscriptionCycle[]
+  usageLimits    SubscriptionUsageLimit[]
+  usageRecords   SubscriptionUsage[]
+  usageSnapshots SubscriptionUsageSnapshot[]
+  invoices       Invoice[]
+  addonAssignments SubscriptionAddonAssignment[]
+
+  @@index([tenantId], map: "idx_subscription_tenant")
+  @@index([userId], map: "idx_subscription_user")
+  @@index([planId], map: "idx_subscription_plan")
+  @@index([billingProfileId], map: "idx_subscription_billing_profile")
+  @@index([status], map: "idx_subscription_status")
+  @@map("subscription")
+}
+
+model SubscriptionCycle {
+  id             String                  @id @default(uuid())
+  subscriptionId String
+  cycleNumber    Int                     @default(1)
+  billingCycle   BillingCycle
+  periodStart    DateTime
+  periodEnd      DateTime
+  status         SubscriptionCycleStatus @default(PENDING)
+  invoiceId      String?
+  metadata       Json                    @default("{}")
+  createdAt      DateTime                @default(now())
+  updatedAt      DateTime                @updatedAt
+
+  subscription Subscription      @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  invoice      Invoice?          @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  usageSnapshots SubscriptionUsageSnapshot[]
+  usageRecords   SubscriptionUsage[]
+
+  @@index([subscriptionId], map: "idx_subscription_cycle_subscription")
+  @@index([invoiceId], map: "idx_subscription_cycle_invoice")
+  @@unique([subscriptionId, cycleNumber], map: "uq_subscription_cycle_number")
+  @@map("subscription_cycle")
+}
+
+model SubscriptionUsageLimit {
+  id             String           @id @default(uuid())
+  subscriptionId String?
+  planFeatureId  String
+  limitValue     Decimal?         @db.Decimal(18, 4)
+  aggregation    UsageAggregation @default(COUNT)
+  effectiveFrom  DateTime?
+  effectiveUntil DateTime?
+  metadata       Json             @default("{}")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  subscription Subscription?          @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  planFeature SubscriptionPlanFeature @relation(fields: [planFeatureId], references: [id], onDelete: Cascade)
+
+  @@index([subscriptionId], map: "idx_subscription_usage_limit_subscription")
+  @@index([planFeatureId], map: "idx_subscription_usage_limit_feature")
+  @@map("subscription_usage_limit")
+}
+
+model SubscriptionUsage {
+  id             String           @id @default(uuid())
+  subscriptionId String
+  planFeatureId  String
+  cycleId        String?
+  aggregation    UsageAggregation @default(COUNT)
+  quantity       Decimal          @db.Decimal(18, 4) @default(0)
+  measuredAt     DateTime         @default(now())
+  metadata       Json             @default("{}")
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  subscription Subscription        @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  planFeature  SubscriptionPlanFeature @relation(fields: [planFeatureId], references: [id], onDelete: Cascade)
+  cycle        SubscriptionCycle?  @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+
+  @@index([subscriptionId], map: "idx_subscription_usage_subscription")
+  @@index([planFeatureId], map: "idx_subscription_usage_feature")
+  @@index([cycleId], map: "idx_subscription_usage_cycle")
+  @@map("subscription_usage")
+}
+
+model SubscriptionUsageSnapshot {
+  id             String   @id @default(uuid())
+  subscriptionId String
+  cycleId        String?
+  snapshotAt     DateTime @default(now())
+  usageSummary   Json     @default("{}")
+  metadata       Json     @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  subscription Subscription       @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  cycle        SubscriptionCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+
+  @@index([subscriptionId], map: "idx_subscription_usage_snapshot_subscription")
+  @@index([cycleId], map: "idx_subscription_usage_snapshot_cycle")
+  @@map("subscription_usage_snapshot")
+}
+
+model Invoice {
+  id               String                @id @default(uuid())
+  tenantId         String?
+  billingProfileId String?
+  subscriptionId   String?
+  cycleId          String?
+  number           String?
+  status           InvoiceStatus         @default(DRAFT)
+  issuedAt         DateTime?
+  dueDate          DateTime?
+  paidAt           DateTime?
+  currency         String                @default("USD")
+  subtotal         Decimal               @db.Decimal(18, 2) @default(0)
+  taxTotal         Decimal               @db.Decimal(18, 2) @default(0)
+  discountTotal    Decimal               @db.Decimal(18, 2) @default(0)
+  total            Decimal               @db.Decimal(18, 2) @default(0)
+  deliveryMethod   InvoiceDeliveryMethod @default(EMAIL)
+  notes            String?               @db.Text
+  metadata         Json                  @default("{}")
+  createdAt        DateTime              @default(now())
+  updatedAt        DateTime              @updatedAt
+
+  tenant         Tenant?          @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  billingProfile BillingProfile?  @relation(fields: [billingProfileId], references: [id], onDelete: SetNull)
+  subscription   Subscription?    @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  cycle          SubscriptionCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+  lineItems      InvoiceLineItem[]
+  historyRecords InvoiceHistory[]
+  deliveryLogs   InvoiceDeliveryLog[]
+  taxCalculations TaxCalculation[]
+  receipts       Receipt[]
+  payments       Payment[]
+  reconciliations PaymentReconciliation[]
+
+  @@index([tenantId], map: "idx_invoice_tenant")
+  @@index([billingProfileId], map: "idx_invoice_billing_profile")
+  @@index([subscriptionId], map: "idx_invoice_subscription")
+  @@index([cycleId], map: "idx_invoice_cycle")
+  @@index([status], map: "idx_invoice_status")
+  @@unique([tenantId, number], map: "uq_invoice_number")
+  @@map("invoice")
+}
+
+model InvoiceLineItem {
+  id          String           @id @default(uuid())
+  invoiceId   String
+  lineType    InvoiceLineType  @default(SERVICE)
+  name        String
+  description String?          @db.Text
+  quantity    Int              @default(1)
+  unitAmount  Decimal          @db.Decimal(18, 2) @default(0)
+  amount      Decimal          @db.Decimal(18, 2) @default(0)
+  taxRateId   String?
+  metadata    Json             @default("{}")
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  invoice  Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  taxRate  TaxRate? @relation(fields: [taxRateId], references: [id], onDelete: SetNull)
+  taxCalculations TaxCalculation[]
+
+  @@index([invoiceId], map: "idx_invoice_line_item_invoice")
+  @@index([taxRateId], map: "idx_invoice_line_item_tax_rate")
+  @@map("invoice_line_item")
+}
+
+model InvoiceHistory {
+  id          String        @id @default(uuid())
+  invoiceId   String
+  status      InvoiceStatus
+  notes       String?       @db.Text
+  createdById String?
+  metadata    Json          @default("{}")
+  createdAt   DateTime      @default(now())
+
+  invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  createdBy User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId], map: "idx_invoice_history_invoice")
+  @@index([createdById], map: "idx_invoice_history_actor")
+  @@map("invoice_history")
+}
+
+model InvoiceDeliveryLog {
+  id        String                @id @default(uuid())
+  invoiceId String
+  method    InvoiceDeliveryMethod
+  recipient String
+  status    String?               @default("pending")
+  response  Json?                 @default("null")
+  sentAt    DateTime              @default(now())
+  metadata  Json                  @default("{}")
+  createdAt DateTime              @default(now())
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId], map: "idx_invoice_delivery_invoice")
+  @@index([method], map: "idx_invoice_delivery_method")
+  @@map("invoice_delivery_log")
+}
+
+model TaxJurisdiction {
+  id        String              @id @default(uuid())
+  tenantId  String?
+  name      String
+  code      String
+  type      TaxJurisdictionType @default(COUNTRY)
+  metadata  Json                @default("{}")
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+
+  tenant      Tenant?      @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  rates       TaxRate[]
+  taxRules    TaxRule[]
+  exemptions  TaxExemption[]
+
+  @@index([tenantId], map: "idx_tax_jurisdiction_tenant")
+  @@unique([tenantId, code], map: "uq_tax_jurisdiction_code")
+  @@map("tax_jurisdiction")
+}
+
+model TaxRate {
+  id             String      @id @default(uuid())
+  jurisdictionId String
+  name           String
+  rate           Decimal     @db.Decimal(6, 4) @default(0)
+  taxType        TaxType     @default(SALES)
+  isCompound     Boolean     @default(false)
+  effectiveFrom  DateTime?
+  effectiveUntil DateTime?
+  metadata       Json        @default("{}")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  jurisdiction TaxJurisdiction @relation(fields: [jurisdictionId], references: [id], onDelete: Cascade)
+  lineItems    InvoiceLineItem[]
+  calculations TaxCalculation[]
+  taxRules     TaxRule[]
+
+  @@index([jurisdictionId], map: "idx_tax_rate_jurisdiction")
+  @@index([taxType], map: "idx_tax_rate_type")
+  @@map("tax_rate")
+}
+
+model TaxRule {
+  id              String             @id @default(uuid())
+  tenantId        String?
+  jurisdictionId  String?
+  taxRateId       String?
+  appliesTo       InvoiceLineType    @default(PRODUCT)
+  priority        Int                @default(0)
+  conditions      Json               @default("{}")
+  metadata        Json               @default("{}")
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  tenant       Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  jurisdiction TaxJurisdiction? @relation(fields: [jurisdictionId], references: [id], onDelete: SetNull)
+  taxRate      TaxRate?         @relation(fields: [taxRateId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_tax_rule_tenant")
+  @@index([jurisdictionId], map: "idx_tax_rule_jurisdiction")
+  @@index([taxRateId], map: "idx_tax_rule_rate")
+  @@map("tax_rule")
+}
+
+model TaxCalculation {
+  id            String           @id @default(uuid())
+  invoiceId     String
+  taxRateId     String
+  lineItemId    String?
+  taxableAmount Decimal          @db.Decimal(18, 2) @default(0)
+  taxAmount     Decimal          @db.Decimal(18, 2) @default(0)
+  metadata      Json             @default("{}")
+  createdAt     DateTime         @default(now())
+
+  invoice  Invoice        @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  taxRate  TaxRate        @relation(fields: [taxRateId], references: [id], onDelete: Cascade)
+  lineItem InvoiceLineItem? @relation(fields: [lineItemId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId], map: "idx_tax_calculation_invoice")
+  @@index([taxRateId], map: "idx_tax_calculation_rate")
+  @@index([lineItemId], map: "idx_tax_calculation_line_item")
+  @@map("tax_calculation")
+}
+
+model TaxExemption {
+  id               String   @id @default(uuid())
+  billingProfileId String
+  jurisdictionId   String?
+  exemptionNumber  String
+  description      String?  @db.Text
+  issuedAt         DateTime?
+  expiresAt        DateTime?
+  metadata         Json     @default("{}")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  billingProfile BillingProfile  @relation(fields: [billingProfileId], references: [id], onDelete: Cascade)
+  jurisdiction   TaxJurisdiction? @relation(fields: [jurisdictionId], references: [id], onDelete: SetNull)
+
+  @@index([billingProfileId], map: "idx_tax_exemption_profile")
+  @@index([jurisdictionId], map: "idx_tax_exemption_jurisdiction")
+  @@unique([billingProfileId, exemptionNumber], map: "uq_tax_exemption_number")
+  @@map("tax_exemption")
+}
+
+model PaymentGateway {
+  id            String          @id @default(uuid())
+  tenantId      String?
+  provider      GatewayProvider
+  name          String
+  isPrimary     Boolean         @default(false)
+  isActive      Boolean         @default(true)
+  configuration Json            @default("{}")
+  metadata      Json            @default("{}")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  tenant         Tenant?                   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  credentials    PaymentGatewayCredential[]
+  webhooks       PaymentGatewayWebhook[]
+  payouts        PaymentPayout[]
+  reconciliations PaymentReconciliation[]
+
+  @@index([tenantId], map: "idx_payment_gateway_tenant")
+  @@index([provider], map: "idx_payment_gateway_provider")
+  @@index([isActive], map: "idx_payment_gateway_active")
+  @@map("payment_gateway")
+}
+
+model PaymentGatewayCredential {
+  id         String   @id @default(uuid())
+  gatewayId  String
+  key        String
+  value      Json     @default("null")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  rotatedAt  DateTime?
+  metadata   Json     @default("{}")
+
+  gateway PaymentGateway @relation(fields: [gatewayId], references: [id], onDelete: Cascade)
+
+  @@index([gatewayId], map: "idx_payment_gateway_credential_gateway")
+  @@unique([gatewayId, key], map: "uq_payment_gateway_credential_key")
+  @@map("payment_gateway_credential")
+}
+
+model PaymentGatewayWebhook {
+  id          String   @id @default(uuid())
+  gatewayId   String
+  eventType   String
+  url         String
+  secret      String?
+  lastCalledAt DateTime?
+  metadata    Json     @default("{}")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  gateway PaymentGateway @relation(fields: [gatewayId], references: [id], onDelete: Cascade)
+
+  @@index([gatewayId], map: "idx_payment_gateway_webhook_gateway")
+  @@index([eventType], map: "idx_payment_gateway_webhook_event")
+  @@map("payment_gateway_webhook")
+}
+
+model PaymentPayout {
+  id               String        @id @default(uuid())
+  gatewayId        String?
+  tenantId         String?
+  status           PaymentStatus @default(PENDING)
+  amount           Decimal       @db.Decimal(18, 2) @default(0)
+  currency         String        @default("USD")
+  externalReference String?
+  initiatedAt      DateTime      @default(now())
+  completedAt      DateTime?
+  metadata         Json          @default("{}")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  gateway PaymentGateway? @relation(fields: [gatewayId], references: [id], onDelete: SetNull)
+  tenant  Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([gatewayId], map: "idx_payment_payout_gateway")
+  @@index([tenantId], map: "idx_payment_payout_tenant")
+  @@index([status], map: "idx_payment_payout_status")
+  @@map("payment_payout")
+}
+
+model PaymentReconciliation {
+  id               String        @id @default(uuid())
+  gatewayId        String?
+  paymentId        String?
+  invoiceId        String?
+  status           PaymentStatus @default(PENDING)
+  externalReference String?
+  reconciledAt     DateTime?
+  metadata         Json          @default("{}")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  gateway PaymentGateway? @relation(fields: [gatewayId], references: [id], onDelete: SetNull)
+  payment Payment?         @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+  invoice Invoice?         @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+
+  @@index([gatewayId], map: "idx_payment_reconciliation_gateway")
+  @@index([paymentId], map: "idx_payment_reconciliation_payment")
+  @@index([invoiceId], map: "idx_payment_reconciliation_invoice")
+  @@map("payment_reconciliation")
+}
+
+model Receipt {
+  id        String   @id @default(uuid())
+  invoiceId String
+  paymentId String?
+  number    String?
+  issuedAt  DateTime @default(now())
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  payment Payment? @relation(fields: [paymentId], references: [id], onDelete: SetNull)
+
+  @@index([invoiceId], map: "idx_receipt_invoice")
+  @@index([paymentId], map: "idx_receipt_payment")
+  @@unique([invoiceId, number], map: "uq_receipt_number")
+  @@map("receipt")
+}
+
+model FinancialReport {
+  id             String          @id @default(uuid())
+  tenantId       String?
+  name           String
+  description    String?         @db.Text
+  frequency      ReportFrequency @default(MONTHLY)
+  filters        Json            @default("{}")
+  generatedAt    DateTime?
+  generatedById  String?
+  output         Json?           @default("null")
+  metadata       Json            @default("{}")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  tenant      Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  generatedBy User?   @relation("FinancialReportGeneratedBy", fields: [generatedById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_financial_report_tenant")
+  @@index([generatedById], map: "idx_financial_report_generated_by")
+  @@map("financial_report")
+}
+
+model FinancialSnapshot {
+  id            String   @id @default(uuid())
+  tenantId      String?
+  periodStart   DateTime
+  periodEnd     DateTime
+  totalRevenue  Decimal  @db.Decimal(18, 2) @default(0)
+  totalTax      Decimal  @db.Decimal(18, 2) @default(0)
+  totalDiscounts Decimal @db.Decimal(18, 2) @default(0)
+  currency      String   @default("USD")
+  metrics       Json     @default("{}")
+  metadata      Json     @default("{}")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_financial_snapshot_tenant")
+  @@index([periodStart], map: "idx_financial_snapshot_period_start")
+  @@map("financial_snapshot")
+}
+
+model AnalyticsSession {
+  id        String   @id @default(uuid())
+  tenantId  String?
+  userId    String?
+  guildId   String?
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+  context   Json     @default("{}")
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+  events AnalyticsEvent[]
+
+  @@index([tenantId], map: "idx_analytics_session_tenant")
+  @@index([userId], map: "idx_analytics_session_user")
+  @@map("analytics_session")
+}
+
+model AnalyticsEvent {
+  id        String                 @id @default(uuid())
+  tenantId  String?
+  sessionId String?
+  userId    String?
+  guildId   String?
+  category  AnalyticsEventCategory @default(SYSTEM)
+  action    String
+  label     String?
+  value     Decimal?               @db.Decimal(18, 4)
+  context   Json                   @default("{}")
+  metadata  Json                   @default("{}")
+  occurredAt DateTime              @default(now())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  tenant  Tenant?          @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  session AnalyticsSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+  user    User?            @relation(fields: [userId], references: [id], onDelete: SetNull)
+  properties AnalyticsEventProperty[]
+
+  @@index([tenantId], map: "idx_analytics_event_tenant")
+  @@index([sessionId], map: "idx_analytics_event_session")
+  @@index([userId], map: "idx_analytics_event_user")
+  @@index([category], map: "idx_analytics_event_category")
+  @@map("analytics_event")
+}
+
+model AnalyticsEventProperty {
+  id        String   @id @default(uuid())
+  eventId   String
+  key       String
+  value     Json     @default("null")
+  createdAt DateTime @default(now())
+
+  event AnalyticsEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId], map: "idx_analytics_event_property_event")
+  @@unique([eventId, key], map: "uq_analytics_event_property_key")
+  @@map("analytics_event_property")
+}
+
+model AnalyticsDashboardWidget {
+  id                String   @id @default(uuid())
+  tenantId          String?
+  name              String
+  description       String?  @db.Text
+  visualizationType String   @default("chart")
+  position          Int      @default(0)
+  isVisible         Boolean  @default(true)
+  config            Json     @default("{}")
+  metadata          Json     @default("{}")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_analytics_dashboard_widget_tenant")
+  @@index([isVisible], map: "idx_analytics_dashboard_widget_visible")
+  @@map("analytics_dashboard_widget")
+}
+
+model AnalyticsReport {
+  id          String          @id @default(uuid())
+  tenantId    String?
+  name        String
+  description String?         @db.Text
+  frequency   ReportFrequency @default(MONTHLY)
+  lastRunAt   DateTime?
+  nextRunAt   DateTime?
+  query       Json            @default("{}")
+  isActive    Boolean         @default(true)
+  metadata    Json            @default("{}")
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  tenant    Tenant?                @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  schedules AnalyticsReportSchedule[]
+
+  @@index([tenantId], map: "idx_analytics_report_tenant")
+  @@index([isActive], map: "idx_analytics_report_active")
+  @@map("analytics_report")
+}
+
+model AnalyticsReportSchedule {
+  id             String                @id @default(uuid())
+  reportId       String
+  deliveryMethod InvoiceDeliveryMethod @default(EMAIL)
+  target         String
+  lastDeliveredAt DateTime?
+  metadata       Json                  @default("{}")
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+
+  report AnalyticsReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
+
+  @@index([reportId], map: "idx_analytics_report_schedule_report")
+  @@map("analytics_report_schedule")
+}
+
+model AnalyticsGoal {
+  id           String   @id @default(uuid())
+  tenantId     String?
+  name         String
+  description  String?  @db.Text
+  targetValue  Decimal  @db.Decimal(18, 4) @default(0)
+  currentValue Decimal  @db.Decimal(18, 4) @default(0)
+  status       String   @default("active")
+  metrics      Json     @default("{}")
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tenant      Tenant?              @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  funnelSteps AnalyticsFunnelStep[]
+
+  @@index([tenantId], map: "idx_analytics_goal_tenant")
+  @@map("analytics_goal")
+}
+
+model AnalyticsFunnelStep {
+  id           String   @id @default(uuid())
+  goalId       String
+  order        Int      @default(0)
+  label        String
+  targetValue  Decimal  @db.Decimal(18, 4) @default(0)
+  currentValue Decimal  @db.Decimal(18, 4) @default(0)
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  goal AnalyticsGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  @@index([goalId], map: "idx_analytics_funnel_step_goal")
+  @@unique([goalId, order], map: "uq_analytics_funnel_step_order")
+  @@map("analytics_funnel_step")
 }
 
 model Platform {
@@ -2465,6 +3451,11 @@ model User {
   shares            Share[]
   comments          Comment[]
   payments          Payment[]
+  billingProfiles   BillingProfile[]
+  subscriptions     Subscription[]
+  generatedFinancialReports FinancialReport[] @relation("FinancialReportGeneratedBy")
+  analyticsSessions AnalyticsSession[]
+  analyticsEvents   AnalyticsEvent[]
   tasksAssigned     Task[]             @relation("TaskAssignee")
   tenant            Tenant?            @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   auditLogs         AuditLog[]         @relation("UserAuditLogs")
