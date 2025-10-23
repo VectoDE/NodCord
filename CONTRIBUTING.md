@@ -4,7 +4,7 @@ Vielen Dank, dass du zur Weiterentwicklung von NodCord beitragen möchtest! Dies
 
 ## Grundprinzipien
 
-- **TypeScript zuerst**: Neue Module und Änderungen werden in TypeScript umgesetzt. Nutze strenge Typisierung und teile gemeinsame Typen in `src/types/`.
+- **TypeScript zuerst**: Neue Module und Änderungen werden in TypeScript umgesetzt. Nutze die strengen Compiler-Optionen (`noImplicitOverride`, `noUncheckedIndexedAccess`, …) und teile gemeinsame Typen in `src/types/`.
 - **Prisma + MySQL**: Datenzugriffe erfolgen über den Prisma Client. Direkte MySQL-Abfragen oder Mongoose-Modelle sollten vermieden bzw. schrittweise ersetzt werden.
 - **Getrennte Verantwortlichkeiten**: API, Bot und Client teilen sich Services. Achte darauf, Logik wiederverwendbar zu kapseln, statt sie zu duplizieren.
 
@@ -21,8 +21,10 @@ Vielen Dank, dass du zur Weiterentwicklung von NodCord beitragen möchtest! Dies
    - Bei Schemaänderungen `prisma migrate dev --name mein_migrationsname` ausführen.
    - Seeds in `prisma/seed.ts` oder `src/seeds/` aktualisieren.
 5. **Tests & Checks**:
+   - `npm run lint && npm run typecheck` (stilistische und statische Analyse)
    - `npm run build` (stellt sicher, dass der TypeScript-Compiler fehlerfrei durchläuft)
-   - `npm test` (sofern Tests betroffen sind)
+   - `npm test` oder gezielt `npm run test:api|bot|views` (abhängig vom betroffenen Bereich)
+   - `npm run test:coverage` bei Änderungen an Kernlogik oder Services
    - `npm run prisma:migrate` gegen eine Testdatenbank, falls Migrationen hinzugefügt wurden.
 6. **Pull Request eröffnen**:
    - Fasse Änderungen, Migrationsschritte und neue Env-Variablen zusammen.

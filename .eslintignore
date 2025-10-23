@@ -3,6 +3,8 @@ node_modules/
 coverage/
 logs/
 tmp/
+.tmp/
+reports/
 *.log
 prisma/migrations/
 **/*.d.ts
