@@ -11,16 +11,16 @@ datasource db {
 }
 
 enum BugSeverity {
-  LOW    @map("Low")
-  MEDIUM @map("Medium")
-  HIGH   @map("High")
+  LOW    @map("low")
+  MEDIUM @map("medium")
+  HIGH   @map("high")
 }
 
 enum BugStatus {
-  OPEN        @map("Open")
-  IN_PROGRESS @map("In Progress")
-  RESOLVED    @map("Resolved")
-  CLOSED      @map("Closed")
+  OPEN        @map("open")
+  IN_PROGRESS @map("in_progress")
+  RESOLVED    @map("resolved")
+  CLOSED      @map("closed")
 }
 
 enum ChatType {
@@ -30,10 +30,10 @@ enum ChatType {
 }
 
 enum CustomerOrderStatus {
-  PENDING   @map("Pending")
-  SHIPPED   @map("Shipped")
-  DELIVERED @map("Delivered")
-  CANCELLED @map("Cancelled")
+  PENDING   @map("pending")
+  SHIPPED   @map("shipped")
+  DELIVERED @map("delivered")
+  CANCELLED @map("cancelled")
 }
 
 enum FavoriteType {
@@ -44,9 +44,9 @@ enum FavoriteType {
 }
 
 enum FeatureStatus {
-  PLANNED     @map("Planned")
-  IN_PROGRESS @map("In Progress")
-  COMPLETED   @map("Completed")
+  PLANNED     @map("planned")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
 }
 
 enum LogLevel {
@@ -56,9 +56,9 @@ enum LogLevel {
 }
 
 enum OrderStatus {
-  PENDING   @map("Pending")
-  SHIPPED   @map("Shipped")
-  DELIVERED @map("Delivered")
+  PENDING   @map("pending")
+  SHIPPED   @map("shipped")
+  DELIVERED @map("delivered")
 }
 
 enum PaymentMethod {
@@ -78,36 +78,36 @@ enum PaymentStatus {
 }
 
 enum PriorityLevel {
-  LOW    @map("Low")
-  MEDIUM @map("Medium")
-  HIGH   @map("High")
+  LOW    @map("low")
+  MEDIUM @map("medium")
+  HIGH   @map("high")
 }
 
 enum ProjectStatus {
-  NOT_STARTED @map("Not Started")
-  IN_PROGRESS @map("In Progress")
-  COMPLETED   @map("Completed")
-  ON_HOLD     @map("On Hold")
+  NOT_STARTED @map("not_started")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
+  ON_HOLD     @map("on_hold")
 }
 
 enum ReturnStatus {
-  REQUESTED @map("Requested")
-  APPROVED  @map("Approved")
-  REJECTED  @map("Rejected")
-  COMPLETED @map("Completed")
+  REQUESTED @map("requested")
+  APPROVED  @map("approved")
+  REJECTED  @map("rejected")
+  COMPLETED @map("completed")
 }
 
 enum SharePlatform {
-  FACEBOOK @map("Facebook")
-  TWITTER  @map("Twitter")
-  LINKEDIN @map("LinkedIn")
-  OTHER    @map("Other")
+  FACEBOOK @map("facebook")
+  TWITTER  @map("twitter")
+  LINKEDIN @map("linked_in")
+  OTHER    @map("other")
 }
 
 enum StoryStatus {
-  BACKLOG     @map("Backlog")
-  IN_PROGRESS @map("In Progress")
-  COMPLETED   @map("Completed")
+  BACKLOG     @map("backlog")
+  IN_PROGRESS @map("in_progress")
+  COMPLETED   @map("completed")
 }
 
 enum TaskCategory {
@@ -120,9 +120,9 @@ enum TaskCategory {
 
 enum TaskStatus {
   PENDING     @map("pending")
-  IN_PROGRESS @map("in-progress")
+  IN_PROGRESS @map("in_progress")
   COMPLETED   @map("completed")
-  ON_HOLD     @map("on-hold")
+  ON_HOLD     @map("on_hold")
 }
 
 enum TeamStatus {
@@ -208,8 +208,8 @@ enum SocialLinkType {
 }
 
 enum UserPaymentMethodType {
-  CREDIT_CARD @map("creditCard")
-  DEBIT_CARD  @map("debitCard")
+  CREDIT_CARD @map("credit_card")
+  DEBIT_CARD  @map("debit_card")
   PAYPAL      @map("paypal")
 }
 
@@ -349,7 +349,7 @@ model Tenant {
 
   @@index([status], map: "idx_tenant_status")
   @@index([createdAt], map: "idx_tenant_created_at")
-  @@map("Tenant")
+  @@map("tenant")
 }
 
 model TenantMetadata {
@@ -364,7 +364,7 @@ model TenantMetadata {
 
   @@index([tenantId], map: "idx_tenant_metadata_tenant")
   @@unique([tenantId, key], map: "uq_tenant_metadata_key")
-  @@map("TenantMetadata")
+  @@map("tenant_metadata")
 }
 
 model AuditLog {
@@ -385,7 +385,7 @@ model AuditLog {
 
   @@index([tenantId, entityName, entityId], map: "idx_audit_entity")
   @@index([createdAt], map: "idx_audit_created_at")
-  @@map("AuditLog")
+  @@map("audit_log")
 }
 
 model SystemSetting {
@@ -403,7 +403,7 @@ model SystemSetting {
 
   @@unique([tenantId, environment, key], map: "uq_system_setting_composite")
   @@index([tenantId, environment], map: "idx_system_setting_tenant_env")
-  @@map("SystemSetting")
+  @@map("system_setting")
 }
 
 model DataRetentionPolicy {
@@ -419,14 +419,14 @@ model DataRetentionPolicy {
 
   @@unique([tenantId, modelName], map: "uq_retention_model")
   @@index([tenantId], map: "idx_retention_tenant")
-  @@map("DataRetentionPolicy")
+  @@map("data_retention_policy")
 }
 
 model Afk {
   id        String   @id @default(uuid())
-  user      String   @map("User")
-  guild     String   @map("Guild")
-  message   String?  @map("Message")
+  user      String   @map("user")
+  guild     String   @map("guild")
+  message   String?  @map("message")
   tenantId  String?
   status    AfkStatus @default(ACTIVE)
   reason    String?  @db.Text
@@ -445,13 +445,13 @@ model Afk {
   @@index([tenantId], map: "idx_afk_tenant")
   @@index([expiresAt], map: "idx_afk_expires")
   @@index([status], map: "idx_afk_status")
-  @@map("AFK")
+  @@map("afk")
 }
 
 model Antilink {
   id        String   @id @default(uuid())
-  guild     String   @map("Guild")
-  perms     String   @map("Perms")
+  guild     String   @map("guild")
+  perms     String   @map("perms")
   tenantId  String?
   isEnabled Boolean  @default(true)
   lastTriggeredAt DateTime?
@@ -468,7 +468,7 @@ model Antilink {
   @@unique([guild])
   @@index([tenantId], map: "idx_antilink_tenant")
   @@index([isEnabled], map: "idx_antilink_enabled")
-  @@map("Antilink")
+  @@map("antilink")
 }
 
 model ApiKey {
@@ -492,7 +492,7 @@ model ApiKey {
   @@index([tenantId])
   @@index([createdAt])
   @@unique([userId, name], map: "uq_api_key_user_name")
-  @@map("ApiKey")
+  @@map("api_key")
 }
 
 model ApiKeyMetadata {
@@ -507,7 +507,7 @@ model ApiKeyMetadata {
 
   @@index([apiKeyId], map: "idx_api_key_metadata_parent")
   @@unique([apiKeyId, key], map: "uq_api_key_metadata_key")
-  @@map("ApiKeyMetadata")
+  @@map("api_key_metadata")
 }
 
 model ApiSystem {
@@ -525,7 +525,7 @@ model ApiSystem {
 
   @@index([tenantId])
   @@index([createdAt])
-  @@map("ApiSystem")
+  @@map("api_system")
 }
 
 model ApiSystemMetadata {
@@ -540,7 +540,7 @@ model ApiSystemMetadata {
 
   @@index([apiSystemId], map: "idx_api_system_metadata_parent")
   @@unique([apiSystemId, key], map: "uq_api_system_metadata_key")
-  @@map("ApiSystemMetadata")
+  @@map("api_system_metadata")
 }
 
 model Autoresponder {
@@ -567,7 +567,7 @@ model Autoresponder {
   @@index([tenantId], map: "idx_autoresponder_tenant")
   @@index([isActive], map: "idx_autoresponder_active")
   @@index([lastTriggeredAt], map: "idx_autoresponder_last_triggered")
-  @@map("AutoResponder")
+  @@map("auto_responder")
 }
 
 model AutoResponderEntry {
@@ -598,7 +598,7 @@ model AutoResponderEntry {
   @@index([isActive], map: "idx_autoresponder_entry_active")
   @@index([priority], map: "idx_autoresponder_entry_priority")
   @@unique([autoresponderId, trigger], map: "uq_autoresponder_trigger")
-  @@map("AutoResponderEntry")
+  @@map("auto_responder_entry")
 }
 
 model Balance {
@@ -610,7 +610,7 @@ model Balance {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("Balance")
+  @@map("balance")
 }
 
 model Ban {
@@ -643,7 +643,7 @@ model Ban {
   @@index([moderatorId], map: "idx_ban_moderator")
   @@index([appealStatus], map: "idx_ban_appeal_status")
   @@index([expiresAt], map: "idx_ban_expires_at")
-  @@map("Ban")
+  @@map("ban")
 }
 
 model BetaKey {
@@ -659,7 +659,7 @@ model BetaKey {
   primaryOwner User? @relation("UserPrimaryBetaKey")
 
   @@index([userId])
-  @@map("BetaKey")
+  @@map("beta_key")
 }
 
 model BetaSystem {
@@ -675,7 +675,7 @@ model BetaSystem {
 
   @@index([tenantId])
   @@index([createdAt])
-  @@map("BetaSystem")
+  @@map("beta_system")
 }
 
 model BetaSystemMetadata {
@@ -690,7 +690,7 @@ model BetaSystemMetadata {
 
   @@index([betaSystemId], map: "idx_beta_system_metadata_parent")
   @@unique([betaSystemId, key], map: "uq_beta_system_metadata_key")
-  @@map("BetaSystemMetadata")
+  @@map("beta_system_metadata")
 }
 
 model Blog {
@@ -724,7 +724,7 @@ model Blog {
   @@index([isArchived])
   @@index([createdAt])
   @@fulltext([title, shortDescription, detailDescription], map: "ft_blog_search")
-  @@map("Blog")
+  @@map("blog")
 }
 
 model BlogMetadata {
@@ -739,7 +739,7 @@ model BlogMetadata {
 
   @@index([blogId], map: "idx_blog_metadata_blog")
   @@unique([blogId, key], map: "uq_blog_metadata_key")
-  @@map("BlogMetadata")
+  @@map("blog_metadata")
 }
 
 model BlogTag {
@@ -753,7 +753,7 @@ model BlogTag {
 
   @@index([blogId], map: "idx_blog_tag_blog")
   @@unique([blogId, value], map: "uq_blog_tag_value")
-  @@map("BlogTag")
+  @@map("blog_tag")
 }
 
 model Bug {
@@ -772,7 +772,7 @@ model Bug {
   @@index([status])
   @@index([severity])
   @@index([createdAt])
-  @@map("Bug")
+  @@map("bug")
 }
 
 model Category {
@@ -797,7 +797,7 @@ model Category {
   @@unique([tenantId, slug], map: "uq_category_tenant_slug")
   @@index([tenantId], map: "idx_category_tenant")
   @@index([isActive], map: "idx_category_active")
-  @@map("Category")
+  @@map("category")
 }
 
 model Chat {
@@ -825,7 +825,7 @@ model Chat {
   @@index([tenantId], map: "idx_chat_tenant")
   @@index([isArchived], map: "idx_chat_archived")
   @@index([lastMessageAt], map: "idx_chat_last_message")
-  @@map("Chat")
+  @@map("chat")
 }
 
 model ChatParticipant {
@@ -846,7 +846,7 @@ model ChatParticipant {
   @@index([chatId], map: "idx_chat_participant_chat")
   @@index([userId], map: "idx_chat_participant_user")
   @@unique([chatId, participantId], map: "uq_chat_participant")
-  @@map("ChatParticipant")
+  @@map("chat_participant")
 }
 
 model Comment {
@@ -875,7 +875,7 @@ model Comment {
   @@index([status], map: "idx_comment_status")
   @@index([parentId], map: "idx_comment_parent")
   @@index([createdAt])
-  @@map("Comment")
+  @@map("comment")
 }
 
 model Company {
@@ -901,7 +901,7 @@ model Company {
   @@index([tenantId])
   @@index([isArchived])
   @@unique([tenantId, name], map: "uq_company_tenant_name")
-  @@map("Company")
+  @@map("company")
 }
 
 model CompanyMetadata {
@@ -916,7 +916,7 @@ model CompanyMetadata {
 
   @@index([companyId], map: "idx_company_metadata_company")
   @@unique([companyId, key], map: "uq_company_metadata_key")
-  @@map("CompanyMetadata")
+  @@map("company_metadata")
 }
 
 model Customer {
@@ -941,7 +941,7 @@ model Customer {
   @@index([isArchived])
   @@index([createdAt])
   @@unique([tenantId, email], map: "uq_customer_tenant_email")
-  @@map("Customer")
+  @@map("customer")
 }
 
 model CustomerMetadata {
@@ -956,7 +956,7 @@ model CustomerMetadata {
 
   @@index([customerId], map: "idx_customer_metadata_customer")
   @@unique([customerId, key], map: "uq_customer_metadata_key")
-  @@map("CustomerMetadata")
+  @@map("customer_metadata")
 }
 
 model CustomerOrder {
@@ -988,7 +988,7 @@ model CustomerOrder {
   @@index([createdAt])
   @@index([status])
   @@unique([tenantId, orderNumber], map: "uq_customer_order_tenant_number")
-  @@map("CustomerOrder")
+  @@map("customer_order")
 }
 
 model CustomerOrderMetadata {
@@ -1003,7 +1003,7 @@ model CustomerOrderMetadata {
 
   @@index([customerOrderId], map: "idx_customer_order_metadata_parent")
   @@unique([customerOrderId, key], map: "uq_customer_order_metadata_key")
-  @@map("CustomerOrderMetadata")
+  @@map("customer_order_metadata")
 }
 
 model CustomerOrderItem {
@@ -1021,7 +1021,7 @@ model CustomerOrderItem {
   @@index([orderId], map: "idx_customer_order_item_order")
   @@index([productId], map: "idx_customer_order_item_product")
   @@unique([orderId, productId], map: "uq_customer_order_item")
-  @@map("CustomerOrderItem")
+  @@map("customer_order_item")
 }
 
 model DeveloperProgram {
@@ -1034,7 +1034,7 @@ model DeveloperProgram {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
-  @@map("DeveloperProgram")
+  @@map("developer_program")
 }
 
 model Dislike {
@@ -1050,7 +1050,7 @@ model Dislike {
   @@unique([userId, blogId])
   @@index([blogId])
   @@index([createdAt])
-  @@map("Dislike")
+  @@map("dislike")
 }
 
 model Favorite {
@@ -1068,7 +1068,7 @@ model Favorite {
   @@index([userId])
   @@index([createdDate])
   @@unique([userId, type, itemId], map: "uq_favorite_user_item")
-  @@map("Favorite")
+  @@map("favorite")
 }
 
 model FavoriteMetadata {
@@ -1083,7 +1083,7 @@ model FavoriteMetadata {
 
   @@index([favoriteId], map: "idx_favorite_metadata_parent")
   @@unique([favoriteId, key], map: "uq_favorite_metadata_key")
-  @@map("FavoriteMetadata")
+  @@map("favorite_metadata")
 }
 
 model Feature {
@@ -1102,7 +1102,7 @@ model Feature {
   @@index([status])
   @@index([priority])
   @@index([createdAt])
-  @@map("Feature")
+  @@map("feature")
 }
 
 model Feedback {
@@ -1123,7 +1123,7 @@ model Feedback {
   @@index([guildId])
   @@index([tenantId])
   @@index([createdAt])
-  @@map("Feedback")
+  @@map("feedback")
 }
 
 model FeedbackMetadata {
@@ -1138,7 +1138,7 @@ model FeedbackMetadata {
 
   @@index([feedbackId], map: "idx_feedback_metadata_feedback")
   @@unique([feedbackId, key], map: "uq_feedback_metadata_key")
-  @@map("FeedbackMetadata")
+  @@map("feedback_metadata")
 }
 
 model File {
@@ -1152,7 +1152,7 @@ model File {
   updatedAt  DateTime @updatedAt
 
   @@unique([path])
-  @@map("File")
+  @@map("file")
 }
 
 model Game {
@@ -1184,7 +1184,7 @@ model Game {
   @@index([tenantId], map: "idx_game_tenant")
   @@index([isArchived], map: "idx_game_archived")
   @@index([averageRating], map: "idx_game_average_rating")
-  @@map("Game")
+  @@map("game")
 }
 
 model GamePlatformLink {
@@ -1200,7 +1200,7 @@ model GamePlatformLink {
   @@index([gameId], map: "idx_game_platform_game")
   @@index([platformId], map: "idx_game_platform_platform")
   @@unique([gameId, platformId], map: "uq_game_platform")
-  @@map("GamePlatformLink")
+  @@map("game_platform_link")
 }
 
 model GameRating {
@@ -1217,7 +1217,7 @@ model GameRating {
   @@index([gameId], map: "idx_game_rating_game")
   @@index([userId], map: "idx_game_rating_user")
   @@unique([gameId, userId], map: "uq_game_rating_user")
-  @@map("GameRating")
+  @@map("game_rating")
 }
 
 model Group {
@@ -1244,7 +1244,7 @@ model Group {
   @@index([tenantId], map: "idx_group_tenant")
   @@index([isArchived], map: "idx_group_archived")
   @@index([lastActivityAt], map: "idx_group_last_activity")
-  @@map("Group")
+  @@map("group")
 }
 
 model GroupMember {
@@ -1264,7 +1264,7 @@ model GroupMember {
   @@index([groupId], map: "idx_group_member_group")
   @@index([userId], map: "idx_group_member_user")
   @@unique([groupId, userId], map: "uq_group_member_user")
-  @@map("GroupMember")
+  @@map("group_member")
 }
 
 model GroupMemberHistory {
@@ -1281,7 +1281,7 @@ model GroupMemberHistory {
 
   @@index([groupMemberId], map: "idx_group_member_history_parent")
   @@index([actorId], map: "idx_group_member_history_actor")
-  @@map("GroupMemberHistory")
+  @@map("group_member_history")
 }
 
 model Issue {
@@ -1315,14 +1315,14 @@ model Issue {
   @@index([dueDate], map: "idx_issue_due_date")
   @@index([resolvedAt], map: "idx_issue_resolved_at")
   @@index([createdAt])
-  @@map("Issue")
+  @@map("issue")
 }
 
 model JoinRole {
   id        String   @id @default(uuid())
-  guild     String   @map("Guild")
-  roleId    String   @map("RoleID")
-  roleName  String   @map("RoleName")
+  guild     String   @map("guild")
+  roleId    String   @map("role_id")
+  roleName  String   @map("role_name")
   tenantId  String?
   description String? @db.Text
   isActive  Boolean  @default(true)
@@ -1339,7 +1339,7 @@ model JoinRole {
   @@unique([guild, roleId])
   @@index([tenantId], map: "idx_join_role_tenant")
   @@index([isActive], map: "idx_join_role_active")
-  @@map("JoinRole")
+  @@map("join_role")
 }
 
 model Kick {
@@ -1369,7 +1369,7 @@ model Kick {
   @@index([guildId], map: "idx_kick_guild")
   @@index([moderatorId], map: "idx_kick_moderator")
   @@index([appealStatus], map: "idx_kick_appeal_status")
-  @@map("Kick")
+  @@map("kick")
 }
 
 model Like {
@@ -1385,7 +1385,7 @@ model Like {
   @@unique([userId, blogId])
   @@index([blogId])
   @@index([createdAt])
-  @@map("Like")
+  @@map("like")
 }
 
 model Log {
@@ -1411,7 +1411,7 @@ model Log {
   @@index([environment], map: "idx_log_environment")
   @@index([service], map: "idx_log_service")
   @@index([correlationId], map: "idx_log_correlation")
-  @@map("Log")
+  @@map("log")
 }
 
 model Message {
@@ -1437,7 +1437,7 @@ model Message {
   @@index([tenantId], map: "idx_message_tenant")
   @@index([status], map: "idx_message_status")
   @@index([isPinned], map: "idx_message_pinned")
-  @@map("Message")
+  @@map("message")
 }
 
 model Mute {
@@ -1467,7 +1467,7 @@ model Mute {
   @@index([guildId], map: "idx_mute_guild")
   @@index([moderatorId], map: "idx_mute_moderator")
   @@index([appealStatus], map: "idx_mute_appeal_status")
-  @@map("Mute")
+  @@map("mute")
 }
 
 model Newsletter {
@@ -1488,7 +1488,7 @@ model Newsletter {
   @@unique([tenantId, email], map: "uq_newsletter_tenant_email")
   @@index([tenantId], map: "idx_newsletter_tenant")
   @@index([status], map: "idx_newsletter_status")
-  @@map("Newsletter")
+  @@map("newsletter")
 }
 
 model Order {
@@ -1515,7 +1515,7 @@ model Order {
   @@index([status])
   @@index([isArchived])
   @@index([createdAt])
-  @@map("Order")
+  @@map("order")
 }
 
 model OrderMetadata {
@@ -1530,7 +1530,7 @@ model OrderMetadata {
 
   @@index([orderId], map: "idx_order_metadata_order")
   @@unique([orderId, key], map: "uq_order_metadata_key")
-  @@map("OrderMetadata")
+  @@map("order_metadata")
 }
 
 model OrderItem {
@@ -1547,7 +1547,7 @@ model OrderItem {
   @@index([orderId], map: "idx_order_item_order")
   @@index([productId], map: "idx_order_item_product")
   @@unique([orderId, productId], map: "uq_order_item_product")
-  @@map("OrderItem")
+  @@map("order_item")
 }
 
 model Organization {
@@ -1571,7 +1571,7 @@ model Organization {
   @@index([isArchived])
   @@unique([tenantId, name], map: "uq_organization_tenant_name")
   @@index([createdAt])
-  @@map("Organization")
+  @@map("organization")
 }
 
 model OrganizationMetadata {
@@ -1586,7 +1586,7 @@ model OrganizationMetadata {
 
   @@index([organizationId], map: "idx_organization_metadata_parent")
   @@unique([organizationId, key], map: "uq_organization_metadata_key")
-  @@map("OrganizationMetadata")
+  @@map("organization_metadata")
 }
 
 model OrganizationMember {
@@ -1607,7 +1607,7 @@ model OrganizationMember {
   @@index([organizationId], map: "idx_org_member_org")
   @@index([userId], map: "idx_org_member_user")
   @@unique([organizationId, userId], map: "uq_org_member_user")
-  @@map("OrganizationMember")
+  @@map("organization_member")
 }
 
 model OrganizationMemberHistory {
@@ -1624,7 +1624,7 @@ model OrganizationMemberHistory {
 
   @@index([organizationMemberId], map: "idx_org_member_history_parent")
   @@index([actorId], map: "idx_org_member_history_actor")
-  @@map("OrganizationMemberHistory")
+  @@map("organization_member_history")
 }
 
 model Payment {
@@ -1652,7 +1652,7 @@ model Payment {
   @@index([isArchived])
   @@index([createdDate])
   @@unique([tenantId, transactionId], map: "uq_payment_tenant_transaction")
-  @@map("Payment")
+  @@map("payment")
 }
 
 model PaymentMetadata {
@@ -1667,7 +1667,7 @@ model PaymentMetadata {
 
   @@index([paymentId], map: "idx_payment_metadata_payment")
   @@unique([paymentId, key], map: "uq_payment_metadata_key")
-  @@map("PaymentMetadata")
+  @@map("payment_metadata")
 }
 
 model Platform {
@@ -1688,7 +1688,7 @@ model Platform {
 
   @@index([tenantId], map: "idx_platform_tenant")
   @@index([isActive], map: "idx_platform_active")
-  @@map("Platform")
+  @@map("platform")
 }
 
 model Prefix {
@@ -1710,7 +1710,7 @@ model Prefix {
 
   @@index([tenantId], map: "idx_prefix_tenant")
   @@index([isDefault], map: "idx_prefix_default")
-  @@map("Prefix")
+  @@map("prefix")
 }
 
 model Product {
@@ -1738,7 +1738,7 @@ model Product {
   @@index([isArchived])
   @@index([createdDate])
   @@unique([tenantId, sku], map: "uq_product_tenant_sku")
-  @@map("Product")
+  @@map("product")
 }
 
 model Project {
@@ -1774,7 +1774,7 @@ model Project {
   @@index([isArchived])
   @@index([createdDate])
   @@unique([tenantId, title], map: "uq_project_tenant_title")
-  @@map("Project")
+  @@map("project")
 }
 
 model ProjectMetadata {
@@ -1789,7 +1789,7 @@ model ProjectMetadata {
 
   @@index([projectId], map: "idx_project_metadata_project")
   @@unique([projectId, key], map: "uq_project_metadata_key")
-  @@map("ProjectMetadata")
+  @@map("project_metadata")
 }
 
 model ProjectMember {
@@ -1809,7 +1809,7 @@ model ProjectMember {
   @@index([projectId], map: "idx_project_member_project")
   @@index([userId], map: "idx_project_member_user")
   @@unique([projectId, userId], map: "uq_project_member_user")
-  @@map("ProjectMember")
+  @@map("project_member")
 }
 
 model ProjectMemberHistory {
@@ -1826,7 +1826,7 @@ model ProjectMemberHistory {
 
   @@index([projectMemberId], map: "idx_project_member_history_parent")
   @@index([actorId], map: "idx_project_member_history_actor")
-  @@map("ProjectMemberHistory")
+  @@map("project_member_history")
 }
 
 model ProjectTag {
@@ -1842,7 +1842,7 @@ model ProjectTag {
   @@index([projectId], map: "idx_project_tag_project")
   @@index([tagId], map: "idx_project_tag_tag")
   @@unique([projectId, tagId], map: "uq_project_tag_tag")
-  @@map("ProjectTag")
+  @@map("project_tag")
 }
 
 model Report {
@@ -1871,7 +1871,7 @@ model Report {
   @@index([resolvedAt], map: "idx_report_resolved_at")
   @@index([updatedById], map: "idx_report_updated_by")
   @@index([createdAt])
-  @@map("Report")
+  @@map("report")
 }
 
 model Return {
@@ -1891,7 +1891,7 @@ model Return {
   @@index([orderId])
   @@index([status])
   @@index([createdAt])
-  @@map("Return")
+  @@map("return")
 }
 
 model ReturnItem {
@@ -1908,7 +1908,7 @@ model ReturnItem {
   @@index([returnId], map: "idx_return_item_return")
   @@index([productId], map: "idx_return_item_product")
   @@unique([returnId, productId], map: "uq_return_item_product")
-  @@map("ReturnItem")
+  @@map("return_item")
 }
 
 model Role {
@@ -1934,7 +1934,7 @@ model Role {
   @@unique([tenantId, name], map: "uq_role_tenant_name")
   @@index([tenantId], map: "idx_role_tenant")
   @@index([isDefault], map: "idx_role_default")
-  @@map("Role")
+  @@map("role")
 }
 
 model Roleplay {
@@ -1959,7 +1959,7 @@ model Roleplay {
   @@index([tenantId], map: "idx_roleplay_tenant")
   @@index([status], map: "idx_roleplay_status")
   @@index([guildId], map: "idx_roleplay_guild")
-  @@map("Roleplay")
+  @@map("roleplay")
 }
 
 model Share {
@@ -1976,7 +1976,7 @@ model Share {
   @@index([userId])
   @@index([blogId])
   @@index([createdAt])
-  @@map("Share")
+  @@map("share")
 }
 
 model Slowmode {
@@ -2001,7 +2001,7 @@ model Slowmode {
   @@index([tenantId], map: "idx_slowmode_tenant")
   @@index([isActive], map: "idx_slowmode_active")
   @@index([expiresAt], map: "idx_slowmode_expires")
-  @@map("Slowmode")
+  @@map("slowmode")
 }
 
 model Story {
@@ -2020,7 +2020,7 @@ model Story {
   @@index([status])
   @@index([priority])
   @@index([createdAt])
-  @@map("Story")
+  @@map("story")
 }
 
 model Subscriber {
@@ -2046,7 +2046,7 @@ model Subscriber {
   @@unique([tenantId, email], map: "uq_subscriber_tenant_email")
   @@index([tenantId], map: "idx_subscriber_tenant")
   @@index([status], map: "idx_subscriber_status")
-  @@map("Subscriber")
+  @@map("subscriber")
 }
 
 model Tag {
@@ -2072,7 +2072,7 @@ model Tag {
   @@unique([tenantId, slug], map: "uq_tag_tenant_slug")
   @@index([tenantId], map: "idx_tag_tenant")
   @@index([isActive], map: "idx_tag_active")
-  @@map("Tag")
+  @@map("tag")
 }
 
 model Task {
@@ -2107,7 +2107,7 @@ model Task {
   @@index([createdAt])
   @@index([isArchived])
   @@unique([teamId, title, assignedToId], map: "uq_task_team_title_assignee")
-  @@map("Task")
+  @@map("task")
 }
 
 model Team {
@@ -2138,7 +2138,7 @@ model Team {
   @@index([isArchived])
   @@index([createdDate])
   @@unique([tenantId, name], map: "uq_team_tenant_name")
-  @@map("Team")
+  @@map("team")
 }
 
 model TeamMetadata {
@@ -2153,7 +2153,7 @@ model TeamMetadata {
 
   @@index([teamId], map: "idx_team_metadata_team")
   @@unique([teamId, key], map: "uq_team_metadata_key")
-  @@map("TeamMetadata")
+  @@map("team_metadata")
 }
 
 model TeamMember {
@@ -2173,7 +2173,7 @@ model TeamMember {
   @@index([teamId], map: "idx_team_member_team")
   @@index([userId], map: "idx_team_member_user")
   @@unique([teamId, userId], map: "uq_team_member_user")
-  @@map("TeamMember")
+  @@map("team_member")
 }
 
 model TeamMemberHistory {
@@ -2190,7 +2190,7 @@ model TeamMemberHistory {
 
   @@index([teamMemberId], map: "idx_team_member_history_parent")
   @@index([actorId], map: "idx_team_member_history_actor")
-  @@map("TeamMemberHistory")
+  @@map("team_member_history")
 }
 
 model Ticket {
@@ -2227,7 +2227,7 @@ model Ticket {
   @@index([isArchived])
   @@index([createdAt])
   @@index([tenantId, status], map: "idx_ticket_tenant_status")
-  @@map("Ticket")
+  @@map("ticket")
 }
 
 model TicketMetadata {
@@ -2242,7 +2242,7 @@ model TicketMetadata {
 
   @@index([ticketId], map: "idx_ticket_metadata_ticket")
   @@unique([ticketId, key], map: "uq_ticket_metadata_key")
-  @@map("TicketMetadata")
+  @@map("ticket_metadata")
 }
 
 model TicketMessage {
@@ -2259,7 +2259,7 @@ model TicketMessage {
 
   @@index([ticketId], map: "idx_ticket_message_ticket")
   @@index([authorId], map: "idx_ticket_message_author")
-  @@map("TicketMessage")
+  @@map("ticket_message")
 }
 
 model TicketResponse {
@@ -2277,7 +2277,7 @@ model TicketResponse {
   @@index([ticketId])
   @@index([userId])
   @@index([createdAt])
-  @@map("TicketResponse")
+  @@map("ticket_response")
 }
 
 model TicketResponseMetadata {
@@ -2292,7 +2292,7 @@ model TicketResponseMetadata {
 
   @@index([ticketResponseId], map: "idx_ticket_response_metadata_parent")
   @@unique([ticketResponseId, key], map: "uq_ticket_response_metadata_key")
-  @@map("TicketResponseMetadata")
+  @@map("ticket_response_metadata")
 }
 
 model Timeout {
@@ -2307,7 +2307,7 @@ model Timeout {
   updatedAt DateTime @updatedAt
 
   @@index([guildId])
-  @@map("Timeout")
+  @@map("timeout")
 }
 
 model TriviaAnswer {
@@ -2330,7 +2330,7 @@ model TriviaAnswer {
   @@index([questionId])
   @@index([tenantId], map: "idx_trivia_answer_tenant")
   @@index([correct], map: "idx_trivia_answer_correct")
-  @@map("TriviaAnswer")
+  @@map("trivia_answer")
 }
 
 model TriviaQuestion {
@@ -2359,7 +2359,7 @@ model TriviaQuestion {
   @@index([difficulty], map: "idx_trivia_question_difficulty")
   @@index([isArchived], map: "idx_trivia_question_archived")
   @@index([category], map: "idx_trivia_question_category")
-  @@map("TriviaQuestion")
+  @@map("trivia_question")
 }
 
 model TriviaQuestionOption {
@@ -2375,7 +2375,7 @@ model TriviaQuestionOption {
 
   @@index([questionId], map: "idx_trivia_option_question")
   @@unique([questionId, value], map: "uq_trivia_option_value")
-  @@map("TriviaQuestionOption")
+  @@map("trivia_question_option")
 }
 
 model TriviaStats {
@@ -2397,7 +2397,7 @@ model TriviaStats {
 
   @@index([tenantId], map: "idx_trivia_stats_tenant")
   
-  @@map("TriviaStats")
+  @@map("trivia_stats")
 }
 
 model User {
@@ -2418,8 +2418,8 @@ model User {
   isAuthenticated          Boolean   @default(false)
   accessToken              String?
   refreshToken             String?
-  apiKeyId                 String?   @map("apiKey")
-  betaKeyId                String?   @map("betaKey")
+  apiKeyId                 String?   @map("api_key")
+  betaKeyId                String?   @map("beta_key")
   isBetaTester             Boolean   @default(false)
   termsAccepted            Boolean   @default(false)
   termsAcceptedAt          DateTime?
@@ -2475,7 +2475,7 @@ model User {
   @@index([role])
   @@index([createdAt])
   @@index([lastLoginAt])
-  @@map("User")
+  @@map("user")
 }
 
 model UserAddress {
@@ -2491,7 +2491,7 @@ model UserAddress {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@map("UserAddress")
+  @@map("user_address")
 }
 
 model UserPhoneNumber {
@@ -2506,7 +2506,7 @@ model UserPhoneNumber {
 
   @@index([userId], map: "idx_user_phone_user")
   @@unique([userId, type], map: "uq_user_phone_type")
-  @@map("UserPhoneNumber")
+  @@map("user_phone_number")
 }
 
 model UserPaymentMethod {
@@ -2521,7 +2521,7 @@ model UserPaymentMethod {
 
   @@index([userId], map: "idx_user_payment_user")
   @@unique([userId, method], map: "uq_user_payment_method")
-  @@map("UserPaymentMethod")
+  @@map("user_payment_method")
 }
 
 model UserSession {
@@ -2534,7 +2534,7 @@ model UserSession {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId], map: "idx_user_session_user")
-  @@map("UserSession")
+  @@map("user_session")
 }
 
 model UserSocialLink {
@@ -2549,7 +2549,7 @@ model UserSocialLink {
 
   @@index([userId], map: "idx_user_social_user")
   @@unique([userId, type], map: "uq_user_social_type")
-  @@map("UserSocialLink")
+  @@map("user_social_link")
 }
 
 model UserOAuthProvider {
@@ -2566,7 +2566,7 @@ model UserOAuthProvider {
 
   @@index([userId], map: "idx_user_oauth_user")
   @@unique([userId, provider], map: "uq_user_oauth_provider")
-  @@map("UserOAuthProvider")
+  @@map("user_o_auth_provider")
 }
 
 model UserPost {
@@ -2584,7 +2584,7 @@ model UserPost {
 
   @@index([userId], map: "idx_user_post_user")
   @@index([createdAt], map: "idx_user_post_created")
-  @@map("UserPost")
+  @@map("user_post")
 }
 
 model UserPostTag {
@@ -2598,7 +2598,7 @@ model UserPostTag {
 
   @@index([postId], map: "idx_user_post_tag_post")
   @@unique([postId, value], map: "uq_user_post_tag_value")
-  @@map("UserPostTag")
+  @@map("user_post_tag")
 }
 
 model UserPortfolioProject {
@@ -2620,7 +2620,7 @@ model UserPortfolioProject {
   versions UserPortfolioProjectVersion[]
 
   @@index([userId], map: "idx_user_portfolio_user")
-  @@map("UserPortfolioProject")
+  @@map("user_portfolio_project")
 }
 
 model UserPortfolioProjectFeature {
@@ -2634,7 +2634,7 @@ model UserPortfolioProjectFeature {
 
   @@index([projectId], map: "idx_user_portfolio_feature_project")
   @@unique([projectId, value], map: "uq_user_portfolio_feature")
-  @@map("UserPortfolioProjectFeature")
+  @@map("user_portfolio_project_feature")
 }
 
 model UserPortfolioProjectService {
@@ -2648,7 +2648,7 @@ model UserPortfolioProjectService {
 
   @@index([projectId], map: "idx_user_portfolio_service_project")
   @@unique([projectId, value], map: "uq_user_portfolio_service")
-  @@map("UserPortfolioProjectService")
+  @@map("user_portfolio_project_service")
 }
 
 model UserPortfolioProjectPlatform {
@@ -2662,7 +2662,7 @@ model UserPortfolioProjectPlatform {
 
   @@index([projectId], map: "idx_user_portfolio_platform_project")
   @@unique([projectId, value], map: "uq_user_portfolio_platform")
-  @@map("UserPortfolioProjectPlatform")
+  @@map("user_portfolio_project_platform")
 }
 
 model UserPortfolioProjectVersion {
@@ -2676,7 +2676,7 @@ model UserPortfolioProjectVersion {
 
   @@index([projectId], map: "idx_user_portfolio_version_project")
   @@unique([projectId, value], map: "uq_user_portfolio_version")
-  @@map("UserPortfolioProjectVersion")
+  @@map("user_portfolio_project_version")
 }
 
 model UserFriend {
@@ -2693,7 +2693,7 @@ model UserFriend {
   @@index([followerId], map: "idx_user_friend_follower")
   @@index([followedId], map: "idx_user_friend_followed")
   @@unique([followerId, followedId], map: "uq_user_friend_pair")
-  @@map("UserFriend")
+  @@map("user_friend")
 }
 
 model Version {
@@ -2733,7 +2733,7 @@ model Version {
   @@index([createdAt])
   @@index([isArchived])
   @@unique([tenantId, title, versionTagId], map: "uq_version_tenant_title_tag")
-  @@map("Version")
+  @@map("version")
 }
 
 model VersionFeature {
@@ -2747,7 +2747,7 @@ model VersionFeature {
 
   @@index([versionId], map: "idx_version_feature_version")
   @@unique([versionId, value], map: "uq_version_feature_value")
-  @@map("VersionFeature")
+  @@map("version_feature")
 }
 
 model VersionAddition {
@@ -2761,7 +2761,7 @@ model VersionAddition {
 
   @@index([versionId], map: "idx_version_addition_version")
   @@unique([versionId, value], map: "uq_version_addition_value")
-  @@map("VersionAddition")
+  @@map("version_addition")
 }
 
 model VersionFix {
@@ -2775,7 +2775,7 @@ model VersionFix {
 
   @@index([versionId], map: "idx_version_fix_version")
   @@unique([versionId, value], map: "uq_version_fix_value")
-  @@map("VersionFix")
+  @@map("version_fix")
 }
 
 model VersionBugRecord {
@@ -2789,7 +2789,7 @@ model VersionBugRecord {
 
   @@index([versionId], map: "idx_version_bug_version")
   @@unique([versionId, value], map: "uq_version_bug_value")
-  @@map("VersionBugRecord")
+  @@map("version_bug_record")
 }
 
 model VersionDeveloper {
@@ -2806,7 +2806,7 @@ model VersionDeveloper {
   @@index([versionId], map: "idx_version_developer_version")
   @@index([userId], map: "idx_version_developer_user")
   @@unique([versionId, name], map: "uq_version_developer_name")
-  @@map("VersionDeveloper")
+  @@map("version_developer")
 }
 
 model VersionMetadata {
@@ -2821,7 +2821,7 @@ model VersionMetadata {
 
   @@index([versionId], map: "idx_version_metadata_version")
   @@unique([versionId, key], map: "uq_version_metadata_key")
-  @@map("VersionMetadata")
+  @@map("version_metadata")
 }
 
 model VersionTag {
@@ -2841,7 +2841,7 @@ model VersionTag {
   @@index([tenantId])
   @@index([isArchived])
   @@unique([tenantId, title], map: "uq_version_tag_tenant_title")
-  @@map("VersionTag")
+  @@map("version_tag")
 }
 
 model VersionTagMetadata {
@@ -2856,7 +2856,7 @@ model VersionTagMetadata {
 
   @@index([versionTagId], map: "idx_version_tag_metadata_parent")
   @@unique([versionTagId, key], map: "uq_version_tag_metadata_key")
-  @@map("VersionTagMetadata")
+  @@map("version_tag_metadata")
 }
 
 model Warn {
@@ -2884,7 +2884,7 @@ model Warn {
   @@index([tenantId], map: "idx_warn_tenant")
   @@index([appealStatus], map: "idx_warn_appeal_status")
   @@index([moderatorId], map: "idx_warn_moderator")
-  @@map("Warn")
+  @@map("warn")
 }
 
 model Word {
@@ -2910,5 +2910,5 @@ model Word {
   @@index([tenantId], map: "idx_word_tenant")
   @@index([isActive], map: "idx_word_active")
   @@index([severity], map: "idx_word_severity")
-  @@map("Word")
+  @@map("word")
 }
