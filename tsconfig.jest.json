@@ -4,11 +4,12 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "outDir": "./.tmp/tests",
-    "types": ["node", "jest"],
+    "types": ["node", "jest", "jest-extended", "testing-library__jest-dom"],
     "noEmit": false,
     "incremental": false,
     "declaration": false,
-    "sourceMap": true
+    "sourceMap": true,
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*.ts",

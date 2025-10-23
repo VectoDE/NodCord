@@ -26,6 +26,7 @@ NodCord ist eine in **TypeScript** geschriebene Service-Plattform rund um Discor
 - MySQL als zentrale Datenquelle (lokal via Docker oder gehostete Instanz)
 - Modularer Aufbau (API, Bot, Client, Seeds, Scripts) für einfache Erweiterungen
 - Ausführliche Projekt- und Migrationsdokumentation im `docs/` Verzeichnis
+- Enterprise-fähige Testaufteilung (API, Bot und EJS-Views) inklusive Coverage-Reports und JUnit-Ausgabe
 
 ## Technologien
 
@@ -37,7 +38,7 @@ NodCord ist eine in **TypeScript** geschriebene Service-Plattform rund um Discor
 | Datenbank       | MySQL 8.x oder kompatibel (MariaDB ≥ 10.6 getestet)                    |
 | ORM/Client      | Prisma                                                                |
 | Discord         | discord.js                                                             |
-| Tooling         | ts-node-dev, Jest, Prettier, Prisma CLI                                |
+| Tooling         | ts-node-dev, Jest (multi-project), Supertest, Testing Library, Prettier, Prisma CLI |
 
 ## Installation
 
@@ -83,6 +84,12 @@ Die wichtigsten npm-Skripte:
   "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
   "build": "tsc --project tsconfig.json",
   "start": "node dist/server.js",
+  "test": "jest --config jest.config.cjs",
+  "test:api": "jest --config jest.config.cjs --selectProjects api",
+  "test:bot": "jest --config jest.config.cjs --selectProjects bot",
+  "test:views": "jest --config jest.config.cjs --selectProjects views",
+  "test:coverage": "jest --config jest.config.cjs --coverage",
+  "test:ci": "npm run lint && npm run typecheck && npm run test:coverage",
   "prisma:migrate": "prisma migrate deploy",
   "prisma:studio": "prisma studio"
 }
@@ -91,8 +98,24 @@ Die wichtigsten npm-Skripte:
 - `npm run dev` startet den Server mit Hot-Reloading (ts-node-dev).
 - `npm run build` erzeugt ein `dist/` Verzeichnis mit kompilierter JS-Ausgabe.
 - `npm start` führt den Build im Produktionsmodus aus.
+- `npm test` führt alle Jest-Projekte (API, Bot, Views) gemeinsam aus.
+- `npm run test:api|bot|views` ermöglicht fokussierte Testläufe pro Verantwortungsbereich.
+- `npm run test:coverage` erzeugt kombinierte Coverage-Reports (`text`, `lcov`, `cobertura`).
+- `npm run test:ci` verkettet Linting, Type-Checking und Coverage für CI/CD-Pipelines.
 - `npm run prisma:migrate` deployt Migrationen in die konfigurierte Datenbank.
 - `npm run prisma:studio` öffnet die Prisma Oberfläche zur Dateninspektion.
+
+## Testen & Qualitätssicherung
+
+Die Testlandschaft basiert auf einer Jest-Multi-Projekt-Konfiguration:
+
+- **API**: Läuft im Node-Test-Environment und nutzt `supertest`/`nock`, um REST-Endpunkte und externe Integrationen zu prüfen.
+- **Bot**: Nutzt das Node-Environment, sodass Discord-spezifische Services isoliert via Mocks getestet werden können.
+- **Views**: Läuft im `jsdom`-Environment und bindet `@testing-library/jest-dom`, um EJS-Templates und clientnahe Logik zu verifizieren.
+
+Alle Projekte teilen sich `jest.setup.ts`, in dem `jest-extended` aktiviert und die Test-Laufzeitumgebung vereinheitlicht wird. Ergebnisse werden zusätzlich als JUnit-Datei unter `reports/junit/jest-junit.xml` abgelegt und die Coverage landet gesammelt im Ordner `coverage/`.
+
+> 💡 Über `npm run test:watch -- --selectProjects api` lässt sich jeder Bereich auch im Watch-Modus starten.
 
 ## Datenbank & Prisma
 
