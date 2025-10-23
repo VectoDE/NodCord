@@ -167,11 +167,23 @@ enum AuditAction {
   SYSTEM_CONFIGURATION @map("system_configuration")
 }
 
+enum AfkStatus {
+  ACTIVE  @map("active")
+  RETURNED @map("returned")
+  EXPIRED @map("expired")
+}
+
 enum EnvironmentType {
   PRODUCTION  @map("production")
   STAGING     @map("staging")
   DEVELOPMENT @map("development")
   TEST        @map("test")
+}
+
+enum AutoResponderMatchType {
+  EXACT    @map("exact")
+  CONTAINS @map("contains")
+  REGEX    @map("regex")
 }
 
 enum OAuthProvider {
@@ -214,6 +226,59 @@ enum MembershipEventType {
   REMOVED @map("removed")
 }
 
+enum CommentStatus {
+  PENDING  @map("pending")
+  APPROVED @map("approved")
+  REJECTED @map("rejected")
+  SPAM     @map("spam")
+}
+
+enum GroupVisibility {
+  PUBLIC  @map("public")
+  PRIVATE @map("private")
+  SECRET  @map("secret")
+}
+
+enum MessageStatus {
+  SENT      @map("sent")
+  DELIVERED @map("delivered")
+  READ      @map("read")
+  ARCHIVED  @map("archived")
+}
+
+enum ModerationAppealStatus {
+  NONE     @map("none")
+  PENDING  @map("pending")
+  APPROVED @map("approved")
+  REJECTED @map("rejected")
+}
+
+enum ReportStatus {
+  OPEN         @map("open")
+  UNDER_REVIEW @map("under_review")
+  RESOLVED     @map("resolved")
+  DISMISSED    @map("dismissed")
+}
+
+enum RoleplayStatus {
+  ACTIVE   @map("active")
+  INACTIVE @map("inactive")
+  RETIRED  @map("retired")
+}
+
+enum SubscriptionStatus {
+  ACTIVE        @map("active")
+  UNSUBSCRIBED  @map("unsubscribed")
+  BOUNCED       @map("bounced")
+}
+
+enum TriviaDifficulty {
+  EASY   @map("easy")
+  MEDIUM @map("medium")
+  HARD   @map("hard")
+  EXPERT @map("expert")
+}
+
 model Tenant {
   id                String   @id @default(uuid())
   slug              String   @unique
@@ -243,6 +308,36 @@ model Tenant {
   payments       Payment[]
   products       Product[]
   projects       Project[]
+  afkRecords     Afk[]
+  antiLinkRules  Antilink[]
+  autoResponders Autoresponder[]
+  autoResponderEntries AutoResponderEntry[]
+  categories     Category[]
+  chats          Chat[]
+  comments       Comment[]
+  games          Game[]
+  groups         Group[]
+  issues         Issue[]
+  joinRoles      JoinRole[]
+  kicks          Kick[]
+  bans           Ban[]
+  logs           Log[]
+  messages       Message[]
+  mutes          Mute[]
+  newsletters    Newsletter[]
+  platforms      Platform[]
+  prefixes       Prefix[]
+  reports        Report[]
+  roles          Role[]
+  roleplays      Roleplay[]
+  slowmodes      Slowmode[]
+  subscribers    Subscriber[]
+  tags           Tag[]
+  triviaQuestions TriviaQuestion[]
+  triviaAnswers  TriviaAnswer[]
+  triviaStats    TriviaStats[]
+  warns          Warn[]
+  words          Word[]
   systemSettings SystemSetting[]
   tasks          Task[]
   teams          Team[]
@@ -332,10 +427,24 @@ model Afk {
   user      String   @map("User")
   guild     String   @map("Guild")
   message   String?  @map("Message")
+  tenantId  String?
+  status    AfkStatus @default(ACTIVE)
+  reason    String?  @db.Text
+  expiresAt DateTime?
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("AfkCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("AfkUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
   @@unique([guild, user])
+  @@index([tenantId], map: "idx_afk_tenant")
+  @@index([expiresAt], map: "idx_afk_expires")
+  @@index([status], map: "idx_afk_status")
   @@map("AFK")
 }
 
@@ -343,10 +452,22 @@ model Antilink {
   id        String   @id @default(uuid())
   guild     String   @map("Guild")
   perms     String   @map("Perms")
+  tenantId  String?
+  isEnabled Boolean  @default(true)
+  lastTriggeredAt DateTime?
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("AntilinkCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("AntilinkUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
   @@unique([guild])
+  @@index([tenantId], map: "idx_antilink_tenant")
+  @@index([isEnabled], map: "idx_antilink_enabled")
   @@map("Antilink")
 }
 
@@ -426,12 +547,26 @@ model Autoresponder {
   id            String   @id @default(uuid())
   guildId       String
   autoresponses Json     @default("[]")
+  tenantId      String?
+  name          String   @default("")
+  description   String?  @db.Text
+  isActive      Boolean  @default(true)
+  lastTriggeredAt DateTime?
+  metadata      Json     @default("{}")
+  createdById   String?
+  updatedById   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("AutoresponderCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("AutoresponderUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   responseRecords AutoResponderEntry[]
 
   @@unique([guildId])
+  @@index([tenantId], map: "idx_autoresponder_tenant")
+  @@index([isActive], map: "idx_autoresponder_active")
+  @@index([lastTriggeredAt], map: "idx_autoresponder_last_triggered")
   @@map("AutoResponder")
 }
 
@@ -440,12 +575,28 @@ model AutoResponderEntry {
   autoresponderId  String
   trigger          String
   response         String   @db.Text
+  matchType        AutoResponderMatchType @default(EXACT)
+  priority         PriorityLevel          @default(MEDIUM)
+  isActive         Boolean                @default(true)
+  responseDelayMs  Int?
+  tenantId         String?
+  lastTriggeredAt  DateTime?
+  metadata         Json                   @default("{}")
+  createdById      String?
+  updatedById      String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
   autoresponder Autoresponder @relation(fields: [autoresponderId], references: [id], onDelete: Cascade)
+  tenant        Tenant?        @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy     User?          @relation("AutoResponderEntryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy     User?          @relation("AutoResponderEntryUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 
   @@index([autoresponderId], map: "idx_autoresponder_entry_parent")
+  @@index([tenantId], map: "idx_autoresponder_entry_tenant")
+  @@index([matchType], map: "idx_autoresponder_entry_match_type")
+  @@index([isActive], map: "idx_autoresponder_entry_active")
+  @@index([priority], map: "idx_autoresponder_entry_priority")
   @@unique([autoresponderId, trigger], map: "uq_autoresponder_trigger")
   @@map("AutoResponderEntry")
 }
@@ -469,9 +620,29 @@ model Ban {
   guildId   String
   reason    String
   bannedAt  DateTime @default(now())
+  tenantId  String?
+  moderatorId String?
+  expiresAt DateTime?
+  unbannedAt DateTime?
+  appealStatus ModerationAppealStatus @default(NONE)
+  appealedAt DateTime?
+  resolvedAt DateTime?
+  context   Json     @default("{}")
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   updatedAt DateTime @updatedAt
 
-  @@index([guildId])
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  moderator User?   @relation("BanModerator", fields: [moderatorId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("BanCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("BanUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_ban_tenant")
+  @@index([guildId], map: "idx_ban_guild")
+  @@index([moderatorId], map: "idx_ban_moderator")
+  @@index([appealStatus], map: "idx_ban_appeal_status")
+  @@index([expiresAt], map: "idx_ban_expires_at")
   @@map("Ban")
 }
 
@@ -606,11 +777,26 @@ model Bug {
 
 model Category {
   id          String   @id @default(uuid())
-  name        String   @unique
+  tenantId    String?
+  name        String
+  slug        String
   description String?  @db.Text
+  icon        String?
+  isActive    Boolean  @default(true)
+  metadata    Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("CategoryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("CategoryUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, name], map: "uq_category_tenant_name")
+  @@unique([tenantId, slug], map: "uq_category_tenant_slug")
+  @@index([tenantId], map: "idx_category_tenant")
+  @@index([isActive], map: "idx_category_active")
   @@map("Category")
 }
 
@@ -618,12 +804,27 @@ model Chat {
   id           String   @id @default(uuid())
   participants Json     @default("[]")
   type         ChatType
+  tenantId     String?
+  title        String?
+  topic        String?  @db.Text
+  isArchived   Boolean  @default(false)
+  archivedAt   DateTime?
+  lastMessageAt DateTime?
+  metadata     Json     @default("{}")
+  createdById  String?
+  updatedById  String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("ChatCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("ChatUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   participantRecords ChatParticipant[]
   messages Message[]
 
+  @@index([tenantId], map: "idx_chat_tenant")
+  @@index([isArchived], map: "idx_chat_archived")
+  @@index([lastMessageAt], map: "idx_chat_last_message")
   @@map("Chat")
 }
 
@@ -653,13 +854,26 @@ model Comment {
   content   String   @db.Text
   authorId  String
   blogId    String
+  tenantId  String?
+  parentId  String?
+  status    CommentStatus @default(PENDING)
+  metadata  Json          @default("{}")
+  updatedById String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   author User @relation(fields: [authorId], references: [id], onDelete: Cascade)
   blog   Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  parent Comment? @relation("CommentHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  replies Comment[] @relation("CommentHierarchy")
+  updatedBy User?   @relation("CommentUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 
   @@index([authorId])
   @@index([blogId])
+  @@index([tenantId], map: "idx_comment_tenant")
+  @@index([status], map: "idx_comment_status")
+  @@index([parentId], map: "idx_comment_parent")
   @@index([createdAt])
   @@map("Comment")
 }
@@ -949,15 +1163,27 @@ model Game {
   detailDescription String?
   genre             String?
   releaseDate       DateTime?
+  developer         String?
+  publisher         String?
+  website           String?
+  tenantId          String?
+  metadata          Json      @default("{}")
+  isArchived        Boolean   @default(false)
+  deletedAt         DateTime?
+  averageRating     Decimal?  @db.Decimal(4, 2)
+  reviewCount       Int       @default(0)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  developer         String?
   platforms         Json      @default("[]")
   ratings           Json      @default("[]")
 
+  tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   platformRecords GamePlatformLink[]
   ratingRecords   GameRating[]
 
+  @@index([tenantId], map: "idx_game_tenant")
+  @@index([isArchived], map: "idx_game_archived")
+  @@index([averageRating], map: "idx_game_average_rating")
   @@map("Game")
 }
 
@@ -999,11 +1225,25 @@ model Group {
   name        String
   description String?
   members     Json     @default("[]")
+  tenantId    String?
+  visibility  GroupVisibility @default(PUBLIC)
+  isArchived  Boolean         @default(false)
+  deletedAt   DateTime?
+  metadata    Json            @default("{}")
+  createdById String?
+  updatedById String?
+  lastActivityAt DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("GroupCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("GroupUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
   memberRecords GroupMember[]
 
+  @@index([tenantId], map: "idx_group_tenant")
+  @@index([isArchived], map: "idx_group_archived")
+  @@index([lastActivityAt], map: "idx_group_last_activity")
   @@map("Group")
 }
 
@@ -1049,14 +1289,31 @@ model Issue {
   title       String
   description String    @db.Text
   status      BugStatus @default(OPEN)
+  severity    BugSeverity   @default(MEDIUM)
+  priority    PriorityLevel @default(MEDIUM)
+  tenantId    String?
+  reportedById String?
+  assignedToId String?
+  dueDate     DateTime?
+  resolvedAt  DateTime?
+  metadata    Json          @default("{}")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   projectId   String
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tenant  Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  reportedBy User? @relation("IssueReportedBy", fields: [reportedById], references: [id], onDelete: SetNull)
+  assignedTo User? @relation("IssueAssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
 
   @@index([projectId])
   @@index([status])
+  @@index([severity])
+  @@index([priority])
+  @@index([tenantId], map: "idx_issue_tenant")
+  @@index([assignedToId], map: "idx_issue_assigned")
+  @@index([dueDate], map: "idx_issue_due_date")
+  @@index([resolvedAt], map: "idx_issue_resolved_at")
   @@index([createdAt])
   @@map("Issue")
 }
@@ -1066,10 +1323,22 @@ model JoinRole {
   guild     String   @map("Guild")
   roleId    String   @map("RoleID")
   roleName  String   @map("RoleName")
+  tenantId  String?
+  description String? @db.Text
+  isActive  Boolean  @default(true)
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("JoinRoleCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("JoinRoleUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
   @@unique([guild, roleId])
+  @@index([tenantId], map: "idx_join_role_tenant")
+  @@index([isActive], map: "idx_join_role_active")
   @@map("JoinRole")
 }
 
@@ -1080,9 +1349,26 @@ model Kick {
   guildId   String
   reason    String
   kickedAt  DateTime @default(now())
+  tenantId  String?
+  moderatorId String?
+  appealStatus ModerationAppealStatus @default(NONE)
+  appealedAt DateTime?
+  resolvedAt DateTime?
+  context   Json     @default("{}")
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   updatedAt DateTime @updatedAt
 
-  @@index([guildId])
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  moderator User?   @relation("KickModerator", fields: [moderatorId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("KickCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("KickUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_kick_tenant")
+  @@index([guildId], map: "idx_kick_guild")
+  @@index([moderatorId], map: "idx_kick_moderator")
+  @@index([appealStatus], map: "idx_kick_appeal_status")
   @@map("Kick")
 }
 
@@ -1106,11 +1392,25 @@ model Log {
   id             String   @id @default(uuid())
   message        String   @db.Text
   level          LogLevel @default(INFO)
+  environment    EnvironmentType @default(PRODUCTION)
+  service        String?
+  tenantId       String?
+  correlationId  String?
+  requestId      String?
   timestamp      DateTime @default(now())
   additionalData Json?
+  metadata       Json     @default("{}")
+  createdById    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("LogCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_log_tenant")
+  @@index([environment], map: "idx_log_environment")
+  @@index([service], map: "idx_log_service")
+  @@index([correlationId], map: "idx_log_correlation")
   @@map("Log")
 }
 
@@ -1120,12 +1420,23 @@ model Message {
   senderId  String
   content   String   @db.Text
   timestamp DateTime @default(now())
+  tenantId  String?
+  status    MessageStatus @default(SENT)
+  deliveredAt DateTime?
+  readAt    DateTime?
+  editedAt  DateTime?
+  isPinned  Boolean  @default(false)
+  metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([chatId])
+  @@index([tenantId], map: "idx_message_tenant")
+  @@index([status], map: "idx_message_status")
+  @@index([isPinned], map: "idx_message_pinned")
   @@map("Message")
 }
 
@@ -1137,19 +1448,46 @@ model Mute {
   mutedAt   DateTime  @default(now())
   duration  Int
   unmutedAt DateTime?
+  tenantId  String?
+  moderatorId String?
+  appealStatus ModerationAppealStatus @default(NONE)
+  metadata  Json     @default("{}")
+  context   Json     @default("{}")
+  createdAt DateTime @default(now())
+  createdById String?
+  updatedById String?
   updatedAt DateTime  @updatedAt
 
-  @@index([guildId])
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  moderator User?   @relation("MuteModerator", fields: [moderatorId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("MuteCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("MuteUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_mute_tenant")
+  @@index([guildId], map: "idx_mute_guild")
+  @@index([moderatorId], map: "idx_mute_moderator")
+  @@index([appealStatus], map: "idx_mute_appeal_status")
   @@map("Mute")
 }
 
 model Newsletter {
   id           String   @id @default(uuid())
-  email        String   @unique
+  email        String
   name         String?
   subscribedAt DateTime @default(now())
+  tenantId     String?
+  status       SubscriptionStatus @default(ACTIVE)
+  source       String?  @default("unknown")
+  unsubscribedAt DateTime?
+  lastEmailedAt DateTime?
+  metadata     Json     @default("{}")
   updatedAt    DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, email], map: "uq_newsletter_tenant_email")
+  @@index([tenantId], map: "idx_newsletter_tenant")
+  @@index([status], map: "idx_newsletter_status")
   @@map("Newsletter")
 }
 
@@ -1338,9 +1676,18 @@ model Platform {
   title       String
   description String?
   releaseDate DateTime?
+  manufacturer String?
+  website     String?
+  tenantId    String?
+  isActive    Boolean   @default(true)
+  metadata    Json      @default("{}")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_platform_tenant")
+  @@index([isActive], map: "idx_platform_active")
   @@map("Platform")
 }
 
@@ -1348,9 +1695,21 @@ model Prefix {
   id        String   @id @default(uuid())
   guildId   String   @unique
   prefix    String
+  tenantId  String?
+  description String? @db.Text
+  isDefault Boolean  @default(false)
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("PrefixCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("PrefixUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_prefix_tenant")
+  @@index([isDefault], map: "idx_prefix_default")
   @@map("Prefix")
 }
 
@@ -1487,15 +1846,30 @@ model ProjectTag {
 }
 
 model Report {
-  id             String   @id @default(uuid())
+  id             String        @id @default(uuid())
   userId         String
   guildId        String
   reportedUserId String
-  reason         String   @db.Text
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  reason         String        @db.Text
+  tenantId       String?
+  status         ReportStatus  @default(OPEN)
+  assignedToId   String?
+  resolvedAt     DateTime?
+  metadata       Json          @default("{}")
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  updatedById    String?
+
+  tenant     Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  assignedTo User?   @relation("ReportAssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
+  updatedBy  User?   @relation("ReportUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 
   @@index([guildId])
+  @@index([tenantId], map: "idx_report_tenant")
+  @@index([status], map: "idx_report_status")
+  @@index([assignedToId], map: "idx_report_assigned")
+  @@index([resolvedAt], map: "idx_report_resolved_at")
+  @@index([updatedById], map: "idx_report_updated_by")
   @@index([createdAt])
   @@map("Report")
 }
@@ -1539,13 +1913,27 @@ model ReturnItem {
 
 model Role {
   id          String   @id @default(uuid())
-  name        String   @unique
+  tenantId    String?
+  name        String
   displayName String
   color       String   @default("#000000")
   description String?
+  permissions Json     @default("[]")
+  isDefault   Boolean  @default(false)
+  isSystem    Boolean  @default(false)
+  metadata    Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("RoleCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("RoleUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, name], map: "uq_role_tenant_name")
+  @@index([tenantId], map: "idx_role_tenant")
+  @@index([isDefault], map: "idx_role_default")
   @@map("Role")
 }
 
@@ -1556,9 +1944,21 @@ model Roleplay {
   characterLevel   Int      @default(1)
   experiencePoints Int      @default(0)
   lastRoleplayDate DateTime @default(now())
+  tenantId         String?
+  guildId          String?
+  status           RoleplayStatus @default(ACTIVE)
+  characterClass   String?        @default("Adventurer")
+  faction          String?
+  lastSessionAt    DateTime?
+  metadata         Json           @default("{}")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_roleplay_tenant")
+  @@index([status], map: "idx_roleplay_status")
+  @@index([guildId], map: "idx_roleplay_guild")
   @@map("Roleplay")
 }
 
@@ -1583,10 +1983,24 @@ model Slowmode {
   id        String   @id @default(uuid())
   channelId String   @unique
   duration  Int
+  reason    String?  @db.Text
+  tenantId  String?
+  isActive  Boolean  @default(true)
+  expiresAt DateTime?
   setBy     String
   setAt     DateTime @default(now())
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("SlowmodeCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("SlowmodeUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_slowmode_tenant")
+  @@index([isActive], map: "idx_slowmode_active")
+  @@index([expiresAt], map: "idx_slowmode_expires")
   @@map("Slowmode")
 }
 
@@ -1610,24 +2024,54 @@ model Story {
 }
 
 model Subscriber {
-  id           String   @id @default(uuid())
-  email        String   @unique
-  name         String?
-  subscribedAt DateTime @default(now())
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id             String              @id @default(uuid())
+  email          String
+  name           String?
+  tenantId       String?
+  status         SubscriptionStatus  @default(ACTIVE)
+  source         String?             @default("unknown")
+  subscribedAt   DateTime            @default(now())
+  unsubscribedAt DateTime?
+  lastEmailedAt  DateTime?
+  metadata       Json                @default("{}")
+  createdById    String?
+  updatedById    String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("SubscriberCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("SubscriberUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, email], map: "uq_subscriber_tenant_email")
+  @@index([tenantId], map: "idx_subscriber_tenant")
+  @@index([status], map: "idx_subscriber_status")
   @@map("Subscriber")
 }
 
 model Tag {
   id          String   @id @default(uuid())
-  name        String   @unique
+  tenantId    String?
+  name        String
+  slug        String
   description String   @default("")
+  color       String?  @default("#000000")
+  isActive    Boolean  @default(true)
+  metadata    Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdDate DateTime @default(now())
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("TagCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("TagUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, name], map: "uq_tag_tenant_name")
+  @@unique([tenantId, slug], map: "uq_tag_tenant_slug")
+  @@index([tenantId], map: "idx_tag_tenant")
+  @@index([isActive], map: "idx_tag_active")
   @@map("Tag")
 }
 
@@ -1872,13 +2316,20 @@ model TriviaAnswer {
   questionId String
   answer     String
   correct    Boolean
+  tenantId   String?
+  responseTimeMs Int?
+  source     String?
+  metadata   Json     @default("{}")
   answeredAt DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   question TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  tenant   Tenant?        @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([questionId])
+  @@index([tenantId], map: "idx_trivia_answer_tenant")
+  @@index([correct], map: "idx_trivia_answer_correct")
   @@map("TriviaAnswer")
 }
 
@@ -1888,12 +2339,26 @@ model TriviaQuestion {
   options       Json     @default("[]")
   correctAnswer String
   category      String
+  tenantId      String?
+  subcategory   String?
+  difficulty    TriviaDifficulty @default(MEDIUM)
+  isArchived    Boolean          @default(false)
+  metadata      Json             @default("{}")
+  createdById   String?
+  updatedById   String?
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
   answers TriviaAnswer[]
   optionRecords TriviaQuestionOption[]
+  tenant  Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User? @relation("TriviaQuestionCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User? @relation("TriviaQuestionUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 
+  @@index([tenantId], map: "idx_trivia_question_tenant")
+  @@index([difficulty], map: "idx_trivia_question_difficulty")
+  @@index([isArchived], map: "idx_trivia_question_archived")
+  @@index([category], map: "idx_trivia_question_category")
   @@map("TriviaQuestion")
 }
 
@@ -1902,6 +2367,7 @@ model TriviaQuestionOption {
   questionId  String
   value       String
   isCorrect   Boolean  @default(false)
+  metadata    Json     @default("{}")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -1918,9 +2384,19 @@ model TriviaStats {
   correctAnswers   Int      @default(0)
   incorrectAnswers Int      @default(0)
   totalQuestions   Int      @default(0)
+  tenantId         String?
+  currentStreak    Int      @default(0)
+  bestStreak       Int      @default(0)
+  bestScore        Int      @default(0)
+  lastPlayedAt     DateTime?
+  metadata         Json     @default("{}")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId], map: "idx_trivia_stats_tenant")
+  
   @@map("TriviaStats")
 }
 
@@ -2389,20 +2865,50 @@ model Warn {
   userId      String
   moderatorId String
   reason      String   @db.Text
+  tenantId    String?
+  appealStatus ModerationAppealStatus @default(NONE)
+  expiresAt   DateTime?
+  resolvedAt  DateTime?
+  metadata    Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  moderator User?   @relation("WarnModerator", fields: [moderatorId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("WarnCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("WarnUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
   @@index([guildId])
+  @@index([tenantId], map: "idx_warn_tenant")
+  @@index([appealStatus], map: "idx_warn_appeal_status")
+  @@index([moderatorId], map: "idx_warn_moderator")
   @@map("Warn")
 }
 
 model Word {
   id        String   @id @default(uuid())
   guildId   String
-  word      String   @unique
+  tenantId  String?
+  word      String
+  severity  PriorityLevel @default(MEDIUM)
+  reason    String?  @db.Text
+  isActive  Boolean  @default(true)
+  metadata  Json     @default("{}")
+  createdById String?
+  updatedById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("WordCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  updatedBy User?   @relation("WordUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@unique([tenantId, word], map: "uq_word_tenant_word")
   @@index([guildId])
+  @@index([tenantId], map: "idx_word_tenant")
+  @@index([isActive], map: "idx_word_active")
+  @@index([severity], map: "idx_word_severity")
   @@map("Word")
 }
