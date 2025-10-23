@@ -1,35 +1,35 @@
 # FAQ
 
-## Häufig gestellte Fragen
+## Frequently Asked Questions
 
-### Wie erhalte ich meinen Discord Bot Token?
+### How do I get my Discord bot token?
 
-1. Gehe zum [Discord Developer Portal](https://discord.com/developers/applications).
-2. Erstelle eine neue Anwendung oder wähle eine bestehende aus.
-3. Gehe zum Bot-Tab und erstelle einen neuen Bot.
-4. Kopiere den Token deines Bots und füge ihn in deine `.env`-Datei als `DISCORD_TOKEN` ein.
+1. Visit the [Discord Developer Portal](https://discord.com/developers/applications).
+2. Create a new application or select an existing one.
+3. Open the **Bot** tab and create a bot user.
+4. Copy the bot token and add it to your `.env` file as `DISCORD_TOKEN`.
 
-### Wie verbinde ich NodCord mit meiner MySQL-Datenbank?
+### How do I connect NodCord to my MySQL database?
 
-- Lege eine Datenbank an, z. B. `nodcord`.
-- Trage die Zugangsdaten in deiner `.env`-Datei als `DATABASE_URL` ein, z. B. `mysql://user:pass@localhost:3306/nodcord`.
-- Führe `npx prisma migrate deploy` aus, um das Schema zu installieren.
-- Starte den Server mit `npm run dev`.
+- Create a database, e.g. `nodcord`.
+- Add the credentials to your `.env` file as `DATABASE_URL`, for example `mysql://user:pass@localhost:3306/nodcord`.
+- Run `npx prisma migrate deploy` to install the schema.
+- Start the server with `npm run dev`.
 
-### Der Bot reagiert nicht auf Befehle. Was kann ich tun?
+### The bot does not respond to commands. What can I do?
 
-- Überprüfe, ob `DISCORD_TOKEN`, `DISCORD_CLIENT_ID` und `DISCORD_GUILD_ID` korrekt gesetzt sind.
-- Stelle sicher, dass der Bot die richtigen Berechtigungen auf dem Server hat.
-- Prüfe die Logs des Bots/Servers. Prisma-Fehler deuten häufig auf eine fehlende Migration oder falsche Datenbank-URL hin.
+- Verify that `DISCORD_TOKEN`, `DISCORD_CLIENT_ID`, and `DISCORD_GUILD_ID` are set correctly.
+- Make sure the bot has the required permissions on the server.
+- Check the server/bot logs. Prisma errors often indicate a missing migration or an incorrect database URL.
 
-### Prisma meldet einen Fehler beim Generieren oder Migrieren. Wie gehe ich vor?
+### Prisma reports an error while generating or migrating. What should I do?
 
-- Kontrolliere, ob MySQL läuft und der Benutzer die nötigen Rechte besitzt.
-- Lösche keine Migrationen manuell – verwende `prisma migrate dev --name <beschreibung>` für neue Änderungen.
-- Für lokale Tests kann `npx prisma db push` helfen, das Schema schnell zu synchronisieren.
+- Confirm that MySQL is running and that the user has the necessary privileges.
+- Do not delete migrations manually—use `prisma migrate dev --name <description>` for new changes.
+- For local testing, `npx prisma db push` can help synchronize the schema quickly.
 
-### Wo finde ich weitere Hilfe?
+### Where can I get additional help?
 
-- Sieh dir den [Support-Guide](./support.md) an.
-- Öffne ein Issue auf GitHub, wenn du einen Bug vermutest.
-- Kontaktiere das Maintainer-Team per E-Mail (siehe SECURITY.md) oder über Discord (`vecto.`).
+- Read the [support guide](./support.md).
+- Open an issue on GitHub if you suspect a bug.
+- Contact the maintainer team via email (see SECURITY.md) or on Discord (`vecto.`).

@@ -1,12 +1,12 @@
-## Sicherheitsrichtlinien
+## Security Policy
 
-Danke, dass du dabei hilfst, NodCord sicher zu halten! Bitte folge diesen Schritten, wenn du eine Sicherheitslücke findest oder sensible Daten entdeckst:
+Thank you for helping keep NodCord secure! Please follow these steps when you discover a vulnerability or sensitive data:
 
-1. Melde den Fund vertraulich per E-Mail an [security@nodcord.dev](mailto:security@nodcord.dev) oder direkt an [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de).
-2. Beschreibe das Problem so detailliert wie möglich (betroffene Endpunkte, erwartetes Verhalten, tatsächliches Verhalten, Schritte zur Reproduktion).
-3. Teile, falls vorhanden, Logs oder Screenshots ausschließlich über verschlüsselte Kanäle. Bitte veröffentliche keine Proof-of-Concepts, bevor wir reagieren konnten.
-4. Gib uns mindestens 14 Tage Zeit, um auf deinen Report zu reagieren und einen Fix für Prisma-Modelle, MySQL-Migrationen oder API-Code bereitzustellen.
+1. Report the finding confidentially via email to [security@nodcord.dev](mailto:security@nodcord.dev) or directly to [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de).
+2. Describe the issue as precisely as possible (affected endpoints, expected behavior, actual behavior, steps to reproduce).
+3. Share logs or screenshots only over encrypted channels if necessary. Please do not publish proof-of-concepts before we have responded.
+4. Allow us at least 14 days to respond and prepare fixes for Prisma models, MySQL migrations, or API code.
 
-Wir priorisieren Sicherheitsmeldungen, die Datenintegrität oder Authentifizierung betreffen. Nach Abschluss informieren wir dich gerne über die ergriffenen Maßnahmen und nennen dich – falls gewünscht – in den Release Notes.
+We prioritize security reports that affect data integrity or authentication. After remediation we are happy to inform you about the actions taken and credit you in the release notes if you wish.
 
-Vielen Dank für deine Unterstützung!
+Thank you for your support!

@@ -1,35 +1,35 @@
-## Architektur von NodCord
+## NodCord Architecture
 
-Diese Datei beschreibt die Architektur von NodCord und erklärt die wichtigsten Komponenten und deren Interaktionen. Die Plattform setzt vollständig auf TypeScript und nutzt Prisma als ORM für eine MySQL-Datenbank.
+This document outlines the architecture of NodCord and explains the most important components and how they interact. The platform is built entirely with TypeScript and uses Prisma as the ORM for a MySQL database.
 
-### Hauptkomponenten
+### Core Components
 
-- **Express Server**: Behandelt HTTP-Anfragen und dient als API-Endpunkt. Eingänge werden in `src/api` typisiert verarbeitet.
-- **Discord Bot**: Läuft parallel zum API-Server, nutzt die gleichen Services und Prisma-Repositories für Datenzugriffe.
-- **Prisma Layer**: Zentraler Datenzugriff über `prisma/schema.prisma` und generierten Prisma Client. Ersetzt nach und nach ältere Mongoose-Modelle.
-- **Service-Schicht**: Enthält Geschäftslogik, orchestriert API, Bot und externe Integrationen (z. B. OAuth, Zahlungsdienste).
+- **Express server:** Handles HTTP requests and exposes the API endpoints. Requests are processed with strong typing inside `src/api`.
+- **Discord bot:** Runs alongside the API server and relies on the same services and Prisma repositories for data access.
+- **Prisma layer:** Central data access through `prisma/schema.prisma` and the generated Prisma Client. It replaces legacy Mongoose models step by step.
+- **Service layer:** Contains business logic and orchestrates API, bot, and external integrations (e.g. OAuth, payment providers).
 
-### Datenfluss
+### Data Flow
 
-1. **HTTP-Anfrage**: Ein Benutzer sendet eine Anfrage an den Express-Server.
-2. **Routing & Controller**: Die Anfrage wird an den passenden Controller geleitet, der Validierung, Autorisierung und Transformation übernimmt.
-3. **Services & Prisma**: Controller rufen Services auf, die über den Prisma Client auf MySQL zugreifen und Geschäftslogik ausführen.
-4. **Antwort**: Typisierte DTOs werden zurück an den Controller gereicht und als HTTP-Response oder Bot-Aktion ausgegeben.
+1. **HTTP request:** A user sends a request to the Express server.
+2. **Routing & controllers:** The request is forwarded to the relevant controller, which handles validation, authorization, and transformation.
+3. **Services & Prisma:** Controllers call services that use the Prisma Client to access MySQL and execute business logic.
+4. **Response:** Typed DTOs are returned to the controller and served as an HTTP response or bot action.
 
-### Discord-Bot-Interaktionen
+### Discord Bot Interactions
 
-1. Der Bot empfängt ein Event (Slash Command, Guild-Event etc.).
-2. Event-Handler greifen auf gemeinsame Services zu (z. B. Ticket-Erstellung, Projektverwaltung).
-3. Über Prisma werden dieselben Tabellen angesprochen wie in der API.
-4. Rückmeldungen gehen als Discord-Nachricht, Embed oder Follow-up an den Benutzer.
+1. The bot receives an event (slash command, guild event, etc.).
+2. Event handlers access shared services (e.g. ticket creation, project management).
+3. Prisma touches the same tables that the API uses.
+4. Feedback is sent back as a Discord message, embed, or follow-up.
 
-### Persistenz
+### Persistence
 
-- Das **Prisma Schema** definiert User-, Rollen-, Projekt- und Ticket-Strukturen als Ausgangsbasis.
-- Migrationen werden mit `npm run prisma:migrate` ausgerollt.
-- Seeds und Tests nutzen gemeinsame Helper unter `src/seeds` und `prisma`.
+- The **Prisma schema** defines the baseline structures for users, roles, projects, and tickets.
+- Deploy migrations with `npm run prisma:migrate`.
+- Seeds and tests use shared helpers inside `src/seeds` and `prisma`.
 
-### Zukunftsaussichten
+### Outlook
 
-- Schrittweise Ablösung der verbliebenen MongoDB/Mongoose-Komponenten zugunsten von Prisma-Repositories.
-- Aufbau eines konsistenten Domain-Layers mit geteilten Typdefinitionen und Services, die sowohl der API als auch dem Bot dienen.
+- Gradually phase out remaining MongoDB/Mongoose components in favor of Prisma repositories.
+- Establish a consistent domain layer with shared type definitions and services that power both the API and the bot.

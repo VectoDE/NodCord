@@ -2,82 +2,83 @@
 
 ![NodCord Logo with Text](https://github.com/user-attachments/assets/f13e96c2-4dff-48f9-8da0-c2acfd49c09b)
 
-NodCord ist eine in **TypeScript** geschriebene Service-Plattform rund um Discord-Automatisierung. Die REST-API basiert auf Express.js, der integrierte Bot nutzt discord.js und sämtliche Persistenz erfolgt über **Prisma** mit einer MySQL-Datenbank. Ziel ist eine einheitliche Codebasis, die API, Bot und begleitende Tools auf denselben Datenquellen aufbaut.
+NodCord is a **TypeScript** service platform for Discord automation. The REST API is powered by Express.js, the integrated bot uses discord.js, and all persistence is handled through **Prisma** with a MySQL database. The goal is to provide a unified codebase so that the API, bot, and supporting tools all operate on the same data sources.
 
-> 💡 Die Anwendung befindet sich in einer laufenden Migration von älteren JavaScript-/Mongoose-Komponenten. Neue Beiträge sollten sich am beschriebenen TypeScript/Prisma-Stack orientieren.
+> 💡 The application is currently migrating from older JavaScript/Mongoose components. New contributions should follow the TypeScript/Prisma stack described here.
 
-## Inhaltsverzeichnis
+## Table of Contents
 
 - [Features](#features)
-- [Technologien](#technologien)
+- [Technologies](#technologies)
 - [Installation](#installation)
-- [Verwendung](#verwendung)
-- [Datenbank & Prisma](#datenbank--prisma)
-- [Konfiguration](#konfiguration)
-- [Dokumentation](#dokumentation)
+- [Usage](#usage)
+- [Testing & Quality Assurance](#testing--quality-assurance)
+- [Database & Prisma](#database--prisma)
+- [Configuration](#configuration)
+- [Documentation](#documentation)
 - [Contributing](#contributing)
-- [Sicherheit](#sicherheit)
-- [Lizenz](#lizenz)
+- [Security](#security)
+- [License](#license)
 
 ## Features
 
-- REST-API mit TypeScript-Controller-Layer und klaren Response-Typen
-- Discord Bot mit gemeinsam genutzten Services und Datenbankzugriff über Prisma
-- MySQL als zentrale Datenquelle (lokal via Docker oder gehostete Instanz)
-- Modularer Aufbau (API, Bot, Client, Seeds, Scripts) für einfache Erweiterungen
-- Ausführliche Projekt- und Migrationsdokumentation im `docs/` Verzeichnis
-- Enterprise-fähige Testaufteilung (API, Bot und EJS-Views) inklusive Coverage-Reports und JUnit-Ausgabe
+- REST API with a TypeScript controller layer and strongly typed responses
+- Discord bot that shares services and database access through Prisma
+- MySQL as the central data source (run locally via Docker or use a hosted instance)
+- Modular structure (API, bot, client, seeds, scripts) for easy extensions
+- Extensive project and migration documentation inside the `docs/` directory
+- Enterprise-ready test layout (API, bot, and EJS views) including coverage reports and JUnit output
 
-## Technologien
+## Technologies
 
-| Bereich         | Stack                                                                 |
+| Area            | Stack                                                                 |
 | --------------- | --------------------------------------------------------------------- |
-| Laufzeit        | Node.js ≥ 18                                                           |
-| Sprache         | TypeScript (strict mode)                                              |
-| Framework       | Express.js                                                             |
-| Datenbank       | MySQL 8.x oder kompatibel (MariaDB ≥ 10.6 getestet)                    |
+| Runtime         | Node.js ≥ 18                                                          |
+| Language        | TypeScript (strict mode)                                             |
+| Framework       | Express.js                                                            |
+| Database        | MySQL 8.x or compatible (MariaDB ≥ 10.6 verified)                     |
 | ORM/Client      | Prisma                                                                |
-| Discord         | discord.js                                                             |
+| Discord         | discord.js                                                            |
 | Tooling         | ts-node-dev, Jest (multi-project), Supertest, Testing Library, Prettier, Prisma CLI |
 
 ## Installation
 
-### Voraussetzungen
+### Requirements
 
-- Node.js **>= 18** und npm **>= 9**
-- Laufende MySQL-Instanz (z. B. Docker: `docker run --name nodcord-mysql -e MYSQL_ROOT_PASSWORD=secret -p 3306:3306 -d mysql:8`)
+- Node.js **>= 18** and npm **>= 9**
+- Running MySQL instance (e.g. Docker: `docker run --name nodcord-mysql -e MYSQL_ROOT_PASSWORD=secret -p 3306:3306 -d mysql:8`)
 - Git
 
-### Schritte
+### Steps
 
-1. Repository klonen:
+1. Clone the repository:
    ```bash
-   git clone https://github.com/deinbenutzername/NodCord.git
+   git clone https://github.com/vectode/NodCord.git
    ```
-2. Projektverzeichnis betreten:
+2. Enter the project directory:
    ```bash
    cd NodCord
    ```
-3. Abhängigkeiten installieren:
+3. Install dependencies:
    ```bash
    npm install
    ```
-4. Prisma Client generieren (erstellt `node_modules/@prisma/client` anhand des Schemas):
+4. Generate the Prisma Client (creates `node_modules/@prisma/client` based on the schema):
    ```bash
    npx prisma generate
    ```
-5. Erste Migration gegen die MySQL-Datenbank ausführen:
+5. Run the initial migration against your MySQL database:
    ```bash
    npx prisma migrate deploy
    ```
-6. Entwicklungsserver starten:
+6. Start the development server:
    ```bash
    npm run dev
    ```
 
-## Verwendung
+## Usage
 
-Die wichtigsten npm-Skripte:
+Key npm scripts:
 
 ```json
 {
@@ -95,73 +96,73 @@ Die wichtigsten npm-Skripte:
 }
 ```
 
-- `npm run dev` startet den Server mit Hot-Reloading (ts-node-dev).
-- `npm run build` erzeugt ein `dist/` Verzeichnis mit kompilierter JS-Ausgabe.
-- `npm start` führt den Build im Produktionsmodus aus.
-- `npm test` führt alle Jest-Projekte (API, Bot, Views) gemeinsam aus.
-- `npm run test:api|bot|views` ermöglicht fokussierte Testläufe pro Verantwortungsbereich.
-- `npm run test:coverage` erzeugt kombinierte Coverage-Reports (`text`, `lcov`, `cobertura`).
-- `npm run test:ci` verkettet Linting, Type-Checking und Coverage für CI/CD-Pipelines.
-- `npm run prisma:migrate` deployt Migrationen in die konfigurierte Datenbank.
-- `npm run prisma:studio` öffnet die Prisma Oberfläche zur Dateninspektion.
+- `npm run dev` starts the server with hot reloading (ts-node-dev).
+- `npm run build` creates a `dist/` directory with compiled JS output.
+- `npm start` launches the build in production mode.
+- `npm test` executes all Jest projects (API, bot, views) together.
+- `npm run test:api|bot|views` enables focused test runs per responsibility.
+- `npm run test:coverage` produces combined coverage reports (`text`, `lcov`, `cobertura`).
+- `npm run test:ci` chains linting, type checking, and coverage for CI/CD pipelines.
+- `npm run prisma:migrate` deploys migrations to the configured database.
+- `npm run prisma:studio` opens the Prisma Studio UI for data inspection.
 
-## Testen & Qualitätssicherung
+## Testing & Quality Assurance
 
-Die Testlandschaft basiert auf einer Jest-Multi-Projekt-Konfiguration:
+The test landscape is based on a Jest multi-project configuration:
 
-- **API**: Läuft im Node-Test-Environment und nutzt `supertest`/`nock`, um REST-Endpunkte und externe Integrationen zu prüfen.
-- **Bot**: Nutzt das Node-Environment, sodass Discord-spezifische Services isoliert via Mocks getestet werden können.
-- **Views**: Läuft im `jsdom`-Environment und bindet `@testing-library/jest-dom`, um EJS-Templates und clientnahe Logik zu verifizieren.
+- **API**: Runs in the Node test environment and uses `supertest`/`nock` to validate REST endpoints and external integrations.
+- **Bot**: Uses the Node environment so Discord-specific services can be tested in isolation through mocks.
+- **Views**: Runs in the `jsdom` environment and relies on `@testing-library/jest-dom` to verify EJS templates and client-adjacent logic.
 
-Alle Projekte teilen sich `jest.setup.ts`, in dem `jest-extended` aktiviert und die Test-Laufzeitumgebung vereinheitlicht wird. Ergebnisse werden zusätzlich als JUnit-Datei unter `reports/junit/jest-junit.xml` abgelegt und die Coverage landet gesammelt im Ordner `coverage/`.
+All projects share `jest.setup.ts`, which enables `jest-extended` and unifies the runtime environment. Test results are also exported as a JUnit file at `reports/junit/jest-junit.xml`, and coverage reports are collected inside `coverage/`.
 
-> 💡 Über `npm run test:watch -- --selectProjects api` lässt sich jeder Bereich auch im Watch-Modus starten.
+> 💡 Run `npm run test:watch -- --selectProjects api` to start any area in watch mode.
 
-## Datenbank & Prisma
+## Database & Prisma
 
-Das Prisma Schema befindet sich unter [`prisma/schema.prisma`](./prisma/schema.prisma). Es definiert alle Models (z. B. Benutzer, Rollen, Projekte) und beschreibt Relationen sowie Constraints für MySQL. Weitere Hinweise:
+The Prisma schema lives at [`prisma/schema.prisma`](./prisma/schema.prisma). It defines all models (e.g. users, roles, projects) and describes relations plus constraints for MySQL. Additional tips:
 
-- Lege eine `.env`-Datei im Projektstamm an und definiere darin `DATABASE_URL`, z. B. `mysql://user:password@localhost:3306/nodcord`.
-- Verwende `npx prisma db push`, wenn du das Schema während der Entwicklung schnell synchronisieren möchtest.
-- Seeds werden über `prisma db seed` ausgeführt und greifen auf die Dateien in `src/seeds/` zurück.
+- Create a `.env` file at the project root and define `DATABASE_URL`, e.g. `mysql://user:password@localhost:3306/nodcord`.
+- Use `npx prisma db push` when you want to sync the schema quickly during development.
+- Run seeds through `prisma db seed`; they rely on files inside `src/seeds/`.
 
-## Konfiguration
+## Configuration
 
-1. Lege eine neue Datei `.env` im Projektstamm an (oder befülle die von deinem Secrets-Management-System ausgerollte Variante).
-2. Trage alle benötigten Variablen aus den folgenden Kategorien ein:
-   - **Core Runtime:** `VERSION`, `NODE_ENV`, `SERVER_NAME`, `LOG_LEVEL`, `TZ`
+1. Create a `.env` file in the project root (or populate the version provided by your secrets management system).
+2. Provide the variables required from the following categories:
+   - **Core runtime:** `VERSION`, `NODE_ENV`, `SERVER_NAME`, `LOG_LEVEL`, `TZ`
    - **Server & API:** `PORT`, `BASE_URL`, `API_HTTPS`, `API_BASE_URL`, `API_PORT`
-   - **Datenbanken:** `DATABASE_URL`, `MONGO_URI`
-   - **Security & Monitoring:** `SESSION_SECRET`, `JWT_SECRET`, `JWT_SESSION_SECRET`, `SENTRY_AUTH_TOKEN`
-   - **Client-Routing:** `CLIENT_HTTPS`, `CLIENT_BASE_URL`, `CLIENT_PORT`
-   - **Discord & Bot:** `DISCORD_*`, `BOT_ACTIVITY_*`, `OWNER_ID`
+   - **Databases:** `DATABASE_URL`, `MONGO_URI`
+   - **Security & monitoring:** `SESSION_SECRET`, `JWT_SECRET`, `JWT_SESSION_SECRET`, `SENTRY_AUTH_TOKEN`
+   - **Client routing:** `CLIENT_HTTPS`, `CLIENT_BASE_URL`, `CLIENT_PORT`
+   - **Discord & bot:** `DISCORD_*`, `BOT_ACTIVITY_*`, `OWNER_ID`
    - **OAuth:** `GOOGLE_*`, `GITHUB_*`, `LINKEDIN_*`
    - **Payments:** `STRIPE_SECRET_KEY`, `PAYPAL_CLIENT_*`
-   - **Mail & Kontakt:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`
-   - **Infrastruktur:** `TS_*`
+   - **Mail & contact:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`
+   - **Infrastructure:** `TS_*`
 
-Weitere Erläuterungen findest du in den Modul-spezifischen Dateien unter `src/config/` sowie in den Referenzdokumenten im Ordner `docs/`.
+Further explanations live in the module-specific files under `src/config/` and in the reference documentation under `docs/`.
 
-## Dokumentation
+## Documentation
 
-Ausführliche Architekturhinweise, Installationsanleitungen, Roadmaps und Prozessbeschreibungen befinden sich im Ordner [`docs/`](./docs). Wichtige Einstiegspunkte:
+Detailed architecture notes, installation guides, roadmaps, and process descriptions live inside [`docs/`](./docs). Key entry points:
 
-- [`docs/guides/`](./docs/guides) – Installations-, FAQ- und Support-Anleitungen
-- [`docs/overview/`](./docs/overview) – Architektur, Komponenten und Datenflüsse
-- [`docs/planning/`](./docs/planning) – Migrationsfahrpläne Richtung vollständiger Prisma-Nutzung
-- [`docs/reference/`](./docs/reference) – Technische Referenzen und Arbeitsabläufe
-- [`docs/process/`](./docs/process) – Contributing-, Release- und Change-Management
+- [`docs/guides/`](./docs/guides) – Installation, FAQ, and support guides
+- [`docs/overview/`](./docs/overview) – Architecture, components, and data flows
+- [`docs/planning/`](./docs/planning) – Migration plans toward full Prisma adoption
+- [`docs/reference/`](./docs/reference) – Technical references and workflows
+- [`docs/process/`](./docs/process) – Contributing, release, and change management
 
 ## Contributing
 
-Beiträge sind willkommen! Lies bitte die [CONTRIBUTING.md](./CONTRIBUTING.md), bevor du Pull Requests öffnest. Dort findest du Informationen zu Branch-Strategie, Coding-Guidelines für TypeScript sowie zum Umgang mit Prisma Migrationen.
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening pull requests. It covers the branch strategy, TypeScript coding guidelines, and how to manage Prisma migrations.
 
-## Sicherheit
+## Security
 
-Sicherheitsrelevante Hinweise findest du in der [SECURITY.md](./SECURITY.md). Melde Schwachstellen vertraulich, damit wir die MySQL-/Prisma-Infrastruktur schnell absichern können.
+Security-relevant information can be found in [SECURITY.md](./SECURITY.md). Report vulnerabilities confidentially so that we can secure the MySQL/Prisma infrastructure quickly.
 
-## Lizenz
+## License
 
-Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe die [LICENSE](./LICENSE)-Datei für weitere Details.
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
 
 ![NodCord Logo](https://imgur.com/dCl3Q6H.png)

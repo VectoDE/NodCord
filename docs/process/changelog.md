@@ -1,27 +1,27 @@
 # CHANGELOG
 
-Alle bemerkenswerten Änderungen an diesem Projekt werden in dieser Datei dokumentiert.
+All notable changes to this project will be documented in this file.
 
-Das Format basiert auf [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
 ## [2.0.0-alpha] - 2025-10-22
-### Hinzugefügt
-- Prisma Schema (`prisma/schema.prisma`) mit Kernmodellen für User, Rollen, Projekte und Tickets.
-- Überarbeitete Dokumentation (README, Installationsguide, Architekturübersicht, Contributing).
-- Neue Projektleitfäden zu TypeScript/Prisma in `docs/planning` und `docs/process`.
-- Nodemon-/TypeScript-Konfiguration für `npm run dev` und neue npm-Skripte (Prisma, Build, Formatierung).
+### Added
+- Prisma schema (`prisma/schema.prisma`) with core models for users, roles, projects, and tickets.
+- Updated documentation (README, installation guide, architecture overview, contributing).
+- New project guides for TypeScript/Prisma inside `docs/planning` and `docs/process`.
+- Nodemon/TypeScript configuration for `npm run dev` and new npm scripts (Prisma, build, formatting).
 
-### Entfernt
-- Legacy `build.js` Skript und veraltete Build-Hinweise.
+### Removed
+- Legacy `build.js` script and outdated build notes.
 
 ## [1.0.1] - 2024-08-01
-### Geändert
-- Aktualisierte Dokumentation
+### Changed
+- Updated documentation
 
 ## [1.0.0] - 2024-07-28
-### Hinzugefügt
-- Initiale Version von NodCord
-- Grundlegende API-Endpunkte
-- Discord Bot mit `!ping` und `!info` Befehlen
+### Added
+- Initial version of NodCord
+- Core API endpoints
+- Discord bot with `!ping` and `!info` commands

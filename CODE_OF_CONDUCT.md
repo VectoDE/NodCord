@@ -1,35 +1,37 @@
-## Verhaltenskodex für Mitwirkende
+## Contributor Code of Conduct
 
-### Unsere Verpflichtung
+### Our Commitment
 
-Um eine offene und einladende Umgebung zu fördern, verpflichten sich die Mitwirkenden und Wartenden des Projekts, die Teilnahme am Projekt und unserer Community zu einer belästigungsfreien Erfahrung für alle zu machen, unabhängig von Alter, Körpergröße, Behinderung, ethnischer Zugehörigkeit, Geschlechtsidentität und -ausdruck, Erfahrungslevel, Bildung, soziökonomischem Status, Nationalität, persönlichem Aussehen, Rasse, Religion oder sexueller Identität und Orientierung.
+To foster an open and welcoming environment, the contributors and maintainers pledge to make participation in the project and our community a harassment-free experience for everyone, regardless of age, body size, disability, ethnicity, gender identity and expression, level of experience, education, socio-economic status, nationality, personal appearance, race, religion, or sexual identity and orientation.
 
-### Unsere Standards
+### Our Standards
 
-Beispiele für Verhaltensweisen, die dazu beitragen, eine positive Umgebung zu schaffen:
+Examples of behavior that contributes to creating a positive environment include:
 
-- Verwendung von einladender und inklusiver Sprache
-- Respekt gegenüber unterschiedlichen Ansichten und Erfahrungen
-- Konstruktive Kritik höflich annehmen
-- Fokus auf das, was das Beste für die Community ist
-- Empathie gegenüber anderen Mitgliedern der Community zeigen
+- Using welcoming and inclusive language
+- Showing respect for differing viewpoints and experiences
+- Accepting constructive criticism gracefully
+- Focusing on what is best for the community
+- Showing empathy toward other community members
 
-Beispiele für inakzeptables Verhalten:
+Examples of unacceptable behavior by participants include:
 
-- Die Verwendung sexualisierter Sprache oder Bilder und unerwünschte sexuelle Aufmerksamkeit oder Annäherungen
-- Trollen, beleidigende/abwertende Kommentare und persönliche oder politische Angriffe
-- Öffentliche oder private Belästigungen
-- Veröffentlichung von privaten Informationen anderer ohne deren ausdrückliche Erlaubnis
-- Anderes Verhalten, das als unangemessen in einem professionellen Umfeld betrachtet werden kann
+- The use of sexualized language or imagery and unwelcome sexual attention or advances
+- Trolling, insulting/derogatory comments, and personal or political attacks
+- Public or private harassment
+- Publishing others' private information without explicit permission
+- Other conduct that could reasonably be considered inappropriate in a professional setting
 
-### Durchsetzung
+### Enforcement
 
-Vorfälle von missbräuchlichem, belästigendem oder anderweitig inakzeptablem Verhalten können den Projektverantwortlichen unter [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) oder per Discord (`vecto.`) gemeldet werden. Alle Beschwerden werden geprüft und untersucht und führen zu einer Antwort, die den Umständen entsprechend notwendig und angemessen erscheint. Das Projektteam verpflichtet sich, über die Berichtenden von Vorfällen die Vertraulichkeit zu wahren.
+Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the project leads at [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) or on Discord (`vecto.`). All complaints will be reviewed and investigated, resulting in a response that is deemed necessary and appropriate to the circumstances. The project team is obligated to maintain confidentiality with regard to the reporter of an incident.
 
-### Kollaboratives Arbeiten
+### Collaborative Work
 
-NodCord setzt auf eine enge Zusammenarbeit zwischen API-, Bot- und Datenbank-Teams. Bitte respektiere die vereinbarten Review-Prozesse für TypeScript-Code, Prisma-Schemata und MySQL-Migrationen, um konsistente Ergebnisse zu gewährleisten.
+NodCord relies on close collaboration between the API, bot, and database teams. Please respect the agreed review processes for TypeScript code, Prisma schemas, and MySQL migrations to ensure consistent results.
 
 ### Attribution
 
-Dieser Verhaltenskodex basiert auf dem [Contributor Covenant][homepage], Version 1.4, verfügbar unter http://contributor-covenant.org/version/1/4
+This Code of Conduct is adapted from the [Contributor Covenant][homepage], version 1.4, available at http://contributor-covenant.org/version/1/4
+
+[homepage]: http://contributor-covenant.org

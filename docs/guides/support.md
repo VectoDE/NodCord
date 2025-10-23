@@ -1,24 +1,21 @@
 # SUPPORT
 
-## Unterstützung
+## Getting Help
 
-Wenn du Hilfe zu NodCord benötigst, gibt es mehrere Möglichkeiten, Unterstützung zu erhalten:
+If you need assistance with NodCord, there are several ways to get support:
 
-### Dokumentation
+### Documentation
 
-Lies die ausführliche [Projekt-Dokumentation](../reference/documentation.md) für detaillierte Anweisungen zur Installation, Konfiguration und Nutzung des Projekts.
+Review the detailed [project documentation](../reference/documentation.md) for instructions on installing, configuring, and using the project.
 
 ### GitHub Issues
 
-Wenn du ein Problem hast, das nicht durch die Dokumentation abgedeckt ist, öffne bitte ein Issue auf GitHub:
-[NodCord Issues](https://github.com/vectode/NodCord/issues)
+If you encounter a problem that is not covered by the documentation, please open an issue on GitHub: [NodCord Issues](https://github.com/vectode/NodCord/issues)
 
 ### Community
 
-Tritt unserer Community auf Discord bei, um Hilfe von anderen Benutzern und Entwicklern zu erhalten:
-[Discord-Einladung (auf Anfrage)](mailto:tim.hauke@hauknetz.de?subject=NodCord%20Discord%20Invite)
+Join our community on Discord to receive help from other users and developers: [Discord invite (on request)](mailto:tim.hauke@hauknetz.de?subject=NodCord%20Discord%20Invite)
 
-### E-Mail Support
+### Email Support
 
-Du kannst auch direkt per E-Mail Unterstützung erhalten:
-[security@nodcord.dev](mailto:security@nodcord.dev) oder [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de)
+You can also reach out directly via email: [security@nodcord.dev](mailto:security@nodcord.dev) or [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de)

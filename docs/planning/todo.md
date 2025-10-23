@@ -1,37 +1,37 @@
-# NodCord 2.0.0 – Migrationsfahrplan
+# NodCord 2.0.0 – Migration Roadmap
 
-## Zielbild
-- Vollständiger Wechsel auf TypeScript (keine `.js`-Quelldateien mehr in `src/`).
-- Datenzugriff ausschließlich über Prisma Client mit MySQL (Mongoose wird ersetzt).
-- Gemeinsame Services für API, Bot und Client.
-- Konsistente Build-/Deploy-Pipeline (`npm run build`, `npm start`, `npm run dev`).
+## Target State
+- Complete transition to TypeScript (no `.js` source files left in `src/`).
+- Database access exclusively through Prisma Client with MySQL (replacing Mongoose).
+- Shared services for API, bot, and client.
+- Consistent build/deploy pipeline (`npm run build`, `npm start`, `npm run dev`).
 
-## Phase 0 – Analyse & Vorbereitung
-- [ ] Bestandsaufnahme aller Module (`src/api`, `src/bot`, `src/client`, `src/models`, `src/database`, `src/seeds`).
-- [ ] Abhängigkeiten prüfen (`package.json`): veraltete Pakete markieren, Prisma/TypeScript-Setup finalisieren.
-- [ ] Datenbank-Mapping vorbereiten: Mongoose-Schemas den Prisma-Modellen im `prisma/schema.prisma` gegenüberstellen.
-- [ ] Secrets-Quelle für MySQL, Redis, Discord, OAuth und externe Integrationen pflegen (z. B. zentrale `.env`-Vorlage im Secret-Manager).
+## Phase 0 – Analysis & preparation
+- [ ] Assess all modules (`src/api`, `src/bot`, `src/client`, `src/models`, `src/database`, `src/seeds`).
+- [ ] Review dependencies (`package.json`): mark outdated packages and finalize the Prisma/TypeScript setup.
+- [ ] Prepare database mapping: align Mongoose schemas with Prisma models in `prisma/schema.prisma`.
+- [ ] Maintain the secrets source for MySQL, Redis, Discord, OAuth, and external integrations (e.g. a central `.env` template in secrets management).
 
-## Phase 1 – Alpha (Grundfunktionalität lauffähig)
-- [ ] TypeScript-Konfiguration und ts-node-dev Setup abschließen (`npm run dev`).
-- [ ] Prisma Client in `src/server.ts` und zentralen Services verwenden.
-- [ ] Auth, User, Roles, Tickets und Kernmodule auf Prisma portieren.
-- [ ] Seeds auf Prisma umstellen (`prisma db seed`).
-- [ ] Basis-Dokumentation aktualisieren (README, Installationsanleitung, Architektur).
+## Phase 1 – Alpha (core functionality running)
+- [ ] Finalize TypeScript configuration and the ts-node-dev setup (`npm run dev`).
+- [ ] Use the Prisma Client inside `src/server.ts` and central services.
+- [ ] Port auth, user, roles, tickets, and other core modules to Prisma.
+- [ ] Migrate seeds to Prisma (`prisma db seed`).
+- [ ] Update baseline documentation (README, installation guide, architecture).
 
-## Phase 2 – Beta (Feature-Parität & Stabilität)
-- [ ] Alle verbleibenden Module (Commerce, Blog, Integrationen, Analytics) auf Prisma migrieren.
-- [ ] Integrationstests und Bot-Kommandos mit Prisma-Datenanbindung validieren.
-- [ ] CI/CD-Pipeline mit Build, Test, Prisma-Migrationen und Linting aufsetzen.
-- [ ] Performance- und Sicherheitsprüfungen durchführen (Indexe, Rate-Limits, Secrets Management).
+## Phase 2 – Beta (feature parity & stability)
+- [ ] Migrate all remaining modules (commerce, blog, integrations, analytics) to Prisma.
+- [ ] Validate integration tests and bot commands with Prisma-backed data access.
+- [ ] Implement a CI/CD pipeline that covers build, test, Prisma migrations, and linting.
+- [ ] Run performance and security checks (indexes, rate limits, secrets management).
 
-## Phase 3 – LTS (Härtung & Release)
-- [ ] Finales Review aller Prisma-Modelle und Migrationen.
-- [ ] Release-Plan (Versionierung, Changelog, Upgrade Guide) fertigstellen.
-- [ ] Monitoring, Observability und Backups für MySQL/Prisma etablieren.
-- [ ] LTS-Support-Prozess definieren (Bugfix-Policy, Wartungsfenster).
+## Phase 3 – LTS (hardening & release)
+- [ ] Final review of all Prisma models and migrations.
+- [ ] Finalize the release plan (versioning, changelog, upgrade guide).
+- [ ] Establish monitoring, observability, and backups for MySQL/Prisma.
+- [ ] Define the LTS support process (bugfix policy, maintenance windows).
 
-## Laufende Aufgaben
-- [ ] Coding-Guidelines pflegen (`CONTRIBUTING.md`, `docs/process/contributing.md`).
-- [ ] Dokumentation mit jeder größeren Änderung aktualisieren.
-- [ ] Feedback aus Community/Issue-Tracker regelmäßig einarbeiten.
+## Ongoing tasks
+- [ ] Maintain coding guidelines (`CONTRIBUTING.md`, `docs/process/contributing.md`).
+- [ ] Update documentation with each major change.
+- [ ] Incorporate community/issue tracker feedback regularly.

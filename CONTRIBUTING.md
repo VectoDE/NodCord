@@ -1,45 +1,45 @@
-# Beiträge zu NodCord
+# Contributing to NodCord
 
-Vielen Dank, dass du zur Weiterentwicklung von NodCord beitragen möchtest! Dieses Dokument erläutert die wichtigsten Abläufe für Beiträge zu unserer TypeScript-/Prisma-Codebasis.
+Thank you for your interest in improving NodCord! This document explains the most important workflows for contributing to our TypeScript/Prisma codebase.
 
-## Grundprinzipien
+## Core Principles
 
-- **TypeScript zuerst**: Neue Module und Änderungen werden in TypeScript umgesetzt. Nutze die strengen Compiler-Optionen (`noImplicitOverride`, `noUncheckedIndexedAccess`, …) und teile gemeinsame Typen in `src/types/`.
-- **Prisma + MySQL**: Datenzugriffe erfolgen über den Prisma Client. Direkte MySQL-Abfragen oder Mongoose-Modelle sollten vermieden bzw. schrittweise ersetzt werden.
-- **Getrennte Verantwortlichkeiten**: API, Bot und Client teilen sich Services. Achte darauf, Logik wiederverwendbar zu kapseln, statt sie zu duplizieren.
+- **TypeScript first:** New modules and changes are implemented in TypeScript. Enable strict compiler options (`noImplicitOverride`, `noUncheckedIndexedAccess`, …) and share common types through `src/types/`.
+- **Prisma + MySQL:** Use the Prisma Client for all database access. Avoid direct MySQL queries or Mongoose models; replace them gradually where they still exist.
+- **Separation of concerns:** API, bot, and client share services. Encapsulate reusable logic instead of duplicating it.
 
-## Entwicklungsablauf
+## Development Workflow
 
-1. **Issue wählen oder erstellen**: Beschreibe kurz das Problem bzw. Feature und markiere, ob Prisma-Schemaänderungen notwendig sind.
-2. **Branch erstellen**: `git checkout -b feature/mein-thema`
-3. **Umgebung vorbereiten**:
+1. **Choose or open an issue:** Describe the problem or feature briefly and note whether Prisma schema changes are required.
+2. **Create a branch:** `git checkout -b feature/my-topic`
+3. **Prepare the environment:**
    - `npm install`
    - `npx prisma generate`
-   - Lokale MySQL-Datenbank bereitstellen und `.env` mit `DATABASE_URL` befüllen
-4. **Code anpassen**:
-   - TypeScript-Dateien mit eindeutigen Interfaces erstellen.
-   - Bei Schemaänderungen `prisma migrate dev --name mein_migrationsname` ausführen.
-   - Seeds in `prisma/seed.ts` oder `src/seeds/` aktualisieren.
-5. **Tests & Checks**:
-   - `npm run lint && npm run typecheck` (stilistische und statische Analyse)
-   - `npm run build` (stellt sicher, dass der TypeScript-Compiler fehlerfrei durchläuft)
-   - `npm test` oder gezielt `npm run test:api|bot|views` (abhängig vom betroffenen Bereich)
-   - `npm run test:coverage` bei Änderungen an Kernlogik oder Services
-   - `npm run prisma:migrate` gegen eine Testdatenbank, falls Migrationen hinzugefügt wurden.
-6. **Pull Request eröffnen**:
-   - Fasse Änderungen, Migrationsschritte und neue Env-Variablen zusammen.
-   - Verweise auf relevante Dokumente im `docs/`-Ordner (z. B. aktualisierte Architektur- oder Installationsguides).
+   - Provide a local MySQL database and populate `.env` with `DATABASE_URL`
+4. **Implement your changes:**
+   - Create TypeScript files with clear interfaces.
+   - For schema changes run `prisma migrate dev --name my_migration_name`.
+   - Update seeds in `prisma/seed.ts` or `src/seeds/`.
+5. **Run tests and checks:**
+   - `npm run lint && npm run typecheck` (style and static analysis)
+   - `npm run build` (ensures the TypeScript compiler passes)
+   - `npm test` or a focused run via `npm run test:api|bot|views`
+   - `npm run test:coverage` for changes to core logic or services
+   - `npm run prisma:migrate` against a test database when adding migrations
+6. **Open a pull request:**
+   - Summarize your changes, migration steps, and new environment variables.
+   - Reference relevant documents in `docs/` (e.g. updated architecture or installation guides).
 
-## Stil- & Qualitätsrichtlinien
+## Style & Quality Guidelines
 
-- Verwende Prettier (`npm run format`) für konsistente Formatierung.
-- Schreibe sprechende Commit-Nachrichten im Imperativ.
-- Dokumentiere neue Services oder Datenmodelle kurz in den passenden Dateien unter `docs/reference/` oder `docs/overview/`.
+- Use Prettier (`npm run format`) for consistent formatting.
+- Write descriptive commit messages in the imperative.
+- Document new services or data models in the relevant files under `docs/reference/` or `docs/overview/`.
 
-## Sicherheit & Datenschutz
+## Security & Privacy
 
-Solltest du sicherheitsrelevante Probleme finden, melde sie bitte vertraulich wie in [SECURITY.md](./SECURITY.md) beschrieben. Lege keine Secrets oder produktiven Datenbankverbindungen in Pull Requests offen.
+If you find a security issue, report it confidentially as described in [SECURITY.md](./SECURITY.md). Never expose secrets or production database connections in pull requests.
 
-## Fragen
+## Questions
 
-Wenn du unsicher bist, kontaktiere das Maintainer-Team per E-Mail an [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) oder über Discord (`vecto.`). Wir unterstützen dich gerne bei der Umsetzung deiner Idee!
+If you are unsure about anything, reach out to the maintainer team via [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) or Discord (`vecto.`). We are happy to support you!

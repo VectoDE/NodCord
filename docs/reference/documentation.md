@@ -1,103 +1,103 @@
 # NodCord Documentation
 
-## Einführung
+## Introduction
 
-NodCord ist eine Express-basierte API mit integriertem Discord-Bot, geschrieben in TypeScript. Die Persistenz erfolgt über Prisma gegen eine MySQL-Datenbank. Dieses Dokument fasst die wichtigsten Arbeitsabläufe, Werkzeuge und Projektstrukturen zusammen.
+NodCord is an Express-based API with an integrated Discord bot written in TypeScript. Data persistence is handled through Prisma on top of a MySQL database. This document summarizes the key workflows, tooling, and project structure.
 
 ## Installation & Setup
 
-### Voraussetzungen
+### Requirements
 
-- Node.js >= 18 (LTS empfohlen)
+- Node.js >= 18 (LTS recommended)
 - npm >= 9
-- Zugriff auf eine MySQL 8.x oder kompatible Instanz
-- Optional: Redis für Sessions/Caching
+- Access to a MySQL 8.x or compatible instance
+- Optional: Redis for sessions/caching
 
-### Setup-Schritte
+### Setup Steps
 
-1. Repository klonen:
+1. Clone the repository:
    ```bash
    git clone https://github.com/vectode/NodCord.git
    cd NodCord
    ```
-2. Abhängigkeiten installieren:
+2. Install dependencies:
    ```bash
    npm install
    ```
-3. Prisma vorbereiten:
+3. Prepare Prisma:
    ```bash
    npx prisma generate
    npx prisma migrate deploy
    ```
-4. Eine `.env`-Datei anlegen (z. B. über dein Secrets-Management-System) und dort die MySQL-/Discord-Zugangsdaten eintragen (siehe README).
+4. Create a `.env` file (e.g. via your secrets management system) and add the MySQL/Discord credentials (see the README).
 
-## Entwicklungs- und Betriebs-Workflows
+## Development & Operations Workflows
 
-### Server starten
+### Starting the server
 
-- Entwicklung mit automatischem Reload:
+- Development with automatic reload:
   ```bash
   npm run dev
   ```
-- Produktion nach Build (lädt kompilierten Code aus `dist/`):
+- Production after building (runs compiled code from `dist/`):
   ```bash
   npm run build
   npm start
   ```
 
-### Prisma & Datenbank
+### Prisma & Database
 
-- Migrationen deployen:
+- Deploy migrations:
   ```bash
   npm run prisma:migrate
   ```
-- Prisma Client neu generieren (bei Schemaänderungen):
+- Regenerate the Prisma Client (after schema changes):
   ```bash
   npm run prisma:generate
   ```
-- Prisma Studio öffnen:
+- Open Prisma Studio:
   ```bash
   npm run prisma:studio
   ```
 
-### Tests & Code-Stil
+### Tests & Code Style
 
-- Automatisierte Tests (Jest):
+- Automated tests (Jest):
   ```bash
   npm test
   ```
-- Formatierung prüfen bzw. anwenden:
+- Check or apply formatting:
   ```bash
   npm run lint
   npm run format
   ```
 
-## API-Referenz (Kurzüberblick)
+## API Reference (short overview)
 
-Die Controller und Routen liegen unter `src/api`. Häufig genutzte Endpunkte:
+Controllers and routes live under `src/api`. Frequently used endpoints include:
 
-- `GET /api/discord/status` – Status des Discord-Bots.
-- `POST /api/discord/message` – Sendet eine Nachricht an einen Kanal.
+- `GET /api/discord/status` – Status of the Discord bot.
+- `POST /api/discord/message` – Sends a message to a channel.
 
-Weitere Module (Auth, Commerce, Tickets, Integrationen) werden sukzessive auf Prisma-basierte Services migriert. Einstiegspunkte sind `src/api/routes` sowie die zugehörigen Controller.
+Additional modules (auth, commerce, tickets, integrations) are gradually migrating to Prisma-based services. The main entry points are `src/api/routes` and the corresponding controllers.
 
-## Discord-Bot
+## Discord Bot
 
-Der Bot startet derzeit über `src/bot/index.js` (Migration nach TypeScript ist in Arbeit) und nutzt gemeinsam genutzte Services. Kommandos und Events werden unter `src/bot/commands` bzw. `src/bot/events` verwaltet.
+The bot currently starts via `src/bot/index.js` (a TypeScript migration is in progress) and reuses shared services. Commands and events are managed under `src/bot/commands` and `src/bot/events`.
 
-## Prisma Schema & Datenmodelle
+## Prisma Schema & Data Models
 
-- Schema-Datei: `prisma/schema.prisma`
-- Standardmodelle: `User`, `Role`, `Project`, `Ticket` (erweiterbar)
-- Migrationen: `prisma/migrations/`
-- Seeds: `prisma/seed.ts` oder TypeScript-Dateien unter `src/seeds/`
+- Schema file: `prisma/schema.prisma`
+- Default models: `User`, `Role`, `Project`, `Ticket` (extensible)
+- Migrations: `prisma/migrations/`
+- Seeds: `prisma/seed.ts` or TypeScript files inside `src/seeds/`
 
-## Verzeichnisstruktur
+## Directory Structure
 
-Siehe [`docs/meta/folder-structure.md`](../meta/folder-structure.md) für eine vollständige Übersicht.
+Refer to [`docs/meta/folder-structure.md`](../meta/folder-structure.md) for a complete overview.
 
-## Weitere Ressourcen
+## Additional Resources
 
 - [Contributing Guide](../process/contributing.md)
-- [Migrationsfahrplan](../planning/todo.md)
-- [Architekturübersicht](../overview/architecture.md)
+- [Migration roadmap](../planning/todo.md)
+- [Architecture overview](../overview/architecture.md)

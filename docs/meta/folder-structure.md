@@ -1,6 +1,6 @@
-# Ordnerstruktur
+# Folder Structure
 
-Die folgende Übersicht zeigt die wichtigsten Ordner und Dateien im Projekt und beschreibt ihre Aufgaben. Sie dient als Einstieg, um schnell die relevanten Bereiche zu finden.
+The following overview highlights the most important directories and files in the project and explains their purpose. Use it to quickly locate relevant areas.
 
 ```text
 NodCord/
@@ -9,31 +9,31 @@ NodCord/
 ├── LICENSE
 ├── README.md
 ├── SECURITY.md
-├── docs/                   # Dokumentation, Leitfäden und Planungsunterlagen
-│   ├── guides/             # Schritt-für-Schritt-Anleitungen (Installation, FAQ, Support)
-│   ├── meta/               # Meta-Dokumente wie diese Strukturübersicht
-│   ├── overview/           # Architektur- und High-Level-Übersichten
-│   ├── planning/           # Roadmaps, Aufgabenlisten und detaillierte Migrationspläne
-│   ├── process/            # Projektprozesse (Changelog, Release-Plan, Contribution-Richtlinien)
-│   └── reference/          # Technische Referenzen und tiefere Beschreibungen
-├── nodemon.json            # Dev-Server-Konfiguration für ts-node-dev
-├── package.json            # Projektabhängigkeiten und Skripte
-├── prisma/                 # Prisma-Schema, Migrationen und Seeds
-│   └── schema.prisma       # MySQL-Modelldefinitionen
-├── tsconfig.json           # TypeScript-Compiler-Einstellungen
-├── dist/                   # Kompilierte Ausgabedateien (wird beim Build erstellt)
-└── src/                    # Anwendungscode (API, Bot, Client, Seeds etc.)
-    ├── api/                # Express-App, Controller, Routen, Middlewares, Helper & Services
-    ├── bot/                # Discord-Bot mit Commands, Events und Utility-Funktionen
-    ├── client/             # Frontend-Code/Assets für das Dashboard
-    ├── config/             # Konfigurationsdateien für API, Bot und Server
-    ├── database/           # Verbindungslogik und Datenbank-spezifische Hilfen
-    ├── models/             # Übergangsweise vorhandene Mongoose-Modelle (werden durch Prisma ersetzt)
-    ├── public/             # Statische Assets (CSS, Bilder, hochgeladene Dateien)
-    ├── scripts/            # Automatisierungs- und Wartungsskripte
-    ├── seeds/              # Seed-Daten und Initialisierungsskripte
-    ├── server.ts           # Einstiegspunkt für den Serverstart
-    └── views/              # EJS-Templates für serverseitiges Rendering
+├── docs/                   # Documentation, guides, and planning material
+│   ├── guides/             # Step-by-step guides (installation, FAQ, support)
+│   ├── meta/               # Meta documents such as this structure overview
+│   ├── overview/           # Architecture and high-level descriptions
+│   ├── planning/           # Roadmaps, task lists, and detailed migration plans
+│   ├── process/            # Project processes (changelog, release plan, contribution guidelines)
+│   └── reference/          # Technical references and deeper explanations
+├── nodemon.json            # Dev server configuration for ts-node-dev
+├── package.json            # Project dependencies and scripts
+├── prisma/                 # Prisma schema, migrations, and seeds
+│   └── schema.prisma       # MySQL model definitions
+├── tsconfig.json           # TypeScript compiler settings
+├── dist/                   # Compiled output (created during builds)
+└── src/                    # Application code (API, bot, client, seeds, etc.)
+    ├── api/                # Express app, controllers, routes, middleware, helpers & services
+    ├── bot/                # Discord bot with commands, events, and utilities
+    ├── client/             # Frontend code/assets for the dashboard
+    ├── config/             # Configuration files for API, bot, and server
+    ├── database/           # Connection logic and database-specific helpers
+    ├── models/             # Transitional Mongoose models (being replaced by Prisma)
+    ├── public/             # Static assets (CSS, images, uploaded files)
+    ├── scripts/            # Automation and maintenance scripts
+    ├── seeds/              # Seed data and initialization scripts
+    ├── server.ts           # Entry point for starting the server
+    └── views/              # EJS templates for server-side rendering
 ```
 
-> **Hinweis:** Der Fokus aktueller Arbeiten liegt auf der Konsolidierung des TypeScript-Codes und der Migration von MongoDB/Mongoose zu Prisma + MySQL. Änderungen am `src/`-Bereich sollten eng mit dem Maintainer-Team abgestimmt werden.
+> **Note:** Current work focuses on consolidating the TypeScript code and migrating from MongoDB/Mongoose to Prisma + MySQL. Coordinate changes in the `src/` area closely with the maintainer team.

@@ -1,36 +1,36 @@
-## Beitragende willkommen!
+## Welcome, Contributors!
 
-Vielen Dank für dein Interesse, zu NodCord beizutragen! Dieser Leitfaden fasst die wichtigsten Regeln für Beiträge zur TypeScript-/Prisma-Codebasis zusammen.
+Thank you for your interest in contributing to NodCord! This guide summarizes the key rules for working with the TypeScript/Prisma codebase.
 
-## Wie du beitragen kannst
+## Ways to Contribute
 
-- **Fehler melden**: Öffne ein Issue und beschreibe das Problem, inklusive Steps, Logs und Prisma-Migration (falls relevant).
-- **Funktionen vorschlagen**: Skizziere das gewünschte Verhalten und die betroffenen Module (API, Bot, Prisma-Schema).
-- **Code beisteuern**: Erstelle einen Fork, entwickle in einem Feature-Branch und öffne einen Pull Request.
+- **Report bugs:** Open an issue that describes the problem, including reproduction steps, logs, and Prisma migration context when relevant.
+- **Propose features:** Outline the desired behavior and the affected modules (API, bot, Prisma schema).
+- **Submit code:** Fork the repository, develop on a feature branch, and open a pull request.
 
-## Code-Richtlinien
+## Coding Guidelines
 
-- Schreibe ausschließlich TypeScript-Dateien (`.ts`/`.tsx`).
-- Nutze Prisma Client für Datenzugriffe. Direkte MySQL-Queries nur in begründeten Ausnahmefällen.
-- Teile gemeinsame Typen in `src/types/` und Services im passenden Modul (`src/api/services`, `src/bot/services`).
-- Achte auf saubere Fehlerrückgaben und Logging, insbesondere bei Datenbankoperationen.
+- Write TypeScript files only (`.ts`/`.tsx`).
+- Use the Prisma Client for database access. Direct MySQL queries are reserved for exceptional cases.
+- Share common types under `src/types/` and services inside the corresponding module (`src/api/services`, `src/bot/services`).
+- Handle errors and logging carefully, especially around database operations.
 
-## Pull-Request-Prozess
+## Pull Request Process
 
-1. Branch erstellen: `git checkout -b feature/mein-feature`
-2. Änderungen durchführen und bei Schema-Anpassungen `prisma migrate dev --name <name>` ausführen.
-3. Tests und Checks laufen lassen:
+1. Create a branch: `git checkout -b feature/my-feature`
+2. Implement your changes and run `prisma migrate dev --name <name>` when you touch the schema.
+3. Execute tests and checks:
    ```bash
    npm run build
    npm test
    npm run prisma:migrate
    ```
-4. Dokumentation aktualisieren (README, docs/…), falls sich Abläufe ändern.
-5. Pull Request erstellen und folgende Punkte dokumentieren:
-   - Zusammenfassung der Änderung
-   - Auswirkungen auf Prisma-Schema/Migrationen
-   - Hinweise auf neue Env-Variablen oder Konfigurationsschritte
+4. Update documentation (README, docs/…) whenever workflows change.
+5. Open a pull request and document the following:
+   - Summary of the change
+   - Impact on the Prisma schema/migrations
+   - Notes about new environment variables or configuration steps
 
-## Danke!
+## Thank You!
 
-Wir freuen uns über jede Unterstützung. Bei Fragen wende dich an [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) oder per Discord an `vecto.`.
+We appreciate every contribution. If you have questions, contact [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de) or reach out on Discord (`vecto.`).
