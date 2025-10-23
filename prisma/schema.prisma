@@ -149,19 +149,23 @@ enum UserRole {
 }
 
 model Afk {
-  id      String  @id @default(uuid())
-  user    String  @map("User")
-  guild   String  @map("Guild")
-  message String? @map("Message")
+  id        String   @id @default(uuid())
+  user      String   @map("User")
+  guild     String   @map("Guild")
+  message   String?  @map("Message")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([guild, user])
   @@map("AFK")
 }
 
 model Antilink {
-  id    String @id @default(uuid())
-  guild String @map("Guild")
-  perms String @map("Perms")
+  id        String   @id @default(uuid())
+  guild     String   @map("Guild")
+  perms     String   @map("Perms")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([guild])
   @@map("Antilink")
@@ -173,6 +177,7 @@ model ApiKey {
   name      String
   key       String   @unique
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   expiresAt DateTime
 
   user User @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
@@ -205,6 +210,7 @@ model Balance {
   id          String   @id @default(uuid())
   userId      String   @unique
   balance     Decimal  @default(100) @db.Decimal(18, 2)
+  createdAt   DateTime @default(now())
   lastUpdated DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -213,12 +219,13 @@ model Balance {
 }
 
 model Ban {
-  id       String   @id @default(uuid())
-  userId   String
-  username String
-  guildId  String
-  reason   String
-  bannedAt DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  username  String
+  guildId   String
+  reason    String
+  bannedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([guildId])
   @@map("Ban")
@@ -231,6 +238,7 @@ model BetaKey {
   isActive  Boolean  @default(true)
   userId    String?
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User? @relation("UserBetaKeys", fields: [userId], references: [id], onDelete: SetNull)
 
@@ -391,6 +399,7 @@ model Dislike {
   userId    String
   blogId    String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
@@ -406,6 +415,7 @@ model Favorite {
   type        FavoriteType
   itemId      String
   createdDate DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -435,6 +445,7 @@ model Feedback {
   guildId      String
   feedbackText String   @db.Text
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([guildId])
   @@map("Feedback")
@@ -448,6 +459,7 @@ model File {
   size       Int
   mimetype   String
   uploadedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@unique([path])
   @@map("File")
@@ -462,6 +474,7 @@ model Game {
   genre             String?
   releaseDate       DateTime?
   createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
   developer         String?
   platforms         Json      @default("[]")
   ratings           Json      @default("[]")
@@ -475,6 +488,7 @@ model Group {
   description String?
   members     Json     @default("[]")
   createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("Group")
 }
@@ -495,22 +509,25 @@ model Issue {
 }
 
 model JoinRole {
-  id       String @id @default(uuid())
-  guild    String @map("Guild")
-  roleId   String @map("RoleID")
-  roleName String @map("RoleName")
+  id        String   @id @default(uuid())
+  guild     String   @map("Guild")
+  roleId    String   @map("RoleID")
+  roleName  String   @map("RoleName")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@unique([guild, roleId])
   @@map("JoinRole")
 }
 
 model Kick {
-  id       String   @id @default(uuid())
-  userId   String
-  username String
-  guildId  String
-  reason   String
-  kickedAt DateTime @default(now())
+  id        String   @id @default(uuid())
+  userId    String
+  username  String
+  guildId   String
+  reason    String
+  kickedAt  DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([guildId])
   @@map("Kick")
@@ -521,6 +538,7 @@ model Like {
   userId    String
   blogId    String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
@@ -536,6 +554,8 @@ model Log {
   level          LogLevel @default(INFO)
   timestamp      DateTime @default(now())
   additionalData Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("Log")
 }
@@ -546,6 +566,8 @@ model Message {
   senderId  String
   content   String   @db.Text
   timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
 
@@ -561,6 +583,7 @@ model Mute {
   mutedAt   DateTime  @default(now())
   duration  Int
   unmutedAt DateTime?
+  updatedAt DateTime  @updatedAt
 
   @@index([guildId])
   @@map("Mute")
@@ -571,6 +594,7 @@ model Newsletter {
   email        String   @unique
   name         String?
   subscribedAt DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@map("Newsletter")
 }
@@ -583,6 +607,7 @@ model Order {
   status         OrderStatus @default(PENDING)
   trackingNumber String?
   createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
@@ -596,6 +621,8 @@ model Organization {
   description String?
   foundedDate DateTime @default(now())
   members     Json     @default("[]")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("Organization")
 }
@@ -608,6 +635,7 @@ model Payment {
   status        PaymentStatus @default(PENDING)
   transactionId String?
   createdDate   DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -622,14 +650,17 @@ model Platform {
   description String?
   releaseDate DateTime?
   createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("Platform")
 }
 
 model Prefix {
-  id      String @id @default(uuid())
-  guildId String @unique
-  prefix  String
+  id        String   @id @default(uuid())
+  guildId   String   @unique
+  prefix    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("Prefix")
 }
@@ -680,6 +711,7 @@ model Report {
   reportedUserId String
   reason         String   @db.Text
   createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@index([guildId])
   @@map("Report")
@@ -721,6 +753,8 @@ model Roleplay {
   characterLevel   Int      @default(1)
   experiencePoints Int      @default(0)
   lastRoleplayDate DateTime @default(now())
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@map("Roleplay")
 }
@@ -731,6 +765,7 @@ model Share {
   blogId    String
   platform  SharePlatform
   createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
@@ -746,6 +781,7 @@ model Slowmode {
   duration  Int
   setBy     String
   setAt     DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@map("Slowmode")
 }
@@ -920,7 +956,7 @@ model User {
   profilePicture           String?
   fullname                 String
   username                 String    @unique
-  email                    String
+  email                    String    @unique
   password                 String?
   role                     UserRole  @default(USER)
   bio                      String    @default("") @db.Text
@@ -960,7 +996,7 @@ model User {
   payments          Payment[]
   tasksAssigned     Task[]             @relation("TaskAssignee")
 
-  @@index([email])
+  @@index([email], map: "idx_user_email")
   @@map("User")
 }
 
