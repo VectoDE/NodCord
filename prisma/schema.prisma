@@ -174,6 +174,46 @@ enum EnvironmentType {
   TEST        @map("test")
 }
 
+enum OAuthProvider {
+  GITHUB @map("github")
+  GOOGLE @map("google")
+}
+
+enum PhoneNumberType {
+  MOBILE   @map("mobile")
+  LANDLINE @map("landline")
+  BUSINESS @map("business")
+}
+
+enum SocialLinkType {
+  FACEBOOK  @map("facebook")
+  TWITTER   @map("twitter")
+  GOOGLE    @map("google")
+  LINKEDIN  @map("linkedin")
+  INSTAGRAM @map("instagram")
+  GITHUB    @map("github")
+  DISCORD   @map("discord")
+}
+
+enum UserPaymentMethodType {
+  CREDIT_CARD @map("creditCard")
+  DEBIT_CARD  @map("debitCard")
+  PAYPAL      @map("paypal")
+}
+
+enum ChatParticipantType {
+  USER         @map("user")
+  ORGANIZATION @map("organization")
+  GROUP        @map("group")
+  EXTERNAL     @map("external")
+}
+
+enum MembershipEventType {
+  ADDED   @map("added")
+  UPDATED @map("updated")
+  REMOVED @map("removed")
+}
+
 model Tenant {
   id                String   @id @default(uuid())
   slug              String   @unique
@@ -210,10 +250,26 @@ model Tenant {
   users          User[]
   versions       Version[]
   versionTags    VersionTag[]
+  metadataRecords TenantMetadata[]
 
   @@index([status], map: "idx_tenant_status")
   @@index([createdAt], map: "idx_tenant_created_at")
   @@map("Tenant")
+}
+
+model TenantMetadata {
+  id        String   @id @default(uuid())
+  tenantId  String
+  key       String
+  value     Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@index([tenantId], map: "idx_tenant_metadata_tenant")
+  @@unique([tenantId, key], map: "uq_tenant_metadata_key")
+  @@map("TenantMetadata")
 }
 
 model AuditLog {
@@ -307,13 +363,30 @@ model ApiKey {
   metadata  Json     @default("{}")
 
   user User @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
+  primaryOwner User? @relation("UserPrimaryApiKey")
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords ApiKeyMetadata[]
 
   @@index([userId])
   @@index([tenantId])
   @@index([createdAt])
   @@unique([userId, name], map: "uq_api_key_user_name")
   @@map("ApiKey")
+}
+
+model ApiKeyMetadata {
+  id       String   @id @default(uuid())
+  apiKeyId String
+  key      String
+  value    Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  apiKey ApiKey @relation(fields: [apiKeyId], references: [id], onDelete: Cascade)
+
+  @@index([apiKeyId], map: "idx_api_key_metadata_parent")
+  @@unique([apiKeyId, key], map: "uq_api_key_metadata_key")
+  @@map("ApiKeyMetadata")
 }
 
 model ApiSystem {
@@ -327,10 +400,26 @@ model ApiSystem {
   updatedAt DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords ApiSystemMetadata[]
 
   @@index([tenantId])
   @@index([createdAt])
   @@map("ApiSystem")
+}
+
+model ApiSystemMetadata {
+  id          String   @id @default(uuid())
+  apiSystemId String
+  key         String
+  value       Json     @default("null")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  apiSystem ApiSystem @relation(fields: [apiSystemId], references: [id], onDelete: Cascade)
+
+  @@index([apiSystemId], map: "idx_api_system_metadata_parent")
+  @@unique([apiSystemId, key], map: "uq_api_system_metadata_key")
+  @@map("ApiSystemMetadata")
 }
 
 model Autoresponder {
@@ -340,8 +429,25 @@ model Autoresponder {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
+  responseRecords AutoResponderEntry[]
+
   @@unique([guildId])
   @@map("AutoResponder")
+}
+
+model AutoResponderEntry {
+  id               String   @id @default(uuid())
+  autoresponderId  String
+  trigger          String
+  response         String   @db.Text
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  autoresponder Autoresponder @relation(fields: [autoresponderId], references: [id], onDelete: Cascade)
+
+  @@index([autoresponderId], map: "idx_autoresponder_entry_parent")
+  @@unique([autoresponderId, trigger], map: "uq_autoresponder_trigger")
+  @@map("AutoResponderEntry")
 }
 
 model Balance {
@@ -379,6 +485,7 @@ model BetaKey {
   updatedAt DateTime @updatedAt
 
   user User? @relation("UserBetaKeys", fields: [userId], references: [id], onDelete: SetNull)
+  primaryOwner User? @relation("UserPrimaryBetaKey")
 
   @@index([userId])
   @@map("BetaKey")
@@ -393,10 +500,26 @@ model BetaSystem {
   updatedAt DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords BetaSystemMetadata[]
 
   @@index([tenantId])
   @@index([createdAt])
   @@map("BetaSystem")
+}
+
+model BetaSystemMetadata {
+  id          String   @id @default(uuid())
+  betaSystemId String
+  key         String
+  value       Json     @default("null")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  betaSystem BetaSystem @relation(fields: [betaSystemId], references: [id], onDelete: Cascade)
+
+  @@index([betaSystemId], map: "idx_beta_system_metadata_parent")
+  @@unique([betaSystemId, key], map: "uq_beta_system_metadata_key")
+  @@map("BetaSystemMetadata")
 }
 
 model Blog {
@@ -422,6 +545,8 @@ model Blog {
   likes    Like[]
   dislikes Dislike[]
   shares   Share[]
+  tagRecords BlogTag[]
+  metadataRecords BlogMetadata[]
 
   @@index([projectId])
   @@index([tenantId])
@@ -429,6 +554,35 @@ model Blog {
   @@index([createdAt])
   @@fulltext([title, shortDescription, detailDescription], map: "ft_blog_search")
   @@map("Blog")
+}
+
+model BlogMetadata {
+  id      String   @id @default(uuid())
+  blogId  String
+  key     String
+  value   Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([blogId], map: "idx_blog_metadata_blog")
+  @@unique([blogId, key], map: "uq_blog_metadata_key")
+  @@map("BlogMetadata")
+}
+
+model BlogTag {
+  id      String @id @default(uuid())
+  blogId  String
+  value   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blog Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+
+  @@index([blogId], map: "idx_blog_tag_blog")
+  @@unique([blogId, value], map: "uq_blog_tag_value")
+  @@map("BlogTag")
 }
 
 model Bug {
@@ -467,9 +621,31 @@ model Chat {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  participantRecords ChatParticipant[]
   messages Message[]
 
   @@map("Chat")
+}
+
+model ChatParticipant {
+  id                 String               @id @default(uuid())
+  chatId             String
+  participantId      String
+  participantType    ChatParticipantType  @default(USER)
+  userId             String?
+  joinedAt           DateTime             @default(now())
+  leftAt             DateTime?
+  metadata           Json                 @default("{}")
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  user User? @relation("ChatParticipantUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([chatId], map: "idx_chat_participant_chat")
+  @@index([userId], map: "idx_chat_participant_user")
+  @@unique([chatId, participantId], map: "uq_chat_participant")
+  @@map("ChatParticipant")
 }
 
 model Comment {
@@ -505,12 +681,28 @@ model Company {
   updatedDate  DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords CompanyMetadata[]
 
   @@index([name], map: "idx_company_name")
   @@index([tenantId])
   @@index([isArchived])
   @@unique([tenantId, name], map: "uq_company_tenant_name")
   @@map("Company")
+}
+
+model CompanyMetadata {
+  id        String   @id @default(uuid())
+  companyId String
+  key       String
+  value     Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  company Company @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  @@index([companyId], map: "idx_company_metadata_company")
+  @@unique([companyId, key], map: "uq_company_metadata_key")
+  @@map("CompanyMetadata")
 }
 
 model Customer {
@@ -529,12 +721,28 @@ model Customer {
   orders         Order[]
   customerOrders CustomerOrder[]
   tenant         Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords CustomerMetadata[]
 
   @@index([tenantId])
   @@index([isArchived])
   @@index([createdAt])
   @@unique([tenantId, email], map: "uq_customer_tenant_email")
   @@map("Customer")
+}
+
+model CustomerMetadata {
+  id         String   @id @default(uuid())
+  customerId String
+  key        String
+  value      Json     @default("null")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId], map: "idx_customer_metadata_customer")
+  @@unique([customerId, key], map: "uq_customer_metadata_key")
+  @@map("CustomerMetadata")
 }
 
 model CustomerOrder {
@@ -557,6 +765,8 @@ model CustomerOrder {
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   returns  Return[]
+  itemRecords CustomerOrderItem[]
+  metadataRecords CustomerOrderMetadata[]
 
   @@index([customerId])
   @@index([tenantId])
@@ -565,6 +775,39 @@ model CustomerOrder {
   @@index([status])
   @@unique([tenantId, orderNumber], map: "uq_customer_order_tenant_number")
   @@map("CustomerOrder")
+}
+
+model CustomerOrderMetadata {
+  id            String   @id @default(uuid())
+  customerOrderId String
+  key           String
+  value         Json     @default("null")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  customerOrder CustomerOrder @relation(fields: [customerOrderId], references: [id], onDelete: Cascade)
+
+  @@index([customerOrderId], map: "idx_customer_order_metadata_parent")
+  @@unique([customerOrderId, key], map: "uq_customer_order_metadata_key")
+  @@map("CustomerOrderMetadata")
+}
+
+model CustomerOrderItem {
+  id         String   @id @default(uuid())
+  orderId    String
+  productId  String
+  quantity   Int      @default(1)
+  price      Decimal  @db.Decimal(18, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  order   CustomerOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([orderId], map: "idx_customer_order_item_order")
+  @@index([productId], map: "idx_customer_order_item_product")
+  @@unique([orderId, productId], map: "uq_customer_order_item")
+  @@map("CustomerOrderItem")
 }
 
 model DeveloperProgram {
@@ -606,11 +849,27 @@ model Favorite {
   updatedAt   DateTime     @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  metadataRecords FavoriteMetadata[]
 
   @@index([userId])
   @@index([createdDate])
   @@unique([userId, type, itemId], map: "uq_favorite_user_item")
   @@map("Favorite")
+}
+
+model FavoriteMetadata {
+  id         String   @id @default(uuid())
+  favoriteId String
+  key        String
+  value      Json     @default("null")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  favorite Favorite @relation(fields: [favoriteId], references: [id], onDelete: Cascade)
+
+  @@index([favoriteId], map: "idx_favorite_metadata_parent")
+  @@unique([favoriteId, key], map: "uq_favorite_metadata_key")
+  @@map("FavoriteMetadata")
 }
 
 model Feature {
@@ -645,11 +904,27 @@ model Feedback {
   updatedAt    DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords FeedbackMetadata[]
 
   @@index([guildId])
   @@index([tenantId])
   @@index([createdAt])
   @@map("Feedback")
+}
+
+model FeedbackMetadata {
+  id         String   @id @default(uuid())
+  feedbackId String
+  key        String
+  value      Json     @default("null")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  feedback Feedback @relation(fields: [feedbackId], references: [id], onDelete: Cascade)
+
+  @@index([feedbackId], map: "idx_feedback_metadata_feedback")
+  @@unique([feedbackId, key], map: "uq_feedback_metadata_key")
+  @@map("FeedbackMetadata")
 }
 
 model File {
@@ -680,7 +955,43 @@ model Game {
   platforms         Json      @default("[]")
   ratings           Json      @default("[]")
 
+  platformRecords GamePlatformLink[]
+  ratingRecords   GameRating[]
+
   @@map("Game")
+}
+
+model GamePlatformLink {
+  id        String   @id @default(uuid())
+  gameId    String
+  platformId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  game     Game     @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  platform Platform @relation(fields: [platformId], references: [id], onDelete: Cascade)
+
+  @@index([gameId], map: "idx_game_platform_game")
+  @@index([platformId], map: "idx_game_platform_platform")
+  @@unique([gameId, platformId], map: "uq_game_platform")
+  @@map("GamePlatformLink")
+}
+
+model GameRating {
+  id        String   @id @default(uuid())
+  gameId    String
+  userId    String
+  rating    Int      @db.TinyInt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  game Game @relation(fields: [gameId], references: [id], onDelete: Cascade)
+  user User @relation("GameRatingUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([gameId], map: "idx_game_rating_game")
+  @@index([userId], map: "idx_game_rating_user")
+  @@unique([gameId, userId], map: "uq_game_rating_user")
+  @@map("GameRating")
 }
 
 model Group {
@@ -691,7 +1002,46 @@ model Group {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  memberRecords GroupMember[]
+
   @@map("Group")
+}
+
+model GroupMember {
+  id        String   @id @default(uuid())
+  groupId   String
+  userId    String
+  role      String?  @default("member")
+  joinedAt  DateTime @default(now())
+  leftAt    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  group Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  historyRecords GroupMemberHistory[]
+
+  @@index([groupId], map: "idx_group_member_group")
+  @@index([userId], map: "idx_group_member_user")
+  @@unique([groupId, userId], map: "uq_group_member_user")
+  @@map("GroupMember")
+}
+
+model GroupMemberHistory {
+  id           String              @id @default(uuid())
+  groupMemberId String
+  eventType    MembershipEventType @default(ADDED)
+  actorId      String?
+  description  String?             @db.Text
+  occurredAt   DateTime            @default(now())
+  createdAt    DateTime            @default(now())
+
+  groupMember GroupMember @relation(fields: [groupMemberId], references: [id], onDelete: Cascade)
+  actor       User?       @relation("GroupMemberHistoryActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([groupMemberId], map: "idx_group_member_history_parent")
+  @@index([actorId], map: "idx_group_member_history_actor")
+  @@map("GroupMemberHistory")
 }
 
 model Issue {
@@ -819,6 +1169,8 @@ model Order {
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  orderItems OrderItem[]
+  metadataRecords OrderMetadata[]
 
   @@index([customerId])
   @@index([tenantId])
@@ -826,6 +1178,38 @@ model Order {
   @@index([isArchived])
   @@index([createdAt])
   @@map("Order")
+}
+
+model OrderMetadata {
+  id       String   @id @default(uuid())
+  orderId  String
+  key      String
+  value    Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId], map: "idx_order_metadata_order")
+  @@unique([orderId, key], map: "uq_order_metadata_key")
+  @@map("OrderMetadata")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([orderId], map: "idx_order_item_order")
+  @@index([productId], map: "idx_order_item_product")
+  @@unique([orderId, productId], map: "uq_order_item_product")
+  @@map("OrderItem")
 }
 
 model Organization {
@@ -842,12 +1226,67 @@ model Organization {
   updatedAt   DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  memberRecords OrganizationMember[]
+  metadataRecords OrganizationMetadata[]
 
   @@index([tenantId])
   @@index([isArchived])
   @@unique([tenantId, name], map: "uq_organization_tenant_name")
   @@index([createdAt])
   @@map("Organization")
+}
+
+model OrganizationMetadata {
+  id             String   @id @default(uuid())
+  organizationId String
+  key            String
+  value          Json     @default("null")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId], map: "idx_organization_metadata_parent")
+  @@unique([organizationId, key], map: "uq_organization_metadata_key")
+  @@map("OrganizationMetadata")
+}
+
+model OrganizationMember {
+  id           String   @id @default(uuid())
+  organizationId String
+  userId       String
+  role         String?  @default("member")
+  joinedAt     DateTime @default(now())
+  leftAt       DateTime?
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  historyRecords OrganizationMemberHistory[]
+
+  @@index([organizationId], map: "idx_org_member_org")
+  @@index([userId], map: "idx_org_member_user")
+  @@unique([organizationId, userId], map: "uq_org_member_user")
+  @@map("OrganizationMember")
+}
+
+model OrganizationMemberHistory {
+  id                String              @id @default(uuid())
+  organizationMemberId String
+  eventType         MembershipEventType @default(ADDED)
+  actorId           String?
+  description       String?             @db.Text
+  occurredAt        DateTime            @default(now())
+  createdAt         DateTime            @default(now())
+
+  organizationMember OrganizationMember @relation(fields: [organizationMemberId], references: [id], onDelete: Cascade)
+  actor              User?              @relation("OrganizationMemberHistoryActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([organizationMemberId], map: "idx_org_member_history_parent")
+  @@index([actorId], map: "idx_org_member_history_actor")
+  @@map("OrganizationMemberHistory")
 }
 
 model Payment {
@@ -867,6 +1306,7 @@ model Payment {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  metadataRecords PaymentMetadata[]
 
   @@index([userId])
   @@index([tenantId])
@@ -875,6 +1315,21 @@ model Payment {
   @@index([createdDate])
   @@unique([tenantId, transactionId], map: "uq_payment_tenant_transaction")
   @@map("Payment")
+}
+
+model PaymentMetadata {
+  id        String   @id @default(uuid())
+  paymentId String
+  key       String
+  value     Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payment Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@index([paymentId], map: "idx_payment_metadata_payment")
+  @@unique([paymentId, key], map: "uq_payment_metadata_key")
+  @@map("PaymentMetadata")
 }
 
 model Platform {
@@ -951,6 +1406,9 @@ model Project {
   issues   Issue[]
   stories  Story[]
   tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  memberRecords ProjectMember[]
+  tagRecords    ProjectTag[]
+  metadataRecords ProjectMetadata[]
 
   @@index([status])
   @@index([tenantId])
@@ -958,6 +1416,74 @@ model Project {
   @@index([createdDate])
   @@unique([tenantId, title], map: "uq_project_tenant_title")
   @@map("Project")
+}
+
+model ProjectMetadata {
+  id        String   @id @default(uuid())
+  projectId String
+  key       String
+  value     Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], map: "idx_project_metadata_project")
+  @@unique([projectId, key], map: "uq_project_metadata_key")
+  @@map("ProjectMetadata")
+}
+
+model ProjectMember {
+  id         String   @id @default(uuid())
+  projectId  String
+  userId     String
+  role       String?  @default("contributor")
+  joinedAt   DateTime @default(now())
+  leftAt     DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  historyRecords ProjectMemberHistory[]
+
+  @@index([projectId], map: "idx_project_member_project")
+  @@index([userId], map: "idx_project_member_user")
+  @@unique([projectId, userId], map: "uq_project_member_user")
+  @@map("ProjectMember")
+}
+
+model ProjectMemberHistory {
+  id            String              @id @default(uuid())
+  projectMemberId String
+  eventType     MembershipEventType @default(ADDED)
+  actorId       String?
+  description   String?             @db.Text
+  occurredAt    DateTime            @default(now())
+  createdAt     DateTime            @default(now())
+
+  projectMember ProjectMember @relation(fields: [projectMemberId], references: [id], onDelete: Cascade)
+  actor         User?         @relation("ProjectMemberHistoryActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([projectMemberId], map: "idx_project_member_history_parent")
+  @@index([actorId], map: "idx_project_member_history_actor")
+  @@map("ProjectMemberHistory")
+}
+
+model ProjectTag {
+  id        String @id @default(uuid())
+  projectId String
+  tagId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  tag     Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], map: "idx_project_tag_project")
+  @@index([tagId], map: "idx_project_tag_tag")
+  @@unique([projectId, tagId], map: "uq_project_tag_tag")
+  @@map("ProjectTag")
 }
 
 model Report {
@@ -986,11 +1512,29 @@ model Return {
   updatedAt    DateTime     @updatedAt
 
   order CustomerOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  itemRecords ReturnItem[]
 
   @@index([orderId])
   @@index([status])
   @@index([createdAt])
   @@map("Return")
+}
+
+model ReturnItem {
+  id        String   @id @default(uuid())
+  returnId  String
+  productId String
+  quantity  Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  returnRecord Return        @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  product      Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([returnId], map: "idx_return_item_return")
+  @@index([productId], map: "idx_return_item_product")
+  @@unique([returnId, productId], map: "uq_return_item_product")
+  @@map("ReturnItem")
 }
 
 model Role {
@@ -1142,6 +1686,8 @@ model Team {
   owner User? @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: SetNull)
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   tasks  Task[]
+  memberRecords TeamMember[]
+  metadataRecords TeamMetadata[]
 
   @@index([tenantId])
   @@index([ownerId])
@@ -1149,6 +1695,58 @@ model Team {
   @@index([createdDate])
   @@unique([tenantId, name], map: "uq_team_tenant_name")
   @@map("Team")
+}
+
+model TeamMetadata {
+  id      String   @id @default(uuid())
+  teamId  String
+  key     String
+  value   Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId], map: "idx_team_metadata_team")
+  @@unique([teamId, key], map: "uq_team_metadata_key")
+  @@map("TeamMetadata")
+}
+
+model TeamMember {
+  id        String   @id @default(uuid())
+  teamId    String
+  userId    String
+  role      String?  @default("member")
+  joinedAt  DateTime @default(now())
+  leftAt    DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  historyRecords TeamMemberHistory[]
+
+  @@index([teamId], map: "idx_team_member_team")
+  @@index([userId], map: "idx_team_member_user")
+  @@unique([teamId, userId], map: "uq_team_member_user")
+  @@map("TeamMember")
+}
+
+model TeamMemberHistory {
+  id           String              @id @default(uuid())
+  teamMemberId String
+  eventType    MembershipEventType @default(ADDED)
+  actorId      String?
+  description  String?             @db.Text
+  occurredAt   DateTime            @default(now())
+  createdAt    DateTime            @default(now())
+
+  teamMember TeamMember @relation(fields: [teamMemberId], references: [id], onDelete: Cascade)
+  actor      User?      @relation("TeamMemberHistoryActor", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([teamMemberId], map: "idx_team_member_history_parent")
+  @@index([actorId], map: "idx_team_member_history_actor")
+  @@map("TeamMemberHistory")
 }
 
 model Ticket {
@@ -1173,6 +1771,8 @@ model Ticket {
   assignedTo User?           @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
   tenant     Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   responses  TicketResponse[]
+  messageRecords TicketMessage[]
+  metadataRecords TicketMetadata[]
 
   @@index([guildId])
   @@index([userId])
@@ -1186,6 +1786,38 @@ model Ticket {
   @@map("Ticket")
 }
 
+model TicketMetadata {
+  id       String   @id @default(uuid())
+  ticketId String
+  key      String
+  value    Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId], map: "idx_ticket_metadata_ticket")
+  @@unique([ticketId, key], map: "uq_ticket_metadata_key")
+  @@map("TicketMetadata")
+}
+
+model TicketMessage {
+  id         String   @id @default(uuid())
+  ticketId   String
+  messageId  String   @unique
+  authorId   String
+  content    String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author User?  @relation("TicketMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([ticketId], map: "idx_ticket_message_ticket")
+  @@index([authorId], map: "idx_ticket_message_author")
+  @@map("TicketMessage")
+}
+
 model TicketResponse {
   id        String   @id @default(uuid())
   ticketId  String
@@ -1196,11 +1828,27 @@ model TicketResponse {
   updatedAt DateTime @updatedAt
 
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  metadataRecords TicketResponseMetadata[]
 
   @@index([ticketId])
   @@index([userId])
   @@index([createdAt])
   @@map("TicketResponse")
+}
+
+model TicketResponseMetadata {
+  id              String   @id @default(uuid())
+  ticketResponseId String
+  key             String
+  value           Json     @default("null")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  ticketResponse TicketResponse @relation(fields: [ticketResponseId], references: [id], onDelete: Cascade)
+
+  @@index([ticketResponseId], map: "idx_ticket_response_metadata_parent")
+  @@unique([ticketResponseId, key], map: "uq_ticket_response_metadata_key")
+  @@map("TicketResponseMetadata")
 }
 
 model Timeout {
@@ -1244,8 +1892,24 @@ model TriviaQuestion {
   updatedAt     DateTime @updatedAt
 
   answers TriviaAnswer[]
+  optionRecords TriviaQuestionOption[]
 
   @@map("TriviaQuestion")
+}
+
+model TriviaQuestionOption {
+  id          String   @id @default(uuid())
+  questionId  String
+  value       String
+  isCorrect   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  question TriviaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId], map: "idx_trivia_option_question")
+  @@unique([questionId, value], map: "uq_trivia_option_value")
+  @@map("TriviaQuestionOption")
 }
 
 model TriviaStats {
@@ -1269,11 +1933,6 @@ model User {
   password                 String?
   role                     UserRole  @default(USER)
   bio                      String    @default("") @db.Text
-  address                  Json      @default("{}")
-  phoneNumbers             Json      @default("{}")
-  paymentMethods           Json      @default("[]")
-  sessions                 Json      @default("[]")
-  socialLinks              Json      @default("{}")
   recentActivity           DateTime  @default(now())
   lastLoginAt              DateTime?
   inactiveSince            DateTime?
@@ -1283,7 +1942,6 @@ model User {
   isAuthenticated          Boolean   @default(false)
   accessToken              String?
   refreshToken             String?
-  oauthProviders           Json      @default("{}")
   apiKeyId                 String?   @map("apiKey")
   betaKeyId                String?   @map("betaKey")
   isBetaTester             Boolean   @default(false)
@@ -1293,14 +1951,36 @@ model User {
   passwordChangedAt        DateTime?
   loginAttempts            Int       @default(0)
   mfaEnabled               Boolean   @default(false)
-  posts                    Json      @default("[]")
-  projects                 Json      @default("[]")
-  friends                  Json      @default("[]")
   createdAt                DateTime  @default(now())
   updatedAt                DateTime  @updatedAt
 
+  addressRecord        UserAddress?
+  phoneNumberRecords   UserPhoneNumber[]
+  paymentMethodRecords UserPaymentMethod[]
+  sessionRecords       UserSession[]
+  socialLinkRecords    UserSocialLink[]
+  oauthProviderRecords UserOAuthProvider[]
+  postRecords          UserPost[]
+  portfolioProjects    UserPortfolioProject[]
+  followerRelations    UserFriend[]        @relation("UserFollowerRelations")
+  followingRelations   UserFriend[]        @relation("UserFollowingRelations")
+  organizationMemberships OrganizationMember[]
+  teamMemberships         TeamMember[]
+  groupMemberships        GroupMember[]
+  projectMemberships      ProjectMember[]
+  chatParticipantRecords  ChatParticipant[] @relation("ChatParticipantUser")
+  ticketMessages          TicketMessage[] @relation("TicketMessageAuthor")
+  gameRatings             GameRating[] @relation("GameRatingUser")
+  versionContributions    VersionDeveloper[] @relation("VersionDeveloperUser")
+  teamMemberHistoryEvents TeamMemberHistory[] @relation("TeamMemberHistoryActor")
+  projectMemberHistoryEvents ProjectMemberHistory[] @relation("ProjectMemberHistoryActor")
+  organizationMemberHistoryEvents OrganizationMemberHistory[] @relation("OrganizationMemberHistoryActor")
+  groupMemberHistoryEvents GroupMemberHistory[] @relation("GroupMemberHistoryActor")
+
   apiKeys           ApiKey[]           @relation("UserApiKeys")
   betaKeys          BetaKey[]          @relation("UserBetaKeys")
+  primaryApiKey     ApiKey?            @relation("UserPrimaryApiKey", fields: [apiKeyId], references: [id], onDelete: SetNull)
+  primaryBetaKey    BetaKey?           @relation("UserPrimaryBetaKey", fields: [betaKeyId], references: [id], onDelete: SetNull)
   balance           Balance?
   developerPrograms DeveloperProgram[]
   favorites         Favorite[]
@@ -1320,6 +2000,224 @@ model User {
   @@index([createdAt])
   @@index([lastLoginAt])
   @@map("User")
+}
+
+model UserAddress {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  street      String   @default("")
+  houseNumber String   @default("")
+  state       String   @default("")
+  postcode    String   @default("")
+  country     String   @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("UserAddress")
+}
+
+model UserPhoneNumber {
+  id        String           @id @default(uuid())
+  userId    String
+  type      PhoneNumberType
+  number    String           @default("")
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_user_phone_user")
+  @@unique([userId, type], map: "uq_user_phone_type")
+  @@map("UserPhoneNumber")
+}
+
+model UserPaymentMethod {
+  id        String                @id @default(uuid())
+  userId    String
+  method    UserPaymentMethodType
+  metadata  Json                  @default("{}")
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_user_payment_user")
+  @@unique([userId, method], map: "uq_user_payment_method")
+  @@map("UserPaymentMethod")
+}
+
+model UserSession {
+  id        String   @id @default(uuid())
+  userId    String
+  browser   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_user_session_user")
+  @@map("UserSession")
+}
+
+model UserSocialLink {
+  id        String         @id @default(uuid())
+  userId    String
+  type      SocialLinkType
+  url       String         @default("")
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_user_social_user")
+  @@unique([userId, type], map: "uq_user_social_type")
+  @@map("UserSocialLink")
+}
+
+model UserOAuthProvider {
+  id              String        @id @default(uuid())
+  userId          String
+  provider        OAuthProvider
+  providerUserId  String        @default("")
+  accessToken     String        @default("")
+  refreshToken    String        @default("")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId], map: "idx_user_oauth_user")
+  @@unique([userId, provider], map: "uq_user_oauth_provider")
+  @@map("UserOAuthProvider")
+}
+
+model UserPost {
+  id          String   @id @default(uuid())
+  userId      String
+  picture     String   @default("")
+  title       String
+  description String   @db.Text
+  author      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tags UserPostTag[]
+
+  @@index([userId], map: "idx_user_post_user")
+  @@index([createdAt], map: "idx_user_post_created")
+  @@map("UserPost")
+}
+
+model UserPostTag {
+  id      String   @id @default(uuid())
+  postId  String
+  value   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post UserPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId], map: "idx_user_post_tag_post")
+  @@unique([postId, value], map: "uq_user_post_tag_value")
+  @@map("UserPostTag")
+}
+
+model UserPortfolioProject {
+  id                 String   @id @default(uuid())
+  userId             String
+  picture            String   @default("")
+  title              String
+  shortDescription   String
+  description        String   @db.Text
+  developer          String
+  publishedAt        DateTime @default(now())
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  features UserPortfolioProjectFeature[]
+  services UserPortfolioProjectService[]
+  supportedPlatforms UserPortfolioProjectPlatform[]
+  versions UserPortfolioProjectVersion[]
+
+  @@index([userId], map: "idx_user_portfolio_user")
+  @@map("UserPortfolioProject")
+}
+
+model UserPortfolioProjectFeature {
+  id         String   @id @default(uuid())
+  projectId  String
+  value      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project UserPortfolioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], map: "idx_user_portfolio_feature_project")
+  @@unique([projectId, value], map: "uq_user_portfolio_feature")
+  @@map("UserPortfolioProjectFeature")
+}
+
+model UserPortfolioProjectService {
+  id         String   @id @default(uuid())
+  projectId  String
+  value      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project UserPortfolioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], map: "idx_user_portfolio_service_project")
+  @@unique([projectId, value], map: "uq_user_portfolio_service")
+  @@map("UserPortfolioProjectService")
+}
+
+model UserPortfolioProjectPlatform {
+  id         String   @id @default(uuid())
+  projectId  String
+  value      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project UserPortfolioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], map: "idx_user_portfolio_platform_project")
+  @@unique([projectId, value], map: "uq_user_portfolio_platform")
+  @@map("UserPortfolioProjectPlatform")
+}
+
+model UserPortfolioProjectVersion {
+  id         String   @id @default(uuid())
+  projectId  String
+  value      String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  project UserPortfolioProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId], map: "idx_user_portfolio_version_project")
+  @@unique([projectId, value], map: "uq_user_portfolio_version")
+  @@map("UserPortfolioProjectVersion")
+}
+
+model UserFriend {
+  id          String   @id @default(uuid())
+  followerId  String
+  followedId  String
+  followedAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  follower User @relation("UserFollowerRelations", fields: [followerId], references: [id], onDelete: Cascade)
+  followed User @relation("UserFollowingRelations", fields: [followedId], references: [id], onDelete: Cascade)
+
+  @@index([followerId], map: "idx_user_friend_follower")
+  @@index([followedId], map: "idx_user_friend_followed")
+  @@unique([followerId, followedId], map: "uq_user_friend_pair")
+  @@map("UserFriend")
 }
 
 model Version {
@@ -1346,6 +2244,12 @@ model Version {
 
   versionTag VersionTag @relation(fields: [versionTagId], references: [id], onDelete: Cascade)
   tenant     Tenant?    @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  featureRecords   VersionFeature[]
+  additionRecords  VersionAddition[]
+  fixRecords       VersionFix[]
+  bugRecords       VersionBugRecord[]
+  developerRecords VersionDeveloper[]
+  metadataRecords  VersionMetadata[]
 
   @@index([versionTagId])
   @@index([tenantId])
@@ -1354,6 +2258,94 @@ model Version {
   @@index([isArchived])
   @@unique([tenantId, title, versionTagId], map: "uq_version_tenant_title_tag")
   @@map("Version")
+}
+
+model VersionFeature {
+  id        String   @id @default(uuid())
+  versionId String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId], map: "idx_version_feature_version")
+  @@unique([versionId, value], map: "uq_version_feature_value")
+  @@map("VersionFeature")
+}
+
+model VersionAddition {
+  id        String   @id @default(uuid())
+  versionId String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId], map: "idx_version_addition_version")
+  @@unique([versionId, value], map: "uq_version_addition_value")
+  @@map("VersionAddition")
+}
+
+model VersionFix {
+  id        String   @id @default(uuid())
+  versionId String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId], map: "idx_version_fix_version")
+  @@unique([versionId, value], map: "uq_version_fix_value")
+  @@map("VersionFix")
+}
+
+model VersionBugRecord {
+  id        String   @id @default(uuid())
+  versionId String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId], map: "idx_version_bug_version")
+  @@unique([versionId, value], map: "uq_version_bug_value")
+  @@map("VersionBugRecord")
+}
+
+model VersionDeveloper {
+  id        String   @id @default(uuid())
+  versionId String
+  userId    String?
+  name      String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+  user    User?    @relation("VersionDeveloperUser", fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([versionId], map: "idx_version_developer_version")
+  @@index([userId], map: "idx_version_developer_user")
+  @@unique([versionId, name], map: "uq_version_developer_name")
+  @@map("VersionDeveloper")
+}
+
+model VersionMetadata {
+  id        String   @id @default(uuid())
+  versionId String
+  key       String
+  value     Json     @default("null")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  version Version @relation(fields: [versionId], references: [id], onDelete: Cascade)
+
+  @@index([versionId], map: "idx_version_metadata_version")
+  @@unique([versionId, key], map: "uq_version_metadata_key")
+  @@map("VersionMetadata")
 }
 
 model VersionTag {
@@ -1368,11 +2360,27 @@ model VersionTag {
 
   tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   versions Version[]
+  metadataRecords VersionTagMetadata[]
 
   @@index([tenantId])
   @@index([isArchived])
   @@unique([tenantId, title], map: "uq_version_tag_tenant_title")
   @@map("VersionTag")
+}
+
+model VersionTagMetadata {
+  id          String   @id @default(uuid())
+  versionTagId String
+  key         String
+  value       Json     @default("null")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  versionTag VersionTag @relation(fields: [versionTagId], references: [id], onDelete: Cascade)
+
+  @@index([versionTagId], map: "idx_version_tag_metadata_parent")
+  @@unique([versionTagId, key], map: "uq_version_tag_metadata_key")
+  @@map("VersionTagMetadata")
 }
 
 model Warn {
