@@ -1,55 +1,55 @@
 # NodCord Roadmap
 
-## Übersicht
+## Overview
 
-Diese Roadmap skizziert geplante Features, Verbesserungen und Meilensteine für NodCord. Der Fokus liegt auf der Migration zu einer konsistenten TypeScript-Codebasis mit Prisma/MySQL sowie auf stabilen Bot- und API-Features.
+This roadmap outlines planned features, improvements, and milestones for NodCord. The main focus is migrating to a consistent TypeScript codebase with Prisma/MySQL and delivering stable bot and API features.
 
-## Aktueller Status
+## Current Status
 
-- **Version**: 2.0.0-alpha
-- **Schwerpunkt**: TypeScript/Prisma Infrastruktur, Kernmodule, Dokumentation
+- **Version:** 2.0.0-alpha
+- **Focus:** TypeScript/Prisma infrastructure, core modules, documentation
 
-## Meilensteine
+## Milestones
 
-### 2.0.0-alpha – Fundament schaffen
+### 2.0.0-alpha – Establish the foundation
 
-- [x] TypeScript-Build-Setup (`tsconfig.json`, `npm run build`, `npm run dev`)
-- [x] Prisma Schema initialisieren (`User`, `Role`, `Project`, `Ticket`)
-- [x] Dokumentation für Installation, Architektur, Contributing aktualisieren
-- [x] Dev-Server auf ts-node-dev/nodemon abstimmen
-- [ ] Erste Prisma-Migrationen und Seeds bereitstellen
-- [ ] Kernmodule (Auth, User, Tickets) auf Prisma-Services migrieren
+- [x] TypeScript build setup (`tsconfig.json`, `npm run build`, `npm run dev`)
+- [x] Initialize the Prisma schema (`User`, `Role`, `Project`, `Ticket`)
+- [x] Refresh documentation for installation, architecture, and contributing
+- [x] Align the dev server with ts-node-dev/nodemon
+- [ ] Provide initial Prisma migrations and seeds
+- [ ] Migrate core modules (auth, user, tickets) to Prisma services
 
-### 2.0.0-beta – Feature-Parität herstellen
+### 2.0.0-beta – Achieve feature parity
 
-- [ ] Sämtliche API-Module auf Prisma portieren (Commerce, Blog, Integrationen, Analytics)
-- [ ] Bot-Kommandos auf gemeinsame Services und Prisma-Datenzugriff umstellen
-- [ ] Integrationstests und E2E-Workflows mit Test-Datenbank etablieren
-- [ ] CI/CD-Pipeline mit Build, Test, Prisma Migrate und Sicherheitschecks veröffentlichen
+- [ ] Port all API modules to Prisma (commerce, blog, integrations, analytics)
+- [ ] Switch bot commands to shared services and Prisma data access
+- [ ] Establish integration tests and E2E workflows with a test database
+- [ ] Publish a CI/CD pipeline covering build, test, Prisma migrate, and security checks
 
-### 2.0.0 – Stable Release
+### 2.0.0 – Stable release
 
-- [ ] Prisma-Schema finalisieren, Migrationen einfrieren
-- [ ] Upgrade Guide und Migrationshinweise dokumentieren
-- [ ] Monitoring/Observability (Logging, Health Checks, Alerts) ausrollen
-- [ ] Release Notes und Changelog veröffentlichen
+- [ ] Finalize the Prisma schema and freeze migrations
+- [ ] Document upgrade guides and migration instructions
+- [ ] Roll out monitoring/observability (logging, health checks, alerts)
+- [ ] Publish release notes and the changelog
 
-## Zukünftige Pläne
+## Future Plans
 
-- [ ] Mehrmandantenfähigkeit (Organisationen/Teams mit isolierten Datenräumen)
-- [ ] Erweiterte Analytics-Module (Dashboards, Event-Tracking)
-- [ ] Erweiterbare Bot-Plugin-Schnittstellen
-- [ ] Infrastruktur-Automatisierung (Docker Compose, Helm Charts)
+- [ ] Multi-tenancy (organizations/teams with isolated workspaces)
+- [ ] Extended analytics modules (dashboards, event tracking)
+- [ ] Extensible bot plugin interfaces
+- [ ] Infrastructure automation (Docker Compose, Helm charts)
 
-## Mitwirken
+## Contribute
 
-Wir begrüßen Beiträge aus der Community! Wenn du Ideen für Features, Verbesserungen oder Fehlerbehebungen hast, eröffne bitte ein Issue oder reiche einen Pull Request ein. Sieh dir unsere [Contributing-Richtlinien](../process/contributing.md) an, bevor du beginnst.
+We welcome community contributions! If you have ideas for features, improvements, or bug fixes, please open an issue or submit a pull request. Review our [contributing guidelines](../process/contributing.md) before you get started.
 
-## Kontakt
+## Contact
 
-Für Fragen oder Vorschläge kontaktiere bitte den Projektbetreuer:
+If you have questions or suggestions, reach out to the project maintainer:
 
-- **E-Mail**: [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de)
-- **Discord**: `vecto.`
+- **Email:** [tim.hauke@hauknetz.de](mailto:tim.hauke@hauknetz.de)
+- **Discord:** `vecto.`
 
-Vielen Dank für dein Interesse an NodCord! Lass uns gemeinsam etwas Großartiges aufbauen.
+Thank you for your interest in NodCord! Let’s build something great together.

@@ -1,61 +1,61 @@
-# NodCord 2.0.0 – Detailplan zur vollständigen Migration
+# NodCord 2.0.0 – Detailed Plan for the Full Migration
 
-Dieser Plan ergänzt den high-level Fahrplan in [`todo.md`](./todo.md) und beschreibt konkrete Schritte für eine produktionsreife TypeScript-/Prisma-/MySQL-Version. Jede Aufgabe ist so formuliert, dass sie nachvollziehbar getestet werden kann.
+This plan complements the high-level roadmap in [`todo.md`](./todo.md) and describes concrete steps toward a production-ready TypeScript/Prisma/MySQL release. Each task is formulated so it can be verified through testing.
 
-## 1. Tooling & Infrastruktur
+## 1. Tooling & Infrastructure
 
-- [ ] **TypeScript Tooling vereinheitlichen**: `tsconfig.json` finalisieren, gemeinsame ESLint-/Prettier-Konfiguration ergänzen, Pfad-Aliasse für `src/api`, `src/bot`, `src/client` festlegen.
-- [ ] **Dev-Server standardisieren**: `npm run dev` (ts-node-dev) als Single-Entry-Point beibehalten, Hot-Reload für API und Bot sicherstellen.
-- [ ] **Prisma Projektstruktur**: `prisma/` Ordner mit `schema.prisma`, Migrationen und optionalen Seeds pflegen; Skripte `npm run prisma:*` nutzen.
-- [ ] **Environment Management**: Zentrale `.env`-Baseline im Secrets-Management pflegen (MySQL, Redis, OAuth, Bot), Secrets-Handling dokumentieren, dotenv-Ladepunkte prüfen.
-- [ ] **CI/CD-Erweiterung**: Pipeline definieren (Build, Test, Prisma Migrate, Prisma Generate). GitHub Actions vorbereiten.
+- [ ] **Unify TypeScript tooling:** Finalize `tsconfig.json`, add shared ESLint/Prettier configuration, define path aliases for `src/api`, `src/bot`, `src/client`.
+- [ ] **Standardize the dev server:** Keep `npm run dev` (ts-node-dev) as the single entry point and ensure hot reload works for both API and bot.
+- [ ] **Prisma project structure:** Maintain the `prisma/` directory with `schema.prisma`, migrations, and optional seeds; rely on the `npm run prisma:*` scripts.
+- [ ] **Environment management:** Maintain a central `.env` baseline in secrets management (MySQL, Redis, OAuth, bot), document secret handling, review dotenv entry points.
+- [ ] **CI/CD expansion:** Define the pipeline (build, test, Prisma migrate, Prisma generate). Prepare GitHub Actions.
 
-## 2. Datenmodell & Persistenz
+## 2. Data Model & Persistence
 
-- [ ] **Prisma-Schema ausbauen**: Alle bisherigen Mongoose-Modelle (`src/models/*.ts`) nach `prisma/schema.prisma` übersetzen, inklusive Relationen, Enums und Default-Werten.
-- [ ] **Migrationsstrategie**: Für jedes Modul (Auth, Commerce, Tickets, Developer Program, Analytics, Integrationen) eigene Migrationen erstellen. Historische Datenmigration (Mongo → MySQL) planen.
-- [ ] **Prisma Client Integration**: Zentrale Instanz (`src/database/prismaClient.ts`) erstellen, in API/Bot Services injizieren, Lifecycle-Hooks (Shutdown, Error Handling) ergänzen.
-- [ ] **Repository Layer**: Abstraktionen für wiederkehrende Queries bauen (z. B. `UserRepository`, `ProjectRepository`) und gemeinsam nutzen.
-- [ ] **Seeds & Testdaten**: `prisma/seed.ts` etablieren, modulare Seeds in `src/seeds/` an Prisma anpassen, automatisierte Sample-Daten für E2E-Tests bereitstellen.
+- [ ] **Extend the Prisma schema:** Translate all remaining Mongoose models (`src/models/*.ts`) into `prisma/schema.prisma`, including relations, enums, and default values.
+- [ ] **Migration strategy:** Create dedicated migrations for each module (auth, commerce, tickets, developer program, analytics, integrations). Plan the historical data migration (Mongo → MySQL).
+- [ ] **Prisma Client integration:** Create a central instance (`src/database/prismaClient.ts`), inject it into API/bot services, and add lifecycle hooks (shutdown, error handling).
+- [ ] **Repository layer:** Build abstractions for recurring queries (e.g. `UserRepository`, `ProjectRepository`) and use them consistently.
+- [ ] **Seeds & test data:** Establish `prisma/seed.ts`, adapt modular seeds in `src/seeds/` to Prisma, and provide automated sample data for E2E tests.
 
 ## 3. API & Services
 
-### 3.1 Infrastruktur
+### 3.1 Infrastructure
 
-- [ ] `src/api/app.ts` und `src/server.ts` auf Prisma vorbereiten: Datenbank-Healthchecks, Graceful Shutdown, gemeinsame Logger.
-- [ ] Middleware-Schicht (`src/api/middlewares`) auf TypeScript-Definitionen aktualisieren, Request/User-Kontext sauber typisieren.
-- [ ] Helpers (`src/api/helpers`) für Responses, JWT, Uploads etc. auf Prisma-basierte Services umstellen.
-- [ ] Utility-Funktionen (`src/api/utils`) mit Typed Configs versehen, Dateiupload-/Auth-Flows modernisieren.
+- [ ] Prepare `src/api/app.ts` and `src/server.ts` for Prisma: database health checks, graceful shutdown, shared logger.
+- [ ] Update the middleware layer (`src/api/middlewares`) to modern TypeScript definitions and ensure the request/user context is well typed.
+- [ ] Migrate helpers (`src/api/helpers`) for responses, JWT, uploads, etc. to Prisma-backed services.
+- [ ] Provide typed configs for utility functions (`src/api/utils`) and modernize file-upload/auth flows.
 
-### 3.2 Feature-Module (Auswahl)
+### 3.2 Feature Modules (selection)
 
-Für jedes Modul gilt: Routes → Controller → Services → Prisma-Repositories → Tests.
+For each module: routes → controller → services → Prisma repositories → tests.
 
-- [ ] **Auth & User Management**: Passport-/Session-Integration auf Prisma-Usermodelle anpassen, Password-Reset & OAuth berücksichtigen.
-- [ ] **Role & Permission System**: Prisma-Relationen für Rollen/Rechte implementieren, Guard-Middlewares aktualisieren.
-- [ ] **Commerce (Products, Orders, Returns)**: Zahlungs- und Order-Logik über Prisma-Transaktionen abbilden.
-- [ ] **Content (Blog, Comments, Tags)**: Prisma-Relationen für Posts, Kommentare, Tags modellieren, Caching-Strategien prüfen.
-- [ ] **Support & Tickets**: Ticket-System an Prisma-Tabellen anbinden, Bot-Befehle synchronisieren.
-- [ ] **Integrationen (GitHub, Steam, Proxmox, CloudNet, Faceit, Teamspeak)**: Credential-Speicherung über Prisma, Secrets verschlüsseln.
-- [ ] **Analytics & Logging**: Prisma-Tabellen für Audit-Logs, Statistiken, Event-Tracking aufbauen.
+- [ ] **Auth & user management:** Adjust Passport/session integration to Prisma user models; include password reset & OAuth flows.
+- [ ] **Role & permission system:** Implement Prisma relations for roles/permissions and refresh guard middleware.
+- [ ] **Commerce (products, orders, returns):** Model payments and order logic with Prisma transactions.
+- [ ] **Content (blog, comments, tags):** Model posts, comments, and tags with Prisma relations; assess caching strategies.
+- [ ] **Support & tickets:** Connect the ticket system to Prisma tables and align bot commands.
+- [ ] **Integrations (GitHub, Steam, Proxmox, CloudNet, Faceit, Teamspeak):** Store credentials through Prisma and encrypt secrets.
+- [ ] **Analytics & logging:** Create Prisma tables for audit logs, statistics, and event tracking.
 
-## 4. Discord-Bot & Client
+## 4. Discord Bot & Client
 
-- [ ] Bot-Kommandos (`src/bot/commands`, `src/bot/events`) vollständig auf TypeScript portieren, gemeinsame Services nutzen.
-- [ ] Datenzugriffe des Bots über Prisma-Services abstrahieren (z. B. Ticket-Erstellung, User-Informationen).
-- [ ] Client/Frontend-Module (falls aktiv) auf API-Änderungen abstimmen, Shared Types verwenden.
+- [ ] Port bot commands (`src/bot/commands`, `src/bot/events`) fully to TypeScript and reuse shared services.
+- [ ] Abstract bot data access through Prisma services (e.g. ticket creation, user information).
+- [ ] Align client/frontend modules (if active) with API changes and reuse shared types.
 
-## 5. Qualitätssicherung
+## 5. Quality Assurance
 
-- [ ] **Testing**: Jest-Konfiguration aktualisieren, Integrationstests für Prisma (mit Test-DB) aufsetzen, Bot-Kommandos mit Mocks testen.
-- [ ] **Linting & Formatting**: Prettier/ESLint in CI verankern, Husky/Commit Hooks optional vorbereiten.
-- [ ] **Dokumentation**: Nach jeder größeren Änderung README, `docs/reference/`, `docs/guides/` und `docs/overview/` aktualisieren.
-- [ ] **Release Notes & Change Tracking**: `docs/process/changelog.md` pflegen, Breaking Changes klar kommunizieren.
+- [ ] **Testing:** Refresh the Jest configuration, add integration tests for Prisma (with a test database), test bot commands with mocks.
+- [ ] **Linting & formatting:** Anchor Prettier/ESLint in CI and optionally prepare Husky/commit hooks.
+- [ ] **Documentation:** After major changes update the README, `docs/reference/`, `docs/guides/`, and `docs/overview/`.
+- [ ] **Release notes & change tracking:** Maintain `docs/process/changelog.md` and communicate breaking changes clearly.
 
-## 6. Kommunikation & Organisation
+## 6. Communication & Organization
 
-- [ ] Contribution-Flow laut [`CONTRIBUTING.md`](../../CONTRIBUTING.md) anwenden, Reviews mit Fokus auf TypeScript-Typisierung und Prisma-Migration durchführen.
-- [ ] Community-Feedback über Discord/GitHub sammeln und priorisieren.
-- [ ] Security-Audits für neue Datenmodelle durchführen (siehe [`SECURITY.md`](../../SECURITY.md)).
+- [ ] Follow the contribution flow defined in [`CONTRIBUTING.md`](../../CONTRIBUTING.md); focus reviews on TypeScript typing and Prisma migrations.
+- [ ] Collect and prioritize community feedback via Discord/GitHub.
+- [ ] Run security reviews for new data models (see [`SECURITY.md`](../../SECURITY.md)).
 
-Mit diesen Schritten schaffen wir eine stabile Grundlage für NodCord 2.0.0 auf TypeScript und Prisma. Jede erledigte Checkbox sollte mit PR-Referenzen und Tests dokumentiert werden.
+These steps provide a solid foundation for NodCord 2.0.0 on TypeScript and Prisma. Each completed checkbox should be documented with PR references and tests.
