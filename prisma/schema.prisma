@@ -148,6 +148,129 @@ enum UserRole {
   MODERATOR @map("moderator")
 }
 
+enum TenantStatus {
+  ONBOARDING @map("onboarding")
+  ACTIVE     @map("active")
+  SUSPENDED  @map("suspended")
+  CANCELLED  @map("cancelled")
+}
+
+enum AuditAction {
+  CREATED             @map("created")
+  UPDATED             @map("updated")
+  DELETED             @map("deleted")
+  ACCESSED            @map("accessed")
+  LOGIN               @map("login")
+  LOGOUT              @map("logout")
+  PERMISSION_CHANGED  @map("permission_changed")
+  SECURITY_EVENT      @map("security_event")
+  SYSTEM_CONFIGURATION @map("system_configuration")
+}
+
+enum EnvironmentType {
+  PRODUCTION  @map("production")
+  STAGING     @map("staging")
+  DEVELOPMENT @map("development")
+  TEST        @map("test")
+}
+
+model Tenant {
+  id                String   @id @default(uuid())
+  slug              String   @unique
+  name              String
+  status            TenantStatus @default(ONBOARDING)
+  plan              String   @default("free")
+  metadata          Json     @default("{}")
+  timezone          String   @default("UTC")
+  billingEmail      String?
+  technicalContact  String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  deletedAt         DateTime?
+
+  apiKeys        ApiKey[]
+  apiSystems     ApiSystem[]
+  auditLogs      AuditLog[]
+  betaSystems    BetaSystem[]
+  blogs          Blog[]
+  companies      Company[]
+  customerOrders CustomerOrder[]
+  customers      Customer[]
+  dataRetentionPolicies DataRetentionPolicy[]
+  feedback       Feedback[]
+  orders         Order[]
+  organizations  Organization[]
+  payments       Payment[]
+  products       Product[]
+  projects       Project[]
+  systemSettings SystemSetting[]
+  tasks          Task[]
+  teams          Team[]
+  tickets        Ticket[]
+  users          User[]
+  versions       Version[]
+  versionTags    VersionTag[]
+
+  @@index([status], map: "idx_tenant_status")
+  @@index([createdAt], map: "idx_tenant_created_at")
+  @@map("Tenant")
+}
+
+model AuditLog {
+  id         String      @id @default(uuid())
+  tenantId   String
+  actorId    String?
+  entityName String
+  entityId   String
+  action     AuditAction
+  changes    Json        @default("{}")
+  ipAddress  String?
+  userAgent  String?
+  context    Json        @default("{}")
+  createdAt  DateTime    @default(now())
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  actor  User?  @relation("UserAuditLogs", fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, entityName, entityId], map: "idx_audit_entity")
+  @@index([createdAt], map: "idx_audit_created_at")
+  @@map("AuditLog")
+}
+
+model SystemSetting {
+  id          String          @id @default(uuid())
+  tenantId    String
+  environment EnvironmentType @default(PRODUCTION)
+  key         String
+  value       Json            @default("{}")
+  description String?         @db.Text
+  isSensitive Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, environment, key], map: "uq_system_setting_composite")
+  @@index([tenantId, environment], map: "idx_system_setting_tenant_env")
+  @@map("SystemSetting")
+}
+
+model DataRetentionPolicy {
+  id            String   @id @default(uuid())
+  tenantId      String
+  modelName     String
+  retentionDays Int      @default(365)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  @@unique([tenantId, modelName], map: "uq_retention_model")
+  @@index([tenantId], map: "idx_retention_tenant")
+  @@map("DataRetentionPolicy")
+}
+
 model Afk {
   id        String   @id @default(uuid())
   user      String   @map("User")
@@ -179,19 +302,34 @@ model ApiKey {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   expiresAt DateTime
+  tenantId  String?
+  lastUsedAt DateTime?
+  metadata  Json     @default("{}")
 
   user User @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([tenantId])
+  @@index([createdAt])
+  @@unique([userId, name], map: "uq_api_key_user_name")
   @@map("ApiKey")
 }
 
 model ApiSystem {
   id        String   @id @default(uuid())
   isActive  Boolean  @default(true)
+  maintenanceMode   Boolean  @default(false)
+  maintenanceReason String?  @db.Text
+  tenantId  String?
+  metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([createdAt])
   @@map("ApiSystem")
 }
 
@@ -249,9 +387,15 @@ model BetaKey {
 model BetaSystem {
   id        String   @id @default(uuid())
   isActive  Boolean  @default(true)
+  tenantId  String?
+  metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([createdAt])
   @@map("BetaSystem")
 }
 
@@ -264,16 +408,26 @@ model Blog {
   projectId         String?
   author            String
   tags              Json     @default("[]")
+  tenantId          String?
+  publishedAt       DateTime?
+  isArchived        Boolean  @default(false)
+  deletedAt         DateTime?
+  metadata          Json     @default("{}")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   project  Project?  @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  tenant   Tenant?   @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   comments Comment[]
   likes    Like[]
   dislikes Dislike[]
   shares   Share[]
 
   @@index([projectId])
+  @@index([tenantId])
+  @@index([isArchived])
+  @@index([createdAt])
+  @@fulltext([title, shortDescription, detailDescription], map: "ft_blog_search")
   @@map("Blog")
 }
 
@@ -290,6 +444,9 @@ model Bug {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
+  @@index([status])
+  @@index([severity])
+  @@index([createdAt])
   @@map("Bug")
 }
 
@@ -327,6 +484,7 @@ model Comment {
 
   @@index([authorId])
   @@index([blogId])
+  @@index([createdAt])
   @@map("Comment")
 }
 
@@ -339,10 +497,19 @@ model Company {
   foundedDate  String   @default("")
   employees    Int      @default(0)
   website      String   @default("")
+  tenantId     String?
+  isArchived   Boolean  @default(false)
+  deletedAt    DateTime?
+  metadata     Json     @default("{}")
   createdDate  DateTime @default(now())
   updatedDate  DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
   @@index([name], map: "idx_company_name")
+  @@index([tenantId])
+  @@index([isArchived])
+  @@unique([tenantId, name], map: "uq_company_tenant_name")
   @@map("Company")
 }
 
@@ -352,12 +519,21 @@ model Customer {
   email     String   @unique
   phone     String?
   address   String?
+  tenantId  String?
+  isArchived Boolean  @default(false)
+  deletedAt DateTime?
+  metadata  Json      @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   orders         Order[]
   customerOrders CustomerOrder[]
+  tenant         Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
+  @@index([tenantId])
+  @@index([isArchived])
+  @@index([createdAt])
+  @@unique([tenantId, email], map: "uq_customer_tenant_email")
   @@map("Customer")
 }
 
@@ -371,13 +547,23 @@ model CustomerOrder {
   totalAmount     Decimal             @db.Decimal(18, 2)
   shippingAddress String
   billingAddress  String
+  tenantId        String?
+  isArchived      Boolean             @default(false)
+  deletedAt       DateTime?
+  metadata        Json                @default("{}")
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   returns  Return[]
 
   @@index([customerId])
+  @@index([tenantId])
+  @@index([isArchived])
+  @@index([createdAt])
+  @@index([status])
+  @@unique([tenantId, orderNumber], map: "uq_customer_order_tenant_number")
   @@map("CustomerOrder")
 }
 
@@ -406,6 +592,7 @@ model Dislike {
 
   @@unique([userId, blogId])
   @@index([blogId])
+  @@index([createdAt])
   @@map("Dislike")
 }
 
@@ -414,12 +601,15 @@ model Favorite {
   userId      String
   type        FavoriteType
   itemId      String
+  metadata    Json         @default("{}")
   createdDate DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+  @@index([createdDate])
+  @@unique([userId, type, itemId], map: "uq_favorite_user_item")
   @@map("Favorite")
 }
 
@@ -436,6 +626,9 @@ model Feature {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
   @@map("Feature")
 }
 
@@ -444,10 +637,18 @@ model Feedback {
   userId       String
   guildId      String
   feedbackText String   @db.Text
+  tenantId     String?
+  category     String?
+  metadata     Json     @default("{}")
+  resolvedAt   DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
   @@index([guildId])
+  @@index([tenantId])
+  @@index([createdAt])
   @@map("Feedback")
 }
 
@@ -505,6 +706,8 @@ model Issue {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
+  @@index([status])
+  @@index([createdAt])
   @@map("Issue")
 }
 
@@ -545,6 +748,7 @@ model Like {
 
   @@unique([userId, blogId])
   @@index([blogId])
+  @@index([createdAt])
   @@map("Like")
 }
 
@@ -606,12 +810,21 @@ model Order {
   totalAmount    Decimal     @db.Decimal(18, 2)
   status         OrderStatus @default(PENDING)
   trackingNumber String?
+  tenantId       String?
+  isArchived     Boolean     @default(false)
+  deletedAt      DateTime?
+  metadata       Json        @default("{}")
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
   customer Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([customerId])
+  @@index([tenantId])
+  @@index([status])
+  @@index([isArchived])
+  @@index([createdAt])
   @@map("Order")
 }
 
@@ -621,9 +834,19 @@ model Organization {
   description String?
   foundedDate DateTime @default(now())
   members     Json     @default("[]")
+  tenantId    String?
+  isArchived  Boolean  @default(false)
+  deletedAt   DateTime?
+  metadata    Json     @default("{}")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([isArchived])
+  @@unique([tenantId, name], map: "uq_organization_tenant_name")
+  @@index([createdAt])
   @@map("Organization")
 }
 
@@ -634,12 +857,23 @@ model Payment {
   method        PaymentMethod
   status        PaymentStatus @default(PENDING)
   transactionId String?
+  tenantId      String?
+  processedAt   DateTime?
+  isArchived    Boolean       @default(false)
+  deletedAt     DateTime?
+  metadata      Json          @default("{}")
   createdDate   DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([userId])
+  @@index([tenantId])
+  @@index([status])
+  @@index([isArchived])
+  @@index([createdDate])
+  @@unique([tenantId, transactionId], map: "uq_payment_tenant_transaction")
   @@map("Payment")
 }
 
@@ -674,9 +908,22 @@ model Product {
   price             Decimal  @db.Decimal(18, 2)
   category          String   @default("")
   stock             Int      @default(0)
+  sku               String?
+  currency          String   @default("USD")
+  tenantId          String?
+  isArchived        Boolean  @default(false)
+  deletedAt         DateTime?
+  metadata          Json     @default("{}")
   createdDate       DateTime @default(now())
   updatedDate       DateTime @updatedAt
 
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId])
+  @@index([category])
+  @@index([isArchived])
+  @@index([createdDate])
+  @@unique([tenantId, sku], map: "uq_product_tenant_sku")
   @@map("Product")
 }
 
@@ -691,6 +938,10 @@ model Project {
   endDate           DateTime?
   members           Json          @default("[]")
   tags              Json          @default("[]")
+  tenantId          String?
+  isArchived        Boolean       @default(false)
+  deletedAt         DateTime?
+  metadata          Json          @default("{}")
   createdDate       DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
@@ -699,8 +950,13 @@ model Project {
   features Feature[]
   issues   Issue[]
   stories  Story[]
+  tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([status])
+  @@index([tenantId])
+  @@index([isArchived])
+  @@index([createdDate])
+  @@unique([tenantId, title], map: "uq_project_tenant_title")
   @@map("Project")
 }
 
@@ -714,6 +970,7 @@ model Report {
   updatedAt      DateTime @updatedAt
 
   @@index([guildId])
+  @@index([createdAt])
   @@map("Report")
 }
 
@@ -731,6 +988,8 @@ model Return {
   order CustomerOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@index([orderId])
+  @@index([status])
+  @@index([createdAt])
   @@map("Return")
 }
 
@@ -772,6 +1031,7 @@ model Share {
 
   @@index([userId])
   @@index([blogId])
+  @@index([createdAt])
   @@map("Share")
 }
 
@@ -799,6 +1059,9 @@ model Story {
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
+  @@index([status])
+  @@index([priority])
+  @@index([createdAt])
   @@map("Story")
 }
 
@@ -833,15 +1096,29 @@ model Task {
   assignedToId String
   teamId       String
   dueDate      DateTime?
+  tenantId     String?
+  priority     PriorityLevel @default(MEDIUM)
+  estimateHours Decimal?     @db.Decimal(10, 2)
+  isArchived   Boolean       @default(false)
+  deletedAt    DateTime?
+  metadata     Json          @default("{}")
   createdDate  DateTime     @default(now())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
   assignedTo User @relation("TaskAssignee", fields: [assignedToId], references: [id], onDelete: Cascade)
   team       Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  tenant     Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([assignedToId])
   @@index([teamId])
+  @@index([tenantId])
+  @@index([status])
+  @@index([priority])
+  @@index([dueDate])
+  @@index([createdAt])
+  @@index([isArchived])
+  @@unique([teamId, title, assignedToId], map: "uq_task_team_title_assignee")
   @@map("Task")
 }
 
@@ -854,11 +1131,23 @@ model Team {
   status      TeamStatus @default(ACTIVE)
   type        TeamType   @default(OTHER)
   logo        String     @default("default-team-logo.png")
+  ownerId     String?
+  tenantId    String?
+  isArchived  Boolean    @default(false)
+  deletedAt   DateTime?
+  metadata    Json       @default("{}")
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  tasks Task[]
+  owner User? @relation("TeamOwner", fields: [ownerId], references: [id], onDelete: SetNull)
+  tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  tasks  Task[]
 
+  @@index([tenantId])
+  @@index([ownerId])
+  @@index([isArchived])
+  @@index([createdDate])
+  @@unique([tenantId, name], map: "uq_team_tenant_name")
   @@map("Team")
 }
 
@@ -870,13 +1159,30 @@ model Ticket {
   description String       @default("No description provided") @db.Text
   status      TicketStatus @default(OPEN)
   messages    Json         @default("[]")
+  tenantId    String?
+  assignedToId String?
+  priority    PriorityLevel @default(MEDIUM)
+  category    String?
+  slaDueAt    DateTime?
+  isArchived  Boolean       @default(false)
+  deletedAt   DateTime?
+  metadata    Json          @default("{}")
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
-  responses TicketResponse[]
+  assignedTo User?           @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  tenant     Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  responses  TicketResponse[]
 
   @@index([guildId])
   @@index([userId])
+  @@index([tenantId])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([priority])
+  @@index([isArchived])
+  @@index([createdAt])
+  @@index([tenantId, status], map: "idx_ticket_tenant_status")
   @@map("Ticket")
 }
 
@@ -885,12 +1191,15 @@ model TicketResponse {
   ticketId  String
   userId    String
   response  String   @db.Text
+  metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   ticket Ticket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
 
   @@index([ticketId])
+  @@index([userId])
+  @@index([createdAt])
   @@map("TicketResponse")
 }
 
@@ -966,6 +1275,8 @@ model User {
   sessions                 Json      @default("[]")
   socialLinks              Json      @default("{}")
   recentActivity           DateTime  @default(now())
+  lastLoginAt              DateTime?
+  inactiveSince            DateTime?
   verificationToken        String    @default("")
   verificationTokenExpires DateTime?
   isVerified               Boolean   @default(false)
@@ -978,6 +1289,10 @@ model User {
   isBetaTester             Boolean   @default(false)
   termsAccepted            Boolean   @default(false)
   termsAcceptedAt          DateTime?
+  tenantId                 String?
+  passwordChangedAt        DateTime?
+  loginAttempts            Int       @default(0)
+  mfaEnabled               Boolean   @default(false)
   posts                    Json      @default("[]")
   projects                 Json      @default("[]")
   friends                  Json      @default("[]")
@@ -995,8 +1310,15 @@ model User {
   comments          Comment[]
   payments          Payment[]
   tasksAssigned     Task[]             @relation("TaskAssignee")
+  tenant            Tenant?            @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  auditLogs         AuditLog[]         @relation("UserAuditLogs")
+  teamsOwned        Team[]             @relation("TeamOwner")
 
   @@index([email], map: "idx_user_email")
+  @@index([tenantId])
+  @@index([role])
+  @@index([createdAt])
+  @@index([lastLoginAt])
   @@map("User")
 }
 
@@ -1015,12 +1337,22 @@ model Version {
   githublink        String   @default("")
   downloadLink      String
   releasedAt        DateTime
+  tenantId          String?
+  isArchived        Boolean  @default(false)
+  deletedAt         DateTime?
+  metadata          Json     @default("{}")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
   versionTag VersionTag @relation(fields: [versionTagId], references: [id], onDelete: Cascade)
+  tenant     Tenant?    @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([versionTagId])
+  @@index([tenantId])
+  @@index([releasedAt])
+  @@index([createdAt])
+  @@index([isArchived])
+  @@unique([tenantId, title, versionTagId], map: "uq_version_tenant_title_tag")
   @@map("Version")
 }
 
@@ -1028,11 +1360,18 @@ model VersionTag {
   id          String   @id @default(uuid())
   title       String
   description String   @db.Text
+  tenantId    String?
+  isArchived  Boolean  @default(false)
+  metadata    Json     @default("{}")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
+  tenant   Tenant?  @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   versions Version[]
 
+  @@index([tenantId])
+  @@index([isArchived])
+  @@unique([tenantId, title], map: "uq_version_tag_tenant_title")
   @@map("VersionTag")
 }
 
