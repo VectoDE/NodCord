@@ -19,10 +19,11 @@ NodCord/
 ├── nodemon.json            # Dev server configuration for ts-node-dev
 ├── package.json            # Project dependencies and scripts
 ├── prisma/                 # Prisma schema, migrations, and seeds
+│   ├── seeds/              # Seed data and initialization scripts
 │   └── schema.prisma       # MySQL model definitions
 ├── tsconfig.json           # TypeScript compiler settings
 ├── dist/                   # Compiled output (created during builds)
-└── src/                    # Application code (API, bot, client, seeds, etc.)
+└── src/                    # Application code (API, bot, client, etc.)
     ├── api/                # Express app, controllers, routes, middleware, helpers & services
     ├── bot/                # Discord bot with commands, events, and utilities
     ├── client/             # Frontend code/assets for the dashboard
@@ -31,7 +32,6 @@ NodCord/
     ├── models/             # Transitional Mongoose models (being replaced by Prisma)
     ├── public/             # Static assets (CSS, images, uploaded files)
     ├── scripts/            # Automation and maintenance scripts
-    ├── seeds/              # Seed data and initialization scripts
     ├── server.ts           # Entry point for starting the server
     └── views/              # EJS templates for server-side rendering
 ```

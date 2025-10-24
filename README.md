@@ -25,7 +25,7 @@ NodCord is a **TypeScript** service platform for Discord automation. The REST AP
 - REST API with a TypeScript controller layer and strongly typed responses
 - Discord bot that shares services and database access through Prisma
 - MySQL as the central data source (run locally via Docker or use a hosted instance)
-- Modular structure (API, bot, client, seeds, scripts) for easy extensions
+- Modular structure (API, bot, client, Prisma seeds, scripts) for easy extensions
 - Extensive project and migration documentation inside the `docs/` directory
 - Enterprise-ready test layout (API, bot, and EJS views) including coverage reports and JUnit output
 
@@ -124,7 +124,7 @@ The Prisma schema lives at [`prisma/schema.prisma`](./prisma/schema.prisma). It 
 
 - Create a `.env` file at the project root and define `DATABASE_URL`, e.g. `mysql://user:password@localhost:3306/nodcord`.
 - Use `npx prisma db push` when you want to sync the schema quickly during development.
-- Run seeds through `prisma db seed`; they rely on files inside `src/seeds/`.
+- Run seeds through `prisma db seed`; they rely on files inside `prisma/seeds/`.
 
 ## Configuration
 

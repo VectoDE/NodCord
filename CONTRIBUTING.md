@@ -19,7 +19,7 @@ Thank you for your interest in improving NodCord! This document explains the mos
 4. **Implement your changes:**
    - Create TypeScript files with clear interfaces.
    - For schema changes run `prisma migrate dev --name my_migration_name`.
-   - Update seeds in `prisma/seed.ts` or `src/seeds/`.
+   - Update seeds in `prisma/seed.ts` or `prisma/seeds/`.
 5. **Run tests and checks:**
    - `npm run lint && npm run typecheck` (style and static analysis)
    - `npm run build` (ensures the TypeScript compiler passes)

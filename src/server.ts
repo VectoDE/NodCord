@@ -5,8 +5,8 @@ import { api } from './api/app';
 import { startBot } from './bot/index';
 import { client, startClient } from './client/main';
 import connectDB from './database/connectDB';
-import { seedRolesIfNotExist } from './seeds/rolesSeed';
-import { seedUsersIfNotExist } from './seeds/usersSeed';
+import { seedRolesIfNotExist } from '../prisma/seeds/rolesSeed';
+import { seedUsersIfNotExist } from '../prisma/seeds/usersSeed';
 import logger from './api/services/loggerService';
 import pm2Service from './client/services/pm2Service';
 

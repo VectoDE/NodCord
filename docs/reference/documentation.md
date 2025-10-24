@@ -90,7 +90,7 @@ The bot currently starts via `src/bot/index.js` (a TypeScript migration is in pr
 - Schema file: `prisma/schema.prisma`
 - Default models: `User`, `Role`, `Project`, `Ticket` (extensible)
 - Migrations: `prisma/migrations/`
-- Seeds: `prisma/seed.ts` or TypeScript files inside `src/seeds/`
+- Seeds: `prisma/seed.ts` or TypeScript files inside `prisma/seeds/`
 
 ## Directory Structure
 

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const Role = require('../models/roleModel');
-const logger = require('../api/services/loggerService');
+const Role = require('../../src/models/roleModel');
+const logger = require('../../src/api/services/loggerService');
 
 const roles = [
   { roleName: 'admin', displayName: 'Administrator' },

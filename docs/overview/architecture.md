@@ -27,7 +27,7 @@ This document outlines the architecture of NodCord and explains the most importa
 
 - The **Prisma schema** defines the baseline structures for users, roles, projects, and tickets.
 - Deploy migrations with `npm run prisma:migrate`.
-- Seeds and tests use shared helpers inside `src/seeds` and `prisma`.
+- Seeds and tests use shared helpers inside `prisma/seeds` and other Prisma utilities.
 
 ### Outlook
 
