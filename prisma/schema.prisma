@@ -1,5 +1,4 @@
 // Prisma Schema for NodCord
-// Generated to mirror the Mongoose models with production-grade defaults and constraints
 
 generator client {
   provider = "prisma-client-js"

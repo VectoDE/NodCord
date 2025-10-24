@@ -1,80 +1,132 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
-const checkDiskSpace = require('check-disk-space').default;
-const logger = require('../services/loggerService');
+/**
+ * ------------------------------------------------------------
+ * Multer Service – File Upload Handling
+ * ------------------------------------------------------------
+ *
+ * Provides:
+ * - Secure and configurable file upload middleware
+ * - Automatic upload directory creation
+ * - File type & size validation
+ * - Disk space monitoring before accepting uploads
+ *
+ * Technologies:
+ * - Multer for handling multipart/form-data
+ * - check-disk-space for disk usage checks
+ * - Winston logger integration for observability
+ */
 
-const uploadDirectory = path.join(__dirname, '../../public/uploads');
-const maxDiskSpacePercentage = 80;
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import checkDiskSpaceRaw from 'check-disk-space';
+import logger from '@/services/logger.service';
+
+// Type-only imports (required when "verbatimModuleSyntax": true)
+import type { FileFilterCallback } from 'multer';
+import type { Request, Response, NextFunction } from 'express';
+
+const checkDiskSpace = (checkDiskSpaceRaw as unknown as (path: string) => Promise<{ size: number; free: number }>);
+
+// ============================================================
+// Configuration
+// ============================================================
+
+const uploadDirectory = path.join(process.cwd(), 'uploads');
+const maxDiskUsagePercentage = 80;
+const maxFileSize = 10 * 1024 * 1024;
+
+// ============================================================
+// Directory Setup
+// ============================================================
 
 if (!fs.existsSync(uploadDirectory)) {
   fs.mkdirSync(uploadDirectory, { recursive: true });
-  logger.info(`[FILE] Upload directory created at ${uploadDirectory}`);
+  logger.info(`[UPLOAD] Created upload directory at ${uploadDirectory}`);
 } else {
-  logger.info(`[FILE] Upload directory already exists at ${uploadDirectory}`);
+  logger.debug(`[UPLOAD] Upload directory already exists at ${uploadDirectory}`);
 }
 
+// ============================================================
+// Multer Storage Configuration
+// ============================================================
+
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDirectory);
-    logger.info(`[FILE] File upload destination set to ${uploadDirectory}`);
-  },
-  filename: (req, file, cb) => {
+  destination: (_req, _file, cb) => cb(null, uploadDirectory),
+  filename: (_req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const basename = path.basename(file.originalname, ext);
-    const filename = `${basename}-${Date.now()}${ext}`;
-    cb(null, filename);
-    logger.info(`[FILE] File name set to ${filename}`);
+    const baseName = path.basename(file.originalname, ext);
+    const uniqueName = `${baseName}-${Date.now()}${ext}`;
+    logger.info(`[UPLOAD] Saving file as: ${uniqueName}`);
+    cb(null, uniqueName);
   },
 });
 
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = /jpeg|jpg|png|gif/;
-  const extname = allowedTypes.test(
-    path.extname(file.originalname).toLowerCase()
-  );
-  const mimetype = allowedTypes.test(file.mimetype);
+// ============================================================
+// File Filter (MIME & Extension Validation)
+// ============================================================
 
-  if (extname && mimetype) {
-    logger.info(`[FILE] File type ${file.mimetype} is allowed`);
-    return cb(null, true);
+const fileFilter = (_req: Request, file: Express.Multer.File, cb: FileFilterCallback): void => {
+  const allowedTypes = /jpeg|jpg|png|gif|webp/;
+  const extAllowed = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+  const mimeAllowed = allowedTypes.test(file.mimetype);
+
+  if (extAllowed && mimeAllowed) {
+    logger.debug(`[UPLOAD] Accepted file type: ${file.mimetype}`);
+    cb(null, true);
+  } else {
+    logger.warn(`[UPLOAD] Rejected file type: ${file.mimetype}`);
+    cb(new Error('Only image files (JPEG, PNG, GIF, WEBP) are allowed.'));
   }
-  logger.warn(`[FILE] File type ${file.mimetype} is not allowed`);
-  cb(new Error('Only image files are allowed!'));
 };
 
-const upload = multer({
-  storage: storage,
-  fileFilter: fileFilter,
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB
-  },
+// ============================================================
+// Multer Upload Middleware
+// ============================================================
+
+export const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: maxFileSize },
 }).single('file');
 
-const checkDiskSpaceMiddleware = async (req, res, next) => {
+// ============================================================
+// Disk Space Check Middleware
+// ============================================================
+
+export const checkDiskSpaceMiddleware = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
   try {
-    const diskSpace = await checkDiskSpace(uploadDirectory);
-    const totalSpace = diskSpace.size;
-    const freeSpace = diskSpace.free;
-    const usedSpacePercentage = ((totalSpace - freeSpace) / totalSpace) * 100;
+    const { size: totalSpace, free: freeSpace } = await checkDiskSpace(uploadDirectory);
+    const usedPercentage = ((totalSpace - freeSpace) / totalSpace) * 100;
 
     logger.info(
-      `[FILE] Disk space check: Total ${totalSpace}, Free ${freeSpace}, Used ${usedSpacePercentage}%`
+      `[UPLOAD] Disk usage: Total=${(totalSpace / 1_073_741_824).toFixed(2)}GB | Free=${(
+        freeSpace / 1_073_741_824
+      ).toFixed(2)}GB | Used=${usedPercentage.toFixed(2)}%`
     );
 
-    if (usedSpacePercentage >= maxDiskSpacePercentage) {
-      logger.warn(`[FILE] Insufficient storage space: Used ${usedSpacePercentage}%`);
-      return res.status(507).json({ error: 'Insufficient storage space' });
+    if (usedPercentage >= maxDiskUsagePercentage) {
+      logger.warn(`[UPLOAD] Insufficient storage: ${usedPercentage.toFixed(2)}% used`);
+      res.status(507).json({ error: 'Insufficient storage space available.' });
+      return;
     }
 
     next();
   } catch (error) {
-    logger.error('[FILE] Error checking disk space:', error.message);
-    next(error);
+    const err = error instanceof Error ? error : new Error(String(error));
+    logger.error('[UPLOAD] Disk space check failed', err);
+    next(err);
   }
 };
 
-module.exports = {
+// ============================================================
+// Export Default
+// ============================================================
+
+export default {
   upload,
   checkDiskSpaceMiddleware,
 };

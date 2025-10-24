@@ -1,9 +1,19 @@
-import mongoose from 'mongoose';
-import User, { IUser } from '../../src/models/userModel';
-import logger from '../../src/services/logger.service';
-import bcrypt from 'bcrypt';
+/**
+ * @fileoverview
+ * Enterprise-grade Prisma Seeder for User entities.
+ * Seeds default users if they do not exist.
+ */
 
-const users: IUser[] = [
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+import logger from '../../src/services/logger.service';
+
+const prisma = new PrismaClient();
+
+// ------------------------------------------------------------
+// Default Users
+// ------------------------------------------------------------
+const users = [
   {
     profilePicture: '',
     fullname: 'Admin User',
@@ -65,38 +75,86 @@ const users: IUser[] = [
     termsAccepted: true,
     termsAcceptedAt: new Date(),
   },
-];
+] as const;
 
-const createUser = async (data: IUser): Promise<void> => {
+// ------------------------------------------------------------
+// Create User Helper
+// ------------------------------------------------------------
+const createUser = async (
+  data: (typeof users)[number]
+): Promise<void> => {
   try {
-    const existingUser = await User.findOne({ email: data.email });
-    if (existingUser) {
+    const existing = await prisma.user.findUnique({ where: { email: data.email } });
+    if (existing) {
       logger.info(`[SEED] User with email ${data.email} already exists.`);
       return;
     }
 
-    const user = new User(data);
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    await user.save();
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    await prisma.user.create({
+      data: {
+        ...data,
+        password: hashedPassword,
+      },
+    });
+
     logger.info(`[SEED] User ${data.username} created successfully.`);
   } catch (error) {
-    logger.error(`[SEED] Error creating user ${data.username}:`, error);
+    logger.error(`[SEED] Error creating user ${data.username}`, {
+      message: (error as Error).message,
+      stack: (error as Error).stack,
+    });
   }
 };
 
+// ------------------------------------------------------------
+// Seed Function
+// ------------------------------------------------------------
 export const seedUsersIfNotExist = async (): Promise<void> => {
+  logger.info('[SEED] Starting user seeding process');
+
   try {
-    const existingUsers = await User.find({});
-    if (existingUsers.length === 0) {
-      for (const userData of users) {
-        await createUser(userData);
-      }
-      logger.info('[SEED] Seeding users completed successfully.');
-    } else {
-      logger.warn('[SEED] Users already exist, skipping seeding');
+    const userCount = await prisma.user.count();
+
+    if (userCount > 0) {
+      logger.info('[SEED] Users already exist, skipping seeding', { userCount });
+      return;
     }
+
+    await prisma.$transaction(async () => {
+      for (const user of users) {
+        await createUser(user);
+      }
+    });
+
+    logger.info('[SEED] Seeding users completed successfully.');
   } catch (error) {
-    logger.error('[SEED] Error during user seeding:', error);
+    logger.error('[SEED] Error during user seeding', {
+      message: (error as Error).message,
+      stack: (error as Error).stack,
+    });
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+    logger.debug('[SEED] Prisma connection closed');
   }
 };
+
+// ------------------------------------------------------------
+// Direct Execution Guard
+// ------------------------------------------------------------
+if (require.main === module) {
+  seedUsersIfNotExist()
+    .then(() => {
+      logger.info('[SEED] User seeding completed successfully');
+      process.exit(0);
+    })
+    .catch((err) => {
+      logger.error('[SEED] User seeding failed', {
+        message: (err as Error).message,
+        stack: (err as Error).stack,
+      });
+      process.exit(1);
+    });
+}
