@@ -205,7 +205,6 @@
     "prettier": "^3.3.3",
     "prisma": "^5.18.0",
     "stylelint": "^16.8.1",
-    "stylelint-config-prettier": "^10.0.1",
     "stylelint-config-standard": "^36.0.0",
     "stylelint-order": "^6.0.4",
     "stylelint-prettier": "^5.0.0",
