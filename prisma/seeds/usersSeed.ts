@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-import User, { IUser } from '../models/userModel';
-import logger from '../api/services/loggerService';
+import User, { IUser } from '../../src/models/userModel';
+import logger from '../../src/api/services/loggerService';
 import bcrypt from 'bcrypt';
 
 const users: IUser[] = [

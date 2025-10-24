@@ -16,7 +16,7 @@ This plan complements the high-level roadmap in [`todo.md`](./todo.md) and descr
 - [ ] **Migration strategy:** Create dedicated migrations for each module (auth, commerce, tickets, developer program, analytics, integrations). Plan the historical data migration (Mongo → MySQL).
 - [ ] **Prisma Client integration:** Create a central instance (`src/database/prismaClient.ts`), inject it into API/bot services, and add lifecycle hooks (shutdown, error handling).
 - [ ] **Repository layer:** Build abstractions for recurring queries (e.g. `UserRepository`, `ProjectRepository`) and use them consistently.
-- [ ] **Seeds & test data:** Establish `prisma/seed.ts`, adapt modular seeds in `src/seeds/` to Prisma, and provide automated sample data for E2E tests.
+- [ ] **Seeds & test data:** Establish `prisma/seed.ts`, adapt modular seeds in `prisma/seeds/` to Prisma, and provide automated sample data for E2E tests.
 
 ## 3. API & Services
 
