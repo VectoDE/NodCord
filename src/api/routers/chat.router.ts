@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const chatController = require('../controllers/chatController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/chat.controller';
 
-router.get('/', chatController.getAllChats);
-
-router.get('/:id', chatController.getChatById);
-
-router.post('/', chatController.createChat);
-
-router.post('/:id/message', chatController.addMessage);
-
-router.delete('/:id', chatController.deleteChat);
-
-module.exports = router;
+export default createCrudRouter(controller);

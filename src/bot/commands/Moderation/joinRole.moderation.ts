@@ -1,36 +1,90 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
-const joinrole = require('../../../models/joinroleModel');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import prisma from '@/services/prisma.service';
+
+import type { Role } from 'discord.js';
+import type { SlashCommandModule } from '@/bot/types';
+
+const joinRoleCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('joinrole')
-  .setDescription('Setup auto role system for your server.')
-  .addRoleOption(option => option.setName('role').setDescription('The role to be given when someone joining the server.').setRequired(true)),
+    .setName('joinrole')
+    .setDescription('Configure the automatic role assigned to new members.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+    .addRoleOption((option) =>
+      option
+        .setName('role')
+        .setDescription('Role to assign when a member joins.')
+        .setRequired(true),
+    ),
   async execute(interaction) {
-    if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return await interaction.reply({ content: "You do not have permissions to run this command." });
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    const role = interaction.options.getRole('role');
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageRoles)) {
+      await interaction.reply({
+        content: 'You do not have permission to manage roles.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    joinrole.findOne({ Guild: interaction.guild.id }, async (err, data) => {
-      if (err) throw err;
+    const role = interaction.options.getRole('role', true) as Role;
 
-      if(!data) {
-        joinrole.create({
-          Guild: interaction.guild.id,
-          RoleID: role.id,
-          RoleName: role.name
-        });
+    if (role.managed) {
+      await interaction.reply({
+        content: 'Managed roles cannot be assigned to new members.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-        const embed = new EmbedBuilder()
-        .setColor('Random')
-        .setDescription(`${role} has been successfully set as a join role.`)
-        .setFooter({ text: `${interaction.guild.name}` })
-        .setTimestamp();
+    if (
+      interaction.guild.members.me &&
+      role.position >= interaction.guild.members.me.roles.highest.position
+    ) {
+      await interaction.reply({
+        content: 'That role is higher than my highest role. Please pick a lower role.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-        return interaction.reply({ embeds: [embed] });
-      } else {
-        await interaction.reply({ content: "Join role has already been set up." });
-      }
+    await prisma.joinRole.upsert({
+      where: { guild_roleId: { guild: interaction.guild.id, roleId: role.id } },
+      update: {
+        roleName: role.name,
+        isActive: true,
+      },
+      create: {
+        guild: interaction.guild.id,
+        roleId: role.id,
+        roleName: role.name,
+        isActive: true,
+      },
     });
-  }
-}
+
+    // Disable any previous join roles that no longer match the selected role
+    await prisma.joinRole.updateMany({
+      where: {
+        guild: interaction.guild.id,
+        roleId: { not: role.id },
+        isActive: true,
+      },
+      data: { isActive: false },
+    });
+
+    const embed = new EmbedBuilder()
+      .setColor('Blurple')
+      .setDescription(`${role} will now be assigned automatically to new members.`)
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed] });
+  },
+};
+
+export default joinRoleCommand;

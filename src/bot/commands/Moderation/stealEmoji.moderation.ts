@@ -1,103 +1,106 @@
-const {
-  SlashCommandBuilder,
-  PermissionsBitField,
-  EmbedBuilder,
-} = require('discord.js');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-const { default: axios } = require('axios');
+import type { SlashCommandModule } from '@/bot/types';
 
-module.exports = {
+const CUSTOM_EMOJI_REGEX = /^<a?:\w+:(\d+)>$/;
+
+async function resolveEmojiUrl(input: string): Promise<string | null> {
+  const trimmed = input.trim();
+  const customMatch = trimmed.match(CUSTOM_EMOJI_REGEX);
+  if (customMatch) {
+    const emojiId = customMatch[1];
+    const isAnimated = trimmed.startsWith('<a');
+    const baseUrl = `https://cdn.discordapp.com/emojis/${emojiId}`;
+
+    if (isAnimated) {
+      const gifUrl = `${baseUrl}.gif?quality=lossless`;
+      try {
+        const response = await fetch(gifUrl, { method: 'HEAD' });
+        if (response.ok) {
+          return gifUrl;
+        }
+      } catch {
+        // ignore and fall back to png
+      }
+    }
+
+    return `${baseUrl}.png?quality=lossless`;
+  }
+
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return null;
+}
+
+const stealEmojiCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('steal-emoji')
-    .setDescription('Steal the emoji for your server.')
+    .setDescription('Clone a custom emoji from another server.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuildExpressions)
     .addStringOption((option) =>
       option
         .setName('emoji')
-        .setDescription('The emoji you want to steal.')
-        .setRequired(true)
+        .setDescription('Provide the custom emoji or direct image URL.')
+        .setRequired(true),
     )
     .addStringOption((option) =>
       option
         .setName('name')
-        .setDescription('The name you would like to give to the emoji.')
+        .setDescription('The name to give the emoji once imported.')
         .setRequired(true)
+        .setMaxLength(32),
     ),
   async execute(interaction) {
-    await interaction.deferReply();
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    if (
-      !interaction.member.permissions.has(
-        PermissionsBitField.Flags.ManageGuildExpressions
-      )
-    )
-      return await interaction.editReply({
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuildExpressions)) {
+      await interaction.reply({
+        content: 'You need the Manage Emojis & Stickers permission to do that.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const rawEmoji = interaction.options.getString('emoji', true);
+    const name = interaction.options.getString('name', true).trim();
+
+    const emojiUrl = await resolveEmojiUrl(rawEmoji);
+    if (!emojiUrl) {
+      await interaction.reply({
+        content: 'I can only import custom server emojis or direct image URLs.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    await interaction.deferReply({ ephemeral: true });
+
+    try {
+      const createdEmoji = await interaction.guild.emojis.create({ attachment: emojiUrl, name });
+
+      const embed = new EmbedBuilder()
+        .setColor('Blurple')
+        .setDescription(
+          `Successfully added ${createdEmoji} with the name **:${createdEmoji.name}:**.`,
+        )
+        .setTimestamp();
+
+      await interaction.editReply({ embeds: [embed] });
+    } catch (error) {
+      await interaction.editReply({
         content:
-          'You must have the Manage Emojis & Stickers to run this command.',
-      });
-
-    let emoji = interaction.options.getString('emoji')?.trim();
-    const name = interaction.options.getString('name');
-
-    if (emoji.startsWith('<') && emoji.endsWith('>')) {
-      const id = emoji.match(/d{15,}/g)[0];
-      const type = await axios
-        .get(`https://cdn.discordapp.com/emojis/${id}.gif`)
-        .then((image) => {
-          if (image) return 'gif';
-          else return 'png';
-        })
-        .catch((err) => {
-          return 'png';
-        });
-
-      emoji = `https://cdn.discordapp.com/emojis/${id}.${type}?quality=lossless`;
-    }
-
-    if (emoji.startsWith('<a') && emoji.endsWith('>')) {
-      const id = emoji.match(/\d{15,}/g)[0];
-      const type = await axios
-        .get(`https://cdn.discordapp.com/emojis/${id}.gif`)
-        .then((image) => {
-          if (image) return 'png';
-          else return 'gif';
-        })
-        .catch((err) => {
-          return 'gif';
-        });
-
-      emoji = `https://cdn.discordapp.com/emojis/${id}.${type}?quality=lossless`;
-    }
-
-    if (!emoji.startsWith('http')) {
-      return await interaction.editReply({
-        content: "You can't steal default emojis.",
-        ephemeral: true,
+          'I could not add that emoji. Please ensure the image is below 256 KB and the server has available emoji slots.',
       });
     }
-
-    if (!emoji.startsWith('https')) {
-      return await interaction.editReply({
-        content: "You can't steal default emojis.",
-        ephemeral: true,
-      });
-    }
-
-    interaction.guild.emojis
-      .create({ attachment: `${emoji}`, name: `${name}` })
-      .then((emoji) => {
-        const embed = new EmbedBuilder()
-          .setColor('Random')
-          .setDescription(
-            `Successfully added ${emoji}, with the name **${name}**.`
-          );
-
-        return interaction.editReply({ embeds: [embed] }).catch((err) => {
-          interaction.editReply({
-            content:
-              'Your emojis limit is over, delete some emojis and try again!',
-            ephemeral: true,
-          });
-        });
-      });
   },
 };
+
+export default stealEmojiCommand;

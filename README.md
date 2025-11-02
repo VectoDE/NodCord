@@ -31,15 +31,15 @@ NodCord is a **TypeScript** service platform for Discord automation. The REST AP
 
 ## Technologies
 
-| Area            | Stack                                                                 |
-| --------------- | --------------------------------------------------------------------- |
-| Runtime         | Node.js ≥ 18                                                          |
-| Language        | TypeScript (strict mode)                                             |
-| Framework       | Express.js                                                            |
-| Database        | MySQL 8.x or compatible (MariaDB ≥ 10.6 verified)                     |
-| ORM/Client      | Prisma                                                                |
-| Discord         | discord.js                                                            |
-| Tooling         | ts-node-dev, Jest (multi-project), Supertest, Testing Library, Prettier, Prisma CLI |
+| Area       | Stack                                                                               |
+| ---------- | ----------------------------------------------------------------------------------- |
+| Runtime    | Node.js ≥ 18                                                                        |
+| Language   | TypeScript (strict mode)                                                            |
+| Framework  | Express.js                                                                          |
+| Database   | MySQL 8.x or compatible (MariaDB ≥ 10.6 verified)                                   |
+| ORM/Client | Prisma                                                                              |
+| Discord    | discord.js                                                                          |
+| Tooling    | ts-node-dev, Jest (multi-project), Supertest, Testing Library, Prettier, Prisma CLI |
 
 ## Installation
 

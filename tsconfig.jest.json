@@ -1,15 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "module": "CommonJS",
-    "moduleResolution": "node",
     "outDir": "./.tmp/tests",
     "types": ["node", "jest", "jest-extended", "testing-library__jest-dom"],
     "noEmit": false,
     "incremental": false,
     "declaration": false,
     "sourceMap": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler"
   },
   "include": [
     "src/**/*.ts",
@@ -19,8 +18,5 @@
     "**/*.spec.ts",
     "jest.setup.ts"
   ],
-  "exclude": [
-    "dist",
-    "node_modules"
-  ]
+  "exclude": ["dist", "node_modules"]
 }

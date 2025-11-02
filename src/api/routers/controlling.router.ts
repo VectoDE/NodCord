@@ -1,19 +1,18 @@
-const express = require('express');
-const router = express.Router();
-const controlController = require('../controllers/controlController');
+import { Router } from 'express';
 
-router.post('/bot/start', controlController.startBot);
-router.post('/bot/stop', controlController.stopBot);
-router.post('/bot/restart', controlController.restartBot);
-router.post('/bot/maintenance', controlController.setBotMaintenance);
-router.post('/bot/remove-maintenance', controlController.removeBotMaintenance);
-router.get('/bot/status', controlController.getBotStatus);
+import {
+  fetchStatusSummary,
+  fetchLiveness,
+  fetchReadiness,
+  fetchCloudNetStatus,
+} from '@/api/controllers/controlling.controller';
+import { requireAuth } from '@/middlewares/authentication.middleware';
 
-router.post('/api/start', controlController.startApi);
-router.post('/api/stop', controlController.stopApi);
-router.post('/api/restart', controlController.restartApi);
-router.post('/api/maintenance', controlController.setAPIMaintenance);
-router.post('/api/remove-maintenance', controlController.removeAPIMaintenance);
-router.get('/api/status', controlController.getApiStatus);
+const router = Router();
 
-module.exports = router;
+router.get('/summary', requireAuth(), fetchStatusSummary);
+router.get('/liveness', fetchLiveness);
+router.get('/readiness', fetchReadiness);
+router.get('/cloudnet', requireAuth(), fetchCloudNetStatus);
+
+export default router;

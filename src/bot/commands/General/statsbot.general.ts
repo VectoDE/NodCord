@@ -1,49 +1,83 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  PermissionsBitField,
+  SlashCommandBuilder,
+} from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+function formatDuration(ms: number): string {
+  const totalSeconds = Math.floor(ms / 1000);
+  const days = Math.floor(totalSeconds / 86_400);
+  const hours = Math.floor((totalSeconds % 86_400) / 3_600);
+  const minutes = Math.floor((totalSeconds % 3_600) / 60);
+  const seconds = totalSeconds % 60;
+
+  const segments = [
+    days ? `${days} day${days === 1 ? '' : 's'}` : null,
+    hours ? `${hours} hour${hours === 1 ? '' : 's'}` : null,
+    minutes ? `${minutes} minute${minutes === 1 ? '' : 's'}` : null,
+    `${seconds} second${seconds === 1 ? '' : 's'}`,
+  ].filter(Boolean);
+
+  return segments.join(', ');
+}
+
+const statsCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('stats')
-  .setDescription('Gives you the both stats!'),
-  async execute (interaction, client) {
-    const name = `${client.user.username}`;
-    const icon = `${client.user.displayAvatarURL()}`;
-    let servercount = await client.guilds.cache.reduce((a, b) => a + b.memberCount, 0);
+    .setName('stats')
+    .setDescription('Display current bot statistics.'),
+  async execute(interaction, client) {
+    const clientUser = client.user;
+    if (!clientUser) {
+      await interaction.reply({
+        content: 'The client user is not ready yet. Please try again shortly.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    let totalSeconds = (client.uptime / 1000);
-    let days = Math.floor(totalSeconds / 86400);
-    totalSeconds %= 86400;
-    let hours = Math.floor(totalSeconds / 3600);
-    totalSeconds %= 3600;
-    let minutes = Math.floor(totalSeconds / 60);
-    let seconds = Math.floor(totalSeconds % 60);
+    const totalMembers = client.guilds.cache.reduce(
+      (accumulator, guild) => accumulator + guild.memberCount,
+      0,
+    );
+    const uptimeMilliseconds = client.uptime ?? 0;
 
-    let uptime = `${days} days, ${hours} hours, ${minutes} minutes, ${seconds} seconds`
-    let ping = `${Date.now() - interaction.createdTimestamp}ms.`;
-
-    const row = new ActionRowBuilder()
-    .addComponents(
+    const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
-      .setLabel('Support Server')
-      .setStyle(ButtonStyle.Link)
-      .setURL(`https://discord.gg/Up4cjENT7n`),
-
+        .setLabel('Support Server')
+        .setStyle(ButtonStyle.Link)
+        .setURL('https://discord.gg/Up4cjENT7n'),
       new ButtonBuilder()
-      .setLabel('Invite Me')
-      .setStyle(ButtonStyle.Link)
-      .setURL(`https://discord.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=${PermissionsBitField.Flags.Administrator}`)
-    )
+        .setLabel('Invite Me')
+        .setStyle(ButtonStyle.Link)
+        .setURL(
+          `https://discord.com/oauth2/authorize?client_id=${clientUser.id}&scope=bot%20applications.commands&permissions=${PermissionsBitField.Flags.Administrator.toString()}`,
+        ),
+    );
 
     const embed = new EmbedBuilder()
-    .setColor('Random')
-    .setAuthor({ name: name, iconURL: icon })
-    .setThumbnail(`${icon}`)
-    .addFields({ name: "Server Numbers", value: `${client.guilds.cache.size}`, inline: false })
-    .addFields({ name: "Server Members", value: `${servercount}`, inline: false })
-    .addFields({ name: "Latency", value: `${ping}` })
-    .addFields({ name: "Uptime", value: `\`\`\`${uptime}\`\`\``, inline: true })
-    .setFooter({ text: `Bot ID: ${client.user.id}` })
-    .setTimestamp()
+      .setColor('Blurple')
+      .setAuthor({ name: clientUser.username, iconURL: clientUser.displayAvatarURL() })
+      .setThumbnail(clientUser.displayAvatarURL())
+      .addFields(
+        { name: 'Servers', value: `${client.guilds.cache.size}`, inline: true },
+        { name: 'Total Members', value: `${totalMembers}`, inline: true },
+        { name: 'Gateway Ping', value: `${Math.round(client.ws.ping)}ms`, inline: true },
+        {
+          name: 'Uptime',
+          value: `\`\`\`${formatDuration(uptimeMilliseconds)}\`\`\``,
+          inline: false,
+        },
+      )
+      .setFooter({ text: `Bot ID: ${clientUser.id}` })
+      .setTimestamp();
 
-    await interaction.reply({ embeds: [embed], components: [row] });
-  }
-}
+    await interaction.reply({ embeds: [embed], components: [buttons] });
+  },
+};
+
+export default statsCommand;

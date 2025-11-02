@@ -1,13 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const logController = require('../controllers/logController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/log.controller';
 
-router.post('/', logController.createLog);
-
-router.get('/:logId', logController.getLog);
-
-router.get('/', logController.getAllLogs);
-
-router.delete('/:logId', logController.deleteLog);
-
-module.exports = router;
+export default createCrudRouter(controller);

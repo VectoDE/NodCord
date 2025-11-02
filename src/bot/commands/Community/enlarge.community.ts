@@ -1,55 +1,52 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+﻿import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-const { default: axios } = require('axios');
+import type { SlashCommandModule } from '@/bot/types';
 
-module.exports = {
+function buildEmojiUrl(emoji: string): string | null {
+  const custom = emoji.match(/^<a?:\w+:(\d+)>$/);
+  if (!custom) {
+    if (emoji.startsWith('https://')) {
+      return emoji;
+    }
+    return null;
+  }
+
+  const [, id] = custom;
+  const animated = emoji.startsWith('<a');
+  const extension = animated ? 'gif' : 'png';
+  return `https://cdn.discordapp.com/emojis/${id}.${extension}?quality=lossless`;
+}
+
+const enlargeCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('enlarge')
-    .setDescription('Bigger the given emoji.')
+    .setDescription('Display a larger version of a custom emoji or image URL.')
     .addStringOption((option) =>
       option
         .setName('emoji')
-        .setDescription('The emoji you want to enlarge.')
-        .setRequired(true)
+        .setDescription('Custom emoji (e.g. :emoji:) or direct image URL.')
+        .setRequired(true),
     ),
   async execute(interaction) {
-    let emoji = interaction.options.getString('emoji')?.trim();
+    const rawInput = interaction.options.getString('emoji', true).trim();
+    const imageUrl = buildEmojiUrl(rawInput);
 
-    if (emoji.startsWith('<') ** emoji.endsWith('>')) {
-      const id = emoji.match(/\d{15,}/g)[0];
-
-      const type = await axios
-        .get(`https://cdn.discordapp.com/emojis/${id}.gif`)
-        .then((image) => {
-          if (image) return 'gif';
-          else return 'png';
-        })
-        .catch((err) => {
-          return 'png';
-        });
-
-      emoji = `https://cdn.discordapp.com/emoji/${id}.${type}?quality=lossless`;
-    }
-
-    if (!emoji.startsWith('http')) {
-      return await interaction.reply({
-        content: "You can't enlarge this emojis.",
+    if (!imageUrl) {
+      await interaction.reply({
+        content: 'I can only enlarge custom server emojis or image URLs.',
         ephemeral: true,
       });
-    }
-
-    if (!emoji.startWith('https')) {
-      return await interaction.reply({
-        content: "You can't enlarge this emojis.",
-      });
+      return;
     }
 
     const embed = new EmbedBuilder()
       .setColor('Random')
-      .setDescription('Your emoji has been enlarged!')
-      .setImage(emoji)
+      .setDescription('Here is the enlarged emoji:')
+      .setImage(imageUrl)
       .setTimestamp();
 
     await interaction.reply({ embeds: [embed] });
   },
 };
+
+export default enlargeCommand;

@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const tagController = require('../controllers/tagController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/tag.controller';
 
-router.get('/', tagController.listTags);
-
-router.get('/:tagId', tagController.getTagDetails);
-
-router.post('/create', tagController.createTag);
-
-router.post('/:tagId/update', tagController.updateTag);
-
-router.post('/:tagId/delete', tagController.deleteTag);
-
-module.exports = router;
+export default createCrudRouter(controller);

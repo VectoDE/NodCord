@@ -1,70 +1,85 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
-  PermissionsBitField,
-} = require('discord.js');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import type { GuildMember, User } from 'discord.js';
+import type { SlashCommandModule } from '@/bot/types';
+
+const kickCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('kick')
-    .setDescription('Kick the user from the server.')
+    .setDescription('Kick a member from this server.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     .addUserOption((option) =>
-      option
-        .setName('user')
-        .setDescription('The user you want to kick.')
-        .setRequired(true)
+      option.setName('user').setDescription('The member to kick.').setRequired(true),
     )
     .addStringOption((option) =>
-      option
-        .setName('reason')
-        .setDescription('The reason for kicking the user.')
-        .setRequired(true)
+      option.setName('reason').setDescription('Reason for the kick.').setRequired(false),
     ),
   async execute(interaction) {
-    const userKick = interaction.options.getUser('user');
-    const memberKick = await interaction.guild.members.fetch(userKick.id);
-
-    if (
-      !interaction.member.permissions.has(PermissionsBitField.Flags.KickMembers)
-    )
-      return await interaction.reply({
-        content: "You don't have permissions to kick member from the server.",
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
       });
-
-    if (!memberKick)
-      return await interaction.reply({
-        content: 'The user you want to kick is not in the server.',
-      });
-
-    if (!memberKick.kickable)
-      return await interaction.reply({
-        content: 'I am not able to kick this user.',
-      });
-
-    let reason = interaction.options.getString('reason');
-
-    if (!reason) reason = 'No reason provided.';
-
-    const embedDM = new EmbedBuilder()
-      .setColor('Random')
-      .setDescription(
-        `You have been **kicked** from **${interaction.guild.name}** | ${reason}`
-      );
-
-    const embed = new EmbedBuilder()
-      .setColor('Random')
-      .setDescription(
-        `Successfully kicked **${userKick.tag}** from the server. | ${reason}`
-      );
-
-    await memberKick.send({ embeds: [embedDM] }).catch((err) => {
       return;
-    });
+    }
 
-    await memberKick.kick({ reason: reason }).catch((err) => {
-      interaction.reply({ content: 'Error', ephemeral: true });
-    });
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.KickMembers)) {
+      await interaction.reply({
+        content: 'You do not have permission to kick members.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    await interaction.reply({ embeds: [embed] });
+    const targetUser: User = interaction.options.getUser('user', true);
+    const reason = interaction.options.getString('reason')?.trim() || 'No reason provided.';
+
+    if (targetUser.id === interaction.user.id) {
+      await interaction.reply({ content: 'You cannot kick yourself.', ephemeral: true });
+      return;
+    }
+
+    let targetMember: GuildMember;
+    try {
+      targetMember = await interaction.guild.members.fetch(targetUser.id);
+    } catch {
+      await interaction.reply({
+        content: 'That user is not currently in this server.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (!targetMember.kickable) {
+      await interaction.reply({
+        content: 'I cannot kick that member due to role hierarchy.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const dmEmbed = new EmbedBuilder()
+      .setColor('Red')
+      .setDescription(`You have been kicked from **${interaction.guild.name}**.\nReason: ${reason}`)
+      .setTimestamp();
+
+    await targetMember.send({ embeds: [dmEmbed] }).catch(() => undefined);
+
+    try {
+      await targetMember.kick(reason);
+    } catch {
+      await interaction.reply({ content: 'I was unable to kick that member.', ephemeral: true });
+      return;
+    }
+
+    const resultEmbed = new EmbedBuilder()
+      .setColor('Blurple')
+      .setDescription(`Successfully kicked **${targetUser.tag}**.`)
+      .addFields({ name: 'Reason', value: reason })
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [resultEmbed] });
   },
 };
+
+export default kickCommand;

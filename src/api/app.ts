@@ -1,160 +1,134 @@
-require('dotenv').config();
-require('../configs/passport.config');
-const express = require('express');
-const session = require('express-session');
-const fs = require('fs');
-const path = require('path');
-const morgan = require('morgan');
-const flash = require('connect-flash');
-const cookieParser = require('cookie-parser');
-const passport = require('passport');
-const logger = require('../services/logger.service');
-const corsMiddleware = require('./middlewares/corsMiddleware');
-const compressionMiddleware = require('./middlewares/compressionMiddleware');
-const rateLimiter = require('./middlewares/rateLimiterMiddleware');
+import cookieParser from 'cookie-parser';
+import express, { type RequestHandler } from 'express';
+import helmet from 'helmet';
+import http from 'node:http';
+import passport from 'passport';
 
-const api = express();
+import { compressionMiddleware } from '@/middlewares/compression.middleware';
+import { corsMiddleware } from '@/middlewares/cors.middleware';
+import { csrfIssueToken, csrfVerify, sendCsrfToken } from '@/middlewares/csrf.middleware';
+import { loggingMiddleware } from '@/middlewares/logging.middleware';
+import { rateLimiterMiddleware } from '@/middlewares/rateLimiter.middleware';
+import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
+import { requireAuth } from '@/middlewares/authentication.middleware';
+import { requireAnyRole } from '@/middlewares/role.middleware';
+import { requireDeveloperProgram } from '@/middlewares/developerProgram.middleware';
+import { requireApiKey } from '@/middlewares/apiKeyMiddleware';
+import { startMonitor } from '@/services/monitor.service';
+import logger from '@/services/logger.service';
+import { initSocketIOServer } from '@/services/socketio.service';
+import { safeAsync } from '@/utils/async.util';
+import { Once } from '@/utils/sync.util';
+import { standardResponse } from '@/utils/response.util';
+import crudRoutes from '@/api/routers/index';
 
-api.set('trust proxy', 1);
+import '@/configs/passport.config';
 
-api.use(express.urlencoded({ extended: true }));
-api.use(express.json());
-api.use(cookieParser());
-api.use(flash());
+type RawBodyRequest = express.Request & { rawBody?: Buffer };
 
-api.use(corsMiddleware);
-api.use(compressionMiddleware);
-api.use(rateLimiter);
+const app = express();
+const initOnce = new Once<void>();
 
-api.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+const isProd = process.env['NODE_ENV'] === 'production';
 
-morgan.token('remote-addr', (req) => req.headers['x-forwarded-for'] || req.connection.remoteAddress);
-morgan.token('url', (req) => req.originalUrl);
+app.set('trust proxy', 1);
+app.disable('x-powered-by');
 
-const logFormat = '[API] :remote-addr - :method :url :status :response-time ms - :res[content-length]';
-api.use(morgan(logFormat, { stream: { write: (message) => logger.info(message.trim()) } }));
+app.use(
+  express.json({
+    limit: '1mb',
+    verify: (req, _res, buf) => {
+      if (buf && buf.length > 0) {
+        (req as RawBodyRequest).rawBody = Buffer.from(buf);
+      }
+    },
+  }),
+);
+app.use(
+  express.urlencoded({
+    extended: true,
+    verify: (req, _res, buf) => {
+      if (buf && buf.length > 0) {
+        (req as RawBodyRequest).rawBody = Buffer.from(buf);
+      }
+    },
+  }),
+);
+app.use(cookieParser());
 
-api.set('view engine', 'ejs');
-api.set('views', path.join(__dirname, '../views'));
-api.use(express.static(path.join(__dirname, '../public')));
+if (isProd) {
+  app.use(helmet());
+} else {
+  app.use(helmet({ crossOriginEmbedderPolicy: false }));
+}
 
-api.use(passport.initialize());
-api.use(passport.session());
+app.use(loggingMiddleware());
+app.use(rateLimiterMiddleware({ tokensPerSecond: 10, burst: 30 }));
+app.use(corsMiddleware({ origin: ['https://nodcord.hauknetz.de', 'http://localhost:3000'] }));
+app.use(securityHeaderMiddleware());
+app.use(compressionMiddleware({ minSize: 1024 }));
+app.use(csrfIssueToken());
+app.use(
+  csrfVerify({
+    exclude: [/^\/api\/v1\/payments\/webhook$/],
+  }),
+);
+app.use(passport.initialize());
 
-const authRoutes = require('./routes/authRoutes');
-const betaRoutes = require('./routes/betaRoutes');
-const developerProgramRoutes = require('./routes/developerProgramRoutes');
-const apiKeyRoutes = require('./routes/apiKeyRoutes');
-const infoRoutes = require('./routes/infoRoutes');
-const versionRoutes = require('./routes/versionRoutes');
-const userRoutes = require('./routes/userRoutes');
-const roleRoutes = require('./routes/roleRoutes');
-const tagRoutes = require('./routes/tagRoutes');
-const categoryRoutes = require('./routes/categoryRoutes');
-const blogRoutes = require('./routes/blogRoutes');
-const gameRoutes = require('./routes/gameRoutes');
-const favoriteRoutes = require('./routes/favoriteRoutes');
-const commentRoutes = require('./routes/commentRoutes');
-const likeRoutes = require('./routes/likeRoutes');
-const dislikeRoutes = require('./routes/dislikeRoutes');
-const shareRoutes = require('./routes/shareRoutes');
-const newsletterRoutes = require('./routes/newsletterRoutes');
-const subscriberRoutes = require('./routes/subscriberRoutes');
-const companyRoutes = require('./routes/companyRoutes');
-const organizationRoutes = require('./routes/organizationRoutes');
-const groupRoutes = require('./routes/groupRoutes');
-const teamRoutes = require('./routes/teamRoutes');
-const projectRoutes = require('./routes/projectRoutes');
-const taskRoutes = require('./routes/taskRoutes');
-const issueRoutes = require('./routes/issueRoutes');
-const bugRoutes = require('./routes/bugRoutes');
-const featureRoutes = require('./routes/featureRoutes');
-const storyRoutes = require('./routes/storyRoutes');
-const customerRoutes = require('./routes/customerRoutes');
-const customerOrderRoutes = require('./routes/customerOrderRoutes');
-const productRoutes = require('./routes/productRoutes');
-//const orderRoutes = require('./routes/orderRoutes');
-const returnRoutes = require('./routes/returnRoutes');
-const ticketRoutes = require('./routes/ticketRoutes');
-const feedbackRoutes = require('./routes/feedbackRoutes');
-const controlRoutes = require('./routes/controlRoutes');
-const securityRoutes = require('./routes/securityRoutes');
-const fileRoutes = require('./routes/fileRoutes');
-const proxmoxRoutes = require('./routes/proxmoxRoutes');
-const plexRoutes = require('./routes/plexRoutes');
-const faceitRoutes = require('./routes/faceitRoutes');
-const steamRoutes = require('./routes/steamRoutes');
-const cloudNetRoutes = require('./routes/cloudnetRoutes');
-const tournamentRoutes = require('./routes/tournamentRoutes');
-const teamspeakRoutes = require('./routes/teamspeakRoutes');
-const logRoutes = require('./routes/logRoutes');
+app.get('/api/v1/csrf-token', sendCsrfToken());
 
-api.use('/api/auth', authRoutes);
-api.use('/api/beta', betaRoutes);
-api.use('/api/developerprogram', developerProgramRoutes);
-api.use('/api/apikeys', apiKeyRoutes);
-api.use('/api/infos', infoRoutes);
-api.use('/api/versions', versionRoutes);
-api.use('/api/users', userRoutes);
-api.use('/api/roles', roleRoutes);
-api.use('/api/tags', tagRoutes);
-api.use('/api/categories', categoryRoutes);
-api.use('/api/blogs', blogRoutes);
-api.use('/api/games', gameRoutes);
-api.use('/api/favorites', favoriteRoutes);
-api.use('/api/comments', commentRoutes);
-api.use('/api/likes', likeRoutes);
-api.use('/api/dislikes', dislikeRoutes);
-api.use('/api/shares', shareRoutes);
-api.use('/api/newsletters', newsletterRoutes);
-api.use('/api/subscribers', subscriberRoutes);
-api.use('/api/companies', companyRoutes);
-api.use('/api/organizations', organizationRoutes);
-api.use('/api/groups', groupRoutes);
-api.use('/api/teams', teamRoutes);
-api.use('/api/projects', projectRoutes);
-api.use('/api/tasks', taskRoutes);
-api.use('/api/issues', issueRoutes);
-api.use('/api/bugs', bugRoutes);
-api.use('/api/features', featureRoutes);
-api.use('/api/stories', storyRoutes);
-api.use('/api/customers', customerRoutes);
-api.use('/api/customers/orders', customerOrderRoutes);
-api.use('/api/products', productRoutes);
-//api.use('/api/orders', orderRoutes);
-api.use('/api/returns', returnRoutes);
-api.use('/api/tickets', ticketRoutes);
-api.use('/api/feedbacks', feedbackRoutes);
-api.use('/api/controls', controlRoutes);
-api.use('/api/securities', securityRoutes);
-api.use('/api/logs', logRoutes);
-api.use('/api/proxmox', proxmoxRoutes);
-api.use('/api/plex', plexRoutes);
-api.use('/api/faceit', faceitRoutes);
-api.use('/api/steam', steamRoutes);
-api.use('/api/cloudnet', cloudNetRoutes);
-api.use('/api/tournaments', tournamentRoutes);
-api.use('/api/teamspeak', teamspeakRoutes);
-api.use('/api/files', fileRoutes);
-
-const startApi = () => {
-  const https = process.env.API_HTTPS || 'http';
-  const port = process.env.API_PORT || '3000';
-  const baseURL = process.env.API_BASE_URL || 'localhost';
-
-  if (process.env.NODE_ENV === 'production') {
-    api.listen(port, () => {
-      logger.info(`API is running on ${https}://${baseURL}:${port}`);
-    });
-  } else if (process.env.NODE_ENV === 'development') {
-    api.listen(port, () => {
-      logger.info(`API is running on ${https}://${baseURL}:${port}`);
-    });
-  }
+const crudRoutePolicies: Record<string, () => RequestHandler[]> = {
+  '/api/v1/api-keys': () => [requireAnyRole(['admin'])],
+  '/api/v1/developer-programs': () => [requireDeveloperProgram({ keyCanBypassJwt: false })],
+  '/api/v1/logs': () => [requireAnyRole(['admin']), requireApiKey()],
+  '/api/v1/roles': () => [requireAnyRole(['admin'])],
+  '/api/v1/orders': () => [requireAnyRole(['admin', 'manager'])],
 };
 
-module.exports = { api, startApi };
+crudRoutes.forEach(({ path, router }) => {
+  if (path === '/api/v1/payments') {
+    app.use(path, router);
+    return;
+  }
+
+  const guards = crudRoutePolicies[path]?.() ?? [];
+  app.use(path, requireAuth(), ...guards, router);
+});
+
+app.use((_req, res) => standardResponse(res, 404, { error: 'Not Found' }, 'Not Found'));
+
+app.use(
+  (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    const msg = err instanceof Error ? err.message : String(err);
+    logger.error('[GLOBAL ERROR]', { error: msg });
+    return standardResponse(res, 500, { error: msg }, 'Internal Server Error');
+  },
+);
+
+export const createServer = safeAsync(async () => {
+  const PORT = Number(process.env['PORT'] ?? 8080);
+  const ENV = process.env['NODE_ENV'] ?? 'development';
+
+  const server = http.createServer(app);
+
+  await initOnce.run(async () => {
+    logger.info('[APP] Starting API Server...', { port: PORT, env: ENV });
+    await startMonitor(app, { routePrefix: '/system', protectMetrics: true });
+  });
+
+  await new Promise<void>((resolve) => server.listen(PORT, resolve));
+  logger.info(`[APP] Listening on port ${PORT} [${ENV}]`);
+
+  await initSocketIOServer(server);
+
+  const shutdown = async (signal: string) => {
+    logger.warn(`[APP] Received ${signal}, shutting down gracefully...`);
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+    process.exit(0);
+  };
+
+  process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+});
+
+export default app;

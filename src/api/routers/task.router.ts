@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const taskController = require('../controllers/taskController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/task.controller';
 
-router.get('/', taskController.listTasks);
-
-router.get('/:taskId', taskController.getTaskDetails);
-
-router.post('/create', taskController.createTask);
-
-router.post('/:taskId/update', taskController.updateTask);
-
-router.post('/:taskId/delete', taskController.deleteTask);
-
-module.exports = router;
+export default createCrudRouter(controller);

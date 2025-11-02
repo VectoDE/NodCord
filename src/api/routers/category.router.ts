@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const categoryController = require('../controllers/categoryController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/category.controller';
 
-router.get('/', categoryController.getCategories);
-
-router.get('/:categoryId', categoryController.getCategoryById);
-
-router.post('/create', categoryController.createCategory);
-
-router.post('/:categoryId/update', categoryController.updateCategory);
-
-router.post('/:categoryId/delete', categoryController.deleteCategory);
-
-module.exports = router;
+export default createCrudRouter(controller);

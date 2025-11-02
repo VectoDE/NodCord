@@ -1,24 +1,33 @@
-const express = require('express');
-const passport = require('passport');
-const router = express.Router();
-const authController = require('../controllers/authController');
+import { Router } from 'express';
+import passport from 'passport';
 
-// Google authentication
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-router.get('/google/callback', passport.authenticate('google', { session: false }), authController.googleCallback);
+import {
+  optionalAuth,
+  requireAuth,
+  startDiscordAuth,
+  handleDiscordCallback,
+} from '@/middlewares/authentication.middleware';
+import { getSession, refreshSession, logout } from '@/api/controllers/authentication.controller';
 
-// GitHub authentication
-router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
-router.get('/github/callback', passport.authenticate('github', { session: false }), authController.githubCallback);
+const router = Router();
 
-// Discord authentication
-router.get('/discord', passport.authenticate('discord', { scope: ['identify', 'email'] }));
-router.get('/discord/callback', passport.authenticate('discord', { session: false }), authController.discordCallback);
+// Session inspection and lifecycle
+router.get('/session', optionalAuth(), getSession);
+router.post('/session/refresh', refreshSession);
+router.post('/session/logout', requireAuth(), logout);
 
-// Route zur Verifizierung der E-Mail
-router.get('/verify-email/:token', authController.verifyEmail);
+// OAuth entrypoints
+router.get('/discord', startDiscordAuth());
+router.get('/discord/callback', handleDiscordCallback(), getSession);
 
-// Route für Logout
-router.get('/logout', authController.logout);
+// Placeholder routes for additional providers (Google, GitHub)
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'], session: false }),
+);
+router.get('/google/callback', passport.authenticate('google', { session: false }), getSession);
 
-module.exports = router;
+router.get('/github', passport.authenticate('github', { scope: ['user:email'], session: false }));
+router.get('/github/callback', passport.authenticate('github', { session: false }), getSession);
+
+export default router;

@@ -1,31 +1,88 @@
-const { PermissionsBitField, SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import type { GuildMember, User } from 'discord.js';
+import type { SlashCommandModule } from '@/bot/types';
+
+const untimeoutCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('untimeout')
-  .setDescription('Remove timeout from user.')
-  .addUserOption(option => option.setName('user').setDescription('Select the user.').setRequired(true))
-  .addStringOption(option => option.setName('reason').setDescription('Provide a reason for untimeout.').setRequired(true)),
-  async execute (interaction) {
-    const user = interaction.options.getUser('user');
-    const timeMember = await interaction.guild.members.fetch(user.id);
-    const reason = interaction.options.getString('reason') || "No reason provided.";
+    .setName('untimeout')
+    .setDescription('Remove an active timeout from a member.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
+    .addUserOption((option) =>
+      option
+        .setName('user')
+        .setDescription('The member to remove the timeout from.')
+        .setRequired(true),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('reason')
+        .setDescription('Reason for removing the timeout.')
+        .setRequired(false),
+    ),
+  async execute(interaction) {
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return await interaction.reply({ content: "You do not have permissions to use this command." });
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ModerateMembers)) {
+      await interaction.reply({
+        content: 'You do not have permission to manage timeouts.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    await timeMember.timeout(null, reason);
+    const targetUser: User = interaction.options.getUser('user', true);
+    const reason = interaction.options.getString('reason')?.trim() || 'No reason provided.';
 
-    const embed = new EmbedBuilder()
-    .setDescription(`Successfully untimeout **${user.tag}** | ${reason}`);
+    let targetMember: GuildMember;
+    try {
+      targetMember = await interaction.guild.members.fetch(targetUser.id);
+    } catch {
+      await interaction.reply({
+        content: 'I could not find that member in this server.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    if (!targetMember.isCommunicationDisabled()) {
+      await interaction.reply({
+        content: 'That member is not currently timed out.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    try {
+      await targetMember.timeout(null, reason);
+    } catch {
+      await interaction.reply({ content: 'I was unable to remove the timeout.', ephemeral: true });
+      return;
+    }
 
     const dmEmbed = new EmbedBuilder()
-    .setColor('Random')
-    .setDescription(`You have been **untimedout** in **${interaction.guild.name}** | ${reason}`)
+      .setColor('Blurple')
+      .setDescription(
+        `Your timeout in **${interaction.guild.name}** has been removed.\nReason: ${reason}`,
+      )
+      .setTimestamp();
 
-    await timeMember.send({ embeds: [dmEmbed] }).catch(err => {
-      return;
-    });
+    await targetUser.send({ embeds: [dmEmbed] }).catch(() => undefined);
 
-    await interaction.reply({ embeds: [embed] });
-  }
-}
+    const resultEmbed = new EmbedBuilder()
+      .setColor('Blurple')
+      .setDescription(`Removed the timeout from **${targetUser.tag}**.`)
+      .addFields({ name: 'Reason', value: reason })
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [resultEmbed] });
+  },
+};
+
+export default untimeoutCommand;

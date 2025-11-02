@@ -1,19 +1,23 @@
-const express = require('express');
-const router = express.Router();
-const betaController = require('../controllers/betaController');
+import { Router } from 'express';
 
-router.get('/keys', betaController.getBetaKeys);
+import {
+  listBetaKeys,
+  createBetaKey,
+  updateBetaKey,
+  deleteBetaKey,
+  getBetaSystem,
+  updateBetaSystem,
+} from '@/api/controllers/beta.controller';
+import { requireAuth } from '@/middlewares/authentication.middleware';
 
-router.get('/keys/:keyId', betaController.getBetaKeyById);
+const router = Router();
 
-router.post('/keys/create', betaController.createBetaKey);
+router.get('/keys', requireAuth(), listBetaKeys);
+router.post('/keys', requireAuth(), createBetaKey);
+router.patch('/keys/:id', requireAuth(), updateBetaKey);
+router.delete('/keys/:id', requireAuth(), deleteBetaKey);
 
-router.post('/keys/:keyId/update', betaController.updateBetaKey);
+router.get('/system', requireAuth(), getBetaSystem);
+router.patch('/system', requireAuth(), updateBetaSystem);
 
-router.post('/keys/:keyId/delete', betaController.deleteBetaKey);
-
-router.post('/toggle', betaController.toggleBetaSystem);
-
-router.post('/verify', betaController.verifyBetaKey);
-
-module.exports = router;
+export default router;

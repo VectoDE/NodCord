@@ -1,23 +1,33 @@
-const { Interaction } = require('discord.js');
-const logger = require('../../services/logger.service');
+import { Events, type ChatInputCommandInteraction, type Interaction } from 'discord.js';
 
-module.exports = {
-  name: 'interactionCreate',
-  async execute(interaction, client) {
-    if (!interaction.isCommand()) return;
+import logger from '@/services/logger.service';
+
+import type { BotEventModule, NodCordClient } from '@/bot/types';
+
+const interactionCreateEvent: BotEventModule<'interactionCreate'> = {
+  name: Events.InteractionCreate,
+  async execute(client: NodCordClient, interaction: Interaction) {
+    if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
-
     if (!command) return;
 
     try {
-      await command.execute(interaction, client);
+      await command.execute(interaction as ChatInputCommandInteraction, client);
     } catch (error) {
-      logger.error('[BOT]' + error);
-      await interaction.reply({
-        content: 'There was an error while executing this command!',
-        ephemeral: true,
-      });
+      logger.error('[BOT] Failed to execute command', { command: interaction.commandName, error });
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply({
+          content: 'There was an error while executing this command!',
+        });
+      } else {
+        await interaction.reply({
+          content: 'There was an error while executing this command!',
+          ephemeral: true,
+        });
+      }
     }
   },
 };
+
+export default interactionCreateEvent;

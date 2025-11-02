@@ -1,31 +1,57 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+const unbanAllCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('unban-all')
-  .setDescription('Unban all member from the server.'),
+    .setName('unban-all')
+    .setDescription('Remove bans for every user currently banned from the server.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
   async execute(interaction) {
-    const { options, guild } = interaction;
-    const { ownerId } = guild;
-    const users = await interaction.guild.bans.fetch();
-    const ids = users.map(user => user.user.id);
-
-    if(!interaction.member.permissions.has(PermissionsBitField.Flags.BanMembers)) return await interaction.reply({ content: "You do not have permissions to use this command." });
-
-    if(users.size === 0) return await interaction.reply({ content: "There is no one banned from this server." });
-
-    await interaction.reply({ content: "Unbanning everyone in this server..." });
-
-    for(const id of ids) {
-      await guild.members.unban(id).catch(err => {
-        return interaction.reply({ content: `${err.rawError}` });
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
       });
+      return;
+    }
+
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.BanMembers)) {
+      await interaction.reply({
+        content: 'You do not have permission to manage bans.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const bans = await interaction.guild.bans.fetch();
+    if (bans.size === 0) {
+      await interaction.reply({
+        content: 'There are no users banned from this server.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    await interaction.reply({ content: 'Unbanning all users...', ephemeral: true });
+
+    let successCount = 0;
+    for (const [userId] of bans) {
+      try {
+        await interaction.guild.bans.remove(userId, 'Mass unban initiated by command.');
+        successCount += 1;
+      } catch {
+        // continue attempting to unban remaining users
+      }
     }
 
     const embed = new EmbedBuilder()
-    .setColor('Random')
-    .setDescription(`Successfully unbanned **${ids.length}** members from this server.`);
+      .setColor('Blurple')
+      .setDescription(`Removed bans for **${successCount}** user${successCount === 1 ? '' : 's'}.`)
+      .setTimestamp();
 
-    await interaction.editReply({ content: "", embeds: [embed] });
-  }
-}
+    await interaction.editReply({ content: '', embeds: [embed] });
+  },
+};
+
+export default unbanAllCommand;
