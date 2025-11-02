@@ -1,9 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const feedbackController = require('../controllers/feedbackController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/feedback.controller';
 
-router.get('/feedbacks', feedbackController.getAllFeedbacks);
-
-router.post('/create', feedbackController.createFeedback);
-
-module.exports = router;
+export default createCrudRouter(controller);

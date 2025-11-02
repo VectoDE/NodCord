@@ -1,177 +1,196 @@
-const Payment = require('../../models/paymentModel');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const paypal = require('paypal-rest-sdk');
-const logger = require('../../services/logger.service');
+import type { Request, Response } from 'express';
 
-paypal.configure({
-  mode: 'sandbox', // 'sandbox' or 'live'
-  client_id: process.env.PAYPAL_CLIENT_ID,
-  client_secret: process.env.PAYPAL_CLIENT_SECRET,
-});
+import { getController } from '@/api/controllers/registry';
+import { safeAsync } from '@/utils/async.util';
+import { standardResponse } from '@/utils/response.util';
+import {
+  createProductCheckoutSession,
+  createSubscriptionCheckoutSession,
+  listActivePrices,
+  listActiveProducts,
+  handleStripeWebhook,
+} from '@/services/stripe.service';
+import type { AuthUser } from '@/middlewares/authentication.middleware';
 
-// TODO: Function Controller
+export const paymentController = getController('payment');
 
-const listPayments = async (req, res) => {
-  try {
-    const { userId } = req.query;
-    if (!userId) {
-      logger.warn('User ID is required');
-      return res.status(400).json({ error: 'User ID is required' });
+type MetadataIntent = 'one_time' | 'subscription';
+
+function normalizeMetadata(input: unknown): Record<string, string> | undefined {
+  if (!input || typeof input !== 'object' || Array.isArray(input)) return undefined;
+  const entries = Object.entries(input as Record<string, unknown>);
+  if (!entries.length) return undefined;
+
+  const result: Record<string, string> = {};
+  for (const [key, value] of entries) {
+    if (typeof value === 'string') {
+      result[key] = value;
+    } else if (typeof value === 'number' || typeof value === 'boolean') {
+      result[key] = String(value);
     }
-
-    const payments = await Payment.find({ userId });
-    logger.info(`Fetched ${payments.length} payments for user ${userId}`);
-    res.status(200).json(payments);
-  } catch (error) {
-    logger.error('Error listing payments:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
-};
+  return Object.keys(result).length ? result : undefined;
+}
 
-const createPayment = async (req, res) => {
-  try {
-    const { userId, amount, method, token, payerId, returnUrl, cancelUrl } =
-      req.body;
-    if (!userId || !amount || !method) {
-      logger.warn('User ID, Amount, and Method are required');
-      return res
-        .status(400)
-        .json({ error: 'User ID, Amount, and Method are required' });
+function buildMetadata(
+  user: AuthUser | undefined,
+  provided: Record<string, string> | undefined,
+  intent: MetadataIntent,
+): Record<string, string> {
+  const metadata: Record<string, string> = { intent };
+
+  if (user?.id) metadata['userId'] = user.id;
+  if (user?.email) metadata['userEmail'] = user.email;
+
+  if (provided) {
+    for (const [key, value] of Object.entries(provided)) {
+      metadata[key] = value;
     }
-
-    let transactionId;
-    let paymentStatus;
-
-    switch (method) {
-      case 'credit_card':
-        const charge = await stripe.charges.create({
-          amount: amount * 100,
-          currency: 'usd',
-          source: token,
-          description: 'Payment for your order',
-        });
-        transactionId = charge.id;
-        paymentStatus = charge.status;
-        logger.info(`Credit card payment created: ${transactionId}`);
-        break;
-
-      case 'paypal':
-        const create_payment_json = {
-          intent: 'sale',
-          payer: {
-            payment_method: 'paypal',
-          },
-          transactions: [
-            {
-              amount: {
-                total: amount,
-                currency: 'USD',
-              },
-              description: 'Payment for your order',
-            },
-          ],
-          redirect_urls: {
-            return_url: returnUrl,
-            cancel_url: cancelUrl,
-          },
-        };
-
-        paypal.payment.create(create_payment_json, (error, payment) => {
-          if (error) {
-            logger.error('PayPal payment creation error:', error);
-            return res.status(500).json({ error: error.message });
-          } else {
-            transactionId = payment.id;
-            paymentStatus = payment.state;
-            logger.info(`PayPal payment created: ${transactionId}`);
-            res.json({ payment });
-          }
-        });
-
-        return;
-
-      case 'apple_pay':
-      case 'google_pay':
-      case 'amazon_pay':
-      case 'bank_transfer':
-        transactionId = 'mock_transaction_id';
-        paymentStatus = 'completed';
-        logger.info(`Mock payment created with method ${method}`);
-        break;
-
-      default:
-        logger.warn('Invalid payment method');
-        return res.status(400).json({ error: 'Invalid payment method' });
-    }
-
-    const newPayment = new Payment({
-      userId,
-      amount,
-      method,
-      status: paymentStatus,
-      transactionId,
-    });
-
-    await newPayment.save();
-    res.status(201).json(newPayment);
-  } catch (error) {
-    logger.error('Error creating payment:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
   }
-};
 
-const paypalSuccess = async (req, res) => {
-  try {
-    const { paymentId, PayerID } = req.query;
+  return metadata;
+}
 
-    const execute_payment_json = {
-      payer_id: PayerID,
-      transactions: [
-        {
-          amount: {
-            currency: 'USD',
-            total: req.query.amount,
-          },
-        },
-      ],
+export const listStripeProducts = safeAsync(
+  async (_req: Request, res: Response) => {
+    const products = await listActiveProducts();
+    return standardResponse(res, 200, products, 'Active products fetched');
+  },
+  { label: 'payments#products' },
+);
+
+export const listStripePrices = safeAsync(
+  async (_req: Request, res: Response) => {
+    const prices = await listActivePrices();
+    return standardResponse(res, 200, prices, 'Active prices fetched');
+  },
+  { label: 'payments#prices' },
+);
+
+export const createOneTimeCheckout = safeAsync(
+  async (req: Request, res: Response) => {
+    const user = req.user as AuthUser | undefined;
+    const { priceId, customerEmail, metadata, successUrl, cancelUrl } = req.body as Record<
+      string,
+      unknown
+    >;
+
+    if (typeof priceId !== 'string' || priceId.length === 0) {
+      return standardResponse(
+        res,
+        400,
+        { error: 'Missing priceId' },
+        'priceId is required',
+      );
+    }
+
+    const email = (customerEmail as string | undefined) ?? user?.email;
+    if (!email) {
+      return standardResponse(
+        res,
+        400,
+        { error: 'Missing customer email' },
+        'Customer email required',
+      );
+    }
+
+    const checkoutOptions = {
+      priceId,
+      customerEmail: email,
+      metadata: buildMetadata(user, normalizeMetadata(metadata), 'one_time'),
+      ...(typeof successUrl === 'string' ? { successUrl } : {}),
+      ...(typeof cancelUrl === 'string' ? { cancelUrl } : {}),
     };
 
-    paypal.payment.execute(
-      paymentId,
-      execute_payment_json,
-      async (error, payment) => {
-        if (error) {
-          logger.error('PayPal payment execution error:', error);
-          return res.status(500).json({ error: error.message });
-        } else {
-          const newPayment = new Payment({
-            userId: payment.payer.payer_info.payer_id,
-            amount: payment.transactions[0].amount.total,
-            method: 'paypal',
-            status: payment.state,
-            transactionId: payment.id,
-          });
+    const session = await createProductCheckoutSession(checkoutOptions);
+    if (!session) {
+      return standardResponse(
+        res,
+        502,
+        { error: 'Unable to create checkout session' },
+        'Checkout session failed',
+      );
+    }
 
-          await newPayment.save();
-          logger.info(`PayPal payment executed successfully: ${payment.id}`);
-          res.status(200).json(newPayment);
-        }
-      }
+    return standardResponse(
+      res,
+      201,
+      {
+        sessionId: session.id,
+        url: session.url,
+        expiresAt: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
+        mode: session.mode,
+      },
+      'One-time checkout session created',
     );
-  } catch (error) {
-    logger.error('Error handling PayPal success:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-};
+  },
+  { label: 'payments#checkout:one_time' },
+);
 
-const paypalCancel = (req, res) => {
-  logger.info('PayPal payment canceled');
-  res.status(400).json({ message: 'Payment canceled' });
-};
+export const createSubscriptionCheckout = safeAsync(
+  async (req: Request, res: Response) => {
+    const user = req.user as AuthUser | undefined;
+    const { priceId, customerEmail, metadata, successUrl, cancelUrl } = req.body as Record<
+      string,
+      unknown
+    >;
 
-module.exports = {
-  listPayments,
-  createPayment,
-  paypalSuccess,
-  paypalCancel,
-};
+    if (typeof priceId !== 'string' || priceId.length === 0) {
+      return standardResponse(
+        res,
+        400,
+        { error: 'Missing priceId' },
+        'priceId is required',
+      );
+    }
+
+    const email = (customerEmail as string | undefined) ?? user?.email;
+    if (!email) {
+      return standardResponse(
+        res,
+        400,
+        { error: 'Missing customer email' },
+        'Customer email required',
+      );
+    }
+
+    const checkoutOptions = {
+      priceId,
+      customerEmail: email,
+      metadata: buildMetadata(user, normalizeMetadata(metadata), 'subscription'),
+      ...(typeof successUrl === 'string' ? { successUrl } : {}),
+      ...(typeof cancelUrl === 'string' ? { cancelUrl } : {}),
+    };
+
+    const session = await createSubscriptionCheckoutSession(checkoutOptions);
+    if (!session) {
+      return standardResponse(
+        res,
+        502,
+        { error: 'Unable to create subscription session' },
+        'Subscription checkout failed',
+      );
+    }
+
+    return standardResponse(
+      res,
+      201,
+      {
+        sessionId: session.id,
+        url: session.url,
+        subscription: session.subscription,
+        expiresAt: session.expires_at ? new Date(session.expires_at * 1000).toISOString() : null,
+        mode: session.mode,
+      },
+      'Subscription checkout session created',
+    );
+  },
+  { label: 'payments#checkout:subscription' },
+);
+
+export const stripeWebhook = safeAsync(handleStripeWebhook, {
+  label: 'payments#webhook',
+  rethrow: false,
+});
+
+export default paymentController;

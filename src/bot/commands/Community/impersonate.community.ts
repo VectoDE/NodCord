@@ -1,27 +1,61 @@
-const { SlashCommandBuilder } = require('discord.js');
+﻿import { SlashCommandBuilder, type TextChannel } from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+const impersonateCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('impersonate')
-  .setDescription('Impersonate a user.')
-  .addUserOption(option => option.setName('user').setDescription('The user you want to impersonate.').setRequired(true))
-  .addStringOption(option => option.setName('message').setDescription('The message you want to say.').setRequired(true)),
+    .setName('impersonate')
+    .setDescription('Send a message using a temporary webhook.')
+    .addUserOption((option) =>
+      option.setName('user').setDescription('The user you want to impersonate.').setRequired(true),
+    )
+    .addStringOption((option) =>
+      option
+        .setName('message')
+        .setDescription('The message to send as the impersonated user.')
+        .setRequired(true),
+    ),
   async execute(interaction) {
-    const { options } = interaction;
+    if (!interaction.inGuild()) {
+      await interaction.reply({
+        content: 'This command can only be used in a server.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    const member = options.getUser('user');
-    const message = options.getString('message');
+    const channel = interaction.channel;
+    if (!channel || !('createWebhook' in channel)) {
+      await interaction.reply({
+        content: 'I can only impersonate users in text channels.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    await interaction.channel.createWebhook({
-      name: member.username,
-      avatar: member.displayAvatarURL({ dynamic: true })
-    }).then((webhook) => {
-      webhook.send({ content: message });
-      setTimeout(() => {
-        webhook.delete();
-      }, 3000)
-    });
+    const targetUser = interaction.options.getUser('user', true);
+    const messageContent = interaction.options.getString('message', true);
 
-    await interaction.reply({ content: `${member} has been impersonate below.`, ephemeral: true });
-  }
-}
+    try {
+      const webhook = await (channel as TextChannel).createWebhook({
+        name: targetUser.username,
+        avatar: targetUser.displayAvatarURL({ forceStatic: false }),
+      });
+
+      await webhook.send({ content: messageContent.slice(0, 2000) });
+      setTimeout(() => webhook.delete().catch(() => undefined), 5_000);
+
+      await interaction.reply({
+        content: `${targetUser} has been impersonated below.`,
+        ephemeral: true,
+      });
+    } catch (error) {
+      await interaction.reply({
+        content: 'I was unable to create a webhook in this channel.',
+        ephemeral: true,
+      });
+    }
+  },
+};
+
+export default impersonateCommand;

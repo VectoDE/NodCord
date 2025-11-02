@@ -1,138 +1,88 @@
-require('dotenv').config();
-const User = require('../../models/userModel');
-const jwt = require('jsonwebtoken');
-const nodemailerService = require('../../services/nodemailer.service');
-const logger = require('../../services/logger.service');
-const getBaseUrl = require('../helpers/getBaseUrlHelper');
-const sendResponse = require('../helpers/sendResponseHelper');
-const passport = require('passport');
+import type { Request, Response, CookieOptions } from 'express';
 
-exports.googleCallback = async (req, res) => {
-  try {
-    if (req.user) {
-      req.user.recentActivity = new Date();
+import logger from '@/services/logger.service';
+import { safeAsync } from '@/utils/async.util';
+import { standardResponse } from '@/utils/response.util';
+import { handleTokenRefresh, type AuthUser } from '@/middlewares/authentication.middleware';
+import type { AccessTokenPayload } from '@/utils/jwt.util';
 
-      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
-      req.user.isAuthenticated = true;
-      await req.user.save();
-
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-      });
-
-      const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
-      return res.redirect(redirectUrl);
-    } else {
-      return res.redirect(`${getBaseUrl()}/login`);
-    }
-  } catch (err) {
-    logger.error('Google authentication error:', err.message);
-    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
-  }
+type MaybeAuthRequest = Request & {
+  auth?: { payload?: AccessTokenPayload };
 };
 
-exports.githubCallback = async (req, res) => {
-  try {
-    if (req.user) {
-      req.user.recentActivity = new Date();
-
-      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
-      req.user.isAuthenticated = true;
-      await req.user.save();
-
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-      });
-
-      const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
-      return res.redirect(redirectUrl);
-    } else {
-      return res.redirect(`${getBaseUrl()}/login`);
-    }
-  } catch (err) {
-    logger.error('GitHub authentication error:', err.message);
-    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
-  }
+const EMPTY_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: true,
+  sameSite: 'strict' as const,
+  path: '/',
+  maxAge: 0,
 };
 
-exports.discordCallback = async (req, res) => {
-  try {
-    if (req.user) {
-      req.user.recentActivity = new Date();
+export const getSession = safeAsync(
+  async (req: Request, res: Response) => {
+    const user = (req.user as AuthUser | undefined) ?? null;
+    const payload = (req as MaybeAuthRequest).auth?.payload ?? null;
 
-      const token = jwt.sign({ id: req.user._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
-      req.user.isAuthenticated = true;
-      await req.user.save();
+    return standardResponse(
+      res,
+      200,
+      {
+        authenticated: !!user,
+        user,
+        payload,
+      },
+      'Authentication inspected',
+    );
+  },
+  { label: 'auth#getSession' },
+);
 
-      res.cookie('token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-      });
-
-      const redirectUrl = req.user.role === 'user' ? `${getBaseUrl()}/user/profile/${req.user.username}` : `${getBaseUrl()}/dashboard`;
-      return res.redirect(redirectUrl);
-    } else {
-      return res.redirect(`${getBaseUrl()}/login`);
-    }
-  } catch (err) {
-    logger.error('Discord authentication error:', err.message);
-    return res.status(500).json({ message: 'Internal Server Error', error: err.message });
-  }
-};
-
-// Email verification
-exports.verifyEmail = async (req, res) => {
-  try {
-    const { token } = req.params;
-    const user = await User.findOne({ verificationToken: token });
-
-    if (!user) {
-      const redirectUrl = `${getBaseUrl()}/verify-email/${token}`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Invalid verification token'
-      });
+export const refreshSession = safeAsync(
+  async (req: Request, res: Response) => {
+    const result = await handleTokenRefresh(req);
+    if (!result.ok) {
+      logger.warn('[AUTH] Refresh failed', { status: result.status, error: result.error });
+      return standardResponse(res, result.status, { error: result.error }, 'Token refresh failed');
     }
 
-    user.isVerified = true;
-    user.verificationToken = null;
-    await user.save();
+    const { accessTokenCookie, refreshTokenCookie, payload } = result;
 
-    await nodemailerService.sendVerificationSuccessEmail(user.email, user.username);
+    res.cookie(
+      accessTokenCookie.name,
+      accessTokenCookie.value,
+      accessTokenCookie.options as CookieOptions,
+    );
+    res.cookie(
+      refreshTokenCookie.name,
+      refreshTokenCookie.value,
+      refreshTokenCookie.options as CookieOptions,
+    );
 
-    const redirectUrl = `${getBaseUrl()}/verify-email/${token}`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: 'Your email has been verified. You can now log in.'
-    });
-  } catch (error) {
-    logger.error('Verification error:', error.message);
-    const redirectUrl = `${getBaseUrl()}/verify-email/${token}`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Internal Server Error',
-      error: error.message
-    });
-  }
-};
+    return standardResponse(
+      res,
+      200,
+      {
+        accessToken: true,
+        refreshToken: true,
+        payload,
+      },
+      'Session refreshed',
+    );
+  },
+  { label: 'auth#refreshSession' },
+);
 
-// User logout
-exports.logout = (req, res) => {
-  req.logout((err) => {
-    if (err) {
-      logger.error('Error during logout:', err.message);
-      return res.status(500).json({ message: 'Internal Server Error', error: err.message });
-    }
+export const logout = safeAsync(
+  async (_req: Request, res: Response) => {
+    res.cookie('access_token', '', EMPTY_COOKIE_OPTIONS);
+    res.cookie('refresh_token', '', { ...EMPTY_COOKIE_OPTIONS, sameSite: 'lax' as const });
+    return standardResponse(res, 200, { ok: true }, 'Logged out');
+  },
+  { label: 'auth#logout' },
+);
 
-    res.clearCookie('token');
-    return res.redirect(`${getBaseUrl()}/`);
-  });
-};
+export default Object.freeze({
+  getSession,
+  refreshSession,
+  logout,
+});

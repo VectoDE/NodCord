@@ -1,12 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const file = require('../../services/multer.service');
-const fileController = require('../controllers/fileController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/file.controller';
 
-router.post('/upload', file.checkDiskSpaceMiddleware, file.upload, fileController.uploadFile);
-
-router.get('/:fileId', fileController.getFile);
-
-router.get('/:fileId/download', fileController.downloadFile);
-
-module.exports = router;
+export default createCrudRouter(controller);

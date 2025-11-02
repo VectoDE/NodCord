@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const bugController = require('../controllers/bugController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/bug.controller';
 
-router.get('/', bugController.getAllBugs);
-
-router.get('/:bugId', bugController.getBugById);
-
-router.post('/create', bugController.createBug);
-
-router.post('/:bugId/update', bugController.updateBug);
-
-router.post('/:bugId/delete', bugController.deleteBug);
-
-module.exports = router;
+export default createCrudRouter(controller);

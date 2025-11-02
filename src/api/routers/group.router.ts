@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const groupController = require('../controllers/groupController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/group.controller';
 
-router.get('/', groupController.getAllGroups);
-
-router.get('/:groupId', groupController.getGroupById);
-
-router.post('/create', groupController.createGroup);
-
-router.post('/:groupId/update', groupController.updateGroup);
-
-router.post('/:groupId/delete', groupController.deleteGroup);
-
-module.exports = router;
+export default createCrudRouter(controller);

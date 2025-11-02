@@ -1,11 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const developerProgramController = require('../controllers/developerProgramController');
-const authMiddleware = require('../middlewares/authMiddleware');
-const DeveloperProgramMiddleware = require('../middlewares/developerProgramMiddleware');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/developerProgram.controller';
 
-router.post('/join', authMiddleware, developerProgramController.joinDeveloperProgram);
-
-router.post('/leave', authMiddleware, DeveloperProgramMiddleware, developerProgramController.leaveDeveloperProgram);
-
-module.exports = router;
+export default createCrudRouter(controller);

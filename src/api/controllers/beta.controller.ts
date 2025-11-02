@@ -1,221 +1,144 @@
-require('dotenv').config();
-const getBaseUrl = require('../helpers/getBaseUrlHelper');
-const sendResponse = require('../helpers/sendResponseHelper');
-const logger = require('../../services/logger.service');
-const BetaKey = require('../../models/betaKeyModel');
-const BetaSystem = require('../../models/betaSystemModel');
-const User = require('../../models/userModel');
+import type { Request, Response } from 'express';
 
-function generateBetaKey() {
-  return 'BETA-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+import { prisma } from '@/services/prisma.service';
+import logger from '@/services/logger.service';
+import { safeAsync } from '@/utils/async.util';
+import { standardResponse } from '@/utils/response.util';
+
+function generateBetaKey(): string {
+  const segment = Math.random().toString(36).slice(2, 10).toUpperCase();
+  return `BETA-${segment}`;
 }
 
-exports.createBetaKey = async (req, res) => {
-  try {
-    const { name } = req.body;
-    const key = generateBetaKey();
-
-    const newBetaKey = new BetaKey({ key, name });
-    await newBetaKey.save();
-
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: 'Beta Key erstellt',
-      key: newBetaKey
+export const listBetaKeys = safeAsync(
+  async (_req: Request, res: Response) => {
+    const keys = await prisma.betaKey.findMany({
+      orderBy: { createdAt: 'desc' },
     });
-  } catch (err) {
-    logger.error('Fehler beim Erstellen des Beta Keys:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys/create`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler beim Erstellen des Beta Keys',
-      error: err.message
-    });
-  }
-};
+    return standardResponse(res, 200, { items: keys }, 'Beta keys fetched');
+  },
+  { label: 'beta#listKeys' },
+);
 
-exports.getBetaKeys = async (req, res) => {
-  try {
-    const betaKeys = await BetaKey.find().populate('user');
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      betaKeys
-    });
-  } catch (err) {
-    logger.error('Fehler beim Abrufen der Beta Keys:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler beim Abrufen der Beta Keys',
-      error: err.message
-    });
-  }
-};
+export const createBetaKey = safeAsync(
+  async (req: Request, res: Response) => {
+    const payload = (req.body ?? {}) as Record<string, unknown>;
+    const rawName = payload['name'];
+    const rawKey = payload['key'];
+    const rawActive = payload['isActive'];
 
-exports.getBetaKeyById = async (req, res) => {
-  try {
-    const betaKey = await BetaKey.findById(req.params.id);
-    if (!betaKey) {
-      logger.warn('Beta Key nicht gefunden:', { id: req.params.id });
-      const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Beta Key nicht gefunden'
-      });
+    if (typeof rawName !== 'string' || rawName.trim().length === 0) {
+      return standardResponse(res, 400, { error: 'Name is required' }, 'Invalid payload');
     }
 
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys/edit`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      betaKey
+    const created = await prisma.betaKey.create({
+      data: {
+        name: rawName.trim(),
+        key:
+          typeof rawKey === 'string' && rawKey.trim().length > 0
+            ? rawKey.trim()
+            : generateBetaKey(),
+        isActive: typeof rawActive === 'boolean' ? rawActive : true,
+      },
     });
-  } catch (err) {
-    logger.error('Fehler beim Abrufen des Beta Keys:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler beim Abrufen des Beta Keys',
-      error: err.message
-    });
-  }
-};
 
-exports.updateBetaKey = async (req, res) => {
-  try {
-    const { name } = req.body;
-    const updatedBetaKey = await BetaKey.findByIdAndUpdate(req.params.id, { name }, { new: true });
-    if (!updatedBetaKey) {
-      const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Beta Key nicht gefunden'
-      });
+    return standardResponse(res, 201, created, 'Beta key created');
+  },
+  { label: 'beta#createKey' },
+);
+
+export const updateBetaKey = safeAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) return standardResponse(res, 400, { error: 'Missing beta key id' }, 'Invalid payload');
+
+    const payload = (req.body ?? {}) as Record<string, unknown>;
+    const data: Record<string, unknown> = {};
+    const nameValue = payload['name'];
+    const activeValue = payload['isActive'];
+    const keyValue = payload['key'];
+    if (typeof nameValue === 'string') data['name'] = nameValue.trim();
+    if (typeof activeValue === 'boolean') data['isActive'] = activeValue;
+    if (typeof keyValue === 'string') data['key'] = keyValue.trim();
+    if (Object.keys(data).length === 0) {
+      return standardResponse(res, 400, { error: 'No updates provided' }, 'Invalid payload');
     }
 
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: 'Beta Key aktualisiert',
-      key: updatedBetaKey
+    const updated = await prisma.betaKey.update({
+      where: { id },
+      data,
     });
-  } catch (err) {
-    logger.error('Fehler beim Aktualisieren des Beta Keys:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys/edit`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler beim Aktualisieren des Beta Keys',
-      error: err.message
-    });
-  }
-};
 
-exports.deleteBetaKey = async (req, res) => {
-  try {
-    const deletedBetaKey = await BetaKey.findByIdAndDelete(req.params.id);
-    if (!deletedBetaKey) {
-      const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-      return sendResponse(req, res, redirectUrl, {
-        success: false,
-        message: 'Beta Key nicht gefunden'
+    return standardResponse(res, 200, updated, 'Beta key updated');
+  },
+  { label: 'beta#updateKey' },
+);
+
+export const deleteBetaKey = safeAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    if (!id) return standardResponse(res, 400, { error: 'Missing beta key id' }, 'Invalid payload');
+
+    await prisma.betaKey.delete({ where: { id } });
+    return standardResponse(res, 200, { id }, 'Beta key removed');
+  },
+  { label: 'beta#deleteKey' },
+);
+
+export const getBetaSystem = safeAsync(
+  async (_req: Request, res: Response) => {
+    const system = await prisma.betaSystem.findFirst({
+      orderBy: { createdAt: 'desc' },
+    });
+    return standardResponse(res, 200, system ?? null, 'Beta system fetched');
+  },
+  { label: 'beta#getSystem' },
+);
+
+export const updateBetaSystem = safeAsync(
+  async (req: Request, res: Response) => {
+    const payload = (req.body ?? {}) as Record<string, unknown>;
+    const isActive = payload['isActive'];
+    const metadata = payload['metadata'];
+
+    const updates: Record<string, unknown> = {};
+    if (typeof isActive === 'boolean') updates['isActive'] = isActive;
+    if (metadata && typeof metadata === 'object') updates['metadata'] = metadata;
+
+    try {
+      const existing = await prisma.betaSystem.findFirst({
+        orderBy: { createdAt: 'desc' },
       });
-    }
 
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: 'Beta Key gelöscht'
-    });
-  } catch (err) {
-    logger.error('Fehler beim Löschen des Beta Keys:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta/keys`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler beim Löschen des Beta Keys',
-      error: err.message
-    });
-  }
-};
+      if (existing) {
+        const updated = await prisma.betaSystem.update({
+          where: { id: existing.id },
+          data: updates,
+        });
+        return standardResponse(res, 200, updated, 'Beta system updated');
+      }
 
-exports.toggleBetaSystem = async (req, res) => {
-  try {
-    const { isActive } = req.body;
-    const updatedBetaSystem = await BetaSystem.findOneAndUpdate(
-      {},
-      { isActive },
-      { upsert: true, new: true }
-    );
-
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta`;
-    return sendResponse(req, res, redirectUrl, {
-      success: true,
-      message: `Beta System ${isActive ? 'aktiviert' : 'deaktiviert'}`,
-      betaSystem: updatedBetaSystem
-    });
-  } catch (err) {
-    logger.error('Fehler beim Umschalten des Beta Systems:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler beim Umschalten des Beta Systems',
-      error: err.message
-    });
-  }
-};
-
-exports.verifyBetaKey = async (req, res) => {
-  try {
-    const { key, redirectTo } = req.body;
-    const userId = req.user?._id;
-
-    if (!userId) {
-      return sendResponse(req, res, getBaseUrl(), {
-        success: false,
-        message: 'Benutzer nicht angemeldet'
+      const created = await prisma.betaSystem.create({
+        data: {
+          isActive: typeof isActive === 'boolean' ? isActive : true,
+          metadata: (updates['metadata'] as Record<string, unknown> | undefined) ?? {},
+        },
       });
+      return standardResponse(res, 201, created, 'Beta system created');
+    } catch (error) {
+      const err = error instanceof Error ? error : new Error(String(error));
+      logger.error('[BETA] Failed to update system', { error: err.message });
+      return standardResponse(res, 500, { error: err.message }, 'Failed to update beta system');
     }
+  },
+  { label: 'beta#updateSystem' },
+);
 
-    const betaKey = await BetaKey.findOne({ key });
-    if (!betaKey) {
-      return sendResponse(req, res, getBaseUrl(), {
-        success: false,
-        message: 'Ungültiger Beta Key'
-      });
-    }
-
-    if (betaKey.user) {
-      return sendResponse(req, res, getBaseUrl(), {
-        success: false,
-        message: 'Beta Key wurde bereits verwendet'
-      });
-    }
-
-    const user = await User.findByIdAndUpdate(
-      userId,
-      { betaKey: betaKey._id, isBetaTester: true },
-      { new: true }
-    );
-
-    betaKey.user = user._id;
-    await betaKey.save();
-
-    if (redirectTo) {
-      return res.redirect(redirectTo);
-    } else {
-      return sendResponse(req, res, getBaseUrl(), {
-        success: true,
-        message: 'Beta Key erfolgreich verifiziert',
-        user
-      });
-    }
-  } catch (err) {
-    logger.error('Fehler bei der Verifizierung des Beta Keys:', err);
-    const redirectUrl = `${getBaseUrl()}/dashboard/beta`;
-    return sendResponse(req, res, redirectUrl, {
-      success: false,
-      message: 'Fehler bei der Verifizierung des Beta Keys',
-      error: err.message
-    });
-  }
-};
+export default Object.freeze({
+  listBetaKeys,
+  createBetaKey,
+  updateBetaKey,
+  deleteBetaKey,
+  getBetaSystem,
+  updateBetaSystem,
+});

@@ -4,242 +4,331 @@
  * ------------------------------------------------------------
  *
  * Features:
- * - Centralized and configurable email sending via Nodemailer
- * - Uses external HTML templates for professional email layouts
- * - Robust error handling and Winston logging
- * - Supports multiple email use cases (verification, updates, orders, etc.)
+ * - Centralized, async-safe, and cached HTML email sending
+ * - Template variable validation and substitution
+ * - Robust error handling with unified async.util
+ * - Mutex-protected template reads (no race conditions)
+ * - Winston structured logging
+ * - Util integration: async, sync, number, baseUrl, response
  *
- * Directory:
- * - Templates are loaded from /src/assets/templates/emails/*.html
- *
- * Environment variables required:
- *   SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER, SMTP_PASS,
- *   CLIENT_BASE_URL, CLIENT_PORT
+ * Tech:
+ * - TypeScript 5.x (strict, verbatimModuleSyntax)
+ * - Node.js 20+
+ * - Nodemailer 6+
  */
 
 import nodemailer from 'nodemailer';
-import fs from 'fs/promises';
 import path from 'path';
+import fs from 'fs/promises';
 import logger from '@/services/logger.service';
 
-// Type-only imports (ESM + NodeNext)
+// Type-only imports
 import type { Transporter } from 'nodemailer';
+import type { Request, Response } from 'express';
+
+// Utilities
+import { tryAsync } from '@/utils/async.util';
+import { Mutex } from '@/utils/sync.util';
+import { getBaseUrl } from '@/utils/baseUrl.util';
+import responseUtil from '@/utils/response.util';
 
 // ============================================================
 // Configuration
 // ============================================================
 
-const SMTP_HOST = process.env['SMTP_HOST'] ?? 'localhost';
+const RAW_SMTP_HOST = process.env['SMTP_HOST'] ?? '';
 const SMTP_PORT = Number(process.env['SMTP_PORT'] ?? 587);
 const SMTP_SECURE = process.env['SMTP_SECURE'] === 'true';
 const SMTP_USER = process.env['SMTP_USER'] ?? '';
 const SMTP_PASS = process.env['SMTP_PASS'] ?? '';
-const CLIENT_BASE_URL = process.env['CLIENT_BASE_URL'] ?? 'localhost';
-const CLIENT_PORT = process.env['CLIENT_PORT'] ?? '3000';
 
-// Path to email templates
-const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'assets', 'template', 'emails');
+export const isMailerConfigured = Boolean(RAW_SMTP_HOST && SMTP_USER && SMTP_PASS);
 
-// ============================================================
-// Mail Transporter Setup
-// ============================================================
+if (!isMailerConfigured) {
+  logger.warn('[MAILER] SMTP credentials not configured – mailer disabled.');
+}
 
-const transporter: Transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
-  port: SMTP_PORT,
-  secure: SMTP_SECURE,
-  auth: {
-    user: SMTP_USER,
-    pass: SMTP_PASS,
-  },
-});
+const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'assets', 'templates', 'emails');
 
 // ============================================================
-// Utility: Load Email Template
+// Transporter
 // ============================================================
 
-/**
- * Loads an HTML email template from the template directory.
- * Optionally replaces variables like {{username}} or {{link}}.
- */
-const loadTemplate = async (templateName: string, variables: Record<string, string>): Promise<string> => {
-  try {
+const transporter: Transporter | null = isMailerConfigured
+  ? nodemailer.createTransport({
+      host: RAW_SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      auth: { user: SMTP_USER, pass: SMTP_PASS },
+    })
+  : null;
+
+// ============================================================
+// Template Cache + Mutex
+// ============================================================
+
+const templateCache = new Map<string, string>();
+const templateLock = new Mutex();
+
+// ============================================================
+// Template Loader
+// ============================================================
+
+async function loadTemplate(templateName: string): Promise<string> {
+  if (templateCache.has(templateName)) return templateCache.get(templateName)!;
+
+  return await templateLock.runExclusive(async () => {
+    if (templateCache.has(templateName)) return templateCache.get(templateName)!;
+
     const filePath = path.join(TEMPLATE_DIR, `${templateName}.html`);
-    let html = await fs.readFile(filePath, 'utf8');
+    const result = await tryAsync(() => fs.readFile(filePath, 'utf8'));
 
-    // Replace placeholders {{variable}}
-    for (const [key, value] of Object.entries(variables)) {
-      const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
-      html = html.replace(regex, value);
+    if (!result.ok) {
+      logger.error('[MAILER] Template load failed', { templateName, error: result.error.message });
+      throw new Error(`Template "${templateName}" not found`);
     }
 
-    return html;
-  } catch (error) {
-    logger.error(`[MAILER] Failed to load template: ${templateName}`, error);
-    throw new Error(`Template "${templateName}" not found or invalid.`);
+    const content = result.value;
+    templateCache.set(templateName, content);
+    logger.debug(`[MAILER] Cached template: ${templateName}`);
+    return content;
+  });
+}
+
+// ============================================================
+// Variable Injection
+// ============================================================
+
+function applyVariables(template: string, vars: Record<string, string>): string {
+  let html = template;
+  for (const [key, val] of Object.entries(vars)) {
+    const regex = new RegExp(`{{\\s*${key}\\s*}}`, 'g');
+    html = html.replace(regex, val);
   }
-};
+  return html;
+}
 
 // ============================================================
-// Utility: Send Mail
+// Email Sender
 // ============================================================
 
-/**
- * Sends an email using configured SMTP credentials.
- */
-export const sendMail = async (
+export async function sendMail(
   fromName: string,
   to: string,
   subject: string,
   text: string,
-  html: string
-): Promise<void> => {
-  const fromEmail = SMTP_USER;
+  html: string,
+): Promise<void> {
+  if (!isMailerConfigured || !transporter) {
+    logger.warn('[MAILER] sendMail skipped because mailer is disabled', { to, subject });
+    return;
+  }
 
   const mailOptions = {
-    from: `"${fromName}" <${fromEmail}>`,
+    from: `"${fromName}" <${SMTP_USER}>`,
     to,
     subject,
     text,
     html,
   };
 
-  try {
-    logger.info('[MAILER] Sending email', { fromName, to, subject });
-    await transporter.sendMail(mailOptions);
-    logger.info('[MAILER] Email sent successfully', { to, subject });
-  } catch (error) {
-    const err = error instanceof Error ? error : new Error(String(error));
-    logger.error('[MAILER] Failed to send email', { to, subject, error: err.message });
-    throw err;
+  const result = await tryAsync(() => transporter.sendMail(mailOptions));
+  if (!result.ok) {
+    logger.error('[MAILER] Failed to send email', { to, subject, error: result.error.message });
+    throw result.error;
   }
-};
+
+  logger.info('[MAILER] Email sent successfully', { to, subject });
+}
 
 // ============================================================
-// High-Level Email Functions
+// High-Level Template Email Builder
 // ============================================================
 
-export const sendRegistrationVerificationEmail = async (
-  to: string,
-  username: string,
-  verificationToken: string
-): Promise<void> => {
-  const fromName = 'Verification | NodCord';
-  const subject = 'Verify Your Email Address';
-  const verificationLink = `https://${CLIENT_BASE_URL}:${CLIENT_PORT}/verify-email/${verificationToken}`;
-  const text = `Hello ${username}, please verify your email using the link: ${verificationLink}`;
-
-  const html = await loadTemplate('registration-verification', {
-    username,
-    link: verificationLink,
-    to,
-    year: new Date().getFullYear().toString(),
-  });
-
-  await sendMail(fromName, to, subject, text, html);
-};
-
-export const sendVerificationSuccessEmail = async (to: string, username: string): Promise<void> => {
-  const fromName = 'Verification | NodCord';
-  const subject = 'Email Verification Successful';
-  const text = `Hello ${username}, your email has been successfully verified.`;
-
-  const html = await loadTemplate('verification-success', {
-    username,
-    to,
-    year: new Date().getFullYear().toString(),
-  });
-
-  await sendMail(fromName, to, subject, text, html);
-};
-
-export const sendOAuth2CodeVerificationEmail = async (
-  to: string,
-  username: string,
-  verificationCode: string
-): Promise<void> => {
-  const fromName = 'Verification | NodCord';
-  const subject = 'OAuth2 Code Verification';
-  const text = `Hello ${username}, your OAuth2 verification code is: ${verificationCode}`;
-
-  const html = await loadTemplate('oauth2-verification', {
-    username,
-    code: verificationCode,
-    to,
-    year: new Date().getFullYear().toString(),
-  });
-
-  await sendMail(fromName, to, subject, text, html);
-};
-
-// Generic mailer helper for simple templates (order, ticket, etc.)
-const sendSimpleTemplateEmail = async (
+async function sendTemplateMail(
   fromName: string,
   to: string,
   subject: string,
-  template: string,
+  templateName: string,
   variables: Record<string, string>,
-  text: string
-): Promise<void> => {
-  const html = await loadTemplate(template, { ...variables, to, year: new Date().getFullYear().toString() });
+  text: string,
+): Promise<void> {
+  if (!isMailerConfigured) {
+    logger.warn('[MAILER] sendTemplateMail skipped because mailer is disabled', {
+      to,
+      templateName,
+    });
+    return;
+  }
+
+  const baseTemplate = await loadTemplate(templateName);
+  const html = applyVariables(baseTemplate, {
+    ...variables,
+    year: new Date().getFullYear().toString(),
+  });
   await sendMail(fromName, to, subject, text, html);
-};
+}
 
 // ============================================================
-// Other Email Types
+// Predefined Email Types
 // ============================================================
 
-export const sendOrderConfirmationEmail = async (to: string, orderDetails: string) =>
-  sendSimpleTemplateEmail(
-    'Order | NodCord',
+export async function sendRegistrationVerificationEmail(
+  to: string,
+  username: string,
+  token: string,
+): Promise<void> {
+  const subject = 'Verify Your Email Address';
+  const verificationLink = `${getBaseUrl()}/verify-email/${token}`;
+  const text = `Hello ${username}, please verify your email: ${verificationLink}`;
+
+  await sendTemplateMail(
+    'Verification | NodCord',
     to,
-    'Order Confirmation',
+    subject,
+    'registration-verification',
+    { username, link: verificationLink },
+    text,
+  );
+}
+
+export async function sendVerificationSuccessEmail(to: string, username: string): Promise<void> {
+  const subject = 'Email Verification Successful';
+  const text = `Hello ${username}, your email has been successfully verified.`;
+
+  await sendTemplateMail(
+    'Verification | NodCord',
+    to,
+    subject,
+    'verification-success',
+    { username },
+    text,
+  );
+}
+
+export async function sendOAuth2CodeVerificationEmail(
+  to: string,
+  username: string,
+  code: string,
+): Promise<void> {
+  const subject = 'OAuth2 Code Verification';
+  const text = `Hello ${username}, your verification code is: ${code}`;
+
+  await sendTemplateMail(
+    'Verification | NodCord',
+    to,
+    subject,
+    'oauth2-verification',
+    { username, code },
+    text,
+  );
+}
+
+export async function sendOrderConfirmationEmail(to: string, orderDetails: string): Promise<void> {
+  const subject = 'Order Confirmation';
+  const text = `Thank you for your order!\n\n${orderDetails}`;
+
+  await sendTemplateMail(
+    'Orders | NodCord',
+    to,
+    subject,
     'order-confirmation',
     { orderDetails },
-    `Thank you for your order!\n\n${orderDetails}`
+    text,
   );
+}
 
-export const sendShippingNotificationEmail = async (to: string, trackingNumber: string) =>
-  sendSimpleTemplateEmail(
-    'Order Shipping | NodCord',
+export async function sendShippingNotificationEmail(
+  to: string,
+  trackingNumber: string,
+): Promise<void> {
+  const subject = 'Your Order Has Shipped';
+  const text = `Your order has shipped! Tracking number: ${trackingNumber}`;
+
+  await sendTemplateMail(
+    'Shipping | NodCord',
     to,
-    'Your Order Has Shipped',
+    subject,
     'shipping-notification',
     { trackingNumber },
-    `Your order has shipped! Tracking number: ${trackingNumber}`
+    text,
   );
+}
 
-export const sendTicketCreatedEmail = async (to: string, ticketDetails: string) =>
-  sendSimpleTemplateEmail(
-    'Ticket | NodCord',
+export async function sendTicketCreatedEmail(to: string, ticketDetails: string): Promise<void> {
+  const subject = 'New Ticket Created';
+  const text = `A new support ticket has been created.\n\n${ticketDetails}`;
+
+  await sendTemplateMail(
+    'Support | NodCord',
     to,
-    'New Ticket Created',
+    subject,
     'ticket-created',
     { ticketDetails },
-    `A new ticket has been created.\n\n${ticketDetails}`
+    text,
   );
+}
 
-export const sendUpdateNotificationEmail = async (
+export async function sendUpdateNotificationEmail(
   to: string,
   updateTitle: string,
   updateDescription: string,
-  updateLink: string
-) =>
-  sendSimpleTemplateEmail(
+  updateLink: string,
+): Promise<void> {
+  const subject = 'New Update Available';
+  const text = `${updateTitle}\n\n${updateDescription}\n\n${updateLink}`;
+
+  await sendTemplateMail(
     'Updates | NodCord',
     to,
-    'Exciting Update Available!',
+    subject,
     'update-notification',
     { updateTitle, updateDescription, updateLink },
-    `${updateTitle}\n\n${updateDescription}\n\n${updateLink}`
+    text,
+  );
+}
+
+// ============================================================
+// API-Friendly Wrapper
+// ============================================================
+
+export async function handleSendMailAPI(req: Request, res: Response): Promise<void> {
+  const { to, subject, text, template, variables } = req.body;
+
+  if (!to || !subject || !template) {
+    responseUtil.standardResponse(
+      res,
+      400,
+      { error: 'Missing required fields (to, subject, template)' },
+      'Missing required fields',
+    );
+  }
+
+  const result = await tryAsync(() =>
+    sendTemplateMail('Mailer | NodCord', to, subject, template, variables ?? {}, text ?? ''),
   );
 
+  if (!result.ok) {
+    logger.error('[MAILER] API Send Failed', { error: result.error.message });
+    responseUtil.standardResponse(
+      res,
+      500,
+      { error: result.error.message },
+      result.error.message ?? 'Failed to send email.',
+    );
+  }
+
+  responseUtil.standardResponse(res, 200, { to, subject, template }, 'Email sent successfully.');
+}
+
 // ============================================================
-// Export Default (Convenience)
+// Default Export (Immutable)
 // ============================================================
 
-export default {
+export default Object.freeze({
+  isMailerConfigured,
   sendMail,
+  sendTemplateMail,
   sendRegistrationVerificationEmail,
   sendVerificationSuccessEmail,
   sendOAuth2CodeVerificationEmail,
@@ -247,4 +336,5 @@ export default {
   sendShippingNotificationEmail,
   sendTicketCreatedEmail,
   sendUpdateNotificationEmail,
-};
+  handleSendMailAPI,
+});

@@ -1,23 +1,31 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+const pingCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('ping')
-    .setDescription("Displays the bot's ping and latency."),
+    .setDescription('Display the bot latency and gateway heartbeat.'),
   async execute(interaction) {
-    const startTime = Date.now();
+    await interaction.deferReply({ ephemeral: true });
 
-    await interaction.reply('Pinging...');
+    await interaction.editReply('Pinging...');
+    const reply = await interaction.fetchReply();
 
-    const endTime = Date.now();
-    const latency = endTime - startTime;
+    const latency = reply.createdTimestamp - interaction.createdTimestamp;
+    const gatewayPing = Math.round(interaction.client.ws.ping);
 
-    const pingEmbed = new EmbedBuilder()
-      .setColor('#00FF00')
-      .setTitle('🏓 Pong!')
-      .setDescription(`Bot Latency: ${latency}ms`)
+    const embed = new EmbedBuilder()
+      .setColor('Blurple')
+      .setTitle('Pong!')
+      .addFields(
+        { name: 'Round-trip latency', value: `${latency}ms`, inline: true },
+        { name: 'Gateway heartbeat', value: `${gatewayPing}ms`, inline: true },
+      )
       .setTimestamp();
 
-    await interaction.editReply({ embeds: [pingEmbed] });
+    await interaction.editReply({ content: '', embeds: [embed] });
   },
 };
+
+export default pingCommand;

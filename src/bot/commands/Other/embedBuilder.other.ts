@@ -1,62 +1,75 @@
-const { SlashCommandBuilder, PermissionsBitField, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder } = require('discord.js');
+import {
+  ActionRowBuilder,
+  ModalBuilder,
+  PermissionsBitField,
+  SlashCommandBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+const embedBuilderCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('embed-builder')
-  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator)
-  .setDescription('Build your embeds using modals.'),
+    .setName('embed-builder')
+    .setDescription('Open a modal that collects information to build a custom embed.')
+    .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator),
   async execute(interaction) {
-    const modal = new ModalBuilder()
-    .setTitle('Embed Builder')
-    .setCustomId('modal');
+    if (!interaction.inGuild()) {
+      await interaction.reply({
+        content: 'You can only use this command inside a server.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    const title = new TextInputBuilder()
-    .setCustomId('title')
-    .setLabel('Title')
-    .setRequired(true)
-    .setPlaceholder('Enter your embed title here.')
-    .setStyle(TextInputStyle.Short);
+    const modal = new ModalBuilder().setTitle('Embed Builder').setCustomId('embed-builder.modal');
 
-    const description = new TextInputBuilder()
-    .setCustomId('description')
-    .setLabel('Description')
-    .setRequired(true)
-    .setPlaceholder('Enter your embed description here.')
-    .setStyle(TextInputStyle.Paragraph);
+    const titleInput = new TextInputBuilder()
+      .setCustomId('title')
+      .setLabel('Title')
+      .setPlaceholder('Enter the embed title')
+      .setRequired(true)
+      .setStyle(TextInputStyle.Short);
 
-    const color = new TextInputBuilder()
-    .setCustomId('color')
-    .setRequired(true)
-    .setPlaceholder('Enter your embed color here. example: #00ffff')
-    .setStyle(TextInputStyle.Short);
+    const descriptionInput = new TextInputBuilder()
+      .setCustomId('description')
+      .setLabel('Description')
+      .setPlaceholder('Enter the embed description')
+      .setRequired(true)
+      .setStyle(TextInputStyle.Paragraph);
 
-    const image_link = new TextInputBuilder()
-    .setCustomId('image_link')
-    .setLabel('Image URL')
-    .setPlaceholder('Enter your embed image URL here.')
-    .setRequired(true)
-    .setStyle(TextInputStyle.URL);
+    const colorInput = new TextInputBuilder()
+      .setCustomId('color')
+      .setLabel('Colour (hex)')
+      .setPlaceholder('e.g. #00ffff')
+      .setRequired(true)
+      .setStyle(TextInputStyle.Short);
 
-    const thumbnail_link = new TextInputBuilder()
-    .setCustomId('thumbnail_link')
-    .setLabel('Thumbnail URL')
-    .setPlaceholder('Enter your embed thumbnail URL here.')
-    .setRequired(true)
-    .setStyle(TextInputStyle.Short);
+    const imageInput = new TextInputBuilder()
+      .setCustomId('image')
+      .setLabel('Image URL')
+      .setPlaceholder('https://example.com/image.png')
+      .setRequired(false)
+      .setStyle(TextInputStyle.Short);
 
-    const firstActionRow = new ActionRowBuilder().addComponents(title);
-    const secondActionRow = new ActionRowBuilder().addComponents(description);
-    const colorofembed = new ActionRowBuilder().addComponents(color);
-    const image = new ActionRowBuilder().addComponents(image_link);
-    const thumbnail = new ActionRowBuilder().addComponents(thumbnail_link);
+    const thumbnailInput = new TextInputBuilder()
+      .setCustomId('thumbnail')
+      .setLabel('Thumbnail URL')
+      .setPlaceholder('https://example.com/thumbnail.png')
+      .setRequired(false)
+      .setStyle(TextInputStyle.Short);
 
     modal.addComponents(
-      firstActionRow,
-      secondActionRow,
-      colorofembed,
-      image,
-      thumbnail
+      new ActionRowBuilder<TextInputBuilder>().addComponents(titleInput),
+      new ActionRowBuilder<TextInputBuilder>().addComponents(descriptionInput),
+      new ActionRowBuilder<TextInputBuilder>().addComponents(colorInput),
+      new ActionRowBuilder<TextInputBuilder>().addComponents(imageInput),
+      new ActionRowBuilder<TextInputBuilder>().addComponents(thumbnailInput),
     );
-    interaction.showModal(modal);
-  }
-}
+
+    await interaction.showModal(modal);
+  },
+};
+
+export default embedBuilderCommand;

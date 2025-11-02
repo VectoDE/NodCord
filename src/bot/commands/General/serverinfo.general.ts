@@ -1,50 +1,65 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+import { EmbedBuilder, GuildVerificationLevel, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+function formatVerificationLevel(level: GuildVerificationLevel): string {
+  switch (level) {
+    case GuildVerificationLevel.VeryHigh:
+      return 'Very High';
+    case GuildVerificationLevel.High:
+      return 'High';
+    case GuildVerificationLevel.Medium:
+      return 'Medium';
+    case GuildVerificationLevel.Low:
+      return 'Low';
+    default:
+      return 'None';
+  }
+}
+
+const serverInfoCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('serverinfo')
-    .setDescription('This gives you some basic server information.'),
+    .setDescription('Display key information about this server.'),
   async execute(interaction) {
-    const { guild } = interaction;
-    const { members } = guild;
-    const { name, ownerId, createdTimestamp, memberCount } = guild;
-    const icon = guild.iconURL();
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-    const roles = guild.roles.cache.size;
-    const emojis = guild.emojis.cache.size;
-    const id = guild.id;
-
-    let serverVerification = guild.verificationLevel;
-
-    if (serverVerification === 0) serverVerification = 'None';
-    if (serverVerification === 1) serverVerification = 'Low';
-    if (serverVerification === 2) serverVerification = 'Medium';
-    if (serverVerification === 3) serverVerification = 'High';
-    if (serverVerification === 4) serverVerification = 'Very High';
+    const guild = interaction.guild;
+    const iconUrl = guild.iconURL();
 
     const owner = await guild.fetchOwner();
-    const ownerName = owner.user.username;
+    const createdTimestamp = Math.floor(guild.createdTimestamp / 1000);
+    const verificationLevel = formatVerificationLevel(guild.verificationLevel);
+    const boostCount = guild.premiumSubscriptionCount ?? 0;
 
-    const embed = new EmbedBuilder()
-      .setColor('Random')
-      .setThumbnail(icon)
-      .setAuthor({ name: name, iconURL: icon })
-      .addFields(
-        { name: 'Server Name', value: `${name}` },
-        { name: 'Server Members', value: `${memberCount}` },
-        { name: 'Server Emojis', value: `${emojis}` },
-        { name: 'Server Roles', value: `${roles}` },
-        { name: 'Server Verification', value: `${serverVerification}` },
-        { name: 'Server Boosts', value: `${guild.premiumSubscriptionCount}` },
-        { name: 'Server ID', value: `${id}` },
-        { name: 'Server Owner', value: `${ownerName} (||${ownerId}||)` },
-        {
-          name: 'Server Creation Date',
-          value: `<t:${parseInt(createdTimestamp / 1000)}:R>`,
-        }
-      )
-      .setTimestamp();
+    const embed = new EmbedBuilder().setColor('Blurple').setTitle(guild.name).setTimestamp();
+
+    if (iconUrl) {
+      embed.setThumbnail(iconUrl);
+      embed.setAuthor({ name: guild.name, iconURL: iconUrl });
+    } else {
+      embed.setAuthor({ name: guild.name });
+    }
+
+    embed.addFields(
+      { name: 'Server ID', value: `\`${guild.id}\`` },
+      { name: 'Owner', value: `${owner.user.tag} (\`${owner.id}\`)` },
+      { name: 'Members', value: `${guild.memberCount}`, inline: true },
+      { name: 'Roles', value: `${guild.roles.cache.size}`, inline: true },
+      { name: 'Emojis', value: `${guild.emojis.cache.size}`, inline: true },
+      { name: 'Verification', value: verificationLevel, inline: true },
+      { name: 'Boosts', value: `${boostCount}`, inline: true },
+      { name: 'Created', value: `<t:${createdTimestamp}:R>` },
+    );
 
     await interaction.reply({ embeds: [embed] });
   },
 };
+
+export default serverInfoCommand;

@@ -1,40 +1,37 @@
-const logger = require('../../services/logger.service');
+import { ActivityType, Events, type Client } from 'discord.js';
 
-module.exports = {
+import logger from '@/services/logger.service';
+
+import type { BotEventModule, NodCordClient } from '@/bot/types';
+
+const STATUS_ROTATION: Array<{ name: string; type: ActivityType }> = [
+  { name: 'coming soon...', type: ActivityType.Watching },
+  { name: 'Server Management', type: ActivityType.Playing },
+  { name: 'Games for Users', type: ActivityType.Playing },
+  { name: 'Support Feature', type: ActivityType.Listening },
+  { name: '/help for helpmenu', type: ActivityType.Playing },
+];
+
+const readyEvent: BotEventModule<'ready'> = {
   name: 'ready',
   once: true,
-  async execute(client) {
-    logger.info(`[BOT] Logged in as ${client.user.username}`);
+  async execute(client: NodCordClient, readyClient: Client<true>) {
+    const activeClient = readyClient ?? client;
+    const username = activeClient.user?.username ?? 'Unknown Bot';
+    logger.info(`[BOT] Logged in as ${username}`);
 
-    const activity = [
-      'coming soon...',
-      'Server Management',
-      'Games for Users',
-      'Support Feature',
-      '/help for helpmenu',
-    ];
+    if (!activeClient.user) return;
 
-    setInterval(() => {
-      const botStatus = activity[Math.floor(Math.random() * activity.length)];
-      client.user.setPresence({ activities: [{ name: `${botStatus}` }] });
-    }, 3000);
+    const updatePresence = () => {
+      const index = Math.floor(Math.random() * STATUS_ROTATION.length);
+      const status = STATUS_ROTATION[index] ?? STATUS_ROTATION[0];
+      if (!status) return;
+      activeClient.user?.setPresence({ activities: [{ name: status.name, type: status.type }] });
+    };
 
-    async function pickPresence() {
-      const option = Math.floor(Math.random() * statusArray.length);
-
-      try {
-        await client.user.setPresence({
-          activities: [
-            {
-              name: statusArray[option].content,
-              type: statusArray[option].type,
-            },
-          ],
-          status: statusArray[option].status,
-        });
-      } catch (error) {
-        logger.error(error);
-      }
-    }
+    updatePresence();
+    setInterval(updatePresence, 30_000);
   },
 };
+
+export default readyEvent;

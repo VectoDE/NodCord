@@ -13,6 +13,7 @@ pids
 *.seed
 *.pid.lock
 tmp/
+/keys
 
 # Build directories
 /dist/
@@ -67,3 +68,7 @@ reports/
 
 # PM2 logs
 .pm2/
+
+
+#Ignore vscode AI rules
+.github\instructions\codacy.instructions.md

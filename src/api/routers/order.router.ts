@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const customerOrderController = require('../controllers/customerOrderController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/order.controller';
 
-router.get('/', customerOrderController.getAllOrders);
-
-router.get('/:id', customerOrderController.getOrderById);
-
-router.post('/', customerOrderController.createOrder);
-
-router.post('/:id', customerOrderController.updateOrder);
-
-router.post('/:id', customerOrderController.deleteOrder);
-
-module.exports = router;
+export default createCrudRouter(controller);

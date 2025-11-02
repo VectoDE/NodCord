@@ -389,7 +389,7 @@ model Tenant {
   name              String
   status            TenantStatus @default(ONBOARDING)
   plan              String   @default("free")
-  metadata          Json     @default("{}")
+  metadata          Json
   timezone          String   @default("UTC")
   billingEmail      String?
   technicalContact  String?
@@ -418,6 +418,7 @@ model Tenant {
   billingProfiles BillingProfile[]
   subscriptionPlans SubscriptionPlan[]
   subscriptionAddons SubscriptionAddon[]
+  taxRules TaxRule[]
   subscriptions  Subscription[]
   invoices       Invoice[]
   taxJurisdictions TaxJurisdiction[]
@@ -476,7 +477,7 @@ model TenantMetadata {
   id        String   @id @default(uuid())
   tenantId  String
   key       String
-  value     Json     @default("null")
+  value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -494,10 +495,10 @@ model AuditLog {
   entityName String
   entityId   String
   action     AuditAction
-  changes    Json        @default("{}")
+  changes    Json
   ipAddress  String?
   userAgent  String?
-  context    Json        @default("{}")
+  context    Json
   createdAt  DateTime    @default(now())
 
   tenant Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
@@ -513,8 +514,8 @@ model SystemSetting {
   tenantId    String
   environment EnvironmentType @default(PRODUCTION)
   key         String
-  value       Json            @default("{}")
-  description String?         @db.Text
+  value       Json
+  description String? @db.Text
   isSensitive Boolean         @default(false)
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
@@ -549,9 +550,9 @@ model Afk {
   message   String?  @map("message")
   tenantId  String?
   status    AfkStatus @default(ACTIVE)
-  reason    String?  @db.Text
+  reason    String? @db.Text
   expiresAt DateTime?
-  metadata  Json     @default("{}")
+  metadata  Json
   createdById String?
   updatedById String?
   createdAt DateTime @default(now())
@@ -575,7 +576,7 @@ model Antilink {
   tenantId  String?
   isEnabled Boolean  @default(true)
   lastTriggeredAt DateTime?
-  metadata  Json     @default("{}")
+  metadata  Json
   createdById String?
   updatedById String?
   createdAt DateTime @default(now())
@@ -601,7 +602,7 @@ model ApiKey {
   expiresAt DateTime
   tenantId  String?
   lastUsedAt DateTime?
-  metadata  Json     @default("{}")
+  metadata  Json
 
   user User @relation("UserApiKeys", fields: [userId], references: [id], onDelete: Cascade)
   primaryOwner User? @relation("UserPrimaryApiKey")
@@ -619,7 +620,7 @@ model ApiKeyMetadata {
   id       String   @id @default(uuid())
   apiKeyId String
   key      String
-  value    Json     @default("null")
+  value    Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -634,9 +635,9 @@ model ApiSystem {
   id        String   @id @default(uuid())
   isActive  Boolean  @default(true)
   maintenanceMode   Boolean  @default(false)
-  maintenanceReason String?  @db.Text
+  maintenanceReason String? @db.Text
   tenantId  String?
-  metadata  Json     @default("{}")
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -652,7 +653,7 @@ model ApiSystemMetadata {
   id          String   @id @default(uuid())
   apiSystemId String
   key         String
-  value       Json     @default("null")
+  value       Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -666,13 +667,13 @@ model ApiSystemMetadata {
 model Autoresponder {
   id            String   @id @default(uuid())
   guildId       String
-  autoresponses Json     @default("[]")
+  autoresponses Json
   tenantId      String?
   name          String   @default("")
-  description   String?  @db.Text
+  description   String? @db.Text
   isActive      Boolean  @default(true)
   lastTriggeredAt DateTime?
-  metadata      Json     @default("{}")
+  metadata      Json
   createdById   String?
   updatedById   String?
   createdAt     DateTime @default(now())
@@ -694,14 +695,14 @@ model AutoResponderEntry {
   id               String   @id @default(uuid())
   autoresponderId  String
   trigger          String
-  response         String   @db.Text
+  response         String @db.Text
   matchType        AutoResponderMatchType @default(EXACT)
   priority         PriorityLevel          @default(MEDIUM)
   isActive         Boolean                @default(true)
   responseDelayMs  Int?
   tenantId         String?
   lastTriggeredAt  DateTime?
-  metadata         Json                   @default("{}")
+  metadata         Json
   createdById      String?
   updatedById      String?
   createdAt        DateTime @default(now())
@@ -747,8 +748,8 @@ model Ban {
   appealStatus ModerationAppealStatus @default(NONE)
   appealedAt DateTime?
   resolvedAt DateTime?
-  context   Json     @default("{}")
-  metadata  Json     @default("{}")
+  context   Json
+  metadata  Json
   createdById String?
   updatedById String?
   updatedAt DateTime @updatedAt
@@ -786,7 +787,7 @@ model BetaSystem {
   id        String   @id @default(uuid())
   isActive  Boolean  @default(true)
   tenantId  String?
-  metadata  Json     @default("{}")
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -802,7 +803,7 @@ model BetaSystemMetadata {
   id          String   @id @default(uuid())
   betaSystemId String
   key         String
-  value       Json     @default("null")
+  value       Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -818,15 +819,15 @@ model Blog {
   picture           String?
   title             String
   shortDescription  String
-  detailDescription String   @db.Text
+  detailDescription String @db.Text
   projectId         String?
   author            String
-  tags              Json     @default("[]")
+  tags              Json
   tenantId          String?
   publishedAt       DateTime?
   isArchived        Boolean  @default(false)
   deletedAt         DateTime?
-  metadata          Json     @default("{}")
+  metadata          Json
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -851,7 +852,7 @@ model BlogMetadata {
   id      String   @id @default(uuid())
   blogId  String
   key     String
-  value   Json     @default("null")
+  value   Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -879,7 +880,7 @@ model BlogTag {
 model Bug {
   id          String       @id @default(uuid())
   title       String
-  description String       @db.Text
+  description String @db.Text
   severity    PriorityLevel @default(MEDIUM)
   status      BugStatus    @default(OPEN)
   projectId   String
@@ -900,10 +901,10 @@ model Category {
   tenantId    String?
   name        String
   slug        String
-  description String?  @db.Text
+  description String? @db.Text
   icon        String?
   isActive    Boolean  @default(true)
-  metadata    Json     @default("{}")
+  metadata    Json
   createdById String?
   updatedById String?
   createdAt   DateTime @default(now())
@@ -922,15 +923,15 @@ model Category {
 
 model Chat {
   id           String   @id @default(uuid())
-  participants Json     @default("[]")
+  participants Json
   type         ChatType
   tenantId     String?
   title        String?
-  topic        String?  @db.Text
+  topic        String? @db.Text
   isArchived   Boolean  @default(false)
   archivedAt   DateTime?
   lastMessageAt DateTime?
-  metadata     Json     @default("{}")
+  metadata     Json
   createdById  String?
   updatedById  String?
   createdAt    DateTime @default(now())
@@ -956,7 +957,7 @@ model ChatParticipant {
   userId             String?
   joinedAt           DateTime             @default(now())
   leftAt             DateTime?
-  metadata           Json                 @default("{}")
+  metadata           Json
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
 
@@ -971,13 +972,13 @@ model ChatParticipant {
 
 model Comment {
   id        String   @id @default(uuid())
-  content   String   @db.Text
+  content   String @db.Text
   authorId  String
   blogId    String
   tenantId  String?
   parentId  String?
   status    CommentStatus @default(PENDING)
-  metadata  Json          @default("{}")
+  metadata  Json
   updatedById String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1001,7 +1002,7 @@ model Comment {
 model Company {
   id           String   @id @default(uuid())
   name         String
-  description  String   @default("") @db.Text
+  description  String @db.Text
   industry     String   @default("")
   headquarters String   @default("")
   foundedDate  String   @default("")
@@ -1010,7 +1011,7 @@ model Company {
   tenantId     String?
   isArchived   Boolean  @default(false)
   deletedAt    DateTime?
-  metadata     Json     @default("{}")
+  metadata     Json
   createdDate  DateTime @default(now())
   updatedDate  DateTime @updatedAt
 
@@ -1028,7 +1029,7 @@ model CompanyMetadata {
   id        String   @id @default(uuid())
   companyId String
   key       String
-  value     Json     @default("null")
+  value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1048,7 +1049,7 @@ model Customer {
   tenantId  String?
   isArchived Boolean  @default(false)
   deletedAt DateTime?
-  metadata  Json      @default("{}")
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1068,7 +1069,7 @@ model CustomerMetadata {
   id         String   @id @default(uuid())
   customerId String
   key        String
-  value      Json     @default("null")
+  value      Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -1085,14 +1086,14 @@ model CustomerOrder {
   orderNumber     String       @unique
   orderDate       DateTime     @default(now())
   status          OrderStatus  @default(PENDING)
-  items           Json         @default("[]")
+  items           Json
   totalAmount     Decimal      @db.Decimal(18, 2)
   shippingAddress String
   billingAddress  String
   tenantId        String?
   isArchived      Boolean      @default(false)
   deletedAt       DateTime?
-  metadata        Json         @default("{}")
+  metadata        Json
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
@@ -1115,7 +1116,7 @@ model CustomerOrderMetadata {
   id            String   @id @default(uuid())
   customerOrderId String
   key           String
-  value         Json     @default("null")
+  value         Json
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -1178,7 +1179,7 @@ model Favorite {
   userId      String
   type        FavoriteType
   itemId      String
-  metadata    Json         @default("{}")
+  metadata    Json
   createdDate DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
@@ -1195,7 +1196,7 @@ model FavoriteMetadata {
   id         String   @id @default(uuid())
   favoriteId String
   key        String
-  value      Json     @default("null")
+  value      Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -1209,7 +1210,7 @@ model FavoriteMetadata {
 model Feature {
   id          String        @id @default(uuid())
   title       String
-  description String        @db.Text
+  description String @db.Text
   projectId   String
   status      FeatureStatus @default(PLANNED)
   priority    PriorityLevel @default(MEDIUM)
@@ -1229,10 +1230,10 @@ model Feedback {
   id           String   @id @default(uuid())
   userId       String
   guildId      String
-  feedbackText String   @db.Text
+  feedbackText String @db.Text
   tenantId     String?
   category     String?
-  metadata     Json     @default("{}")
+  metadata     Json
   resolvedAt   DateTime?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -1250,7 +1251,7 @@ model FeedbackMetadata {
   id         String   @id @default(uuid())
   feedbackId String
   key        String
-  value      Json     @default("null")
+  value      Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -1287,15 +1288,15 @@ model Game {
   publisher         String?
   website           String?
   tenantId          String?
-  metadata          Json      @default("{}")
+  metadata          Json
   isArchived        Boolean   @default(false)
   deletedAt         DateTime?
   averageRating     Decimal?  @db.Decimal(4, 2)
   reviewCount       Int       @default(0)
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  platforms         Json      @default("[]")
-  ratings           Json      @default("[]")
+  platforms         Json
+  ratings           Json
 
   tenant   Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   platformRecords GamePlatformLink[]
@@ -1344,12 +1345,12 @@ model Group {
   id          String   @id @default(uuid())
   name        String
   description String?
-  members     Json     @default("[]")
+  members     Json
   tenantId    String?
   visibility  GroupVisibility @default(PUBLIC)
   isArchived  Boolean         @default(false)
   deletedAt   DateTime?
-  metadata    Json            @default("{}")
+  metadata    Json
   createdById String?
   updatedById String?
   lastActivityAt DateTime?
@@ -1392,7 +1393,7 @@ model GroupMemberHistory {
   groupMemberId String
   eventType    MembershipEventType @default(ADDED)
   actorId      String?
-  description  String?             @db.Text
+  description  String? @db.Text
   occurredAt   DateTime            @default(now())
   createdAt    DateTime            @default(now())
 
@@ -1407,7 +1408,7 @@ model GroupMemberHistory {
 model Issue {
   id          String       @id @default(uuid())
   title       String
-  description String       @db.Text
+  description String @db.Text
   status      BugStatus    @default(OPEN)
   severity    PriorityLevel @default(MEDIUM)
   priority    PriorityLevel @default(MEDIUM)
@@ -1416,7 +1417,7 @@ model Issue {
   assignedToId String?
   dueDate     DateTime?
   resolvedAt  DateTime?
-  metadata    Json          @default("{}")
+  metadata    Json
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   projectId   String
@@ -1446,7 +1447,7 @@ model JoinRole {
   tenantId  String?
   description String? @db.Text
   isActive  Boolean  @default(true)
-  metadata  Json     @default("{}")
+  metadata  Json
   createdById String?
   updatedById String?
   createdAt DateTime @default(now())
@@ -1474,8 +1475,8 @@ model Kick {
   appealStatus ModerationAppealStatus @default(NONE)
   appealedAt DateTime?
   resolvedAt DateTime?
-  context   Json     @default("{}")
-  metadata  Json     @default("{}")
+  context   Json
+  metadata  Json
   createdById String?
   updatedById String?
   updatedAt DateTime @updatedAt
@@ -1510,7 +1511,7 @@ model Like {
 
 model Log {
   id             String   @id @default(uuid())
-  message        String   @db.Text
+  message        String @db.Text
   level          LogLevel @default(INFO)
   environment    EnvironmentType @default(PRODUCTION)
   service        String?
@@ -1519,7 +1520,7 @@ model Log {
   requestId      String?
   timestamp      DateTime @default(now())
   additionalData Json?
-  metadata       Json     @default("{}")
+  metadata       Json
   createdById    String?
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -1538,7 +1539,7 @@ model Message {
   id        String   @id @default(uuid())
   chatId    String
   senderId  String
-  content   String   @db.Text
+  content   String @db.Text
   timestamp DateTime @default(now())
   tenantId  String?
   status    MessageStatus @default(SENT)
@@ -1546,7 +1547,7 @@ model Message {
   readAt    DateTime?
   editedAt  DateTime?
   isPinned  Boolean  @default(false)
-  metadata  Json     @default("{}")
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1571,8 +1572,8 @@ model Mute {
   tenantId  String?
   moderatorId String?
   appealStatus ModerationAppealStatus @default(NONE)
-  metadata  Json     @default("{}")
-  context   Json     @default("{}")
+  metadata  Json
+  context   Json
   createdAt DateTime @default(now())
   createdById String?
   updatedById String?
@@ -1600,7 +1601,7 @@ model Newsletter {
   source       String?  @default("unknown")
   unsubscribedAt DateTime?
   lastEmailedAt DateTime?
-  metadata     Json     @default("{}")
+  metadata     Json
   updatedAt    DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
@@ -1614,14 +1615,14 @@ model Newsletter {
 model Order {
   id             String      @id @default(uuid())
   customerId     String
-  products       Json        @default("[]")
+  products       Json
   totalAmount    Decimal     @db.Decimal(18, 2)
   status         OrderStatus @default(PENDING)
   trackingNumber String?
   tenantId       String?
   isArchived     Boolean     @default(false)
   deletedAt      DateTime?
-  metadata       Json        @default("{}")
+  metadata       Json
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
@@ -1642,7 +1643,7 @@ model OrderMetadata {
   id       String   @id @default(uuid())
   orderId  String
   key      String
-  value    Json     @default("null")
+  value    Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1675,11 +1676,11 @@ model Organization {
   name        String
   description String?
   foundedDate DateTime @default(now())
-  members     Json     @default("[]")
+  members     Json
   tenantId    String?
   isArchived  Boolean  @default(false)
   deletedAt   DateTime?
-  metadata    Json     @default("{}")
+  metadata    Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -1698,7 +1699,7 @@ model OrganizationMetadata {
   id             String   @id @default(uuid())
   organizationId String
   key            String
-  value          Json     @default("null")
+  value          Json
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
@@ -1716,7 +1717,7 @@ model OrganizationMember {
   role         String?  @default("member")
   joinedAt     DateTime @default(now())
   leftAt       DateTime?
-  metadata     Json     @default("{}")
+  metadata     Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -1735,7 +1736,7 @@ model OrganizationMemberHistory {
   organizationMemberId String
   eventType         MembershipEventType @default(ADDED)
   actorId           String?
-  description       String?             @db.Text
+  description       String? @db.Text
   occurredAt        DateTime            @default(now())
   createdAt         DateTime            @default(now())
 
@@ -1760,7 +1761,7 @@ model Payment {
   processedAt       DateTime?
   isArchived        Boolean       @default(false)
   deletedAt         DateTime?
-  metadata          Json          @default("{}")
+  metadata          Json
   createdDate       DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
@@ -1787,7 +1788,7 @@ model PaymentMetadata {
   id        String   @id @default(uuid())
   paymentId String
   key       String
-  value     Json     @default("null")
+  value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -1805,12 +1806,12 @@ model BillingProfile {
   companyName            String?
   legalName              String?
   taxId                  String?
-  address                Json           @default("{}")
+  address                Json
   billingEmail           String?
   phoneNumber            String?
   currency               String         @default("USD")
   preferredPaymentMethod PaymentMethod?
-  metadata               Json           @default("{}")
+  metadata               Json
   createdAt              DateTime       @default(now())
   updatedAt              DateTime       @updatedAt
 
@@ -1820,6 +1821,7 @@ model BillingProfile {
   contacts       BillingContact[]
   subscriptions  Subscription[]
   invoices       Invoice[]
+  payments       Payment[]
   taxExemptions  TaxExemption[]
 
   @@index([tenantId], map: "idx_billing_profile_tenant")
@@ -1836,8 +1838,8 @@ model BillingProfilePaymentMethod {
   externalReference String?
   displayName       String?
   isDefault         Boolean        @default(false)
-  details           Json           @default("{}")
-  metadata          Json           @default("{}")
+  details           Json
+  metadata          Json
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
 
@@ -1855,8 +1857,8 @@ model BillingContact {
   name             String
   email            String?
   phone            String?
-  notes            String?            @db.Text
-  metadata         Json               @default("{}")
+  notes            String? @db.Text
+  metadata         Json
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
 
@@ -1872,14 +1874,14 @@ model SubscriptionPlan {
   tenantId         String?
   name             String
   tier             SubscriptionTier @default(STANDARD)
-  description      String?          @db.Text
+  description      String? @db.Text
   baseCurrency     String           @default("USD")
   basePrice        Decimal          @db.Decimal(18, 2) @default(0)
   baseBillingCycle BillingCycle     @default(MONTHLY)
   trialPeriodDays  Int              @default(0)
   isActive         Boolean          @default(true)
   maxMembers       Int?
-  metadata         Json             @default("{}")
+  metadata         Json
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
 
@@ -1901,10 +1903,10 @@ model SubscriptionPlanFeature {
   planId           String
   key              String
   label            String
-  description      String?             @db.Text
+  description      String? @db.Text
   limitValue       Int?
   usageAggregation UsageAggregation    @default(COUNT)
-  metadata         Json                @default("{}")
+  metadata         Json
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
 
@@ -1924,7 +1926,7 @@ model SubscriptionPlanPrice {
   amount       Decimal       @db.Decimal(18, 2) @default(0)
   currency     String        @default("USD")
   isPrimary    Boolean       @default(false)
-  metadata     Json          @default("{}")
+  metadata     Json
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -1941,13 +1943,13 @@ model SubscriptionAddon {
   planId       String?
   tenantId     String?
   name         String
-  description  String?      @db.Text
+  description  String? @db.Text
   amount       Decimal      @db.Decimal(18, 2) @default(0)
   currency     String       @default("USD")
   billingCycle BillingCycle @default(MONTHLY)
   isRecurring  Boolean      @default(true)
   isActive     Boolean      @default(true)
-  metadata     Json         @default("{}")
+  metadata     Json
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -1969,7 +1971,7 @@ model SubscriptionAddonAssignment {
   quantity       Int                @default(1)
   startedAt      DateTime           @default(now())
   endedAt        DateTime?
-  metadata       Json               @default("{}")
+  metadata       Json
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
@@ -1997,8 +1999,8 @@ model Subscription {
   renewalBillingCycle BillingCycle       @default(MONTHLY)
   renewalAmount       Decimal?           @db.Decimal(18, 2)
   currency            String             @default("USD")
-  usageSummary        Json               @default("{}")
-  metadata            Json               @default("{}")
+  usageSummary        Json
+  metadata            Json
   createdAt           DateTime           @default(now())
   updatedAt           DateTime           @updatedAt
 
@@ -2029,18 +2031,17 @@ model SubscriptionCycle {
   periodStart    DateTime
   periodEnd      DateTime
   status         SubscriptionCycleStatus @default(PENDING)
-  invoiceId      String?
-  metadata       Json                    @default("{}")
+  invoiceId      String?   @unique
+  metadata       Json
   createdAt      DateTime                @default(now())
   updatedAt      DateTime                @updatedAt
 
   subscription Subscription      @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  invoice      Invoice?          @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoice      Invoice?          @relation("InvoiceCycle", fields: [invoiceId], references: [id], onDelete: SetNull)
   usageSnapshots SubscriptionUsageSnapshot[]
   usageRecords   SubscriptionUsage[]
 
   @@index([subscriptionId], map: "idx_subscription_cycle_subscription")
-  @@index([invoiceId], map: "idx_subscription_cycle_invoice")
   @@unique([subscriptionId, cycleNumber], map: "uq_subscription_cycle_number")
   @@map("subscription_cycle")
 }
@@ -2053,7 +2054,7 @@ model SubscriptionUsageLimit {
   aggregation    UsageAggregation @default(COUNT)
   effectiveFrom  DateTime?
   effectiveUntil DateTime?
-  metadata       Json             @default("{}")
+  metadata       Json
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -2073,7 +2074,7 @@ model SubscriptionUsage {
   aggregation    UsageAggregation @default(COUNT)
   quantity       Decimal          @db.Decimal(18, 4) @default(0)
   measuredAt     DateTime         @default(now())
-  metadata       Json             @default("{}")
+  metadata       Json
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
 
@@ -2092,13 +2093,13 @@ model SubscriptionUsageSnapshot {
   subscriptionId String
   cycleId        String?
   snapshotAt     DateTime @default(now())
-  usageSummary   Json     @default("{}")
-  metadata       Json     @default("{}")
+  usageSummary   Json
+  metadata       Json
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
   subscription Subscription       @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  cycle        SubscriptionCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+  cycle        SubscriptionCycle?  @relation(fields: [cycleId], references: [id], onDelete: SetNull)
 
   @@index([subscriptionId], map: "idx_subscription_usage_snapshot_subscription")
   @@index([cycleId], map: "idx_subscription_usage_snapshot_cycle")
@@ -2110,7 +2111,6 @@ model Invoice {
   tenantId         String?
   billingProfileId String?
   subscriptionId   String?
-  cycleId          String?
   number           String?
   status           InvoiceStatus         @default(DRAFT)
   issuedAt         DateTime?
@@ -2122,15 +2122,15 @@ model Invoice {
   discountTotal    Decimal               @db.Decimal(18, 2) @default(0)
   total            Decimal               @db.Decimal(18, 2) @default(0)
   deliveryMethod   InvoiceDeliveryMethod @default(EMAIL)
-  notes            String?               @db.Text
-  metadata         Json                  @default("{}")
+  notes            String? @db.Text
+  metadata         Json
   createdAt        DateTime              @default(now())
   updatedAt        DateTime              @updatedAt
 
   tenant         Tenant?          @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   billingProfile BillingProfile?  @relation(fields: [billingProfileId], references: [id], onDelete: SetNull)
   subscription   Subscription?    @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
-  cycle          SubscriptionCycle? @relation(fields: [cycleId], references: [id], onDelete: SetNull)
+  cycle          SubscriptionCycle? @relation("InvoiceCycle")
   lineItems      InvoiceLineItem[]
   historyRecords InvoiceHistory[]
   deliveryLogs   InvoiceDeliveryLog[]
@@ -2142,7 +2142,6 @@ model Invoice {
   @@index([tenantId], map: "idx_invoice_tenant")
   @@index([billingProfileId], map: "idx_invoice_billing_profile")
   @@index([subscriptionId], map: "idx_invoice_subscription")
-  @@index([cycleId], map: "idx_invoice_cycle")
   @@index([status], map: "idx_invoice_status")
   @@unique([tenantId, number], map: "uq_invoice_number")
   @@map("invoice")
@@ -2153,12 +2152,12 @@ model InvoiceLineItem {
   invoiceId   String
   lineType    InvoiceLineType  @default(SERVICE)
   name        String
-  description String?          @db.Text
+  description String? @db.Text
   quantity    Int              @default(1)
   unitAmount  Decimal          @db.Decimal(18, 2) @default(0)
   amount      Decimal          @db.Decimal(18, 2) @default(0)
   taxRateId   String?
-  metadata    Json             @default("{}")
+  metadata    Json
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -2175,13 +2174,13 @@ model InvoiceHistory {
   id          String        @id @default(uuid())
   invoiceId   String
   status      InvoiceStatus
-  notes       String?       @db.Text
+  notes       String? @db.Text
   createdById String?
-  metadata    Json          @default("{}")
+  metadata    Json
   createdAt   DateTime      @default(now())
 
   invoice   Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
-  createdBy User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  createdBy User?   @relation("InvoiceHistoryCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
 
   @@index([invoiceId], map: "idx_invoice_history_invoice")
   @@index([createdById], map: "idx_invoice_history_actor")
@@ -2194,9 +2193,9 @@ model InvoiceDeliveryLog {
   method    InvoiceDeliveryMethod
   recipient String
   status    String?               @default("pending")
-  response  Json?                 @default("null")
+  response  Json?
   sentAt    DateTime              @default(now())
-  metadata  Json                  @default("{}")
+  metadata  Json
   createdAt DateTime              @default(now())
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
@@ -2212,7 +2211,7 @@ model TaxJurisdiction {
   name      String
   code      String
   type      TaxJurisdictionType @default(COUNTRY)
-  metadata  Json                @default("{}")
+  metadata  Json
   createdAt DateTime            @default(now())
   updatedAt DateTime            @updatedAt
 
@@ -2235,7 +2234,7 @@ model TaxRate {
   isCompound     Boolean     @default(false)
   effectiveFrom  DateTime?
   effectiveUntil DateTime?
-  metadata       Json        @default("{}")
+  metadata       Json
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
 
@@ -2256,8 +2255,8 @@ model TaxRule {
   taxRateId       String?
   appliesTo       InvoiceLineType    @default(PRODUCT)
   priority        Int                @default(0)
-  conditions      Json               @default("{}")
-  metadata        Json               @default("{}")
+  conditions      Json
+  metadata        Json
   createdAt       DateTime           @default(now())
   updatedAt       DateTime           @updatedAt
 
@@ -2278,7 +2277,7 @@ model TaxCalculation {
   lineItemId    String?
   taxableAmount Decimal          @db.Decimal(18, 2) @default(0)
   taxAmount     Decimal          @db.Decimal(18, 2) @default(0)
-  metadata      Json             @default("{}")
+  metadata      Json
   createdAt     DateTime         @default(now())
 
   invoice  Invoice        @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
@@ -2296,10 +2295,10 @@ model TaxExemption {
   billingProfileId String
   jurisdictionId   String?
   exemptionNumber  String
-  description      String?  @db.Text
+  description      String? @db.Text
   issuedAt         DateTime?
   expiresAt        DateTime?
-  metadata         Json     @default("{}")
+  metadata         Json
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -2319,8 +2318,8 @@ model PaymentGateway {
   name          String
   isPrimary     Boolean         @default(false)
   isActive      Boolean         @default(true)
-  configuration Json            @default("{}")
-  metadata      Json            @default("{}")
+  configuration Json
+  metadata      Json
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
@@ -2340,11 +2339,11 @@ model PaymentGatewayCredential {
   id         String   @id @default(uuid())
   gatewayId  String
   key        String
-  value      Json     @default("null")
+  value      Json
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   rotatedAt  DateTime?
-  metadata   Json     @default("{}")
+  metadata   Json
 
   gateway PaymentGateway @relation(fields: [gatewayId], references: [id], onDelete: Cascade)
 
@@ -2360,7 +2359,7 @@ model PaymentGatewayWebhook {
   url         String
   secret      String?
   lastCalledAt DateTime?
-  metadata    Json     @default("{}")
+  metadata    Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -2381,7 +2380,7 @@ model PaymentPayout {
   externalReference String?
   initiatedAt      DateTime      @default(now())
   completedAt      DateTime?
-  metadata         Json          @default("{}")
+  metadata         Json
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
@@ -2399,20 +2398,23 @@ model PaymentReconciliation {
   gatewayId        String?
   paymentId        String?
   invoiceId        String?
+  tenantId        String?
   status           PaymentStatus @default(PENDING)
   externalReference String?
   reconciledAt     DateTime?
-  metadata         Json          @default("{}")
+  metadata         Json
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
   gateway PaymentGateway? @relation(fields: [gatewayId], references: [id], onDelete: SetNull)
   payment Payment?         @relation(fields: [paymentId], references: [id], onDelete: SetNull)
   invoice Invoice?         @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  tenant Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
 
   @@index([gatewayId], map: "idx_payment_reconciliation_gateway")
   @@index([paymentId], map: "idx_payment_reconciliation_payment")
   @@index([invoiceId], map: "idx_payment_reconciliation_invoice")
+  @@index([tenantId], map: "idx_payment_reconciliation_tenant")
   @@map("payment_reconciliation")
 }
 
@@ -2422,7 +2424,7 @@ model Receipt {
   paymentId String?
   number    String?
   issuedAt  DateTime @default(now())
-  metadata  Json     @default("{}")
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -2439,13 +2441,13 @@ model FinancialReport {
   id             String          @id @default(uuid())
   tenantId       String?
   name           String
-  description    String?         @db.Text
+  description    String? @db.Text
   frequency      ReportFrequency @default(MONTHLY)
-  filters        Json            @default("{}")
+  filters        Json
   generatedAt    DateTime?
   generatedById  String?
-  output         Json?           @default("null")
-  metadata       Json            @default("{}")
+  output         Json?
+  metadata       Json
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -2466,8 +2468,8 @@ model FinancialSnapshot {
   totalTax      Decimal  @db.Decimal(18, 2) @default(0)
   totalDiscounts Decimal @db.Decimal(18, 2) @default(0)
   currency      String   @default("USD")
-  metrics       Json     @default("{}")
-  metadata      Json     @default("{}")
+  metrics       Json
+  metadata      Json
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -2485,8 +2487,8 @@ model AnalyticsSession {
   guildId   String?
   startedAt DateTime @default(now())
   endedAt   DateTime?
-  context   Json     @default("{}")
-  metadata  Json     @default("{}")
+  context   Json
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -2509,8 +2511,8 @@ model AnalyticsEvent {
   action    String
   label     String?
   value     Decimal?               @db.Decimal(18, 4)
-  context   Json                   @default("{}")
-  metadata  Json                   @default("{}")
+  context   Json
+  metadata  Json
   occurredAt DateTime              @default(now())
   createdAt DateTime              @default(now())
   updatedAt DateTime              @updatedAt
@@ -2531,7 +2533,7 @@ model AnalyticsEventProperty {
   id        String   @id @default(uuid())
   eventId   String
   key       String
-  value     Json     @default("null")
+  value     Json
   createdAt DateTime @default(now())
 
   event AnalyticsEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
@@ -2545,12 +2547,12 @@ model AnalyticsDashboardWidget {
   id                String   @id @default(uuid())
   tenantId          String?
   name              String
-  description       String?  @db.Text
+  description       String? @db.Text
   visualizationType String   @default("chart")
   position          Int      @default(0)
   isVisible         Boolean  @default(true)
-  config            Json     @default("{}")
-  metadata          Json     @default("{}")
+  config            Json
+  metadata          Json
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -2565,13 +2567,13 @@ model AnalyticsReport {
   id          String          @id @default(uuid())
   tenantId    String?
   name        String
-  description String?         @db.Text
+  description String? @db.Text
   frequency   ReportFrequency @default(MONTHLY)
   lastRunAt   DateTime?
   nextRunAt   DateTime?
-  query       Json            @default("{}")
+  query       Json
   isActive    Boolean         @default(true)
-  metadata    Json            @default("{}")
+  metadata    Json
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
@@ -2589,7 +2591,7 @@ model AnalyticsReportSchedule {
   deliveryMethod InvoiceDeliveryMethod @default(EMAIL)
   target         String
   lastDeliveredAt DateTime?
-  metadata       Json                  @default("{}")
+  metadata       Json
   createdAt      DateTime              @default(now())
   updatedAt      DateTime              @updatedAt
 
@@ -2603,12 +2605,12 @@ model AnalyticsGoal {
   id           String   @id @default(uuid())
   tenantId     String?
   name         String
-  description  String?  @db.Text
+  description  String? @db.Text
   targetValue  Decimal  @db.Decimal(18, 4) @default(0)
   currentValue Decimal  @db.Decimal(18, 4) @default(0)
   status       String   @default("active")
-  metrics      Json     @default("{}")
-  metadata     Json     @default("{}")
+  metrics      Json
+  metadata     Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -2626,7 +2628,7 @@ model AnalyticsFunnelStep {
   label        String
   targetValue  Decimal  @db.Decimal(18, 4) @default(0)
   currentValue Decimal  @db.Decimal(18, 4) @default(0)
-  metadata     Json     @default("{}")
+  metadata     Json
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
@@ -2647,11 +2649,12 @@ model Platform {
   website     String?
   tenantId    String?
   isActive    Boolean   @default(true)
-  metadata    Json      @default("{}")
+  metadata    Json
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  gameLinkRecords GamePlatformLink[]
 
   @@index([tenantId], map: "idx_platform_tenant")
   @@index([isActive], map: "idx_platform_active")
@@ -2665,7 +2668,7 @@ model Prefix {
   tenantId  String?
   description String? @db.Text
   isDefault Boolean  @default(false)
-  metadata  Json     @default("{}")
+  metadata  Json
   createdById String?
   updatedById String?
   createdAt DateTime @default(now())
@@ -2685,7 +2688,7 @@ model Product {
   picture           String?
   title             String
   shortDescription  String
-  detailDescription String   @default("") @db.Text
+  detailDescription String @db.Text
   price             Decimal  @db.Decimal(18, 2)
   category          String   @default("")
   stock             Int      @default(0)
@@ -2694,11 +2697,14 @@ model Product {
   tenantId          String?
   isArchived        Boolean  @default(false)
   deletedAt         DateTime?
-  metadata          Json     @default("{}")
+  metadata          Json
   createdDate       DateTime @default(now())
   updatedDate       DateTime @updatedAt
 
   tenant Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
+  customerOrderItems CustomerOrderItem[]
+  orderItems OrderItem[]
+  returnItems ReturnItem[]
 
   @@index([tenantId])
   @@index([category])
@@ -2713,16 +2719,16 @@ model Project {
   picture           String?
   title             String
   shortDescription  String
-  detailDescription String        @default("") @db.Text
+  detailDescription String @db.Text
   status            ProjectStatus @default(NOT_STARTED)
   startDate         DateTime      @default(now())
   endDate           DateTime?
-  members           Json          @default("[]")
-  tags              Json          @default("[]")
+  members           Json
+  tags              Json
   tenantId          String?
   isArchived        Boolean       @default(false)
   deletedAt         DateTime?
-  metadata          Json          @default("{}")
+  metadata          Json
   createdDate       DateTime      @default(now())
   updatedAt         DateTime      @updatedAt
 
@@ -2748,7 +2754,7 @@ model ProjectMetadata {
   id        String   @id @default(uuid())
   projectId String
   key       String
-  value     Json     @default("null")
+  value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -2784,7 +2790,7 @@ model ProjectMemberHistory {
   projectMemberId String
   eventType     MembershipEventType @default(ADDED)
   actorId       String?
-  description   String?             @db.Text
+  description   String? @db.Text
   occurredAt    DateTime            @default(now())
   createdAt     DateTime            @default(now())
 
@@ -2817,12 +2823,12 @@ model Report {
   userId         String
   guildId        String
   reportedUserId String
-  reason         String        @db.Text
+  reason         String @db.Text
   tenantId       String?
   status         ReportStatus  @default(OPEN)
   assignedToId   String?
   resolvedAt     DateTime?
-  metadata       Json          @default("{}")
+  metadata       Json
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
   updatedById    String?
@@ -2848,7 +2854,7 @@ model Return {
   returnDate   DateTime     @default(now())
   reason       String
   status       ReturnStatus @default(REQUESTED)
-  items        Json         @default("[]")
+  items        Json
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
 
@@ -2885,10 +2891,10 @@ model Role {
   displayName String
   color       String   @default("#000000")
   description String?
-  permissions Json     @default("[]")
+  permissions Json
   isDefault   Boolean  @default(false)
   isSystem    Boolean  @default(false)
-  metadata    Json     @default("{}")
+  metadata    Json
   createdById String?
   updatedById String?
   createdAt   DateTime @default(now())
@@ -2917,7 +2923,7 @@ model Roleplay {
   characterClass   String?        @default("Adventurer")
   faction          String?
   lastSessionAt    DateTime?
-  metadata         Json           @default("{}")
+  metadata         Json
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -2950,13 +2956,13 @@ model Slowmode {
   id        String   @id @default(uuid())
   channelId String   @unique
   duration  Int
-  reason    String?  @db.Text
+  reason    String? @db.Text
   tenantId  String?
   isActive  Boolean  @default(true)
   expiresAt DateTime?
   setBy     String
   setAt     DateTime @default(now())
-  metadata  Json     @default("{}")
+  metadata  Json
   createdById String?
   updatedById String?
   updatedAt DateTime @updatedAt
@@ -2974,7 +2980,7 @@ model Slowmode {
 model Story {
   id          String        @id @default(uuid())
   title       String
-  description String        @db.Text
+  description String @db.Text
   status      StoryStatus   @default(BACKLOG)
   priority    PriorityLevel @default(MEDIUM)
   createdAt   DateTime      @default(now())
@@ -3000,7 +3006,7 @@ model Subscriber {
   subscribedAt   DateTime            @default(now())
   unsubscribedAt DateTime?
   lastEmailedAt  DateTime?
-  metadata       Json                @default("{}")
+  metadata       Json
   createdById    String?
   updatedById    String?
   createdAt      DateTime            @default(now())
@@ -3024,7 +3030,7 @@ model Tag {
   description String   @default("")
   color       String?  @default("#000000")
   isActive    Boolean  @default(true)
-  metadata    Json     @default("{}")
+  metadata    Json
   createdById String?
   updatedById String?
   createdDate DateTime @default(now())
@@ -3034,6 +3040,7 @@ model Tag {
   tenant    Tenant? @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   createdBy User?   @relation("TagCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
   updatedBy User?   @relation("TagUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  projectTagRecords ProjectTag[]
 
   @@unique([tenantId, name], map: "uq_tag_tenant_name")
   @@unique([tenantId, slug], map: "uq_tag_tenant_slug")
@@ -3045,7 +3052,7 @@ model Tag {
 model Task {
   id           String       @id @default(uuid())
   title        String
-  description  String       @default("") @db.Text
+  description  String @db.Text
   category     TaskCategory @default(OTHER)
   status       TaskStatus   @default(PENDING)
   assignedToId String
@@ -3056,7 +3063,7 @@ model Task {
   estimateHours Decimal?     @db.Decimal(10, 2)
   isArchived   Boolean       @default(false)
   deletedAt    DateTime?
-  metadata     Json          @default("{}")
+  metadata     Json
   createdDate  DateTime     @default(now())
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -3080,9 +3087,9 @@ model Task {
 model Team {
   id          String     @id @default(uuid())
   name        String
-  description String     @default("") @db.Text
+  description String @db.Text
   createdDate DateTime   @default(now())
-  members     Json       @default("[]")
+  members     Json
   status      TeamStatus @default(ACTIVE)
   type        TeamType   @default(OTHER)
   logo        String     @default("default-team-logo.png")
@@ -3090,7 +3097,7 @@ model Team {
   tenantId    String?
   isArchived  Boolean    @default(false)
   deletedAt   DateTime?
-  metadata    Json       @default("{}")
+  metadata    Json
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -3112,7 +3119,7 @@ model TeamMetadata {
   id      String   @id @default(uuid())
   teamId  String
   key     String
-  value   Json     @default("null")
+  value   Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3148,7 +3155,7 @@ model TeamMemberHistory {
   teamMemberId String
   eventType    MembershipEventType @default(ADDED)
   actorId      String?
-  description  String?             @db.Text
+  description  String? @db.Text
   occurredAt   DateTime            @default(now())
   createdAt    DateTime            @default(now())
 
@@ -3165,9 +3172,9 @@ model Ticket {
   guildId     String
   userId      String
   title       String
-  description String       @default("No description provided") @db.Text
+  description String @db.Text
   status      TicketStatus @default(OPEN)
-  messages    Json         @default("[]")
+  messages    Json
   tenantId    String?
   assignedToId String?
   priority    PriorityLevel @default(MEDIUM)
@@ -3175,11 +3182,11 @@ model Ticket {
   slaDueAt    DateTime?
   isArchived  Boolean       @default(false)
   deletedAt   DateTime?
-  metadata    Json          @default("{}")
+  metadata    Json
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
 
-  assignedTo User?           @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+  assignedTo User?           @relation("TicketAssignedTo", fields: [assignedToId], references: [id], onDelete: SetNull)
   tenant     Tenant?         @relation(fields: [tenantId], references: [id], onDelete: SetNull)
   responses  TicketResponse[]
   messageRecords TicketMessage[]
@@ -3201,7 +3208,7 @@ model TicketMetadata {
   id       String   @id @default(uuid())
   ticketId String
   key      String
-  value    Json     @default("null")
+  value    Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3216,8 +3223,8 @@ model TicketMessage {
   id         String   @id @default(uuid())
   ticketId   String
   messageId  String   @unique
-  authorId   String
-  content    String   @db.Text
+  authorId   String?
+  content    String @db.Text
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -3233,8 +3240,8 @@ model TicketResponse {
   id        String   @id @default(uuid())
   ticketId  String
   userId    String
-  response  String   @db.Text
-  metadata  Json     @default("{}")
+  response  String @db.Text
+  metadata  Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3251,7 +3258,7 @@ model TicketResponseMetadata {
   id              String   @id @default(uuid())
   ticketResponseId String
   key             String
-  value           Json     @default("null")
+  value           Json
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -3286,7 +3293,7 @@ model TriviaAnswer {
   tenantId   String?
   responseTimeMs Int?
   source     String?
-  metadata   Json     @default("{}")
+  metadata   Json
   answeredAt DateTime @default(now())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -3302,15 +3309,15 @@ model TriviaAnswer {
 
 model TriviaQuestion {
   id            String   @id @default(uuid())
-  question      String   @db.Text
-  options       Json     @default("[]")
+  question      String @db.Text
+  options       Json
   correctAnswer String
   category      String
   tenantId      String?
   subcategory   String?
   difficulty    TriviaDifficulty @default(MEDIUM)
   isArchived    Boolean          @default(false)
-  metadata      Json             @default("{}")
+  metadata      Json
   createdById   String?
   updatedById   String?
   createdAt     DateTime @default(now())
@@ -3334,7 +3341,7 @@ model TriviaQuestionOption {
   questionId  String
   value       String
   isCorrect   Boolean  @default(false)
-  metadata    Json     @default("{}")
+  metadata    Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -3356,7 +3363,7 @@ model TriviaStats {
   bestStreak       Int      @default(0)
   bestScore        Int      @default(0)
   lastPlayedAt     DateTime?
-  metadata         Json     @default("{}")
+  metadata         Json
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 
@@ -3375,7 +3382,7 @@ model User {
   email                    String    @unique
   password                 String?
   role                     UserRole  @default(USER)
-  bio                      String    @default("") @db.Text
+  bio                      String @db.Text
   recentActivity           DateTime  @default(now())
   lastLoginAt              DateTime?
   inactiveSince            DateTime?
@@ -3385,8 +3392,8 @@ model User {
   isAuthenticated          Boolean   @default(false)
   accessToken              String?
   refreshToken             String?
-  apiKeyId                 String?   @map("api_key")
-  betaKeyId                String?   @map("beta_key")
+  apiKeyId                 String?   @unique @map("api_key")
+  betaKeyId                String?   @unique @map("beta_key")
   isBetaTester             Boolean   @default(false)
   termsAccepted            Boolean   @default(false)
   termsAcceptedAt          DateTime?
@@ -3405,6 +3412,56 @@ model User {
   oauthProviderRecords UserOAuthProvider[]
   postRecords          UserPost[]
   portfolioProjects    UserPortfolioProject[]
+  afkCreatedRecords Afk[] @relation("AfkCreatedBy")
+  afkUpdatedRecords Afk[] @relation("AfkUpdatedBy")
+  antilinkCreatedRecords Antilink[] @relation("AntilinkCreatedBy")
+  antilinkUpdatedRecords Antilink[] @relation("AntilinkUpdatedBy")
+  autorespondersCreated Autoresponder[] @relation("AutoresponderCreatedBy")
+  autorespondersUpdated Autoresponder[] @relation("AutoresponderUpdatedBy")
+  autoresponderEntriesCreated AutoResponderEntry[] @relation("AutoResponderEntryCreatedBy")
+  autoresponderEntriesUpdated AutoResponderEntry[] @relation("AutoResponderEntryUpdatedBy")
+  bansModerated Ban[] @relation("BanModerator")
+  bansCreated Ban[] @relation("BanCreatedBy")
+  bansUpdated Ban[] @relation("BanUpdatedBy")
+  categoriesCreated Category[] @relation("CategoryCreatedBy")
+  categoriesUpdated Category[] @relation("CategoryUpdatedBy")
+  chatsCreated Chat[] @relation("ChatCreatedBy")
+  chatsUpdated Chat[] @relation("ChatUpdatedBy")
+  commentsUpdated Comment[] @relation("CommentUpdatedBy")
+  groupsCreated Group[] @relation("GroupCreatedBy")
+  groupsUpdated Group[] @relation("GroupUpdatedBy")
+  invoiceHistoriesCreated InvoiceHistory[] @relation("InvoiceHistoryCreatedBy")
+  issuesAssigned Issue[] @relation("IssueAssignedTo")
+  issuesReported Issue[] @relation("IssueReportedBy")
+  joinRolesCreated JoinRole[] @relation("JoinRoleCreatedBy")
+  joinRolesUpdated JoinRole[] @relation("JoinRoleUpdatedBy")
+  kicksModerated Kick[] @relation("KickModerator")
+  kicksCreated Kick[] @relation("KickCreatedBy")
+  kicksUpdated Kick[] @relation("KickUpdatedBy")
+  logsCreated Log[] @relation("LogCreatedBy")
+  mutesModerated Mute[] @relation("MuteModerator")
+  mutesCreated Mute[] @relation("MuteCreatedBy")
+  mutesUpdated Mute[] @relation("MuteUpdatedBy")
+  prefixesCreated Prefix[] @relation("PrefixCreatedBy")
+  prefixesUpdated Prefix[] @relation("PrefixUpdatedBy")
+  reportsAssigned Report[] @relation("ReportAssignedTo")
+  reportsUpdated Report[] @relation("ReportUpdatedBy")
+  rolesCreated Role[] @relation("RoleCreatedBy")
+  rolesUpdated Role[] @relation("RoleUpdatedBy")
+  slowmodesCreated Slowmode[] @relation("SlowmodeCreatedBy")
+  slowmodesUpdated Slowmode[] @relation("SlowmodeUpdatedBy")
+  subscribersCreated Subscriber[] @relation("SubscriberCreatedBy")
+  subscribersUpdated Subscriber[] @relation("SubscriberUpdatedBy")
+  tagsCreated Tag[] @relation("TagCreatedBy")
+  tagsUpdated Tag[] @relation("TagUpdatedBy")
+  ticketsAssigned Ticket[] @relation("TicketAssignedTo")
+  triviaQuestionsCreated TriviaQuestion[] @relation("TriviaQuestionCreatedBy")
+  triviaQuestionsUpdated TriviaQuestion[] @relation("TriviaQuestionUpdatedBy")
+  warnsModerated Warn[] @relation("WarnModerator")
+  warnsCreated Warn[] @relation("WarnCreatedBy")
+  warnsUpdated Warn[] @relation("WarnUpdatedBy")
+  wordsCreated Word[] @relation("WordCreatedBy")
+  wordsUpdated Word[] @relation("WordUpdatedBy")
   followerRelations    UserFriend[]        @relation("UserFollowerRelations")
   followingRelations   UserFriend[]        @relation("UserFollowingRelations")
   organizationMemberships OrganizationMember[]
@@ -3485,7 +3542,7 @@ model UserPaymentMethod {
   id        String        @id @default(uuid())
   userId    String
   method    PaymentMethod
-  metadata  Json          @default("{}")
+  metadata  Json
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 
@@ -3546,7 +3603,7 @@ model UserPost {
   userId      String
   picture     String   @default("")
   title       String
-  description String   @db.Text
+  description String @db.Text
   author      String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -3579,7 +3636,7 @@ model UserPortfolioProject {
   picture            String   @default("")
   title              String
   shortDescription   String
-  description        String   @db.Text
+  description        String @db.Text
   developer          String
   publishedAt        DateTime @default(now())
   createdAt          DateTime @default(now())
@@ -3673,20 +3730,20 @@ model Version {
   picture           String   @default("")
   title             String
   shortDescription  String
-  detailDescription String   @db.Text
+  detailDescription String @db.Text
   versionTagId      String
-  features          Json     @default("[]")
-  added             Json     @default("[]")
-  fixed             Json     @default("[]")
-  bugs              Json     @default("[]")
-  developers        Json     @default("[]")
+  features          Json
+  added             Json
+  fixed             Json
+  bugs              Json
+  developers        Json
   githublink        String   @default("")
   downloadLink      String
   releasedAt        DateTime
   tenantId          String?
   isArchived        Boolean  @default(false)
   deletedAt         DateTime?
-  metadata          Json     @default("{}")
+  metadata          Json
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
@@ -3785,7 +3842,7 @@ model VersionMetadata {
   id        String   @id @default(uuid())
   versionId String
   key       String
-  value     Json     @default("null")
+  value     Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -3799,10 +3856,10 @@ model VersionMetadata {
 model VersionTag {
   id          String   @id @default(uuid())
   title       String
-  description String   @db.Text
+  description String @db.Text
   tenantId    String?
   isArchived  Boolean  @default(false)
-  metadata    Json     @default("{}")
+  metadata    Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -3820,7 +3877,7 @@ model VersionTagMetadata {
   id          String   @id @default(uuid())
   versionTagId String
   key         String
-  value       Json     @default("null")
+  value       Json
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -3835,13 +3892,13 @@ model Warn {
   id          String   @id @default(uuid())
   guildId     String
   userId      String
-  moderatorId String
-  reason      String   @db.Text
+  moderatorId String?
+  reason      String @db.Text
   tenantId    String?
   appealStatus ModerationAppealStatus @default(NONE)
   expiresAt   DateTime?
   resolvedAt  DateTime?
-  metadata    Json     @default("{}")
+  metadata    Json
   createdById String?
   updatedById String?
   createdAt   DateTime @default(now())
@@ -3865,9 +3922,9 @@ model Word {
   tenantId  String?
   word      String
   severity  PriorityLevel @default(MEDIUM)
-  reason    String?  @db.Text
+  reason    String? @db.Text
   isActive  Boolean  @default(true)
-  metadata  Json     @default("{}")
+  metadata  Json
   createdById String?
   updatedById String?
   createdAt DateTime @default(now())

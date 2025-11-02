@@ -1,121 +1,212 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const schema = require('../../../models/autoresponderModel');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import prisma from '@/services/prisma.service';
+
+import type { SlashCommandModule } from '@/bot/types';
+
+interface AutoResponseEntry {
+  trigger: string;
+  response: string;
+}
+
+async function ensureAutoresponder(guildId: string) {
+  return prisma.autoresponder.upsert({
+    where: { guildId },
+    update: {},
+    create: { guildId },
+  });
+}
+
+async function syncAutoresponderSnapshot(guildId: string, autoresponderId: string) {
+  const entries = await prisma.autoResponderEntry.findMany({
+    where: { autoresponderId },
+    select: { trigger: true, response: true },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  await prisma.autoresponder.update({
+    where: { id: autoresponderId },
+    data: { autoresponses: entries as unknown as AutoResponseEntry[] },
+  });
+
+  return entries;
+}
+
+const autoResponderCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('autoresponder')
-    .setDescription('Manage auto responder.')
-    .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-    .addSubcommand((subcommand) => subcommand.setName('add').setDescription('Add an autoresponse.').addStringOption(option => option.setName('trigger').setDescription('What triggers the auto response.').setRequired(true)).addStringOption(option => option.setName('response').setDescription('What the bot responsed with.').setRequired(true)))
-    .addSubcommand((subcommand) => subcommand.setName('remove').setDescription("Remove an autoresponses.").addStringOption((option) => option.setName('trigger').setDescription('Remove the autoresponse by its triggers.').setRequired(true)))
-    .addSubcommand((subcommand) => subcommand.setName('list').setDescription('List all auto responses.'))
-    .addSubcommand((subcommand) => subcommand.setName('remove-all').setDescription('Remove all auto responses.')),
+    .setDescription('Manage automatic responses for common triggers.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .addSubcommand((sub) =>
+      sub
+        .setName('add')
+        .setDescription('Add an auto-response trigger.')
+        .addStringOption((option) =>
+          option
+            .setName('trigger')
+            .setDescription('What should trigger the response?')
+            .setRequired(true)
+            .setMaxLength(100),
+        )
+        .addStringOption((option) =>
+          option
+            .setName('response')
+            .setDescription('What should the bot reply with?')
+            .setRequired(true)
+            .setMaxLength(1_000),
+        ),
+    )
+    .addSubcommand((sub) =>
+      sub
+        .setName('remove')
+        .setDescription('Remove an existing auto-response by trigger.')
+        .addStringOption((option) =>
+          option
+            .setName('trigger')
+            .setDescription('The trigger you previously configured.')
+            .setRequired(true),
+        ),
+    )
+    .addSubcommand((sub) => sub.setName('list').setDescription('List configured auto-responses.'))
+    .addSubcommand((sub) => sub.setName('remove-all').setDescription('Delete all auto-responses.')),
   async execute(interaction) {
-    if (subcommand === 'add') {
-      const subcommand = interaction.options.getString('trigger');
-      const response = interaction.options.getString('response');
-
-      const data = await schema.findOne({ guildId: interaction.guild.id });
-
-      if (!data) {
-        await schema.create({
-          guildId: interaction.guild.id,
-          autoresponses: [
-            {
-              trigger: trigger,
-              reponse: response,
-            }
-          ]
-        });
-
-        const embed = new EmbedBuilder()
-          .setTitle('Autoresponse Created')
-          .setDescription(`Trigger:\n${trigger}\n\nResponse: ${response}`)
-          .setTimestamp();
-
-        await interaction.reply({ embeds: [embed] });
-      } else {
-        const autoresponders = data.autoresponses;
-        for (const t of autoresponders) {
-          if (t.trigger === trigger)
-            return await interaction.reply({ content: "You must have unique triggers." });
-        }
-
-        const addto = {
-          trigger: trigger,
-          response: response,
-        }
-
-        await schema.findOneAndDelete(
-          { guildId: interaction.guild.id },
-          { $push: { autoresponses: addto } }
-        );
-
-        const embed = new EmbedBuilder()
-          .setTitle('Autoresponse Created')
-          .setDescription(`Trigger:\n${trigger}\n\nResponse: ${response}`)
-          .setTimestamp();
-
-        await interaction.reply({ embeds: [embed] });
-      }
-    } else if (subcommand === 'remove') {
-      const trigger = interaction.options.getString('trigger');
-      const data = await schema.findOne({
-        guildId: interaction.guild.id,
-        "autoresponses.trigger": trigger,
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
       });
+      return;
+    }
 
-      if(!data) {
-        const embed = new EmbedBuilder()
-        .setDescription(`I couldn't find an auto response with that trigger.`);
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageGuild)) {
+      await interaction.reply({
+        content: 'You do not have permission to manage autoresponders.',
+        ephemeral: true,
+      });
+      return;
+    }
 
-        await interaction.reply({ embeds: [embed] });
-      } else {
-        await schema.findOneAndDelete({ guildId: interaction.guild.id })
-        const embed = new EmbedBuilder()
-        .setDescription(`Auto response with trigger "${trigger}" removed.`);
+    const subcommand = interaction.options.getSubcommand();
+    const guildId = interaction.guild.id;
+    const autoresponder = await ensureAutoresponder(guildId);
 
-        await interaction.reply({ embeds: [embed] });
-      }
-    } else if (subcommand === 'list') {
-      const data = await schema.findOne({ guildId: interaction.guild.id });
+    switch (subcommand) {
+      case 'add': {
+        const trigger = interaction.options.getString('trigger', true).trim().toLowerCase();
+        const response = interaction.options.getString('response', true).trim();
 
-      if(!data || !data.autoresponses || data.autoresponses.length === 0) {
-        const embed = new EmbedBuilder()
-        .setTitle('Autoresponse List')
-        .setDescription('No autoresponses found.');
-
-        await interaction.reply({ embeds: [embed] });
-      } else {
-        const embed1 = new EmbedBuilder()
-        .setTitle('Autoresponse List')
-        .setDescription(`List of all autoresponses.`);
-
-        data.autoresponses.forEach((autoresponse, index) => {
-          embed1.addFields({
-            name: `Autoresponse #${index + 1}`,
-            value: `Trigger: ${autoresponse.trigger}\nResponse: ${autoresponse.response}`,
+        if (trigger.length === 0 || response.length === 0) {
+          await interaction.reply({
+            content: 'Trigger and response cannot be empty.',
+            ephemeral: true,
           });
+          return;
+        }
+
+        const existing = await prisma.autoResponderEntry.findFirst({
+          where: {
+            autoresponderId: autoresponder.id,
+            trigger,
+          },
         });
 
-        await interaction.reply({ embeds: [embed1] });
+        if (existing) {
+          await interaction.reply({
+            content: 'That trigger is already configured.',
+            ephemeral: true,
+          });
+          return;
+        }
+
+        await prisma.autoResponderEntry.create({
+          data: {
+            autoresponderId: autoresponder.id,
+            trigger,
+            response,
+          },
+        });
+
+        await syncAutoresponderSnapshot(guildId, autoresponder.id);
+
+        const embed = new EmbedBuilder()
+          .setColor('Blurple')
+          .setTitle('Auto-response Added')
+          .addFields(
+            { name: 'Trigger', value: `\`${trigger}\`` },
+            { name: 'Response', value: response.slice(0, 1024) },
+          )
+          .setTimestamp();
+
+        await interaction.reply({ embeds: [embed] });
+        break;
       }
-    } else if (subcommand === 'remove-all') {
-      const data = await schema.findOne({ Guild: interaction.guild.id });
+      case 'remove': {
+        const trigger = interaction.options.getString('trigger', true).trim().toLowerCase();
 
-      if(!data){
-        const embed3 = new EmbedBuilder()
-        .setDescription('No autoresponder find.');
+        const existing = await prisma.autoResponderEntry.findFirst({
+          where: { autoresponderId: autoresponder.id, trigger },
+        });
 
-        return await interaction.reply({ embeds: [embed3], ephemeral: true });
-      } else {
-        await schema.deleteMany({ Guild: interaction.guild.id });
+        if (!existing) {
+          await interaction.reply({
+            content: 'I could not find an auto-response with that trigger.',
+            ephemeral: true,
+          });
+          return;
+        }
 
-        const embed2 = new EmbedBuilder()
-        .setDescription(`Successfully deleted all responses.`);
+        await prisma.autoResponderEntry.delete({ where: { id: existing.id } });
+        await syncAutoresponderSnapshot(guildId, autoresponder.id);
 
-        await interaction.reply({ embeds: [embed2] });
+        await interaction.reply({
+          content: `Removed the auto-response for trigger \`${trigger}\`.`,
+          ephemeral: true,
+        });
+        break;
+      }
+      case 'list': {
+        const entries = await prisma.autoResponderEntry.findMany({
+          where: { autoresponderId: autoresponder.id },
+          orderBy: { createdAt: 'asc' },
+        });
+
+        if (entries.length === 0) {
+          await interaction.reply({
+            content: 'No auto-responses have been configured yet.',
+            ephemeral: true,
+          });
+          return;
+        }
+
+        const embed = new EmbedBuilder()
+          .setColor('Blurple')
+          .setTitle('Configured Auto-responses')
+          .setTimestamp();
+
+        for (const [index, entry] of entries.entries()) {
+          embed.addFields({
+            name: `#${index + 1} — ${entry.trigger}`,
+            value: entry.response.slice(0, 1024),
+          });
+        }
+
+        await interaction.reply({ embeds: [embed], ephemeral: true });
+        break;
+      }
+      case 'remove-all': {
+        await prisma.autoResponderEntry.deleteMany({
+          where: { autoresponderId: autoresponder.id },
+        });
+        await syncAutoresponderSnapshot(guildId, autoresponder.id);
+
+        await interaction.reply({
+          content: 'All auto-responses have been removed.',
+          ephemeral: true,
+        });
+        break;
       }
     }
   },
 };
+
+export default autoResponderCommand;

@@ -1,15 +1,4 @@
-const express = require('express');
-const router = express.Router();
-const subscriberController = require('../controllers/subscriberController');
+import { createCrudRouter } from '@/api/shared/crud.factory';
+import controller from '@/api/controllers/subscriber.controller';
 
-router.get('/', subscriberController.getAllSubscribers);
-
-router.get('/:subscriberId', subscriberController.getSubscriberById);
-
-router.post('/create', subscriberController.createSubscriber);
-
-router.post('/:subscriberId/update', subscriberController.updateSubscriber);
-
-router.post('/:subscriberId/delete', subscriberController.deleteSubscriber);
-
-module.exports = router;
+export default createCrudRouter(controller);

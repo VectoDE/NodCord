@@ -1,53 +1,43 @@
-const {
-  SlashCommandBuilder,
-  EmbedBuilder,
+import {
+  ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  ActionRowBuilder,
-} = require('discord.js');
+  EmbedBuilder,
+  SlashCommandBuilder,
+} from 'discord.js';
 
-module.exports = {
+import type { SlashCommandModule } from '@/bot/types';
+
+const buttonsCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
     .setName('buttons')
-    .setDescription('Show you all buttons.'),
+    .setDescription('Preview the different button styles.'),
   async execute(interaction) {
-    const button1 = new ButtonBuilder()
-      .setCustomId('id-1')
-      .setLabel('Primary')
-      .setStyle(ButtonStyle.Primary);
+    const previewEmbed = new EmbedBuilder()
+      .setColor('Blurple')
+      .setDescription('Here are some example buttons you can use in your own commands:');
 
-    const button2 = new ButtonBuilder()
-      .setCustomId('id-2')
-      .setLabel('Emoji')
-      .setEmoji('🎉')
-      .setStyle(ButtonStyle.Secondary);
+    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId('buttons.primary')
+        .setLabel('Primary')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId('buttons.emoji')
+        .setLabel('Emoji')
+        .setEmoji('😄')
+        .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder().setLabel('Link').setStyle(ButtonStyle.Link).setURL('https://youtube.com'),
+      new ButtonBuilder().setCustomId('buttons.danger').setEmoji('⚠️').setStyle(ButtonStyle.Danger),
+      new ButtonBuilder()
+        .setCustomId('buttons.disabled')
+        .setLabel('Disabled')
+        .setStyle(ButtonStyle.Success)
+        .setDisabled(true),
+    );
 
-    const button3 = new ButtonBuilder()
-      .setURL('https://youtube.com')
-      .setStyle(ButtonStyle.Secondary)
-      .setLabel('Link');
-
-    const button4 = new ButtonBuilder()
-      .setCustomId('id-4')
-      .setStyle(ButtonStyle.Danger)
-      .setEmoji('☑️');
-
-    const button5 = new ButtonBuilder()
-      .setCustomId('id-5')
-      .setStyle(ButtonStyle.Success)
-      .setDisabled(true)
-      .setLabel('Disabled');
-
-    await interaction.reply({
-      components: [
-        new ActionRowBuilder().addComponents(
-          button1,
-          button2,
-          button3,
-          button4,
-          button5
-        ),
-      ],
-    });
+    await interaction.reply({ embeds: [previewEmbed], components: [row] });
   },
 };
+
+export default buttonsCommand;

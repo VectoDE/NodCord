@@ -12,21 +12,25 @@ This guide walks you through installing NodCord with TypeScript, Prisma, and MyS
 ### Steps
 
 1. Clone the repository:
+
    ```sh
    git clone https://github.com/vectode/NodCord.git
    ```
 
 2. Switch into the project directory:
+
    ```sh
    cd NodCord
    ```
 
 3. Install dependencies:
+
    ```sh
    npm install
    ```
 
 4. Generate the Prisma Client and apply migrations:
+
    ```sh
    npx prisma generate
    npx prisma migrate deploy

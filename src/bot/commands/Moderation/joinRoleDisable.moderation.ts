@@ -1,29 +1,51 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionsBitField } = require('discord.js');
-const joinrole = require('../../../models/joinroleModel');
+import { EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
-module.exports = {
+import prisma from '@/services/prisma.service';
+
+import type { SlashCommandModule } from '@/bot/types';
+
+const joinRoleDisableCommand: SlashCommandModule = {
   data: new SlashCommandBuilder()
-  .setName('joinrole-disable')
-  .setDescription('Disable auto role system for your server.'),
+    .setName('joinrole-disable')
+    .setDescription('Disable the automatic join role.')
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
   async execute(interaction) {
-    const data = await joinrole.findOne({ Guild: interaction.guild.id });
-
-    if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return await interaction.reply({ content: "You do not have permissions to run this command." });
-
-    if(!data) {
-      return await interaction.reply({ content: "No join role has been set." });
-    } else {
-      joinrole.deleteMany({ Guild: interaction.guild.id }, async (err, data) => {
-        if (err) throw err;
-
-        const embed = new EmbedBuilder()
-        .setColor('Random')
-        .setDescription(`Successfully disabled **auto roles** in this server.`)
-        .setFooter({ text: `${interaction.guild.name}` })
-        .setTimestamp();
-
-        return interaction.reply({ embds: [embed] });
+    if (!interaction.inGuild() || !interaction.guild) {
+      await interaction.reply({
+        content: 'This command can only be used inside a server.',
+        ephemeral: true,
       });
+      return;
     }
-  }
-}
+
+    if (!interaction.memberPermissions?.has(PermissionFlagsBits.ManageRoles)) {
+      await interaction.reply({
+        content: 'You do not have permission to manage roles.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const result = await prisma.joinRole.updateMany({
+      where: { guild: interaction.guild.id, isActive: true },
+      data: { isActive: false },
+    });
+
+    if (result.count === 0) {
+      await interaction.reply({
+        content: 'There is no active join role configured.',
+        ephemeral: true,
+      });
+      return;
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor('Blurple')
+      .setDescription('The automatic join role has been disabled.')
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed] });
+  },
+};
+
+export default joinRoleDisableCommand;
