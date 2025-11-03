@@ -3941,3 +3941,41 @@ model Word {
   @@index([severity], map: "idx_word_severity")
   @@map("word")
 }
+
+enum AiChatRole {
+  SYSTEM    @map("system")
+  USER      @map("user")
+  ASSISTANT @map("assistant")
+}
+
+model AiChatSession {
+  id           String   @id @default(cuid())
+  guildId      String?
+  channelId    String?
+  userId       String?
+  referenceId  String?
+  provider     String
+  metadata     Json?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  messages     AiChatMessage[]
+
+  @@index([guildId, userId, createdAt], map: "idx_ai_chat_session_guild_user")
+  @@map("ai_chat_session")
+}
+
+model AiChatMessage {
+  id          String     @id @default(cuid())
+  sessionId   String
+  role        AiChatRole
+  content     String     @db.LongText
+  tokens      Int?
+  latencyMs   Int?
+  externalId  String?
+  createdAt   DateTime   @default(now())
+
+  session AiChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt], map: "idx_ai_chat_message_session_created")
+  @@map("ai_chat_message")
+}

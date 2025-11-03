@@ -1,0 +1,1 @@
+Mini-Battlesystem (mit Animation oder Textkampf)

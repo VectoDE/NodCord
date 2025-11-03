@@ -1,5 +1,6 @@
 ﻿import type { Router } from 'express';
 import afkRouter from '@/api/routers/afk.router';
+import aiRouter from '@/api/routers/ai.router';
 import apiKeyRouter from '@/api/routers/apiKey.router';
 import blogRouter from '@/api/routers/blog.router';
 import bugRouter from '@/api/routers/bug.router';
@@ -35,6 +36,7 @@ export interface ApiRoute {
 
 export const crudRoutes: readonly ApiRoute[] = [
   { path: '/api/v1/afk', router: afkRouter },
+  { path: '/api/v1/ai', router: aiRouter },
   { path: '/api/v1/api-keys', router: apiKeyRouter },
   { path: '/api/v1/blogs', router: blogRouter },
   { path: '/api/v1/bugs', router: bugRouter },
