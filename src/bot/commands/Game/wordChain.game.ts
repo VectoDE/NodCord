@@ -1,0 +1,1 @@
+Wörterkette-Spiel (letzter Buchstabe → neuer Anfang)

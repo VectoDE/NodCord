@@ -1,5 +1,4 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import axios from 'axios';
 
 import type { SlashCommandModule } from '@/bot/types';
 import {
@@ -7,7 +6,7 @@ import {
   clearAfkStatus,
   fetchAfkStatus,
   setCacheEntry,
-  type AfkStatus,
+  AfkServiceError,
 } from '@/bot/services/afk.service';
 import logger from '@/services/logger.service';
 
@@ -94,9 +93,8 @@ const afkCommand: SlashCommandModule = {
         }
       } catch (error) {
         logger.error('[AFK] Failed to set AFK status', { guildId, userId, error });
-        const reason = axios.isAxiosError(error)
-          ? error.response?.data?.message ?? error.message
-          : 'Unable to reach the AFK service.';
+        const reason =
+          error instanceof AfkServiceError ? error.message : 'Unable to reach the AFK service.';
         await interaction.editReply({ embeds: [buildWarningEmbed(reason)] });
       }
       return;
@@ -116,9 +114,8 @@ const afkCommand: SlashCommandModule = {
         await interaction.editReply({ embeds: [buildSuccessEmbed('AFK removed', 'Welcome back!')] });
       } catch (error) {
         logger.error('[AFK] Failed to clear AFK status', { guildId, userId, error });
-        const reason = axios.isAxiosError(error)
-          ? error.response?.data?.message ?? error.message
-          : 'Unable to reach the AFK service.';
+        const reason =
+          error instanceof AfkServiceError ? error.message : 'Unable to reach the AFK service.';
         await interaction.editReply({ embeds: [buildWarningEmbed(reason)] });
       }
       return;
@@ -145,9 +142,8 @@ const afkCommand: SlashCommandModule = {
         await interaction.editReply({ embeds: [embed] });
       } catch (error) {
         logger.error('[AFK] Failed to fetch AFK status', { guildId, target: target.id, error });
-        const reason = axios.isAxiosError(error)
-          ? error.response?.data?.message ?? error.message
-          : 'Unable to reach the AFK service.';
+        const reason =
+          error instanceof AfkServiceError ? error.message : 'Unable to reach the AFK service.';
         await interaction.editReply({ embeds: [buildWarningEmbed(reason)] });
       }
       return;
