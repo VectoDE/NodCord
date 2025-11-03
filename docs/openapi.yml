@@ -1,0 +1,174 @@
+openapi: "3.0.3"
+info:
+  title: NodCord
+  version: "1.0.0"
+servers:
+  - url: https://nodcord.hauknetz.de/
+  - url: https://api.nodcord.hauknetz.de/api/v1/
+  - url: https://stage.api.nodcord.hauknetz.de/api/v1/
+paths:
+  /health:
+    get:
+      summary: Health check endpoint
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Service is healthy."
+        '503':
+          description: Service Unavailable
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Service Unavailable"
+                  message:
+                    type: string
+                    example: "The service is currently unavailable."
+  /metrics:
+    get:
+      summary: Metrics endpoint
+      responses:
+        '200':
+          description: Metrics data
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "# HELP http_requests_total The total number of HTTP requests.\n# TYPE http_requests_total counter\nhttp_requests_total{method=\"get\",code=\"200\"} 1027\nhttp_requests_total{method=\"post\",code=\"400\"} 3"
+  /docs:
+    get:
+      summary: API Documentation
+      responses:
+        '302':
+          description: Redirect to documentation
+          headers:
+            Location:
+              description: URL of the documentation
+              schema:
+                type: string
+                example: "https://docs.nodcord.hauknetz.de/"
+  /csrf-token:
+    get:
+      summary: Get CSRF token
+      responses:
+        '200':
+          description: CSRF token retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  csrf_token:
+                    type: string
+                    example: "abcdef1234567890"
+  /api-keys:
+    post:
+      summary: Create a new API key
+      responses:
+        '201':
+          description: API key created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                    example: "newlycreatedapikey123456"
+components: {
+  schemas: {
+    SuccessResponse: {
+      type: object,
+      properties: {
+        message: { type: string, example: "Operation completed successfully." }
+      }
+    },
+    WarnResponse: {
+      type: object,
+      properties: {
+        warning: { type: string, example: "This is a warning message." },
+        details: { type: string, example: "Additional details about the warning." }
+      }
+    },
+    ErrorResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Internal Server Error" },
+        message: { type: string, example: "An unexpected error occurred." },
+        timestamp: { type: string, format: date-time, example: "2024-06-01T12:00:00Z" }
+      }
+    },
+    ValidationErrorResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Validation Error" },
+        message: { type: string, example: "One or more fields failed validation." },
+        fields: {
+          type: object,
+          additionalProperties: { type: string, example: "This field is required." }
+        }
+      }
+    },
+    NotFoundResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Not Found" },
+        message: { type: string, example: "The requested resource was not found." }
+      }
+    },
+    UnauthorizedResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Unauthorized" },
+        message: { type: string, example: "Authentication is required to access this resource." }
+      }
+    },
+    ForbiddenResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Forbidden" },
+        message: { type: string, example: "You do not have permission to access this resource." }
+      }
+    },
+    RateLimitResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Rate Limit Exceeded" },
+        message: { type: string, example: "You have exceeded the number of allowed requests. Please try again later." },
+        retry_after: { type: integer, example: 30 }
+      }
+    },
+    InternalServerErrorResponse: {
+      type: object,
+      properties: {
+        error: { type: string, example: "Internal Server Error" },
+        message: { type: string, example: "An unexpected error occurred on the server." }
+      }
+    },
+  }
+}
+tags: []
+externalDocs:
+  description: NodCord Documentation
+  url: https://docs.nodcord.hauknetz.de/
+x-logo:
+  url: https://nodcord.hauknetz.de/assets/logo.png
+  altText: NodCord Logo
+  href: https://nodcord.hauknetz.de/
+  backgroundColor: "#FFFFFF"
+  width: 200
+  height: 200
+x-contact:
+  name: NodCord Support
+  url: https://nodcord.hauknetz.de/support
+  email: timhauke@uplytech.de
