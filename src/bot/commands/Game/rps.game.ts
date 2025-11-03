@@ -1,0 +1,1 @@
+Schere, Stein, Papier (User vs. User oder User vs. Bot)

@@ -23,6 +23,7 @@ const copyTargets = [
   { source: 'keys', dest: 'keys' },
   { source: 'types', dest: 'types' },
   { source: 'uploads', dest: 'uploads' },
+  { source: 'docs', dest: 'docs' },
 ];
 
 const copyRootFiles = ['package.json'];

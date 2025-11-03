@@ -91,6 +91,16 @@ crudRoutes.forEach(({ path, router }) => {
     return;
   }
 
+  if (path === '/api/v1/ai') {
+    app.use(path, requireApiKey({ rateLimit: true }), router);
+    return;
+  }
+
+  if (path === '/api/v1/afk') {
+    app.use(path, requireApiKey({ rateLimit: true }), router);
+    return;
+  }
+
   const guards = crudRoutePolicies[path]?.() ?? [];
   app.use(path, requireAuth(), ...guards, router);
 });

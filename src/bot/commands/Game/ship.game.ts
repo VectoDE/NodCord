@@ -1,0 +1,1 @@
+vergleicht zwei User und zeigt “Kompatibilität”

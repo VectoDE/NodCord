@@ -1,0 +1,1 @@
+Quizfragen aus Kategorien (z. B. Allgemeinwissen, Technik, Anime)
