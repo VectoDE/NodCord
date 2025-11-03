@@ -1,12 +1,16 @@
+import { createRequire } from 'node:module';
+
 import dotenv from 'dotenv';
 
-import packageInfo from '../package.json' with { type: 'json' };
 import { createServer } from '@/api/app';
 import { startBot } from '@/bot/index';
 import { startClient } from '@/client/client';
 import logger from '@/services/logger.service';
 
 dotenv.config();
+
+const require = createRequire(import.meta.url);
+const packageInfo = require('../package.json') as { name: string };
 
 async function bootstrap(): Promise<void> {
   try {
@@ -22,3 +26,4 @@ async function bootstrap(): Promise<void> {
 }
 
 void bootstrap();
+

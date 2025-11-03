@@ -2,7 +2,7 @@
   "watch": ["src", "prisma"],
   "ext": "ts,js,json",
   "ignore": ["src/**/*.test.ts", "src/**/*.spec.ts", "dist", "node_modules"],
-  "exec": "ts-node-dev --respawn --files --transpile-only --ignore-watch node_modules --project tsconfig.json src/server.ts",
+  "exec": "node --import ./scripts/register-dev-loaders.mjs --experimental-specifier-resolution=node src/server.ts",
   "env": {
     "NODE_ENV": "development"
   },

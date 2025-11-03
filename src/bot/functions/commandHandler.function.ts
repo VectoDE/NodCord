@@ -58,12 +58,79 @@ export default function registerCommandHandler(client: NodCordClient): void {
 
     const rest = new REST({ version: '10' }).setToken(botConfig.token);
 
+    const readOnlyKeys = new Set(['id', 'application_id', 'version', 'guild_id']);
+
+    const sanitizePayload = (input: unknown): Record<string, unknown> => {
+      if (!input || typeof input !== 'object') return {};
+
+      const entries = Object.entries(input as Record<string, unknown>)
+        .filter(([key, value]) => !readOnlyKeys.has(key) && value !== undefined)
+        .sort(([a], [b]) => a.localeCompare(b));
+
+      const sanitized: Record<string, unknown> = {};
+      for (const [key, value] of entries) {
+        if (Array.isArray(value)) {
+          sanitized[key] = value.map((item) =>
+            typeof item === 'object' && item !== null ? sanitizePayload(item) : item,
+          );
+        } else if (typeof value === 'object' && value !== null) {
+          sanitized[key] = sanitizePayload(value);
+        } else {
+          sanitized[key] = value;
+        }
+      }
+
+      return sanitized;
+    };
+
+    const serialize = (payload: Record<string, unknown>): string => JSON.stringify(payload);
+
     try {
-      logger.info('[BOT] Refreshing application (/) commands');
-      await rest.put(Routes.applicationCommands(botConfig.clientId), {
-        body: client.commandArray,
+      const existing = (await rest.get(
+        Routes.applicationCommands(botConfig.clientId),
+      )) as Array<Record<string, unknown>>;
+
+      const merged = new Map<string, Record<string, unknown>>();
+      const untouchedKeys = new Set<string>();
+
+      for (const command of existing) {
+        const name = typeof command['name'] === 'string' ? (command['name'] as string) : undefined;
+        if (!name) continue;
+        const type = (typeof command['type'] === 'number' ? (command['type'] as number) : 1) ?? 1;
+        const key = `${name}:${type}`;
+        const sanitized = sanitizePayload(command);
+        merged.set(key, sanitized);
+        untouchedKeys.add(key);
+      }
+
+      let created = 0;
+      let updated = 0;
+
+      for (const command of client.commandArray) {
+        const key = `${command.name}:${command.type ?? 1}`;
+        const payload = sanitizePayload(command as unknown as Record<string, unknown>);
+        const previous = merged.get(key);
+
+        if (!previous) {
+          created += 1;
+        } else if (serialize(previous) !== serialize(payload)) {
+          updated += 1;
+        }
+
+        merged.set(key, payload);
+        untouchedKeys.delete(key);
+      }
+
+      const finalPayload = Array.from(merged.values());
+
+      await rest.put(Routes.applicationCommands(botConfig.clientId), { body: finalPayload });
+
+      logger.info('[BOT] Slash commands synced', {
+        created,
+        updated,
+        untouched: untouchedKeys.size,
+        totalPublished: finalPayload.length,
       });
-      logger.info('[BOT] Successfully reloaded application (/) commands');
     } catch (error) {
       logger.error('[BOT] Failed to refresh slash commands', { error });
     }

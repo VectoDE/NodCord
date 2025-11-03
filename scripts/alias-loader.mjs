@@ -6,13 +6,24 @@ import { resolve as pathResolve } from "node:path";
 const ALIAS_PREFIX = "@/";
 
 async function resolveAliasPath(relativePath) {
-  const basePath = pathResolve("dist/src", relativePath);
+  const distBase = pathResolve("dist/src", relativePath);
+  const srcBase = pathResolve("src", relativePath);
+
   const potentials = [
-    basePath,
-    `${basePath}.js`,
-    `${basePath}.mjs`,
-    pathResolve(basePath, "index.js"),
-    pathResolve(basePath, "index.mjs")
+    distBase,
+    `${distBase}.js`,
+    `${distBase}.mjs`,
+    pathResolve(distBase, "index.js"),
+    pathResolve(distBase, "index.mjs"),
+    srcBase,
+    `${srcBase}.ts`,
+    `${srcBase}.mts`,
+    `${srcBase}.js`,
+    `${srcBase}.mjs`,
+    pathResolve(srcBase, "index.ts"),
+    pathResolve(srcBase, "index.mts"),
+    pathResolve(srcBase, "index.js"),
+    pathResolve(srcBase, "index.mjs")
   ];
 
   for (const candidate of potentials) {

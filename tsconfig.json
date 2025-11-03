@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES2022", // Modern syntax for Node 18+ and modern browsers
-    "module": "ESNext", // Native ESM output for tooling/bundlers
-    "moduleResolution": "bundler", // Bundler-like resolution supports alias specifiers
-    "lib": ["ES2022", "DOM", "DOM.Iterable"], // DOM + modern ECMAScript features
-    "rootDir": ".", // Root directory includes src, prisma, scripts, etc.
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "rootDir": ".",
     "baseUrl": ".",
-    "outDir": "./dist", // Compiled output directory
+    "outDir": "./dist",
     "paths": {
-      "@/*": ["src/*"], // Absolute aliases like "@/services/logger.service"
+      "@/*": ["src/*"],
       "@/services/*": ["src/services/*"],
       "@/utils/*": ["src/utils/*"],
       "@/api/*": ["src/api/*"],
@@ -16,14 +16,14 @@
       "@/client/*": ["src/client/*"],
       "@/bot/*": ["src/bot/*"]
     },
-    "allowJs": true, // Allow .js files in the project
-    "resolveJsonModule": true, // Enable JSON imports
-    "esModuleInterop": true, // Interop for CommonJS modules
-    "allowSyntheticDefaultImports": true, // Allow default imports even if module has no default export
-    "verbatimModuleSyntax": true, // Clean ESM transpilation (TS 5+)
-    "moduleDetection": "force", // Enforce clear module boundaries
-    "isolatedModules": true, // Required for ESM & tools like SWC/Vite/NestJS
-    "strict": true, // Enable all strict type-checking options
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "isolatedModules": true,
+    "strict": true,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitOverride": true,
@@ -33,34 +33,27 @@
     "useUnknownInCatchVariables": true,
     "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true, // Skip type checking of declaration files for faster builds
-    "incremental": true, // Enable incremental compilation
+    "skipLibCheck": true,
+    "incremental": true,
     "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
-    "noEmitOnError": true, // Do not emit if there are type errors
-    "sourceMap": true, // Generate source maps for debugging
-    "ignoreDeprecations": "5.0", // Suppress baseUrl deprecation warnings (TS 5.9 compatible)
-    "types": ["node"], // Always include Node.js types
-    "typeRoots": ["./node_modules/@types", "./types"],
+    "noEmitOnError": true,
+    "sourceMap": true,
+    "ignoreDeprecations": "5.0",
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "include": [
-    "src/api/**/*",
-    "src/assets/**/*",
-    "src/configs/**/*",
-    "src/middlewares/**/*",
-    "src/services/**/*",
-    "src/utils/**/*",
-    "src/server.ts",
-    "src/bot/**/*",
-    "src/client/**/*",
+    "src/**/*",
     "prisma/**/*",
     "types/**/*.d.ts",
-    "keys/*.pem",
-    "public/**/**/**/**/*.*",
-    "uploads/**/**/**/**/*.*"
+    "keys/**/*",
+    "public/**/*",
+    "uploads/**/*",
+    "scripts/**/*"
   ],
   "exclude": ["node_modules", "dist", "coverage", "scripts/**/*", "**/*.test.ts", "**/*.spec.ts"],
   "ts-node": {
-    "esm": true, // Support ES Modules in ts-node
-    "transpileOnly": true // Faster startup for development seeds
+    "esm": true,
+    "transpileOnly": true
   }
 }
