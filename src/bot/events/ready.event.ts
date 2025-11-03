@@ -12,8 +12,8 @@ const STATUS_ROTATION: Array<{ name: string; type: ActivityType }> = [
   { name: '/help for helpmenu', type: ActivityType.Playing },
 ];
 
-const readyEvent: BotEventModule<'ready'> = {
-  name: 'ready',
+const readyEvent: BotEventModule<'clientReady'> = {
+  name: Events.ClientReady,
   once: true,
   async execute(client: NodCordClient, readyClient: Client<true>) {
     const activeClient = readyClient ?? client;

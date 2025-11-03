@@ -22,8 +22,8 @@
   ],
   "scripts": {
     "dev": "nodemon --config nodemon.json",
-    "build": "tsc --project tsconfig.json",
-    "start": "node --experimental-loader ./scripts/alias-loader.mjs dist/src/server.js",
+    "build": "node scripts/build.mjs",
+    "start": "node --import ./scripts/register-alias-loader.mjs dist/src/server.js",
     "test": "jest --config jest.config.cjs --passWithNoTests",
     "test:watch": "jest --config jest.config.cjs --watch",
     "test:coverage": "jest --config jest.config.cjs --coverage",

@@ -17,12 +17,14 @@
  * - PM2.io, Winston
  */
 
+import { createRequire } from 'node:module';
+import os from 'os';
+
 import pmx from '@pm2/io';
 import pm2 from 'pm2';
 import type { ProcessDescription } from 'pm2';
-import os from 'os';
+
 import logger from '@/services/logger.service';
-import packageInfo from '../../package.json' with { type: 'json' };
 
 // Type-only imports
 import type { Express, Request, Response, NextFunction } from 'express';
@@ -33,6 +35,9 @@ import { Mutex } from '@/utils/sync.util';
 import { bytesToGB, clampPercent } from '@/utils/number.util';
 import responseUtil from '@/utils/response.util';
 import { getBaseUrl } from '@/utils/baseUrl.util';
+
+const require = createRequire(import.meta.url);
+const packageInfo = require('../../package.json') as { version?: string; name?: string };
 
 // ============================================================
 // Initialize PM2 Context
