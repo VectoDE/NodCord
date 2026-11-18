@@ -18,12 +18,12 @@ Thank you for your interest in contributing to NodCord! This guide summarizes th
 ## Pull Request Process
 
 1. Create a branch: `git checkout -b feature/my-feature`
-2. Implement your changes and run `prisma migrate dev --name <name>` when you touch the schema.
+2. Implement your changes and run `npm run prisma:push` (`prisma db push`) when you touch the schema. No migrations are committed yet.
 3. Execute tests and checks:
    ```bash
    npm run build
    npm test
-   npm run prisma:migrate
+   npm run prisma:push
    ```
 4. Update documentation (README, docs/…) whenever workflows change.
 5. Open a pull request and document the following:
