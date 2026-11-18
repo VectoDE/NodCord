@@ -4,6 +4,8 @@ The following overview highlights the most important directories and files in th
 
 ```text
 NodCord/
+├── .env.example            # Template for all environment variables
+├── .github/                # Workflows, issue templates, Dependabot
 ├── CODE_OF_CONDUCT.md
 ├── CONTRIBUTING.md
 ├── LICENSE
@@ -16,24 +18,28 @@ NodCord/
 │   ├── planning/           # Roadmaps, task lists, and detailed migration plans
 │   ├── process/            # Project processes (changelog, release plan, contribution guidelines)
 │   └── reference/          # Technical references and deeper explanations
-├── nodemon.json            # Dev server configuration for ts-node-dev
+├── nodemon.json            # Dev server configuration (nodemon with Node loaders)
 ├── package.json            # Project dependencies and scripts
-├── prisma/                 # Prisma schema, migrations, and seeds
+├── prisma/                 # Prisma schema, client, and seeds (no migrations committed yet)
 │   ├── seeds/              # Seed data and initialization scripts
+│   ├── client.ts           # Prisma client setup
 │   └── schema.prisma       # MySQL model definitions
+├── scripts/                # Build, import-map, and start/stop/restart scripts
+├── types/                  # Additional type declarations
+├── uploads/                # Uploaded files
+├── jest.config.cjs         # Jest configuration (multi-project)
 ├── tsconfig.json           # TypeScript compiler settings
 ├── dist/                   # Compiled output (created during builds)
 └── src/                    # Application code (API, bot, client, etc.)
-    ├── api/                # Express app, controllers, routes, middleware, helpers & services
-    ├── bot/                # Discord bot with commands, events, and utilities
-    ├── client/             # Frontend code/assets for the dashboard
-    ├── config/             # Configuration files for API, bot, and server
-    ├── database/           # Connection logic and database-specific helpers
-    ├── models/             # Transitional Mongoose models (being replaced by Prisma)
-    ├── public/             # Static assets (CSS, images, uploaded files)
-    ├── scripts/            # Automation and maintenance scripts
-    ├── server.ts           # Entry point for starting the server
-    └── views/              # EJS templates for server-side rendering
+    ├── api/                # Express app (`app.ts`), controllers, routers, shared helpers, Passport config
+    ├── assets/             # Static assets (CSS, images, JS, JSON, templates)
+    ├── bot/                # Discord bot with commands, events, services, and utilities
+    ├── client/             # Dashboard client: routers, EJS views, client library
+    ├── configs/            # Configuration files
+    ├── middlewares/        # Express middleware (auth, CORS, CSRF, rate limiting, ...)
+    ├── services/           # Shared services (logger, Prisma, mail, Stripe, Socket.IO, ...)
+    ├── utils/              # Utility helpers
+    └── server.ts           # Entry point: starts API, bot, and client
 ```
 
-> **Note:** Current work focuses on consolidating the TypeScript code and migrating from MongoDB/Mongoose to Prisma + MySQL. Coordinate changes in the `src/` area closely with the maintainer team.
+> **Note:** Current work focuses on consolidating the TypeScript code and completing the move from MongoDB/Mongoose to Prisma + MySQL. The Mongoose models are no longer part of `src/`; the `mongoose` package is still listed in `package.json`. Coordinate changes in the `src/` area closely with the maintainer team.

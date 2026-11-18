@@ -9,7 +9,7 @@ This guide describes how to create a new release of NodCord.
    - Add an entry with version number and date to `docs/process/changelog.md`.
 
 2. **Verify Prisma**
-   - Ensure all migrations are committed (`prisma/migrations`).
+   - Ensure all migrations are committed (`prisma/migrations`; the directory does not exist yet, so create the first migration before the first release).
    - Run `npm run prisma:migrate` against a fresh MySQL instance.
    - Regenerate the Prisma Client (`npm run prisma:generate`).
 

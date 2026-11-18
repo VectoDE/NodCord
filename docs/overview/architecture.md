@@ -4,10 +4,11 @@ This document outlines the architecture of NodCord and explains the most importa
 
 ### Core Components
 
-- **Express server:** Handles HTTP requests and exposes the API endpoints. Requests are processed with strong typing inside `src/api`.
+- **Express server:** Handles HTTP requests and exposes the API endpoints. Requests are processed with strong typing inside `src/api`; cross-cutting concerns live in `src/middlewares`.
 - **Discord bot:** Runs alongside the API server and relies on the same services and Prisma repositories for data access.
-- **Prisma layer:** Central data access through `prisma/schema.prisma` and the generated Prisma Client. It replaces legacy Mongoose models step by step.
-- **Service layer:** Contains business logic and orchestrates API, bot, and external integrations (e.g. OAuth, payment providers).
+- **Prisma layer:** Central data access through `prisma/schema.prisma`, `prisma/client.ts`, and the generated Prisma Client. The Mongoose models are gone from `src/`; the `mongoose` package is still a dependency until the migration is finished.
+- **Service layer:** `src/services` contains business logic and orchestrates API, bot, and external integrations (e.g. OAuth, payment providers).
+- **Dashboard client:** `src/client` serves the EJS dashboard on its own port (`CLIENT_PORT`). `src/server.ts` starts API, bot, and client together.
 
 ### Data Flow
 
@@ -26,7 +27,7 @@ This document outlines the architecture of NodCord and explains the most importa
 ### Persistence
 
 - The **Prisma schema** defines the baseline structures for users, roles, projects, and tickets.
-- Deploy migrations with `npm run prisma:migrate`.
+- Sync the schema with `npm run prisma:push` for now. `npm run prisma:migrate` (`prisma migrate deploy`) applies committed migrations, and none exist yet.
 - Seeds and tests use shared helpers inside `prisma/seeds` and other Prisma utilities.
 
 ### Outlook

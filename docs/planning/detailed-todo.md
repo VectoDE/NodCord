@@ -5,16 +5,16 @@ This plan complements the high-level roadmap in [`todo.md`](./todo.md) and descr
 ## 1. Tooling & Infrastructure
 
 - [ ] **Unify TypeScript tooling:** Finalize `tsconfig.json`, add shared ESLint/Prettier configuration, define path aliases for `src/api`, `src/bot`, `src/client`.
-- [ ] **Standardize the dev server:** Keep `npm run dev` (ts-node-dev) as the single entry point and ensure hot reload works for both API and bot.
+- [ ] **Standardize the dev server:** Keep `npm run dev` (nodemon with Node loaders) as the single entry point and ensure hot reload works for both API and bot.
 - [ ] **Prisma project structure:** Maintain the `prisma/` directory with `schema.prisma`, migrations, and optional seeds; rely on the `npm run prisma:*` scripts.
 - [ ] **Environment management:** Maintain a central `.env` baseline in secrets management (MySQL, Redis, OAuth, bot), document secret handling, review dotenv entry points.
 - [ ] **CI/CD expansion:** Define the pipeline (build, test, Prisma migrate, Prisma generate). Prepare GitHub Actions.
 
 ## 2. Data Model & Persistence
 
-- [ ] **Extend the Prisma schema:** Translate all remaining Mongoose models (`src/models/*.ts`) into `prisma/schema.prisma`, including relations, enums, and default values.
+- [ ] **Extend the Prisma schema:** Verify that every former Mongoose model is covered by `prisma/schema.prisma` (including relations, enums, and default values); `src/models` no longer exists. Remove the `mongoose` dependency afterwards.
 - [ ] **Migration strategy:** Create dedicated migrations for each module (auth, commerce, tickets, developer program, analytics, integrations). Plan the historical data migration (Mongo → MySQL).
-- [ ] **Prisma Client integration:** Create a central instance (`src/database/prismaClient.ts`), inject it into API/bot services, and add lifecycle hooks (shutdown, error handling).
+- [ ] **Prisma Client integration:** Use the central instance (`prisma/client.ts`, `src/services/prisma.service.ts`), inject it into API/bot services, and add lifecycle hooks (shutdown, error handling).
 - [ ] **Repository layer:** Build abstractions for recurring queries (e.g. `UserRepository`, `ProjectRepository`) and use them consistently.
 - [ ] **Seeds & test data:** Establish `prisma/seed.ts`, adapt modular seeds in `prisma/seeds/` to Prisma, and provide automated sample data for E2E tests.
 
@@ -23,9 +23,9 @@ This plan complements the high-level roadmap in [`todo.md`](./todo.md) and descr
 ### 3.1 Infrastructure
 
 - [ ] Prepare `src/api/app.ts` and `src/server.ts` for Prisma: database health checks, graceful shutdown, shared logger.
-- [ ] Update the middleware layer (`src/api/middlewares`) to modern TypeScript definitions and ensure the request/user context is well typed.
-- [ ] Migrate helpers (`src/api/helpers`) for responses, JWT, uploads, etc. to Prisma-backed services.
-- [ ] Provide typed configs for utility functions (`src/api/utils`) and modernize file-upload/auth flows.
+- [ ] Update the middleware layer (`src/middlewares`) to modern TypeScript definitions and ensure the request/user context is well typed.
+- [ ] Migrate helpers (`src/api/shared`, `src/utils`) for responses, JWT, uploads, etc. to Prisma-backed services.
+- [ ] Provide typed configs for utility functions (`src/utils`, `src/configs`) and modernize file-upload/auth flows.
 
 ### 3.2 Feature Modules (selection)
 
