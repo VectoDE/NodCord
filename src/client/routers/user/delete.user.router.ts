@@ -21,8 +21,7 @@ router.post('/delete-account', async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     logger.error('Error deleting account', { error });
-    const message =
-      error instanceof Error ? error.message : 'An error occurred while deleting your account.';
+    const message = 'An error occurred while deleting your account.';
     res.status(500).render('error', {
       errortitle: 'Account Deletion Error',
       errormessage: message,

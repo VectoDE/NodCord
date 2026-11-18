@@ -27,7 +27,7 @@ router.get('/', (req: Request, res: Response) => {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler',
       errormessage: 'Fehler beim Laden der Cookie-Richtlinie',
-      errorstack: error.message,
+      errorstack: null,
     });
   }
 });

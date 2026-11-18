@@ -29,7 +29,7 @@ router.get('/', async (_req: Request, res: Response) => {
     res.status(500).render('index/versions', {
       versions: [],
       logoImage: '/assets/img/logo.png',
-      errorstack: error.message,
+      errorstack: null,
     });
   }
 });

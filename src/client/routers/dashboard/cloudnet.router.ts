@@ -49,9 +49,9 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'CloudNet Übersicht Fehler',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -82,9 +82,9 @@ router.get('/nodes', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der CloudNet-Nodes',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -115,9 +115,9 @@ router.get('/services', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der CloudNet-Services',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -165,9 +165,9 @@ router.get('/services/:name', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der Service-Details',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });

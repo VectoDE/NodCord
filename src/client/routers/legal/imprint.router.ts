@@ -28,7 +28,7 @@ router.get('/', (req: Request, res: Response) => {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler',
       errormessage: 'Fehler beim Laden des Impressums',
-      errorstack: error.message,
+      errorstack: null,
     });
   }
 });

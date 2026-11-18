@@ -26,7 +26,7 @@ router.get('/', (_req: Request, res: Response) => {
       errortitle: 'Fehler',
       errormessage: 'Fehler beim Laden der Wartungserstellungsseite.',
       errorstatus: 500,
-      errorstack: error.message,
+      errorstack: null,
     });
   }
 });

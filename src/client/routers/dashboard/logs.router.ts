@@ -52,13 +52,13 @@ router.get('/', async (_req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     logger.error('Error fetching logs', { error });
-    const message = error instanceof Error ? error.message : 'Failed to load logs.';
+    const message = 'Failed to load logs.';
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der Logs',
       errormessage: message,
       errorstatus: 500,
-      errorstack: error instanceof Error ? error.stack : undefined,
+      errorstack: null,
     });
   }
 });
@@ -95,13 +95,13 @@ router.get('/:logId', async (req: Request, res: Response) => {
     });
   } catch (error: unknown) {
     logger.error('Error fetching log detail', { error });
-    const message = error instanceof Error ? error.message : 'Failed to fetch log detail.';
+    const message = 'Failed to fetch log detail.';
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Abrufen des Log-Eintrags',
       errormessage: message,
       errorstatus: 500,
-      errorstack: error instanceof Error ? error.stack : undefined,
+      errorstack: null,
     });
   }
 });
@@ -117,13 +117,13 @@ router.get('/clear/all', async (_req: Request, res: Response) => {
     res.redirect('/dashboard/logs');
   } catch (error: unknown) {
     logger.error('Error clearing logs', { error });
-    const message = error instanceof Error ? error.message : 'Failed to clear logs.';
+    const message = 'Failed to clear logs.';
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Löschen der Logs',
       errormessage: message,
       errorstatus: 500,
-      errorstack: error instanceof Error ? error.stack : undefined,
+      errorstack: null,
     });
   }
 });

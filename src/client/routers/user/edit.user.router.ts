@@ -40,7 +40,7 @@ router.get('/:username/edit', async (req: Request, res: Response) => {
       errortitle: 'Internal Server Error',
       errormessage: 'An unexpected error occurred while fetching the profile for editing.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
       currentUser,
     });
   }
