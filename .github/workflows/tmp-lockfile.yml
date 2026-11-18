@@ -3,7 +3,7 @@ name: tmp-lockfile
 on:
   push:
     branches: ['sec/deps-**']
-    paths: ['package.json', 'package-lock.json', '.github/tmp/**', '.github/workflows/tmp-lockfile.yml']
+    paths: ['package.json', 'package-lock.json', '.github/lockgen/**', '.github/workflows/tmp-lockfile.yml']
 permissions:
   contents: read
 concurrency:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: '20.17.0'
       - run: npm install -g npm@11.6.2
-      - run: bash .github/tmp/lock.sh
+      - run: bash .github/lockgen/lock.sh
       - run: npm audit --json > audit-all.json || true
       - run: npm audit --omit=dev --json > audit-prod.json || true
       - run: jq '.metadata.vulnerabilities' audit-all.json
