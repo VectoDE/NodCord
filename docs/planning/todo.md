@@ -9,14 +9,14 @@
 
 ## Phase 0 – Analysis & preparation
 
-- [ ] Assess all modules (`src/api`, `src/bot`, `src/client`, `src/models`, `src/database`, `prisma/seeds`).
+- [ ] Assess all modules (`src/api`, `src/bot`, `src/client`, `src/services`, `src/middlewares`, `prisma/seeds`).
 - [ ] Review dependencies (`package.json`): mark outdated packages and finalize the Prisma/TypeScript setup.
 - [ ] Prepare database mapping: align Mongoose schemas with Prisma models in `prisma/schema.prisma`.
 - [ ] Maintain the secrets source for MySQL, Redis, Discord, OAuth, and external integrations (e.g. a central `.env` template in secrets management).
 
 ## Phase 1 – Alpha (core functionality running)
 
-- [ ] Finalize TypeScript configuration and the ts-node-dev setup (`npm run dev`).
+- [ ] Finalize TypeScript configuration and the nodemon dev setup (`npm run dev`).
 - [ ] Use the Prisma Client inside `src/server.ts` and central services.
 - [ ] Port auth, user, roles, tickets, and other core modules to Prisma.
 - [ ] Migrate seeds to Prisma (`prisma db seed` using data in `prisma/seeds/`).

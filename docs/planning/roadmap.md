@@ -6,7 +6,7 @@ This roadmap outlines planned features, improvements, and milestones for NodCord
 
 ## Current Status
 
-- **Version:** 2.0.0-alpha
+- **Version:** package version 0.4.7, working toward 2.0.0-alpha
 - **Focus:** TypeScript/Prisma infrastructure, core modules, documentation
 
 ## Milestones
@@ -16,7 +16,7 @@ This roadmap outlines planned features, improvements, and milestones for NodCord
 - [x] TypeScript build setup (`tsconfig.json`, `npm run build`, `npm run dev`)
 - [x] Initialize the Prisma schema (`User`, `Role`, `Project`, `Ticket`)
 - [x] Refresh documentation for installation, architecture, and contributing
-- [x] Align the dev server with ts-node-dev/nodemon
+- [x] Align the dev server with nodemon (Node loaders)
 - [ ] Provide initial Prisma migrations and seeds
 - [ ] Migrate core modules (auth, user, tickets) to Prisma services
 

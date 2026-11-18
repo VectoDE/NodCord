@@ -17,19 +17,19 @@ NodCord is an Express-based API with an integrated Discord bot written in TypeSc
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/vectode/NodCord.git
+   git clone https://github.com/VectoDE/NodCord.git
    cd NodCord
    ```
 2. Install dependencies:
    ```bash
    npm install
    ```
-3. Prepare Prisma:
+3. Prepare Prisma (no migrations are committed yet, so use `db push` to create the schema):
    ```bash
    npx prisma generate
-   npx prisma migrate deploy
+   npx prisma db push
    ```
-4. Create a `.env` file (e.g. via your secrets management system) and add the MySQL/Discord credentials (see the README).
+4. Copy `.env.example` to `.env` (or use your secrets management system) and add the MySQL/Discord credentials (see the README). `DATABASE_URL` must be a MySQL URL.
 
 ## Development & Operations Workflows
 
@@ -47,7 +47,11 @@ NodCord is an Express-based API with an integrated Discord bot written in TypeSc
 
 ### Prisma & Database
 
-- Deploy migrations:
+- Sync the schema during development:
+  ```bash
+  npm run prisma:push
+  ```
+- Deploy committed migrations (none exist yet):
   ```bash
   npm run prisma:migrate
   ```
@@ -74,23 +78,20 @@ NodCord is an Express-based API with an integrated Discord bot written in TypeSc
 
 ## API Reference (short overview)
 
-Controllers and routes live under `src/api`. Frequently used endpoints include:
+Controllers and routers live under `src/api` (`src/api/controllers`, `src/api/routers`); the app is assembled in `src/api/app.ts` and served under `/api/v1`. The endpoints that are documented formally (health, metrics, docs, CSRF token, API keys) are described in [`docs/openapi.yml`](../openapi.yml).
 
-- `GET /api/discord/status` – Status of the Discord bot.
-- `POST /api/discord/message` – Sends a message to a channel.
-
-Additional modules (auth, commerce, tickets, integrations) are gradually migrating to Prisma-based services. The main entry points are `src/api/routes` and the corresponding controllers.
+Additional modules (auth, commerce, tickets, integrations) are gradually migrating to Prisma-based services.
 
 ## Discord Bot
 
-The bot currently starts via `src/bot/index.js` (a TypeScript migration is in progress) and reuses shared services. Commands and events are managed under `src/bot/commands` and `src/bot/events`.
+The bot currently starts via `src/bot/index.ts` (called from `src/server.ts`) and reuses shared services. Commands and events are managed under `src/bot/commands` and `src/bot/events`.
 
 ## Prisma Schema & Data Models
 
 - Schema file: `prisma/schema.prisma`
 - Default models: `User`, `Role`, `Project`, `Ticket` (extensible)
-- Migrations: `prisma/migrations/`
-- Seeds: `prisma/seed.ts` or TypeScript files inside `prisma/seeds/`
+- Migrations: `prisma/migrations/` (not committed yet)
+- Seeds: TypeScript files inside `prisma/seeds/` (`rolesSeed.ts`, `usersSeed.ts`); no `prisma db seed` entry is configured in `package.json` yet
 
 ## Directory Structure
 
