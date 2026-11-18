@@ -143,16 +143,14 @@ const resolvePassword = (seed: UserSeedDefinition): string => {
 
   if (seed.passwordFallback && seed.passwordFallback.length > 0) {
     logger.warn(
-      `[SEED] Using fallback password for ${seed.email}; override via ${seed.passwordEnvVar ?? 'SEED_DEFAULT_USER_PASSWORD'} for production environments.`,
+      `[SEED] Using fallback credentials for seed user ${seed.username}; set the configured password environment variable for production environments.`,
     );
     return seed.passwordFallback;
   }
 
   if (DEFAULT_PASSWORD_FALLBACK && DEFAULT_PASSWORD_FALLBACK.length > 0) {
     logger.warn(
-      `[SEED] Using global fallback password for ${seed.email}; set environment variable ${
-        seed.passwordEnvVar ?? 'SEED_DEFAULT_USER_PASSWORD'
-      } to customise.`,
+      `[SEED] Using global fallback credentials for seed user ${seed.username}; set SEED_DEFAULT_USER_PASSWORD to customise.`,
     );
     return DEFAULT_PASSWORD_FALLBACK;
   }

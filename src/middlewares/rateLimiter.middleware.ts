@@ -29,6 +29,7 @@
  */
 
 import type { Request, Response, NextFunction } from 'express';
+import { createHash } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
 import logger from '@/services/logger.service';
 import { safeAsync } from '@/utils/async.util';
@@ -258,6 +259,11 @@ function headersIfEnabled(
 // Middleware
 // ============================================================
 
+/** Kurzer sha256-Praefix, damit Schluessel (API-Key-IDs, User, IPs) nicht im Klartext im Log landen. */
+function maskKey(key: string): string {
+  return createHash('sha256').update(key).digest('hex').slice(0, 12);
+}
+
 export function rateLimiterMiddleware(options?: RateLimiterOptions) {
   const cfg = normalize(options);
   const reg = getRegistry(cfg.namespace);
@@ -281,7 +287,9 @@ export function rateLimiterMiddleware(options?: RateLimiterOptions) {
     }
 
     if (cfg.allowlist.length && cfg.allowlist.includes(key)) {
-      if (cfg.verboseLog) logger.debug('[RATE] allowlisted', { ns: cfg.namespace, key });
+      if (cfg.verboseLog) {
+        logger.debug('[RATE] allowlisted', { ns: cfg.namespace, key: maskKey(key) });
+      }
       return next();
     }
 
@@ -308,7 +316,7 @@ export function rateLimiterMiddleware(options?: RateLimiterOptions) {
         const dur = Math.round(performance.now() - t0);
         logger.debug('[RATE] OK', {
           ns: cfg.namespace,
-          key,
+          key: maskKey(key),
           cost,
           rem: Math.floor(remaining),
           ms: dur,
@@ -328,7 +336,7 @@ export function rateLimiterMiddleware(options?: RateLimiterOptions) {
       const dur = Math.round(performance.now() - t0);
       logger.debug('[RATE] THROTTLE', {
         ns: cfg.namespace,
-        key,
+        key: maskKey(key),
         cost,
         wait: waitSeconds.toFixed(2),
         ms: dur,
