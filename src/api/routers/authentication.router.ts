@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 
+import { authLimiter } from '@/middlewares/httpRateLimit.middleware';
 import {
   optionalAuth,
   requireAuth,
@@ -10,6 +11,8 @@ import {
 import { getSession, refreshSession, logout } from '@/api/controllers/authentication.controller';
 
 const router = Router();
+
+router.use(authLimiter);
 
 // Session inspection and lifecycle
 router.get('/session', optionalAuth(), getSession);
