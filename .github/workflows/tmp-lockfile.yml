@@ -1,0 +1,64 @@
+# Temporaer: Lockfile in CI erzeugen und pruefen. Wird vor dem Merge wieder entfernt.
+name: tmp-lockfile
+on:
+  push:
+    branches: ['sec/deps-**']
+    paths: ['package.json', 'package-lock.json', '.github/tmp/**', '.github/workflows/tmp-lockfile.yml']
+permissions:
+  contents: read
+concurrency:
+  group: tmp-lockfile-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20.17.0'
+      - run: npm install -g npm@11.6.2
+      - run: bash .github/tmp/lock.sh
+      - run: npm audit --json > audit-all.json || true
+      - run: npm audit --omit=dev --json > audit-prod.json || true
+      - run: jq '.metadata.vulnerabilities' audit-all.json
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: lock
+          path: |
+            package.json
+            package-lock.json
+            audit-all.json
+            audit-prod.json
+  verify:
+    needs: lock
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: '1'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '20.17.0'
+      - run: npm install -g npm@11.6.2
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: lock
+          path: gen
+      - run: cp gen/package.json gen/package-lock.json .
+      - run: npm ci
+      - name: typecheck
+        run: npm run typecheck
+        continue-on-error: true
+      - name: test
+        run: npm test -- --ci --maxWorkers=2
+        continue-on-error: true
+      - name: build
+        run: npm run build
+        continue-on-error: true
