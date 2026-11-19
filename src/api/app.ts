@@ -8,6 +8,7 @@ import { compressionMiddleware } from '@/middlewares/compression.middleware';
 import { corsMiddleware } from '@/middlewares/cors.middleware';
 import { csrfIssueToken, csrfVerify, sendCsrfToken } from '@/middlewares/csrf.middleware';
 import { globalApiLimiter } from '@/middlewares/httpRateLimit.middleware';
+import { resolveTrustProxyHops } from '@/utils/trustProxy.util';
 import { loggingMiddleware } from '@/middlewares/logging.middleware';
 import { rateLimiterMiddleware } from '@/middlewares/rateLimiter.middleware';
 import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
@@ -32,7 +33,7 @@ const initOnce = new Once<void>();
 
 const isProd = process.env['NODE_ENV'] === 'production';
 
-app.set('trust proxy', 1);
+app.set('trust proxy', resolveTrustProxyHops());
 app.disable('x-powered-by');
 
 app.use(
@@ -113,7 +114,13 @@ app.use(
   (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const msg = err instanceof Error ? err.message : String(err);
     logger.error('[GLOBAL ERROR]', { error: msg });
-    return standardResponse(res, 500, { error: msg }, 'Internal Server Error');
+    // Interne Fehlermeldungen bleiben im Log und gehen nicht an den Client.
+    return standardResponse(
+      res,
+      500,
+      { error: 'Internal Server Error' },
+      'Internal Server Error',
+    );
   },
 );
 

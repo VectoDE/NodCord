@@ -13,7 +13,7 @@
 import { rateLimit } from 'express-rate-limit';
 import type { Request } from 'express';
 
-const STRIPE_WEBHOOK_PATH = /^\/api\/v1\/payments\/webhook\/?$/;
+const STRIPE_WEBHOOK_PATH = /^\/api\/v1\/payments\/webhook\/?$/i;
 
 /** Stripe-Webhooks kommen von Stripe-IPs in Wellen und werden per Signatur geprueft. */
 const isStripeWebhook = (req: Request): boolean =>
