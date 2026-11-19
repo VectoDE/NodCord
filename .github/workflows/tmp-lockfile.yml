@@ -1,0 +1,43 @@
+name: Temporär - Lockfile erzeugen
+
+# Nur für den Branch sec/deps-osv-high; wird nach dem Erzeugen wieder entfernt.
+on:
+  push:
+    branches: ['sec/deps-osv-high']
+
+permissions: {}
+
+jobs:
+  lockfile:
+    name: Lockfile erzeugen
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Node einrichten
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: package.json
+
+      - name: npm-Version aus engines
+        run: npm install -g "npm@$(node -p "require('./package.json').engines.npm")" --ignore-scripts --no-audit --no-fund
+
+      - name: Lockfile aktualisieren (ohne Install-Skripte)
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+
+      - name: Lockfile prüfen
+        run: npm ci --ignore-scripts --no-audit --no-fund --dry-run
+
+      - name: Lockfile hochladen
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: package-lock
+          path: package-lock.json
+          retention-days: 3
+          if-no-files-found: error
