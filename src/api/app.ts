@@ -7,6 +7,7 @@ import passport from 'passport';
 import { compressionMiddleware } from '@/middlewares/compression.middleware';
 import { corsMiddleware } from '@/middlewares/cors.middleware';
 import { csrfIssueToken, csrfVerify, sendCsrfToken } from '@/middlewares/csrf.middleware';
+import { globalApiLimiter } from '@/middlewares/httpRateLimit.middleware';
 import { loggingMiddleware } from '@/middlewares/logging.middleware';
 import { rateLimiterMiddleware } from '@/middlewares/rateLimiter.middleware';
 import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
@@ -63,6 +64,7 @@ if (isProd) {
 }
 
 app.use(loggingMiddleware());
+app.use(globalApiLimiter);
 app.use(rateLimiterMiddleware({ tokensPerSecond: 10, burst: 30 }));
 app.use(corsMiddleware({ origin: ['https://nodcord.hauknetz.de', 'http://localhost:3000'] }));
 app.use(securityHeaderMiddleware());

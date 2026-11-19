@@ -8,6 +8,7 @@ import controller, {
   listStripeProducts,
   stripeWebhook,
 } from '@/api/controllers/payment.controller';
+import { paymentLimiter } from '@/middlewares/httpRateLimit.middleware';
 import { requireAuth } from '@/middlewares/authentication.middleware';
 import { requireAnyRole } from '@/middlewares/role.middleware';
 import {
@@ -17,6 +18,8 @@ import {
 } from '@/middlewares/validation.middleware';
 
 const router = Router();
+
+router.use(paymentLimiter);
 
 const optional =
   <T>(validator: ValidatorFn<T>): ValidatorFn<T | undefined> =>

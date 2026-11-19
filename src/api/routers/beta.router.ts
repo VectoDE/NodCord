@@ -8,9 +8,12 @@ import {
   getBetaSystem,
   updateBetaSystem,
 } from '@/api/controllers/beta.controller';
+import { routerLimiter } from '@/middlewares/httpRateLimit.middleware';
 import { requireAuth } from '@/middlewares/authentication.middleware';
 
 const router = Router();
+
+router.use(routerLimiter);
 
 router.get('/keys', requireAuth(), listBetaKeys);
 router.post('/keys', requireAuth(), createBetaKey);
