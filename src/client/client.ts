@@ -198,8 +198,10 @@ client.use((req: Request, res: Response, next: NextFunction) => {
 
 // 404 Not Found
 client.use((_req, _res, next: NextFunction) => {
-  const err = new Error('Not Found') as Error & { status?: number };
+  const err = new Error('Not Found') as Error & { status?: number; expose?: boolean };
   err.status = 404;
+  // Feste, unkritische Meldung: darf an den Nutzer ausgegeben werden.
+  err.expose = true;
   next(err);
 });
 
