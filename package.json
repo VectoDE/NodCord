@@ -110,7 +110,7 @@
     "discord-player": "^7.1.0",
     "discord.js": "^14.24.0",
     "dotenv": "^17.2.3",
-    "ejs": "^3.1.10",
+    "ejs": "^7.0.2",
     "esbuild": "^0.28.2",
     "express": "^5.1.0",
     "express-openid-connect": "^2.19.2",
