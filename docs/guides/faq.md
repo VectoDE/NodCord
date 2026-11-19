@@ -25,7 +25,7 @@
 ### Prisma reports an error while generating or migrating. What should I do?
 
 - Confirm that MySQL is running and that the user has the necessary privileges.
-- Do not delete migrations manually—use `prisma migrate dev --name <description>` for new changes. Until the first migration is committed, `prisma migrate deploy` has nothing to apply.
+- The project has no committed migrations yet; use `npm run prisma:push` to sync the schema. Once migrations exist, create them with `prisma migrate dev --name <description>` and never delete them manually.
 - For local testing, `npx prisma db push` (or `npm run prisma:push`) synchronizes the schema quickly.
 
 ### Where can I get additional help?
