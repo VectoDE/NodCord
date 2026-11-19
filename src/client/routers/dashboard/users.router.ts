@@ -6,6 +6,7 @@ import bcrypt from 'bcrypt';
 import authMiddleware from '@/middlewares/authentication.middleware';
 import roleMiddleware from '@/middlewares/role.middleware';
 import logger from '@/services/logger.service';
+import { logSafe } from '@/utils/logSafe.util';
 
 const router = express.Router();
 
@@ -147,7 +148,7 @@ router.post('/update/:id/password', async (req: Request, res: Response) => {
       data: { password: hashed },
     });
 
-    logger.info(`Password updated for user ${userId}`);
+    logger.info(`Password updated for user ${logSafe(userId)}`);
     res.redirect(`/dashboard/users/update/${userId}`);
   } catch (error: any) {
     logger.error('Error updating password', { error });
