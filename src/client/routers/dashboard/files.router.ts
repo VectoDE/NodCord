@@ -7,6 +7,7 @@ import path from 'path';
 import authMiddleware from '@/middlewares/authentication.middleware';
 import roleMiddleware from '@/middlewares/role.middleware';
 import logger from '@/services/logger.service';
+import { logSafe } from '@/utils/logSafe.util';
 import multerService from '@/services/multer.service';
 
 const router = express.Router();
@@ -115,7 +116,7 @@ router.post('/create', upload.single('file'), async (req: Request, res: Response
       },
     });
 
-    logger.info(`Datei ${file.originalname} wurde hochgeladen.`);
+    logger.info(`Datei ${logSafe(file.originalname)} wurde hochgeladen.`);
     res.redirect('/dashboard/files');
   } catch (error: any) {
     logger.error('Error uploading file', { error });

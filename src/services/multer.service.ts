@@ -38,6 +38,7 @@ export interface MulterInitOptions {
 
 // Internal Utilities
 import { tryAsync } from '@/utils/async.util';
+import { logSafe } from '@/utils/logSafe.util';
 import { clampPercent, bytesToGB } from '@/utils/number.util';
 import { ensureArrayIncludes } from '@/utils/array.util';
 import { Mutex } from '@/utils/sync.util';
@@ -279,7 +280,8 @@ export const uploadMiddleware = async (
       return;
     } else if (err instanceof Error) {
       logger.error('[UPLOAD] Upload failure', { error: err.message });
-      responseUtil.standardResponse(res, 500, { error: err.message }, err.message);
+      // Interne Fehlermeldungen bleiben im Log.
+      responseUtil.standardResponse(res, 500, { error: 'Upload failed' }, 'Upload failed');
       return;
     }
 
@@ -291,7 +293,7 @@ export const uploadMiddleware = async (
     const baseUrl = getBaseUrl();
     const fileUrl = `/uploads/${req.file.filename}`;
     const absoluteUrl = `${baseUrl}${fileUrl}`;
-    logger.info(`[UPLOAD] File uploaded successfully: ${fileUrl}`);
+    logger.info(`[UPLOAD] File uploaded successfully: ${logSafe(fileUrl)}`);
 
     responseUtil.standardResponse(
       res,
