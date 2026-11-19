@@ -190,13 +190,9 @@ function defaultKeyFn(req: Request): string | null | undefined {
   const sub = (req as any).auth?.payload?.sub as string | undefined;
   if (sub) return `u:${sub}`;
 
-  // 3) IP (trust first XFF hop if present)
-  const fwd = req.headers['x-forwarded-for'];
-  if (typeof fwd === 'string' && fwd.length > 0) {
-    const first = fwd.split(',')[0]?.trim();
-    if (first) return `ip:${first}`;
-  }
-  const ip = req.socket.remoteAddress;
+  // 3) IP: req.ip wertet X-Forwarded-For nur gemäß `trust proxy` aus
+  //    (TRUST_PROXY_HOPS). Der linke XFF-Eintrag ist vom Client frei setzbar.
+  const ip = req.ip || req.socket.remoteAddress;
   if (ip) return `ip:${ip}`;
 
   // 4) Fallback (should not happen)

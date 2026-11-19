@@ -110,10 +110,8 @@ export function loggingMiddleware() {
     const correlationId = getOrCreateCorrelationId(req);
     const method = req.method;
     const path = req.originalUrl || req.url;
-    const clientIp =
-      req.headers['x-forwarded-for']?.toString().split(',')[0]?.trim() ||
-      req.socket.remoteAddress ||
-      undefined;
+    // req.ip berücksichtigt `trust proxy`; der linke XFF-Eintrag wäre fälschbar.
+    const clientIp = req.ip || req.socket.remoteAddress || undefined;
 
     // minimal structured entry log
     logger.debug('[REQ]', {

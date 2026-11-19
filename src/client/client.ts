@@ -29,15 +29,6 @@ function resolveClientPath(...segments: string[]): string {
 export const client = express();
 
 // --------------------------------------------------------
-// Helpers – Header-Normalisierung
-// --------------------------------------------------------
-function headerFirstString(req: IncomingMessage, name: string): string | undefined {
-  const v = req.headers[name];
-  if (Array.isArray(v)) return v[0];
-  return typeof v === 'string' ? v : undefined;
-}
-
-// --------------------------------------------------------
 // Grundkonfiguration
 // --------------------------------------------------------
 client.set('trust proxy', resolveTrustProxyHops());
@@ -76,7 +67,8 @@ client.use(loggingMiddleware());
 // HTTP Access Logging (Morgan → logger.service)
 // --------------------------------------------------------
 morgan.token('remote-addr', (req: IncomingMessage) => {
-  return headerFirstString(req, 'x-forwarded-for') ?? req.socket?.remoteAddress ?? '';
+  // req.ip berücksichtigt `trust proxy`; der linke XFF-Eintrag wäre fälschbar.
+  return (req as Request).ip ?? req.socket?.remoteAddress ?? '';
 });
 
 morgan.token('url', (req: IncomingMessage) => {
