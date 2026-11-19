@@ -145,7 +145,8 @@ client.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
     errormessage: statusCode >= 500 ? 'Ein interner Fehler ist aufgetreten.' : err.message,
     errorstatus: statusCode,
-    errorstack: client.get('env') === 'development' ? err.stack : null,
+    // Nur bei ausdrücklich gesetztem NODE_ENV=development, nie als Rückfall.
+    errorstack: process.env['NODE_ENV'] === 'development' ? err.stack : null,
     currentUser,
   };
 
