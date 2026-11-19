@@ -113,7 +113,13 @@ app.use(
   (err: unknown, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
     const msg = err instanceof Error ? err.message : String(err);
     logger.error('[GLOBAL ERROR]', { error: msg });
-    return standardResponse(res, 500, { error: msg }, 'Internal Server Error');
+    // Interne Fehlermeldungen bleiben im Log und gehen nicht an den Client.
+    return standardResponse(
+      res,
+      500,
+      { error: 'Internal Server Error' },
+      'Internal Server Error',
+    );
   },
 );
 
