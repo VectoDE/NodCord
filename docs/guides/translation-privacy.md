@@ -1,104 +1,108 @@
-# Translation providers and data protection
+# `/translate` and data protection
 
-Preliminary assessment for bot operators. This is not legal advice. Have a lawyer or data protection officer review it before you rely on it.
+Guidance for anyone who deploys NodCord with `/translate` turned on. This is a preliminary assessment, not legal advice. Have a lawyer or data protection officer check the legal classification and your privacy notice before you go live.
 
-Status of the research: 2026-11-19. Provider terms change; re-check the linked sources before going live.
+Status of the research: 2026-11-19.
 
-## What `/translate` sends
+## Who is responsible
 
-The `/translate` command passes the text entered by the Discord user (option `text`) and the target language to one provider. The provider is chosen in `src/services/translation.service.ts`:
+NodCord is a template. It does not run a bot or a translation server for you. Whoever deploys a bot from it and turns on `/translate` decides on purpose and means of the processing and is the controller under Art. 4 No. 7 GDPR. The maintainers of this repository are not.
 
-1. `LIBRETRANSLATE_URL` set: LibreTranslate at that URL (`POST <url>/translate`, source language `auto`, optional `LIBRETRANSLATE_API_KEY`).
-2. Otherwise `DEEPL_API_KEY` set: DeepL. Keys ending in `:fx` go to `https://api-free.deepl.com/v2/translate` (API Free), all other keys to `https://api.deepl.com/v2/translate` (API Pro).
-3. Otherwise the command reports that translation is not configured and nothing is sent.
+## How `/translate` works
 
-The request body contains only the text and the language, no Discord user ID or username. The text itself can still contain personal data (names, contact details, sensitive information), because users write it freely. The bot operator is therefore the controller (Art. 4 No. 7 GDPR) for this transfer, and the provider is a recipient or processor.
+- The command only talks to a LibreTranslate server that you run yourself. Configure it with `LIBRETRANSLATE_URL` (and `LIBRETRANSLATE_API_KEY` if your server requires a key). Without `LIBRETRANSLATE_URL` the command is off and nothing is sent.
+- The URL is checked when it is read (`src/services/translation.service.ts`). The command refuses to work, logs the reason at startup and tells users it is not configured if:
+  - the URL is not `https`. Plain `http` is accepted only for `localhost`, `127.0.0.0/8`, `::1`, private networks (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fc00::/7`) and single-label host names such as the Docker service name `libretranslate`;
+  - the URL contains a user name or password;
+  - the host is a known public LibreTranslate instance or a subdomain of one (list below), or ends in `.onion` or `.i2p`.
+- Before a user's first translation the bot shows an ephemeral notice (only that user sees it) with **Agree and translate** and **Decline**. Nothing is sent before the user agrees. The consent is stored in the table `translation_consent` (Discord user ID, time, notice version). When the notice text changes, the version in `src/services/translationConsent.service.ts` is raised and every user is asked again.
+- `/translate-consent revoke` withdraws the consent and deletes the stored entry. `/translate-consent status` shows the current state.
+- Every translation reply carries the footer "Translated via this bot's own LibreTranslate server."
+- Limits: text up to 1000 characters, server response up to 64 KiB, one translation per user every 10 seconds.
 
-The bot also shows the original and the translation in an embed in the Discord channel.
+### Blocked public instances
 
-## DeepL
+The list is a guard against misconfiguration. It does not detect every public server, and it does not replace your own check of where your server runs.
 
-Operator: DeepL SE, Maarweg 165, 50825 Cologne, Germany (controller for Germany together with DeepL AI GmbH, DeepL privacy notice, section 1).
-
-### API Free
-
-| Question | Finding |
+| Host (subdomains included) | Source |
 | --- | --- |
-| Data sent | Submitted text and target language, plus the API key. API Free needs a DeepL account. DeepL collects account data (email, IP address) and payment data to prevent misuse (privacy notice, sections 6 and 13). |
-| Storage / training | The developer documentation states "no persistent storage, no training" only for paid plans: "With DeepL API paid plans, texts aren't saved on persistent storage and aren't used to train our models." For API Free no such statement was found. The privacy notice (section 13) refers to the free version, and section 3 says content in the free services is kept "for a limited period of time to train and improve our neural networks and algorithms". Read together, this applies to API Free. That is an inference, not an explicit DeepL statement about the API. |
-| Personal data | DeepL states that the free services must not be used for texts containing personal data; this is only permitted with a Pro subscription (privacy notice section 3, Free Services terms). Whether this clause also binds API Free users is not stated explicitly. Treat it as binding. |
-| Data processing agreement (Art. 28 GDPR) | The privacy notice (section 4) offers the agreement for the Pro services only, on request via privacy@deepl.com. No agreement for API Free was found. Assume none exists. |
-| Location / sub-processors | DeepL says document translation runs on its infrastructure in the EEA (section 7.1). For text requests no explicit statement was found. Named recipients on the account and payment side: Stripe (US), Payrails, Riskified (may transfer to the US), Cloudflare (traffic metadata, may use US servers). A transfer mechanism (SCC or EU-US Data Privacy Framework) was not stated in the parts of the notice that were readable. |
-| Retention | Full IP addresses of free users up to 14 days (section 9). Retention of API Free texts: not stated. |
+| `libretranslate.com` | Current mirror list, docs.libretranslate.com |
+| `translate.cutie.dating` | Current mirror list |
+| `translate.fedilab.app` | Current mirror list |
+| `*.onion`, `*.i2p` | Current mirror list (Tor/I2P mirrors) |
+| `libretranslate.de` | LibreTranslate README, mirror list in tag v1.2.9 |
+| `translate.argosopentech.com` | README mirror lists v1.2.9 to v1.5.0 |
+| `libretranslate.pussthecat.org` | README v1.2.9 |
+| `translate.api.skitzen.com` | README v1.2.9 |
+| `translate.fortytwo-it.com` | README v1.2.9 |
+| `translate.terraprint.co` | README v1.2.9 to v1.6.0 |
+| `translate.foxhaven.cyou` | README v1.3.11, v1.5.0 |
+| `libretranslate.eownerdead.dedyn.io` | README v1.5.0, v1.6.0 |
+| `trans.zillyhuhn.com` | README v1.5.0, v1.6.0 |
 
-Assessment: for texts that contain or may contain personal data, DeepL API Free is not suitable without further clarification. The missing agreement under Art. 28 GDPR, the possible use for training and the DeepL-side restriction on personal data point the same way.
+## What is processed
 
-### API Pro
+| Data | Where | How long |
+| --- | --- | --- |
+| Text entered in `/translate` and the target language | Sent to your LibreTranslate server, translation sent back | Not stored by the bot. Your server must not log request bodies (check reverse proxy and LibreTranslate settings). |
+| Original and translation | Shown in the Discord channel (or only to the user with `hidden`) | As long as the Discord message exists, under Discord's terms |
+| Discord user ID, time of consent, notice version | Bot database, table `translation_consent` | Until the user withdraws (`/translate-consent revoke`) |
 
-| Question | Finding |
-| --- | --- |
-| Storage / training | Texts are not stored persistently and not used to train models (developer docs; privacy notice section 4: deleted after the service is delivered). |
-| Data processing agreement | Available on request via privacy@deepl.com (privacy notice section 4). Conclude it before production use. |
-| Location | See API Free. Request the sub-processor list and the transfer mechanism together with the agreement. |
+The Discord user ID is not sent to the translation server. The text itself can contain personal data, because users type whatever they want.
 
-Technical note: `translation.service.ts` selects the Pro endpoint automatically when the key does not end in `:fx`.
+## Operator checklist
 
-## LibreTranslate
+1. Run LibreTranslate on a server you control, located in the EU/EEA. LibreTranslate is open source (AGPL-3.0) and translates with Argos Translate, without proprietary cloud services.
+2. If the server runs at a hosting provider, conclude a data processing agreement under Art. 28 GDPR with that provider and check its sub-processors.
+3. Use `https` or a private network between bot and server. Restrict access to the server (firewall, API key).
+4. Do not log request bodies on the LibreTranslate server or a reverse proxy in front of it.
+5. Create the table: this repository has no migration history, the schema is applied with `npm run prisma:push` (`prisma db push`). Run it after updating.
+6. Add an entry to your record of processing activities (Art. 30 GDPR): purpose, categories of data, recipients (none besides your own server and hosting provider), retention, technical and organisational measures.
+7. Add the text below to your privacy notice and link it where your users can find it (bot profile, server rules, website).
+8. When you change the consent notice in the code, raise `TRANSLATION_CONSENT_VERSION`.
 
-### Self-hosted
+## Sample text for your privacy notice
 
-LibreTranslate is open source (AGPL-3.0) and translates with Argos Translate, without proprietary services such as Google or Azure (README, project site). With `LIBRETRANSLATE_URL` pointing to your own server, the text does not leave your infrastructure, unless the server runs at a third-party hosting provider. In that case the host is a processor for server operation and needs an agreement under Art. 28 GDPR, and the server location decides about third-country transfers.
+Replace the parts in angle brackets. Have it checked by a lawyer before use.
 
-Operator duties: use HTTPS (the service accepts `http`, which is only acceptable on a trusted local network), do not log request bodies in a reverse proxy, restrict access, keep the software updated.
+### Deutsch
 
-### libretranslate.com
+> **Übersetzungsfunktion `/translate`**
+>
+> Wenn Sie den Befehl `/translate` nutzen, wird der von Ihnen eingegebene Text zusammen mit der gewählten Zielsprache an einen Übersetzungsserver übermittelt, den wir selbst betreiben (Software LibreTranslate, Standort: <Land/Rechenzentrum>, Hoster: <Name, Anschrift>, mit dem ein Vertrag zur Auftragsverarbeitung nach Art. 28 DSGVO besteht). Ihre Discord-ID wird dabei nicht übermittelt. Eine Weitergabe an andere Übersetzungsdienste oder sonstige Dritte findet nicht statt.
+>
+> Rechtsgrundlage ist Ihre Einwilligung nach Art. 6 Abs. 1 lit. a DSGVO, die Sie vor der ersten Übersetzung im Bot erteilen. Sie können die Einwilligung jederzeit mit `/translate-consent revoke` widerrufen. Der Widerruf gilt für die Zukunft; die Rechtmäßigkeit der bis dahin erfolgten Verarbeitung bleibt unberührt.
+>
+> Den zu übersetzenden Text speichern wir nicht; er wird nur für die Dauer der Anfrage verarbeitet. Original und Übersetzung erscheinen als Nachricht in Discord und bleiben dort, bis sie gelöscht wird. Gespeichert wird nur, dass Sie eingewilligt haben (Discord-ID, Zeitpunkt, Version des Hinweistexts), und zwar bis zu Ihrem Widerruf.
+>
+> Sie haben das Recht auf Auskunft (Art. 15), Berichtigung (Art. 16), Löschung (Art. 17), Einschränkung der Verarbeitung (Art. 18) und Datenübertragbarkeit (Art. 20 DSGVO) sowie das Recht, sich bei einer Datenschutz-Aufsichtsbehörde zu beschweren (Art. 77 DSGVO). Kontakt: <Verantwortlicher, Anschrift, E-Mail>.
 
-| Question | Finding |
-| --- | --- |
-| Operator | "LibreTranslate". No legal entity is named. The privacy page lists a postal address in St Petersburg, Florida, USA, for the data protection officer. |
-| Storage | The privacy page states: "We do not store or log translation texts." IP addresses are kept for 2 days, API keys to prevent misuse. Stripe processes payments when an API key is bought. |
-| Data processing agreement | Not mentioned. None found. |
-| Location | Operator address in the USA. Server location not stated. Transfer mechanism (DPF, SCC) not stated. |
+### English
 
-Assessment: operator in a third country, no named legal entity, no agreement, no transfer mechanism. Not suitable for personal data without further clarification. Other public LibreTranslate instances have the same problem or worse, because their operators are often unknown.
+> **Translation command `/translate`**
+>
+> When you use `/translate`, the text you enter and the chosen target language are sent to a translation server that we operate ourselves (LibreTranslate software, location: <country/data centre>, hosting provider: <name, address>, bound by a data processing agreement under Art. 28 GDPR). Your Discord ID is not sent. The text is not passed on to any other translation service or other third party.
+>
+> The legal basis is your consent under Art. 6(1)(a) GDPR, which you give in the bot before your first translation. You can withdraw it at any time with `/translate-consent revoke`. Withdrawal applies to the future; processing carried out before it remains lawful.
+>
+> We do not store the text you want translated; it is processed only for the duration of the request. The original and the translation appear as a Discord message and remain there until deleted. We store only the fact that you consented (Discord ID, time, version of the notice) until you withdraw.
+>
+> You have the right of access (Art. 15), rectification (Art. 16), erasure (Art. 17), restriction of processing (Art. 18) and data portability (Art. 20 GDPR), and the right to lodge a complaint with a supervisory authority (Art. 77 GDPR). Contact: <controller, address, email>.
 
-## Discord (briefly)
+## Open legal points
 
-The texts come from Discord interactions. Discord Inc. (USA) processes them as the platform under its own terms and privacy policy. For the bot operator, Discord's developer terms and policy apply to the data the bot receives. Passing the text of a user's command to a translation provider is a separate transfer that your own privacy notice must cover. This guide does not assess Discord's own compliance.
+These need a decision by the operator, ideally with a lawyer:
 
-## Recommendation
-
-1. Prefer self-hosted LibreTranslate on a server in the EU/EEA under your control. This is the only option without a transfer to a third party.
-2. If DeepL is needed, use DeepL API Pro with a signed data processing agreement. Do not use API Free for user-generated text.
-3. Do not use public LibreTranslate instances (including libretranslate.com) for user text without a written agreement and a check of location and transfer mechanism.
-4. Leave the provider variables empty if none of the options is acceptable. The command then stays disabled.
-5. Do not log request texts on your side. Keep it that way.
-
-Possible code changes (not part of this guide, for the maintainer to decide):
-
-- Refuse API Free keys (`:fx`) unless an explicit opt-in variable is set.
-- Add a notice to the command description and the reply, for example "The text is sent to <provider> for translation." The provider name is available from `getTranslationProvider()`.
-
-## What to put in the bot operator's privacy notice
-
-Cover at least these points (Art. 13 GDPR):
-
-- Purpose: translating the text a user submits with `/translate`.
-- Data: the submitted text (may contain personal data) and the target language. Discord identifiers are not sent to the provider.
-- Legal basis: Art. 6(1)(b) GDPR if the function is part of the service the user requested; otherwise Art. 6(1)(f) with a documented balancing test. Consent under Art. 6(1)(a) is possible if the command first shows the notice and the user confirms. Which basis fits depends on your setup; a lawyer must check it.
-- Recipient: name and address of the provider actually configured (DeepL SE, Cologne, or your own hosting provider).
-- Third country: whether a transfer happens and on which mechanism it rests (adequacy decision, SCC, DPF), or that none happens.
-- Retention: that the bot does not store the text beyond the request, and what the provider states about its retention.
-- Rights: access, rectification, erasure, restriction, objection, complaint to a supervisory authority.
-- Processing agreement with the provider (if one is used) and an entry in the record of processing activities (Art. 30 GDPR).
+- Whether consent under Art. 6(1)(a) is the right basis for your setup, or whether Art. 6(1)(b) (part of the service the user requested) fits better. The code implements consent because it is the most cautious option; the sample text assumes it.
+- Whether the consent notice in the bot is sufficient under Art. 7 GDPR and Art. 13 GDPR, or whether a link to the full privacy notice must be part of it.
+- Discord Inc. (USA) processes the messages as the platform under its own terms. This guide does not assess Discord's own compliance.
 
 ## Sources
 
 All retrieved on 2026-11-19.
 
-- DeepL API documentation, "About": https://developers.deepl.com/docs/getting-started/about.md (paid plans: no persistent storage, no training; endpoints for Free and Pro).
-- DeepL privacy notice: https://www.deepl.com/en/privacy (controller, sections 3, 4, 6, 7, 9, 13, 23). The page is long and was read only in part. Check it directly for current wording.
-- DeepL Free Services terms: https://www.deepl.com/en/pro-license?tab=free (covers Translator and Write free; API Free is not named).
-- LibreTranslate project: https://github.com/LibreTranslate/LibreTranslate and https://libretranslate.com/ (open source, AGPL-3.0, Argos Translate).
-- LibreTranslate documentation: https://docs.libretranslate.com/
-- LibreTranslate privacy page: https://portal.libretranslate.com/privacy.html
+- LibreTranslate project and README: https://github.com/LibreTranslate/LibreTranslate (open source, AGPL-3.0, Argos Translate).
+- LibreTranslate mirror list: https://docs.libretranslate.com/community/mirrors/
+- Historic mirror lists in the README at tags v1.2.9, v1.3.11, v1.5.0 and v1.6.0: https://github.com/LibreTranslate/LibreTranslate/blob/v1.2.9/README.md (replace the tag for the others).
+- Language codes: `GET /languages` of a LibreTranslate server, API documentation https://docs.libretranslate.com/
+- GDPR (Regulation (EU) 2016/679): https://eur-lex.europa.eu/eli/reg/2016/679/oj
