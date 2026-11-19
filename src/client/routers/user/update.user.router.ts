@@ -54,7 +54,7 @@ router.post(
         errortitle: 'Internal Server Error',
         errormessage: 'An unexpected error occurred while updating the user profile.',
         errorstatus: 500,
-        errorstack: error.stack,
+        errorstack: null,
         currentUser,
       });
     }
