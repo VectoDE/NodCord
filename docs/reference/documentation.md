@@ -8,8 +8,8 @@ NodCord is an Express-based API with an integrated Discord bot written in TypeSc
 
 ### Requirements
 
-- Node.js >= 18 (LTS recommended)
-- npm >= 9
+- Node.js 20.17.0 (see `engines` in `package.json` and `.nvmrc`)
+- npm 11.6.2
 - Access to a MySQL 8.x or compatible instance
 - Optional: Redis for sessions/caching
 

@@ -18,6 +18,7 @@ import { sameOriginGuard } from '@/middlewares/sameOrigin.middleware';
 import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
 import { compressionMiddleware } from '@/middlewares/compression.middleware';
 import { loggingMiddleware, errorLoggingMiddleware } from '@/middlewares/logging.middleware';
+import { resolveTrustProxyHops } from '@/utils/trustProxy.util';
 
 import indexRoutes from '@/client/routers/index.router';
 import { normalizeOrigin, parseOriginList } from '@/utils/origin.util';
@@ -42,7 +43,7 @@ function headerFirstString(req: IncomingMessage, name: string): string | undefin
 // --------------------------------------------------------
 // Grundkonfiguration
 // --------------------------------------------------------
-client.set('trust proxy', 1);
+client.set('trust proxy', resolveTrustProxyHops());
 client.use(express.urlencoded({ extended: true }));
 client.use(express.json());
 client.use(cookieParser());
@@ -234,14 +235,24 @@ client.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     logoImage: '/assets/img/logo.png',
     logo404: '/assets/img/404.png',
     errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
-    errormessage: statusCode >= 500 ? 'Ein interner Fehler ist aufgetreten.' : err.message,
+    // 4xx-Meldung nur, wenn der Fehler sie ausdrücklich freigibt (http-errors: expose).
+    errormessage:
+      statusCode < 500 && err.expose === true && typeof err.message === 'string'
+        ? err.message
+        : statusCode >= 500
+          ? 'Ein interner Fehler ist aufgetreten.'
+          : 'Die Anfrage konnte nicht verarbeitet werden.',
     errorstatus: statusCode,
     // Nur bei ausdrücklich gesetztem NODE_ENV=development, nie als Rückfall.
     errorstack: process.env['NODE_ENV'] === 'development' ? err.stack : null,
     currentUser,
   };
 
-  if (wantsJson) return res.json({ error: payload });
+  if (wantsJson) {
+    // Keine Nutzerdaten in JSON-Fehlerantworten.
+    const { currentUser: _currentUser, ...jsonPayload } = payload;
+    return res.json({ error: jsonPayload });
+  }
   return res.render('index/error', payload);
 });
 
