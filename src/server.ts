@@ -1,19 +1,23 @@
+// Muss der erste Import sein: In ESM laufen alle Importe vor dem Modulrumpf.
+// Module wie src/api/app.ts lesen Umgebungsvariablen (z. B. TRUST_PROXY_HOPS) schon beim Import.
+import 'dotenv/config';
+
 import { createRequire } from 'node:module';
 
-import dotenv from 'dotenv';
 
 import { createServer } from '@/api/app';
 import { startBot } from '@/bot/index';
-import { startClient } from '@/client/client';
+import { initClientSecurity, startClient } from '@/client/client';
 import logger from '@/services/logger.service';
-
-dotenv.config();
 
 const require = createRequire(import.meta.url);
 const packageInfo = require('../package.json') as { name: string };
 
 async function bootstrap(): Promise<void> {
   try {
+    // Sicherheitskonfiguration (u. a. SESSION_SECRET) vor API und Bot prüfen,
+    // damit eine Fehlkonfiguration keinen halb gestarteten Prozess hinterlässt.
+    initClientSecurity();
     await createServer();
     await startBot();
     await startClient();
