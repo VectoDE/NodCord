@@ -108,8 +108,11 @@ router.get('/keys/create', async (_req: Request, res: Response) => {
 // ------------------------------------------------------------
 router.get('/keys/update/:id', async (req: Request, res: Response) => {
   try {
-    const apiKeyId = (req.params as Record<string, string>)['id'];
-    const apiKey = await prisma.apiKey.findUnique({ where: { id: apiKeyId } });
+    // Der Pfadparameter ist die öffentliche Datensatz-ID (UUID) des Eintrags,
+    // nicht der geheime Schlüsselwert (`apiKey.key`). Der Schlüssel selbst wird
+    // nie über URL oder Query übertragen.
+    const recordId = (req.params as Record<string, string>)['id'];
+    const apiKey = await prisma.apiKey.findUnique({ where: { id: recordId } });
 
     if (!apiKey) {
       return res.status(404).render('index/error', {
