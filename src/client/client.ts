@@ -257,11 +257,26 @@ export function startClient(): void {
   // Sicherheitskonfiguration vor dem Listen prüfen (wirft in Produktion bei fehlendem Secret)
   initClientSecurity();
 
-  const protocol = process.env['CLIENT_HTTPS'] ?? 'http';
   const port = Number(process.env['CLIENT_PORT'] ?? 4000);
-  const baseURL = process.env['CLIENT_BASE_URL'] ?? 'localhost';
+  const publicUrl = resolveClientPublicUrl(port);
 
   client.listen(port, () => {
-    logger.info(`[CLIENT] Frontend running at ${protocol}://${baseURL}:${port}`);
+    logger.info(`[CLIENT] Frontend running at ${publicUrl} (port ${port})`);
   });
+}
+
+/**
+ * Öffentliche Adresse für das Start-Log. Ist CLIENT_BASE_URL eine vollständige
+ * URL (z. B. http://localhost:4000), wird sie unverändert genutzt; sonst wird
+ * sie aus CLIENT_HTTPS (true/https), Host und Port zusammengesetzt.
+ */
+export function resolveClientPublicUrl(port: number): string {
+  const rawBase = process.env['CLIENT_BASE_URL']?.trim() ?? '';
+  const origin = normalizeOrigin(rawBase);
+  if (origin) return origin;
+
+  const httpsFlag = process.env['CLIENT_HTTPS']?.trim().toLowerCase();
+  const protocol = httpsFlag === 'true' || httpsFlag === 'https' ? 'https' : 'http';
+  const host = rawBase || 'localhost';
+  return `${protocol}://${host}:${port}`;
 }

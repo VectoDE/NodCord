@@ -32,6 +32,7 @@ import type { Request, Response, NextFunction } from 'express';
 import { performance } from 'node:perf_hooks';
 import logger from '@/services/logger.service';
 import { safeAsync } from '@/utils/async.util';
+import { resolveClientIp } from '@/utils/clientIp.util';
 import { Once } from '@/utils/sync.util';
 
 // ============================================================
@@ -46,7 +47,7 @@ export interface RateLimiterOptions {
 
   /**
    * Derive a limiter key from the request.
-   * Default: apiKeyAuth.keyId -> user.id/sub -> client IP (X-Forwarded-For first hop -> remoteAddress)
+   * Default: apiKeyAuth.keyId -> user.id/sub -> client IP (req.ip gemäß `trust proxy`/TRUST_PROXY_HOPS -> remoteAddress)
    */
   keyFn?: ((req: Request) => string | null | undefined) | undefined;
 
@@ -192,7 +193,7 @@ function defaultKeyFn(req: Request): string | null | undefined {
 
   // 3) IP: req.ip wertet X-Forwarded-For nur gemäß `trust proxy` aus
   //    (TRUST_PROXY_HOPS). Der linke XFF-Eintrag ist vom Client frei setzbar.
-  const ip = req.ip || req.socket.remoteAddress;
+  const ip = resolveClientIp(req);
   if (ip) return `ip:${ip}`;
 
   // 4) Fallback (should not happen)
