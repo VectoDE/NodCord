@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 
+import { authLimiter, routerLimiter } from '@/middlewares/httpRateLimit.middleware';
 import {
   optionalAuth,
   requireAuth,
@@ -10,6 +11,12 @@ import {
 import { getSession, refreshSession, logout } from '@/api/controllers/authentication.controller';
 
 const router = Router();
+
+// Session-Routen werden vom Frontend häufig abgefragt und bekommen das
+// allgemeine Router-Limit; das strenge authLimiter gilt nur für die
+// OAuth-Einstiege und Callbacks.
+router.use('/session', routerLimiter);
+router.use(['/discord', '/google', '/github'], authLimiter);
 
 // Session inspection and lifecycle
 router.get('/session', optionalAuth(), getSession);

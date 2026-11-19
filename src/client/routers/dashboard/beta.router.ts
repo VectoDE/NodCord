@@ -49,9 +49,9 @@ router.get('/', async (_req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Beta Overview Error',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });

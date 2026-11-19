@@ -53,7 +53,7 @@ router.get('/:username', async (req: Request, res: Response) => {
       errortitle: 'Internal Server Error',
       errormessage: 'An unexpected error occurred while fetching the user profile.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
       currentUser,
     });
   }

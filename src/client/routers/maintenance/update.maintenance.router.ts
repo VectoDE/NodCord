@@ -29,7 +29,7 @@ router.get('/', (_req: Request, res: Response) => {
       errortitle: 'Fehler',
       errormessage: 'Ein Fehler ist beim Laden der Wartungsseite für Updates aufgetreten.',
       errorstatus: 500,
-      errorstack: error.message,
+      errorstack: null,
     });
   }
 });

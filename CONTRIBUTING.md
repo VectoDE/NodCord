@@ -18,14 +18,14 @@ Thank you for your interest in improving NodCord! This document explains the mos
    - Provide a local MySQL database and populate `.env` with `DATABASE_URL`
 4. **Implement your changes:**
    - Create TypeScript files with clear interfaces.
-   - For schema changes run `prisma migrate dev --name my_migration_name`.
-   - Update seeds in `prisma/seed.ts` or `prisma/seeds/`.
+   - For schema changes edit `prisma/schema.prisma` and sync with `npm run prisma:push` (`prisma db push`). No migrations are committed yet.
+   - Update seeds in `prisma/seeds/`.
 5. **Run tests and checks:**
    - `npm run lint && npm run typecheck` (style and static analysis)
    - `npm run build` (ensures the TypeScript compiler passes)
    - `npm test` or a focused run via `npm run test:api|bot|views`
    - `npm run test:coverage` for changes to core logic or services
-   - `npm run prisma:migrate` against a test database when adding migrations
+   - `npm run prisma:push` against a test database after schema changes
 6. **Open a pull request:**
    - Summarize your changes, migration steps, and new environment variables.
    - Reference relevant documents in `docs/` (e.g. updated architecture or installation guides).

@@ -22,6 +22,7 @@ import process from 'process';
 import { createRequire } from 'module';
 import type { Express, Request, Response, NextFunction, Application } from 'express';
 
+import { monitorLimiter } from '@/middlewares/httpRateLimit.middleware';
 import logger from '@/services/logger.service';
 
 import { safeAsync } from '@/utils/async.util';
@@ -627,6 +628,7 @@ export async function startMonitor(app: Express, options?: MonitorOptions): Prom
 
     app.get(
       `${base}/metrics`,
+      monitorLimiter,
       jwtGuard(cfg.protectMetrics),
       safeAsync(async (req: Request, res: Response) => {
         const snap = lastSnapshot ?? (await collectMetrics());
