@@ -64,8 +64,9 @@ if (isProd) {
 }
 
 app.use(loggingMiddleware());
+const apiCorsOrigins = ['https://nodcord.hauknetz.de', 'http://localhost:3000'];
 applyCorsAndRateLimits(app, {
-  corsOrigins: ['https://nodcord.hauknetz.de', 'http://localhost:3000'],
+  corsOrigins: apiCorsOrigins,
 });
 app.use(securityHeaderMiddleware());
 app.use(compressionMiddleware({ minSize: 1024 }));
@@ -73,6 +74,7 @@ app.use(csrfIssueToken());
 app.use(
   csrfVerify({
     exclude: [/^\/api\/v1\/payments\/webhook$/],
+    trustedOrigins: apiCorsOrigins,
   }),
 );
 app.use(passport.initialize());

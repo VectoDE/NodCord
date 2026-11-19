@@ -404,7 +404,8 @@ export class Once<T> {
   private pending: Promise<T> | undefined;
 
   run(init: () => Promise<T> | T): Promise<T> {
-    if (this.state === 'fulfilled' && this.value !== undefined) return Promise.resolve(this.value);
+    // Auch ein Ergebnis `undefined` (Once<void>) zählt als erledigt; sonst liefe init bei jedem Aufruf erneut.
+    if (this.state === 'fulfilled') return Promise.resolve(this.value as T);
     if (this.state === 'rejected') return Promise.reject(this.error);
     if (this.state === 'pending' && this.pending) return this.pending;
 
