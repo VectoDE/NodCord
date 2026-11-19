@@ -419,16 +419,9 @@ export const crudPolicies: Readonly<Record<CrudResource, CrudPolicy>> = Object.f
     tenantScoped: true,
     omit: ['password', 'verificationToken', 'accessToken', 'refreshToken'],
     // Passwörter und Tokens laufen nie über die generische API.
-    writable: [
-      'fullname',
-      'username',
-      'email',
-      'bio',
-      'profilePicture',
-      'role',
-      'isVerified',
-      'isBetaTester',
-    ],
+    writable: ['fullname', 'username', 'email', 'bio', 'profilePicture'],
+    // Rechte-relevante Felder zusätzlich explizit nur für Admins.
+    privilegedWritable: ['role', 'isVerified', 'isBetaTester'],
   },
 } satisfies Record<CrudResource, CrudPolicy>);
 
