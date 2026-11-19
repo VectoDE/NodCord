@@ -7,6 +7,13 @@
  * resources backed by Prisma delegates. Designed to minimise
  * boilerplate across the API layer while keeping strict typing
  * and consistent responses.
+ *
+ * Jeder Controller braucht eine CrudPolicy (crud.policy.ts):
+ * - Rechteprüfung je Operation (401 ohne Nutzer, 403 ohne Rolle),
+ * - Datensatz-Scope (Besitzer, Tenant, öffentliche Sicht) in jeder
+ *   Abfrage; fremde Datensätze ergeben 404,
+ * - Ausgabefilter (omit) für Geheimnisse,
+ * - Eingabe-Allowlist für create und update.
  */
 
 import { Router } from 'express';
@@ -15,13 +22,24 @@ import type { Request, Response, NextFunction } from 'express';
 import logger from '@/services/logger.service';
 import { safeAsync } from '@/utils/async.util';
 import { standardResponse } from '@/utils/response.util';
+import {
+  authorize,
+  buildOmitArg,
+  buildScopeWhere,
+  buildWriteData,
+  resolvePrincipal,
+  stripOmitted,
+  type CrudOperation,
+  type CrudPolicy,
+  type CrudPrincipal,
+} from '@/api/shared/crud.policy';
 
 type Handler = (req: Request, res: Response, next: NextFunction) => Promise<void | undefined>;
 
 export interface CrudDelegate<TRecord = Record<string, unknown>> {
   findMany(args?: unknown): Promise<TRecord[]>;
   count(args?: unknown): Promise<number>;
-  findUnique(args: unknown): Promise<TRecord | null>;
+  findFirst(args: unknown): Promise<TRecord | null>;
   create(args: unknown): Promise<TRecord>;
   update(args: unknown): Promise<TRecord>;
   delete(args: unknown): Promise<TRecord>;
@@ -31,6 +49,8 @@ export interface CrudControllerOptions<TRecord = Record<string, unknown>> {
   resource: string;
   plural?: string;
   delegate: CrudDelegate<TRecord>;
+  /** Zugriffs- und Feldregeln (Pflicht, fail-closed). */
+  policy: CrudPolicy;
   /** Express path parameter used for lookups (default: "id"). */
   idParam?: string;
   /** Prisma field used for lookups (default: same as idParam). */
@@ -39,11 +59,11 @@ export interface CrudControllerOptions<TRecord = Record<string, unknown>> {
   parseId?: (raw: string) => string | number;
   /** Default order for index queries. */
   defaultOrderBy?: Record<string, 'asc' | 'desc'>;
-  /** Additional include/select for list queries. */
+  /** Additional include for list queries (select/omit/where are ignored). */
   listQueryArgs?: (req: Request) => Record<string, unknown> | undefined;
-  /** Additional include/select for detail queries. */
+  /** Additional include for detail queries (select/omit/where are ignored). */
   detailQueryArgs?: (req: Request) => Record<string, unknown> | undefined;
-  /** Build Prisma where clause for list queries. */
+  /** Build Prisma where clause for list queries (combined with the policy scope). */
   where?: (req: Request) => Record<string, unknown> | undefined;
   /** Disable mutating operations. */
   readOnly?: boolean;
@@ -51,12 +71,14 @@ export interface CrudControllerOptions<TRecord = Record<string, unknown>> {
   allowDelete?: boolean;
 }
 
-export interface CrudController<TRecord = Record<string, unknown>> {
+export interface CrudController {
   list: Handler;
   get: Handler;
   create: Handler;
   update: Handler;
   remove: Handler;
+  /** Zugehörige Policy (nur lesend, z. B. für Doku und Tests). */
+  readonly policy: CrudPolicy;
 }
 
 function ensureObject(input: unknown): Record<string, unknown> {
@@ -72,13 +94,41 @@ function parsePositiveInt(value: unknown, fallback: number, min: number, max: nu
   return Math.min(Math.max(Math.trunc(parsed), min), max);
 }
 
+function isRecordNotFound(err: unknown): boolean {
+  return !!err && typeof err === 'object' && (err as Record<string, unknown>)['code'] === 'P2025';
+}
+
+/** Nur include und ähnliches durchlassen; select würde omit aushebeln. */
+function sanitizeExtraArgs(
+  extra: Record<string, unknown> | undefined,
+): Record<string, unknown> | undefined {
+  if (!extra) return undefined;
+  const rest: Record<string, unknown> = { ...extra };
+  delete rest['select'];
+  delete rest['omit'];
+  delete rest['where'];
+  return rest;
+}
+
+function combineWhere(
+  ...parts: Array<Record<string, unknown> | undefined>
+): Record<string, unknown> {
+  const filled = parts.filter(
+    (part): part is Record<string, unknown> => !!part && Object.keys(part).length > 0,
+  );
+  if (filled.length === 0) return {};
+  if (filled.length === 1) return filled[0] ?? {};
+  return { AND: filled };
+}
+
 export function createCrudController<TRecord = Record<string, unknown>>(
   opts: CrudControllerOptions<TRecord>,
-): CrudController<TRecord> {
+): CrudController {
   const {
     resource,
     plural = `${resource}s`,
     delegate,
+    policy,
     idParam = 'id',
     idField = idParam,
     parseId,
@@ -90,7 +140,14 @@ export function createCrudController<TRecord = Record<string, unknown>>(
     allowDelete = true,
   } = opts;
 
+  if (!policy) {
+    throw new Error(`CRUD controller "${resource}" requires a policy`);
+  }
+
   const resourceLabel = resource.charAt(0).toUpperCase() + resource.slice(1);
+  const omitArg = buildOmitArg(policy);
+  const withOmit = (args: Record<string, unknown>): Record<string, unknown> =>
+    omitArg ? { ...args, omit: omitArg } : args;
 
   const getId = (req: Request): string | number => {
     const raw = req.params[idParam];
@@ -110,33 +167,68 @@ export function createCrudController<TRecord = Record<string, unknown>>(
     }
   };
 
+  /**
+   * Prüft Anmeldung und Rolle. Sendet bei Ablehnung die Antwort selbst
+   * und liefert null.
+   */
+  const guard = (
+    req: Request,
+    res: Response,
+    operation: CrudOperation,
+  ): { principal: CrudPrincipal; privileged: boolean } | null => {
+    const principal = resolvePrincipal(req.user);
+    const decision = authorize(policy, principal, operation);
+    if (!decision.allowed || !principal) {
+      const status = decision.allowed ? 401 : decision.status;
+      const message =
+        status === 401 ? 'Unauthorized' : status === 405 ? 'Method Not Allowed' : 'Forbidden';
+      standardResponse(res, status, { error: message }, message);
+      return null;
+    }
+    return { principal, privileged: decision.privileged };
+  };
+
+  const notFound = (res: Response, id: string | number) =>
+    standardResponse(res, 404, { id }, `${resourceLabel} not found`);
+
+  /** Datensatz im erlaubten Ausschnitt suchen (für update und delete). */
+  const findScoped = (id: string | number, scope: Record<string, unknown>) =>
+    delegate.findFirst({
+      where: combineWhere({ [idField]: id }, scope),
+      select: { [idField]: true },
+    } as unknown);
+
   const list: Handler = safeAsync(
     async (req, res) => {
-      const page = parsePositiveInt(req.query.page, 1, 1, 10_000);
-      const limit = parsePositiveInt(req.query.limit, 25, 1, 250);
+      const ctx = guard(req, res, 'list');
+      if (!ctx) return;
+
+      const page = parsePositiveInt(req.query['page'], 1, 1, 10_000);
+      const limit = parsePositiveInt(req.query['limit'], 25, 1, 250);
       const skip = (page - 1) * limit;
 
-      const whereClause = buildWhere(req);
-      const extra = listQueryArgs ? listQueryArgs(req) : undefined;
+      const scope = buildScopeWhere(policy, ctx.principal, ctx.privileged);
+      const whereClause = combineWhere(buildWhere(req), scope);
+      const extra = sanitizeExtraArgs(listQueryArgs ? listQueryArgs(req) : undefined);
 
-      const queryArgs = {
-        ...(whereClause ? { where: whereClause } : {}),
+      const queryArgs = withOmit({
         ...(extra ?? {}),
+        where: whereClause,
         orderBy: defaultOrderBy,
         take: limit,
         skip,
-      };
+      });
 
       const [items, total] = await Promise.all([
         delegate.findMany(queryArgs as unknown),
-        delegate.count(whereClause ? ({ where: whereClause } as unknown) : undefined),
+        delegate.count({ where: whereClause } as unknown),
       ]);
 
       return standardResponse(
         res,
         200,
         {
-          items,
+          items: items.map((item) => stripOmitted(policy, item)),
           pagination: {
             total,
             page,
@@ -152,24 +244,30 @@ export function createCrudController<TRecord = Record<string, unknown>>(
 
   const get: Handler = safeAsync(
     async (req, res) => {
+      const ctx = guard(req, res, 'get');
+      if (!ctx) return;
+
       const id = getId(req);
-      const extra = detailQueryArgs ? detailQueryArgs(req) : undefined;
-      const record = await delegate.findUnique({
-        where: { [idField]: id },
-        ...(extra ?? {}),
-      } as unknown);
+      const scope = buildScopeWhere(policy, ctx.principal, ctx.privileged);
+      const extra = sanitizeExtraArgs(detailQueryArgs ? detailQueryArgs(req) : undefined);
+      const record = await delegate.findFirst(
+        withOmit({
+          ...(extra ?? {}),
+          where: combineWhere({ [idField]: id }, scope),
+        }) as unknown,
+      );
 
-      if (!record) {
-        return standardResponse(res, 404, { id }, `${resourceLabel} not found`);
-      }
+      if (!record) return notFound(res, id);
 
-      return standardResponse(res, 200, record, `${resourceLabel} fetched`);
+      return standardResponse(res, 200, stripOmitted(policy, record), `${resourceLabel} fetched`);
     },
     { label: `${resource}#get` },
   ) as Handler;
 
   const create: Handler = safeAsync(
     async (req, res) => {
+      const ctx = guard(req, res, 'create');
+      if (!ctx) return;
       if (readOnly) {
         return standardResponse(
           res,
@@ -178,15 +276,19 @@ export function createCrudController<TRecord = Record<string, unknown>>(
           `${resourceLabel} creation disabled`,
         );
       }
+
       const body = ensureObject(req.body);
-      const created = await delegate.create({ data: body } as unknown);
-      return standardResponse(res, 201, created, `${resourceLabel} created`);
+      const data = buildWriteData(policy, ctx.principal, ctx.privileged, body, 'create');
+      const created = await delegate.create(withOmit({ data }) as unknown);
+      return standardResponse(res, 201, stripOmitted(policy, created), `${resourceLabel} created`);
     },
     { label: `${resource}#create` },
   ) as Handler;
 
   const update: Handler = safeAsync(
     async (req, res) => {
+      const ctx = guard(req, res, 'update');
+      if (!ctx) return;
       if (readOnly) {
         return standardResponse(
           res,
@@ -195,20 +297,35 @@ export function createCrudController<TRecord = Record<string, unknown>>(
           `${resourceLabel} updates disabled`,
         );
       }
+
       const id = getId(req);
       const body = ensureObject(req.body);
-      const updated = await delegate.update({
-        where: { [idField]: id },
-        data: body,
-      } as unknown);
-      return standardResponse(res, 200, updated, `${resourceLabel} updated`);
+      const scope = buildScopeWhere(policy, ctx.principal, ctx.privileged);
+
+      const existing = await findScoped(id, scope);
+      if (!existing) return notFound(res, id);
+
+      const data = buildWriteData(policy, ctx.principal, ctx.privileged, body, 'update');
+      try {
+        // Scope auch im Update selbst, damit zwischen Prüfung und Schreiben
+        // kein fremder Datensatz getroffen werden kann.
+        const updated = await delegate.update(
+          withOmit({ where: { ...scope, [idField]: id }, data }) as unknown,
+        );
+        return standardResponse(res, 200, stripOmitted(policy, updated), `${resourceLabel} updated`);
+      } catch (err) {
+        if (isRecordNotFound(err)) return notFound(res, id);
+        throw err;
+      }
     },
     { label: `${resource}#update` },
   ) as Handler;
 
   const remove: Handler = safeAsync(
     async (req, res) => {
-      if (!allowDelete) {
+      const ctx = guard(req, res, 'delete');
+      if (!ctx) return;
+      if (readOnly || !allowDelete) {
         return standardResponse(
           res,
           405,
@@ -216,14 +333,25 @@ export function createCrudController<TRecord = Record<string, unknown>>(
           `${resourceLabel} deletion disabled`,
         );
       }
+
       const id = getId(req);
-      await delegate.delete({ where: { [idField]: id } } as unknown);
+      const scope = buildScopeWhere(policy, ctx.principal, ctx.privileged);
+
+      const existing = await findScoped(id, scope);
+      if (!existing) return notFound(res, id);
+
+      try {
+        await delegate.delete({ where: { ...scope, [idField]: id } } as unknown);
+      } catch (err) {
+        if (isRecordNotFound(err)) return notFound(res, id);
+        throw err;
+      }
       return standardResponse(res, 200, { id }, `${resourceLabel} removed`);
     },
     { label: `${resource}#remove` },
   ) as Handler;
 
-  return { list, get, create, update, remove };
+  return { list, get, create, update, remove, policy };
 }
 
 export function createCrudRouter(controller: CrudController, options?: { idParam?: string }) {

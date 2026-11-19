@@ -1,8 +1,11 @@
-﻿import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-
-import translate from 'translate-google';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 
 import type { SlashCommandModule } from '@/bot/types';
+import {
+  TranslationNotConfiguredError,
+  getTranslationProvider,
+  translateText,
+} from '@/services/translation.service';
 
 const LANGUAGE_CHOICES = [
   { name: 'Afrikaans', value: 'af' },
@@ -45,24 +48,35 @@ const translateCommand: SlashCommandModule = {
     const hidden = interaction.options.getBoolean('hidden') ?? false;
 
     await interaction.deferReply({ ephemeral: hidden });
+
+    if (!getTranslationProvider()) {
+      await interaction.editReply({
+        content:
+          'Translation is not configured on this bot. Ask the bot owner to set LIBRETRANSLATE_URL or DEEPL_API_KEY.',
+      });
+      return;
+    }
+
     await interaction.editReply({ content: 'Translating...' });
 
     try {
-      const translatedText = await translate(text, { to: language });
+      const { text: translatedText } = await translateText(text, language);
 
       const embed = new EmbedBuilder()
         .setColor('Random')
         .setTitle('Translation Result')
         .addFields(
           { name: 'Original', value: text.substring(0, 1024) },
-          { name: 'Translated', value: translatedText.substring(0, 1024) },
+          { name: 'Translated', value: translatedText.substring(0, 1024) || '-' },
         );
 
       await interaction.editReply({ content: '', embeds: [embed] });
-    } catch {
-      await interaction.editReply({
-        content: "I couldn't translate that text. Please try again later.",
-      });
+    } catch (error) {
+      const content =
+        error instanceof TranslationNotConfiguredError
+          ? 'Translation is not configured on this bot.'
+          : "I couldn't translate that text. Please try again later.";
+      await interaction.editReply({ content });
     }
   },
 };
