@@ -20,7 +20,7 @@
 import os from 'os';
 import process from 'process';
 import { createRequire } from 'module';
-import type { Express, Request, Response, NextFunction, Application } from 'express';
+import type { Express, IRouter, Request, Response, NextFunction, Application } from 'express';
 
 import { monitorLimiter } from '@/middlewares/httpRateLimit.middleware';
 import logger from '@/services/logger.service';
@@ -586,7 +586,13 @@ export async function getCloudNetStatus(): Promise<CloudNetStatusSummary> {
 // Bootstrap / Wiring
 // ============================================================
 
-export async function startMonitor(app: Express, options?: MonitorOptions): Promise<void> {
+/**
+ * Startet die Metrik-Erfassung und registriert /health, /ready und /metrics
+ * auf `app`. `app` kann ein Router sein, der schon vor dem 404-Handler
+ * eingehängt ist; Routen auf der App selbst nach dem 404-Handler wären
+ * nicht erreichbar.
+ */
+export async function startMonitor(app: IRouter, options?: MonitorOptions): Promise<void> {
   await startOnce.run(async () => {
     const cfg = {
       routePrefix: options?.routePrefix ?? DEFAULTS.routePrefix,
