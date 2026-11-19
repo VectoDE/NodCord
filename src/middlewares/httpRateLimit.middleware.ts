@@ -5,9 +5,9 @@
  *
  * Ergaenzt den internen Token-Bucket-Limiter (rateLimiter.middleware.ts)
  * um feste Fenster-Limits, die zusaetzlich auf App- und Router-Ebene
- * greifen. Die Schluessel kommen aus req.ip; `trust proxy` ist in
- * src/api/app.ts auf 1 gesetzt, damit hinter dem Reverse Proxy die
- * Client-IP und nicht die Proxy-IP gezaehlt wird.
+ * greifen. Die Schluessel kommen aus req.ip; `trust proxy` kommt aus
+ * TRUST_PROXY_HOPS (src/utils/trustProxy.util.ts), damit hinter dem
+ * Reverse Proxy die Client-IP und nicht die Proxy-IP gezaehlt wird.
  */
 
 import { rateLimit } from 'express-rate-limit';
