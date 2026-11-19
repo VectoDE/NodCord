@@ -1,1 +1,2 @@
-Wahrheit oder Pflicht
+// Geplantes Spiel, noch nicht umgesetzt: Wahrheit oder Pflicht
+export {};
