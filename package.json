@@ -101,7 +101,7 @@
     "chalk": "^5.6.2",
     "check-disk-space": "3.4.0",
     "cli-table3": "^0.6.5",
-    "compression": "^1.8.1",
+    "compression": "^1.8.2",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^5.1.0",
     "connect-redis": "^9.0.0",
