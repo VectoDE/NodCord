@@ -157,7 +157,7 @@ Detailed architecture notes, installation guides, roadmaps, and process descript
 
 ## Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening pull requests. It covers the branch strategy, TypeScript coding guidelines, and how to manage Prisma migrations.
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before opening pull requests. It covers the branch strategy, TypeScript coding guidelines, and how to keep the Prisma schema in sync (`prisma db push` until the first migration is committed).
 
 ## Security
 
