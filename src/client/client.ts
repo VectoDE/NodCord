@@ -16,6 +16,7 @@ import { corsMiddleware } from '@/middlewares/cors.middleware';
 import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
 import { compressionMiddleware } from '@/middlewares/compression.middleware';
 import { loggingMiddleware, errorLoggingMiddleware } from '@/middlewares/logging.middleware';
+import { resolveTrustProxyHops } from '@/utils/trustProxy.util';
 
 import indexRoutes from '@/client/routers/index.router';
 
@@ -39,7 +40,7 @@ function headerFirstString(req: IncomingMessage, name: string): string | undefin
 // --------------------------------------------------------
 // Grundkonfiguration
 // --------------------------------------------------------
-client.set('trust proxy', 1);
+client.set('trust proxy', resolveTrustProxyHops());
 client.use(express.urlencoded({ extended: true }));
 client.use(express.json());
 client.use(cookieParser());
