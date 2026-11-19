@@ -91,7 +91,7 @@
     "@azure/msal-node": "^3.8.0",
     "@pm2/io": "^6.1.0",
     "@prisma/client": "^6.18.0",
-    "@sentry/cli": "^2.57.0",
+    "@sentry/cli": "^3.8.2",
     "@sentry/node": "^10.22.0",
     "@sentry/profiling-node": "^10.22.0",
     "archiver": "^7.0.1",
