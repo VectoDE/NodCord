@@ -3,7 +3,7 @@ import { logSafe } from '@/utils/logSafe.util';
 describe('logSafe', () => {
   it('removes line breaks and control characters', () => {
     expect(logSafe('a\r\nb')).toBe('a  b');
-    expect(logSafe('x\u0000y\u001b[31mz ')).toBe('xy[31mz');
+    expect(logSafe('x\u0000y\u001b[31mz\u2028')).toBe('xy[31mz');
   });
 
   it('stringifies non-strings and handles nullish values', () => {

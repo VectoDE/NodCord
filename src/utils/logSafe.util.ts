@@ -6,6 +6,6 @@
 export function logSafe(value: unknown, maxLength = 200): string {
   const text = typeof value === 'string' ? value : String(value ?? '');
   // eslint-disable-next-line no-control-regex
-  const cleaned = text.replace(/\r|\n/g, ' ').replace(/[\u0000-\u001f\u007f-\u009f  ]/g, '');
+  const cleaned = text.replace(/\r|\n/g, ' ').replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/g, '');
   return cleaned.length > maxLength ? `${cleaned.slice(0, maxLength)}…` : cleaned;
 }
