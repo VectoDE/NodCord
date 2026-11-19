@@ -143,6 +143,7 @@ The Prisma schema lives at [`prisma/schema.prisma`](./prisma/schema.prisma). It 
    - **Mail, SMS & contact:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`, `SMS_*`
    - **Seeds:** `SEED_*`
    - **Further:** `CLOUDNET_*`, `PUBLIC_AI_*`
+   - **Translation (`/translate`):** `LIBRETRANSLATE_URL`, `LIBRETRANSLATE_API_KEY`. Only a self-hosted LibreTranslate server is accepted (https, or http on localhost/private networks/a Docker service name); public instances are refused and an empty URL keeps the command off. Users must agree once before their first translation and can withdraw with `/translate-consent revoke`. Operator duties and a sample privacy notice: [`docs/guides/translation-privacy.md`](./docs/guides/translation-privacy.md).
 
 ### Required in production
 
@@ -156,7 +157,7 @@ Further explanations live in the module-specific files under `src/configs/` and 
 
 Detailed architecture notes, installation guides, roadmaps, and process descriptions live inside [`docs/`](./docs). Key entry points:
 
-- [`docs/guides/`](./docs/guides) – Installation, FAQ, and support guides
+- [`docs/guides/`](./docs/guides) – Installation, FAQ, support, and translation privacy guides
 - [`docs/overview/`](./docs/overview) – Architecture, components, and data flows
 - [`docs/planning/`](./docs/planning) – Migration plans toward full Prisma adoption
 - [`docs/reference/`](./docs/reference) – Technical references and workflows

@@ -3979,3 +3979,16 @@ model AiChatMessage {
   @@index([sessionId, createdAt], map: "idx_ai_chat_message_session_created")
   @@map("ai_chat_message")
 }
+
+/// Einwilligung eines Discord-Nutzers in /translate (Art. 6 Abs. 1 lit. a DSGVO).
+/// Wird bei Widerruf (/translate-consent revoke) gelöscht.
+model TranslationConsent {
+  id            String   @id @default(cuid())
+  discordUserId String   @unique
+  /// Version des Hinweistexts, dem zugestimmt wurde (TRANSLATION_CONSENT_VERSION).
+  version       Int
+  consentedAt   DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("translation_consent")
+}

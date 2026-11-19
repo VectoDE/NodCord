@@ -1,6 +1,7 @@
 import { ActivityType, Events, type Client } from 'discord.js';
 
 import logger from '@/services/logger.service';
+import { getTranslationConfig } from '@/services/translation.service';
 
 import type { BotEventModule, NodCordClient } from '@/bot/types';
 
@@ -12,6 +13,21 @@ const STATUS_ROTATION: Array<{ name: string; type: ActivityType }> = [
   { name: '/help for helpmenu', type: ActivityType.Playing },
 ];
 
+function logTranslationStatus(): void {
+  const translation = getTranslationConfig();
+  if (translation.status === 'ready') {
+    logger.info('[BOT] /translate enabled (self-hosted LibreTranslate)', {
+      host: translation.endpoint.host,
+    });
+  } else if (translation.status === 'invalid') {
+    logger.error('[BOT] /translate disabled: invalid LIBRETRANSLATE_URL', {
+      reason: translation.reason,
+    });
+  } else {
+    logger.info('[BOT] /translate disabled: LIBRETRANSLATE_URL is not set');
+  }
+}
+
 const readyEvent: BotEventModule<'clientReady'> = {
   name: Events.ClientReady,
   once: true,
@@ -19,6 +35,7 @@ const readyEvent: BotEventModule<'clientReady'> = {
     const activeClient = readyClient ?? client;
     const username = activeClient.user?.username ?? 'Unknown Bot';
     logger.info(`[BOT] Logged in as ${username}`);
+    logTranslationStatus();
 
     if (!activeClient.user) return;
 
