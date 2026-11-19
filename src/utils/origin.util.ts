@@ -65,3 +65,26 @@ export function requestSourceOrigin(
   if (originHeader !== undefined) return normalizeOrigin(originHeader);
   return normalizeOrigin(refererHeader);
 }
+
+/**
+ * Entscheidet, ob eine zustandsändernde Anfrage nach ihrer Herkunft zulässig ist
+ * (OWASP "Verifying Origin With Standard Headers").
+ *
+ * - Origin bzw. Referer vorhanden: zulässig nur, wenn der normalisierte Wert in
+ *   `allowed` steht. Der Literal-Origin "null" und ungültige Werte sind nie zulässig.
+ * - Beide Header fehlen: zulässig nur ohne Cookie (Server-zu-Server, Bearer/API-Key).
+ *   Ein Browser mit Cookie sendet bei nicht-GET-Anfragen immer Origin.
+ * - Leere Allowlist: nie zulässig, wenn eine Herkunft angegeben ist (fail-closed).
+ */
+export function isAllowedMutationSource(input: {
+  origin: string | undefined;
+  referer: string | undefined;
+  hasCookie: boolean;
+  allowed: ReadonlySet<string>;
+}): boolean {
+  const { origin, referer, hasCookie, allowed } = input;
+  if (origin === undefined && referer === undefined) return !hasCookie;
+  const source = requestSourceOrigin(origin, referer);
+  if (!source) return false;
+  return allowed.has(source);
+}

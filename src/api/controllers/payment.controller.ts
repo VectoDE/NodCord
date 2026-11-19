@@ -11,45 +11,9 @@ import {
   handleStripeWebhook,
 } from '@/services/stripe.service';
 import type { AuthUser } from '@/middlewares/authentication.middleware';
+import { buildMetadata, normalizeMetadata } from '@/utils/paymentMetadata.util';
 
 export const paymentController = getController('payment');
-
-type MetadataIntent = 'one_time' | 'subscription';
-
-function normalizeMetadata(input: unknown): Record<string, string> | undefined {
-  if (!input || typeof input !== 'object' || Array.isArray(input)) return undefined;
-  const entries = Object.entries(input as Record<string, unknown>);
-  if (!entries.length) return undefined;
-
-  const result: Record<string, string> = {};
-  for (const [key, value] of entries) {
-    if (typeof value === 'string') {
-      result[key] = value;
-    } else if (typeof value === 'number' || typeof value === 'boolean') {
-      result[key] = String(value);
-    }
-  }
-  return Object.keys(result).length ? result : undefined;
-}
-
-function buildMetadata(
-  user: AuthUser | undefined,
-  provided: Record<string, string> | undefined,
-  intent: MetadataIntent,
-): Record<string, string> {
-  const metadata: Record<string, string> = { intent };
-
-  if (user?.id) metadata['userId'] = user.id;
-  if (user?.email) metadata['userEmail'] = user.email;
-
-  if (provided) {
-    for (const [key, value] of Object.entries(provided)) {
-      metadata[key] = value;
-    }
-  }
-
-  return metadata;
-}
 
 export const listStripeProducts = safeAsync(
   async (_req: Request, res: Response) => {

@@ -136,13 +136,20 @@ The Prisma schema lives at [`prisma/schema.prisma`](./prisma/schema.prisma). It 
    - **Server & API:** `PORT`, `BASE_URL`, `API_HTTPS`, `API_BASE_URL`, `API_PORT`, `API_KEY`, `BOT_API_KEY`
    - **Databases:** `DATABASE_URL`, `PROD_DATABASE_URL`, `DEV_DATABASE_URL`, `TEST_DATABASE_URL`, `STAGING_DATABASE_URL`, `DATABASE_STATUS`, `DISABLE_PRISMA`
    - **Security:** `SESSION_SECRET`, `JWT_*`, `ACCESS_TOKEN_SECRET`, `COOKIE_DOMAIN`, `COOKIE_SECURE`, `CSRF_SECRET`
-   - **Client routing:** `CLIENT_HTTPS`, `CLIENT_BASE_URL`, `CLIENT_PORT`
+   - **Client routing:** `CLIENT_HTTPS`, `CLIENT_BASE_URL`, `CLIENT_PORT`, `CLIENT_TRUSTED_ORIGINS`
+   - **Reverse proxy:** `TRUST_PROXY_HOPS` (production: `2` for Cloudflare plus your own reverse proxy)
    - **Discord & bot:** `BOT_TOKEN`, `DISCORD_*`, `DEV_GUILD_ID`, `CLIENT_ID`, `OWNER_ID`
    - **Payments:** `STRIPE_*`
    - **Mail, SMS & contact:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`, `SMS_*`
    - **Seeds:** `SEED_*`
    - **Further:** `CLOUDNET_*`, `PUBLIC_AI_*`
    - **Translation (`/translate`):** `LIBRETRANSLATE_URL`, `LIBRETRANSLATE_API_KEY`. Only a self-hosted LibreTranslate server is accepted (https, or http on localhost/private networks/a Docker service name); public instances are refused and an empty URL keeps the command off. Users must agree once before their first translation and can withdraw with `/translate-consent revoke`. Operator duties and a sample privacy notice: [`docs/guides/translation-privacy.md`](./docs/guides/translation-privacy.md).
+
+### Required in production
+
+- `SESSION_SECRET` is mandatory: at least 32 characters and not a placeholder such as `change_me`. If it is missing or weak, NodCord refuses to start before the API, the bot or the client come up. Only `NODE_ENV=development` or `NODE_ENV=test` fall back to a random, non-persistent secret. For this check a missing `NODE_ENV` counts as production. Generate a value with `node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"`.
+- `CLIENT_TRUSTED_ORIGINS` is a comma-separated list of extra origins (for example `https://app.example.com,https://admin.example.com`) that may send credentialed CORS requests and pass the CSRF origin check. The client's own origin and `CLIENT_BASE_URL` (when it is a full URL) are always allowed, so leave it empty if you serve everything from one origin.
+- `TRUST_PROXY_HOPS` must match the real number of proxies in front of the app. Behind Cloudflare and your own reverse proxy that is `2`, and your proxy must only accept connections from Cloudflare's IP ranges. See [Running behind Cloudflare and a reverse proxy](./docs/guides/reverse-proxy.md).
 
 Further explanations live in the module-specific files under `src/configs/` and in the reference documentation under `docs/`.
 

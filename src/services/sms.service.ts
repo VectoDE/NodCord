@@ -37,6 +37,7 @@ import { roundTo, randomInt } from '@/utils/number.util';
 import { Mutex, Once } from '@/utils/sync.util';
 import { extractBearer, verifyAccessToken } from '@/utils/jwt.util';
 import { standardResponse } from '@/utils/response.util';
+import { logSafe } from '@/utils/logSafe.util';
 import { buildBaseUrl } from '@/utils/baseUrl.util';
 
 // ============================================================
@@ -227,8 +228,13 @@ export const sendSMS = safeAsync(async (payload: SMSPayload): Promise<SMSRespons
 // ============================================================
 
 export const smsWebhookHandler = safeAsync(async (req: Request, res: Response): Promise<void> => {
-  const event = req.body as SMSWebhookEvent;
-  logger.info('[SMS] Delivery report received', event);
+  const event = (req.body ?? {}) as Partial<SMSWebhookEvent>;
+  // Nur bekannte Felder, bereinigt: der Body kommt ungeprüft vom Absender.
+  logger.info('[SMS] Delivery report received', {
+    messageId: logSafe(event.messageId, 100),
+    status: logSafe(event.status, 50),
+    timestamp: logSafe(event.timestamp, 50),
+  });
   standardResponse(res, 200, { received: true });
 });
 
@@ -236,7 +242,8 @@ export const smsWebhookHandler = safeAsync(async (req: Request, res: Response): 
 // Optional Auth Middleware for Secure Routes
 // ============================================================
 
-export function jwtGuard(enabled = false) {
+/** Standard ist fail-closed: Nur `jwtGuard(false)` schaltet die Prüfung bewusst ab. */
+export function jwtGuard(enabled = true) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!enabled) return next();
     try {
