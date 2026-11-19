@@ -149,7 +149,7 @@ Further explanations live in the module-specific files under `src/configs/` and 
 
 Detailed architecture notes, installation guides, roadmaps, and process descriptions live inside [`docs/`](./docs). Key entry points:
 
-- [`docs/guides/`](./docs/guides) – Installation, FAQ, and support guides
+- [`docs/guides/`](./docs/guides) – Installation, FAQ, support, and translation privacy guides
 - [`docs/overview/`](./docs/overview) – Architecture, components, and data flows
 - [`docs/planning/`](./docs/planning) – Migration plans toward full Prisma adoption
 - [`docs/reference/`](./docs/reference) – Technical references and workflows
