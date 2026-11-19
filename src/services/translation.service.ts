@@ -46,8 +46,8 @@ const DEEPL_LANGUAGE_MAP: Record<string, string> = {
 };
 
 export function getTranslationProvider(env: Env = process.env): TranslationProvider | null {
-  if (env.LIBRETRANSLATE_URL?.trim()) return 'libretranslate';
-  if (env.DEEPL_API_KEY?.trim()) return 'deepl';
+  if (env['LIBRETRANSLATE_URL']?.trim()) return 'libretranslate';
+  if (env['DEEPL_API_KEY']?.trim()) return 'deepl';
   return null;
 }
 
@@ -68,15 +68,15 @@ function parseLibreUrl(raw: string): URL {
 }
 
 async function translateWithLibre(text: string, target: string, env: Env): Promise<string> {
-  const url = parseLibreUrl(env.LIBRETRANSLATE_URL ?? '');
+  const url = parseLibreUrl(env['LIBRETRANSLATE_URL'] ?? '');
   const body: Record<string, string> = {
     q: text,
     source: 'auto',
     target: LIBRE_LANGUAGE_MAP[target] ?? target,
     format: 'text',
   };
-  const apiKey = env.LIBRETRANSLATE_API_KEY?.trim();
-  if (apiKey) body.api_key = apiKey;
+  const apiKey = env['LIBRETRANSLATE_API_KEY']?.trim();
+  if (apiKey) body['api_key'] = apiKey;
 
   const response = await fetch(url, {
     method: 'POST',
@@ -96,7 +96,7 @@ async function translateWithLibre(text: string, target: string, env: Env): Promi
 }
 
 async function translateWithDeepl(text: string, target: string, env: Env): Promise<string> {
-  const apiKey = (env.DEEPL_API_KEY ?? '').trim();
+  const apiKey = (env['DEEPL_API_KEY'] ?? '').trim();
   // Schlüssel der kostenlosen API enden auf ":fx".
   const endpoint = apiKey.endsWith(':fx') ? DEEPL_FREE_ENDPOINT : DEEPL_PRO_ENDPOINT;
 
