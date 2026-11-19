@@ -90,4 +90,6 @@ server {
 }
 ```
 
+An IP allow list only proves that a request came from Cloudflare, not from your Cloudflare zone: any Cloudflare customer can point traffic at your origin IP. For stronger protection, add [Authenticated Origin Pulls](https://developers.cloudflare.com/ssl/origin-configuration/authenticated-origin-pull/) (mTLS between Cloudflare and your proxy) or run [Cloudflare Tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) so the origin has no open inbound port.
+
 Do not combine this with nginx's `real_ip` module (`set_real_ip_from`, `real_ip_header`). It rewrites the address nginx appends, so the hop count NodCord expects no longer matches.

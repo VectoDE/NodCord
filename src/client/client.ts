@@ -19,6 +19,7 @@ import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middlewar
 import { compressionMiddleware } from '@/middlewares/compression.middleware';
 import { loggingMiddleware, errorLoggingMiddleware } from '@/middlewares/logging.middleware';
 import { resolveTrustProxyHops } from '@/utils/trustProxy.util';
+import { resolveClientPublicUrl } from '@/utils/clientUrl.util';
 
 import indexRoutes from '@/client/routers/index.router';
 import { normalizeOrigin, parseOriginList } from '@/utils/origin.util';
@@ -258,25 +259,9 @@ export function startClient(): void {
   initClientSecurity();
 
   const port = Number(process.env['CLIENT_PORT'] ?? 4000);
-  const publicUrl = resolveClientPublicUrl(port);
+  const publicUrl = resolveClientPublicUrl(port, process.env);
 
   client.listen(port, () => {
     logger.info(`[CLIENT] Frontend running at ${publicUrl} (port ${port})`);
   });
-}
-
-/**
- * Öffentliche Adresse für das Start-Log. Ist CLIENT_BASE_URL eine vollständige
- * URL (z. B. http://localhost:4000), wird sie unverändert genutzt; sonst wird
- * sie aus CLIENT_HTTPS (true/https), Host und Port zusammengesetzt.
- */
-export function resolveClientPublicUrl(port: number): string {
-  const rawBase = process.env['CLIENT_BASE_URL']?.trim() ?? '';
-  const origin = normalizeOrigin(rawBase);
-  if (origin) return origin;
-
-  const httpsFlag = process.env['CLIENT_HTTPS']?.trim().toLowerCase();
-  const protocol = httpsFlag === 'true' || httpsFlag === 'https' ? 'https' : 'http';
-  const host = rawBase || 'localhost';
-  return `${protocol}://${host}:${port}`;
 }
