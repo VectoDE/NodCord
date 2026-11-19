@@ -109,7 +109,7 @@
     "cors": "^2.8.5",
     "discord-player": "^7.1.0",
     "discord.js": "^14.24.0",
-    "dotenv": "^17.2.3",
+    "dotenv": "^18.0.10",
     "ejs": "^3.1.10",
     "esbuild": "^0.28.2",
     "express": "^5.1.0",
