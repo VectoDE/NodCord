@@ -1,7 +1,3 @@
-declare module 'translate-google' {
-  export default function translate(text: string, options: { to: string }): Promise<string>;
-}
-
 declare module 'quickchart-js' {
   export default class QuickChart {
     constructor();
