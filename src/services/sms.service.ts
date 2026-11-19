@@ -242,7 +242,8 @@ export const smsWebhookHandler = safeAsync(async (req: Request, res: Response): 
 // Optional Auth Middleware for Secure Routes
 // ============================================================
 
-export function jwtGuard(enabled = false) {
+/** Standard ist fail-closed: Nur `jwtGuard(false)` schaltet die Prüfung bewusst ab. */
+export function jwtGuard(enabled = true) {
   return async (req: Request, res: Response, next: NextFunction) => {
     if (!enabled) return next();
     try {
