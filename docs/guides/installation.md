@@ -39,7 +39,7 @@ This guide walks you through installing NodCord with TypeScript, Prisma, and MyS
 
 5. Prepare the configuration file:
    - Copy `.env.example` to `.env` (or roll it out through your secrets management).
-   - Populate the required variables. The key sections are listed in the README under “Server & API,” “Databases,” “Security & monitoring,” “Client routing,” “Discord & bot,” “OAuth,” “Payments,” “Mail & contact,” and “Infrastructure.”
+   - Populate the required variables. The key sections are listed in the README under “Configuration.”
    - Set `DATABASE_URL` to a MySQL URL (`mysql://user:password@localhost:3306/nodcord`); the example value in `.env.example` points to PostgreSQL.
 
 6. Start the development server:
