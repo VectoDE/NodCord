@@ -82,14 +82,16 @@ async function loadTemplate(templateName: string): Promise<string> {
     if (templateCache.has(templateName)) return templateCache.get(templateName)!;
 
     if (!TEMPLATE_NAME_PATTERN.test(templateName)) {
-      logger.error('[MAILER] Invalid template name', { templateName });
+      logger.error('[MAILER] Invalid template name', {
+        templateNameLength: templateName.length,
+      });
       throw new Error('Invalid template name');
     }
 
     const templateRoot = path.resolve(TEMPLATE_DIR);
     const filePath = path.resolve(templateRoot, `${templateName}.html`);
     if (!filePath.startsWith(templateRoot + path.sep)) {
-      logger.error('[MAILER] Template path escapes template directory', { templateName });
+      logger.error('[MAILER] Template path escapes template directory');
       throw new Error('Invalid template name');
     }
     const result = await tryAsync(() => fs.readFile(filePath, 'utf8'));
