@@ -56,9 +56,9 @@ router.get('/', async (_req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der Benutzerliste',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -126,9 +126,9 @@ router.get('/update/:id', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden des Benutzers',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -154,9 +154,9 @@ router.post('/update/:id/password', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Passwort-Update',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -186,9 +186,9 @@ router.get('/delete/:id', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Löschen des Benutzers',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -234,9 +234,9 @@ router.get('/view/:id', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Anzeigen des Benutzers',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });

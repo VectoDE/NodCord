@@ -234,9 +234,10 @@ client.use((err: any, req: Request, res: Response, _next: NextFunction) => {
     logoImage: '/assets/img/logo.png',
     logo404: '/assets/img/404.png',
     errortitle: statusCode === 401 ? 'Unauthorized' : statusCode === 404 ? 'Not Found' : 'Error',
-    errormessage: err.message,
+    errormessage: statusCode >= 500 ? 'Ein interner Fehler ist aufgetreten.' : err.message,
     errorstatus: statusCode,
-    errorstack: client.get('env') === 'development' ? err.stack : null,
+    // Nur bei ausdrücklich gesetztem NODE_ENV=development, nie als Rückfall.
+    errorstack: process.env['NODE_ENV'] === 'development' ? err.stack : null,
     currentUser,
   };
 

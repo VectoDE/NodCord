@@ -33,19 +33,19 @@ NodCord is a **TypeScript** service platform for Discord automation. The REST AP
 
 | Area       | Stack                                                                               |
 | ---------- | ----------------------------------------------------------------------------------- |
-| Runtime    | Node.js ≥ 18                                                                        |
+| Runtime    | Node.js 20.17.0 (npm 11.6.2)                                                        |
 | Language   | TypeScript (strict mode)                                                            |
 | Framework  | Express.js                                                                          |
 | Database   | MySQL 8.x or compatible (MariaDB ≥ 10.6 verified)                                   |
 | ORM/Client | Prisma                                                                              |
 | Discord    | discord.js                                                                          |
-| Tooling    | ts-node-dev, Jest (multi-project), Supertest, Testing Library, Prettier, Prisma CLI |
+| Tooling    | nodemon, esbuild, Jest (multi-project), Supertest, Testing Library, Prettier, Prisma CLI |
 
 ## Installation
 
 ### Requirements
 
-- Node.js **>= 18** and npm **>= 9**
+- Node.js **20.17.0** and npm **11.6.2** (as declared in `engines` in `package.json`; `.nvmrc` matches)
 - Running MySQL instance (e.g. Docker: `docker run --name nodcord-mysql -e MYSQL_ROOT_PASSWORD=secret -p 3306:3306 -d mysql:8`)
 - Git
 
@@ -63,13 +63,13 @@ NodCord is a **TypeScript** service platform for Discord automation. The REST AP
    ```bash
    npm install
    ```
-4. Generate the Prisma Client (creates `node_modules/@prisma/client` based on the schema):
+4. Generate the Prisma Client (creates `node_modules/@prisma/client` based on the schema; also runs automatically after `npm install`):
    ```bash
    npx prisma generate
    ```
-5. Run the initial migration against your MySQL database:
+5. Create the schema in your MySQL database. No Prisma migrations are committed yet, so `prisma migrate deploy` has nothing to apply:
    ```bash
-   npx prisma migrate deploy
+   npx prisma db push
    ```
 6. Start the development server:
    ```bash
@@ -82,28 +82,30 @@ Key npm scripts:
 
 ```json
 {
-  "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-  "build": "tsc --project tsconfig.json",
-  "start": "node dist/server.js",
+  "dev": "nodemon --config nodemon.json",
+  "build": "node scripts/build.mjs",
+  "start": "node --import ./scripts/register-alias-loader.mjs dist/src/server.js",
   "test": "jest --config jest.config.cjs",
   "test:api": "jest --config jest.config.cjs --selectProjects api",
   "test:bot": "jest --config jest.config.cjs --selectProjects bot",
   "test:views": "jest --config jest.config.cjs --selectProjects views",
   "test:coverage": "jest --config jest.config.cjs --coverage",
   "test:ci": "npm run lint && npm run typecheck && npm run test:coverage",
+  "prisma:push": "prisma db push",
   "prisma:migrate": "prisma migrate deploy",
   "prisma:studio": "prisma studio"
 }
 ```
 
-- `npm run dev` starts the server with hot reloading (ts-node-dev).
-- `npm run build` creates a `dist/` directory with compiled JS output.
-- `npm start` launches the build in production mode.
+- `npm run dev` starts the server with nodemon (configuration in `nodemon.json`, watches `src` and `prisma`).
+- `npm run build` runs `scripts/build.mjs` (esbuild) and creates a `dist/` directory with the compiled JS output.
+- `npm start` runs the build first (`prestart`) and then launches `dist/src/server.js`.
 - `npm test` executes all Jest projects (API, bot, views) together.
 - `npm run test:api|bot|views` enables focused test runs per responsibility.
 - `npm run test:coverage` produces combined coverage reports (`text`, `lcov`, `cobertura`).
 - `npm run test:ci` chains linting, type checking, and coverage for CI/CD pipelines.
-- `npm run prisma:migrate` deploys migrations to the configured database.
+- `npm run prisma:push` syncs the schema to the configured database (`prisma db push`).
+- `npm run prisma:migrate` runs `prisma migrate deploy`. It only applies committed migrations, and none exist yet.
 - `npm run prisma:studio` opens the Prisma Studio UI for data inspection.
 
 ## Testing & Quality Assurance
@@ -122,26 +124,26 @@ All projects share `jest.setup.ts`, which enables `jest-extended` and unifies th
 
 The Prisma schema lives at [`prisma/schema.prisma`](./prisma/schema.prisma). It defines all models (e.g. users, roles, projects) and describes relations plus constraints for MySQL. Additional tips:
 
-- Create a `.env` file at the project root and define `DATABASE_URL`, e.g. `mysql://user:password@localhost:3306/nodcord`.
-- Use `npx prisma db push` when you want to sync the schema quickly during development.
-- Run seeds through `prisma db seed`; they rely on files inside `prisma/seeds/`.
+- Copy `.env.example` to `.env` and set `DATABASE_URL`, e.g. `mysql://user:password@localhost:3306/nodcord`. The example value in `.env.example` points to PostgreSQL, the schema targets MySQL.
+- Use `npx prisma db push` (`npm run prisma:push`) to sync the schema. There is no `prisma/migrations/` directory yet.
+- Seed files live in `prisma/seeds/` (`rolesSeed.ts`, `usersSeed.ts`). `package.json` has no `prisma db seed` entry yet, so `npm run prisma:seed` has nothing to run.
 
 ## Configuration
 
-1. Create a `.env` file in the project root (or populate the version provided by your secrets management system).
+1. Copy `.env.example` to `.env` in the project root (or populate the version provided by your secrets management system).
 2. Provide the variables required from the following categories:
-   - **Core runtime:** `VERSION`, `NODE_ENV`, `SERVER_NAME`, `LOG_LEVEL`, `TZ`
-   - **Server & API:** `PORT`, `BASE_URL`, `API_HTTPS`, `API_BASE_URL`, `API_PORT`
-   - **Databases:** `DATABASE_URL`, `MONGO_URI`
-   - **Security & monitoring:** `SESSION_SECRET`, `JWT_SECRET`, `JWT_SESSION_SECRET`, `SENTRY_AUTH_TOKEN`
+   - **Core runtime:** `NODE_ENV`, `TZ`, `SERVICE_NAME`, `API_VERSION`, `API_STATUS`
+   - **Server & API:** `PORT`, `BASE_URL`, `API_HTTPS`, `API_BASE_URL`, `API_PORT`, `API_KEY`, `BOT_API_KEY`
+   - **Databases:** `DATABASE_URL`, `PROD_DATABASE_URL`, `DEV_DATABASE_URL`, `TEST_DATABASE_URL`, `STAGING_DATABASE_URL`, `DATABASE_STATUS`, `DISABLE_PRISMA`
+   - **Security:** `SESSION_SECRET`, `JWT_*`, `ACCESS_TOKEN_SECRET`, `COOKIE_DOMAIN`, `COOKIE_SECURE`, `CSRF_SECRET`
    - **Client routing:** `CLIENT_HTTPS`, `CLIENT_BASE_URL`, `CLIENT_PORT`
-   - **Discord & bot:** `DISCORD_*`, `BOT_ACTIVITY_*`, `OWNER_ID`
-   - **OAuth:** `GOOGLE_*`, `GITHUB_*`, `LINKEDIN_*`
-   - **Payments:** `STRIPE_SECRET_KEY`, `PAYPAL_CLIENT_*`
-   - **Mail & contact:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`
-   - **Infrastructure:** `TS_*`
+   - **Discord & bot:** `BOT_TOKEN`, `DISCORD_*`, `DEV_GUILD_ID`, `CLIENT_ID`, `OWNER_ID`
+   - **Payments:** `STRIPE_*`
+   - **Mail, SMS & contact:** `SMTP_*`, `CONTACT_EMAIL`, `CONTACT_SMTP_*`, `SMS_*`
+   - **Seeds:** `SEED_*`
+   - **Further:** `CLOUDNET_*`, `PUBLIC_AI_*`
 
-Further explanations live in the module-specific files under `src/config/` and in the reference documentation under `docs/`.
+Further explanations live in the module-specific files under `src/configs/` and in the reference documentation under `docs/`.
 
 ## Documentation
 

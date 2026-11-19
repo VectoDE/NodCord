@@ -281,7 +281,9 @@ export function rateLimiterMiddleware(options?: RateLimiterOptions) {
     }
 
     if (cfg.allowlist.length && cfg.allowlist.includes(key)) {
-      if (cfg.verboseLog) logger.debug('[RATE] allowlisted', { ns: cfg.namespace, key });
+      if (cfg.verboseLog) {
+        logger.debug('[RATE] allowlisted', { ns: cfg.namespace });
+      }
       return next();
     }
 
@@ -308,7 +310,6 @@ export function rateLimiterMiddleware(options?: RateLimiterOptions) {
         const dur = Math.round(performance.now() - t0);
         logger.debug('[RATE] OK', {
           ns: cfg.namespace,
-          key,
           cost,
           rem: Math.floor(remaining),
           ms: dur,
@@ -328,7 +329,6 @@ export function rateLimiterMiddleware(options?: RateLimiterOptions) {
       const dur = Math.round(performance.now() - t0);
       logger.debug('[RATE] THROTTLE', {
         ns: cfg.namespace,
-        key,
         cost,
         wait: waitSeconds.toFixed(2),
         ms: dur,

@@ -27,16 +27,13 @@ router.post('/:username/settings', async (req: Request, res: Response) => {
     res.redirect(`/user/${currentUser.username}/settings`);
   } catch (error: unknown) {
     logger.error('Error updating settings', { error });
-    const message =
-      error instanceof Error
-        ? error.message
-        : 'An unexpected error occurred while updating your settings.';
+    const message = 'An unexpected error occurred while updating your settings.';
     res.status(500).render('error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Internal Server Error',
       errormessage: message,
       errorstatus: 500,
-      errorstack: error instanceof Error ? error.stack : undefined,
+      errorstack: null,
       currentUser,
     });
   }

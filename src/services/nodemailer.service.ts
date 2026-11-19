@@ -49,6 +49,7 @@ if (!isMailerConfigured) {
 }
 
 const TEMPLATE_DIR = path.join(process.cwd(), 'src', 'assets', 'templates', 'emails');
+const TEMPLATE_NAME_PATTERN = /^[a-zA-Z0-9_-]+$/;
 
 // ============================================================
 // Transporter
@@ -80,7 +81,19 @@ async function loadTemplate(templateName: string): Promise<string> {
   return await templateLock.runExclusive(async () => {
     if (templateCache.has(templateName)) return templateCache.get(templateName)!;
 
-    const filePath = path.join(TEMPLATE_DIR, `${templateName}.html`);
+    if (!TEMPLATE_NAME_PATTERN.test(templateName)) {
+      logger.error('[MAILER] Invalid template name', {
+        templateNameLength: templateName.length,
+      });
+      throw new Error('Invalid template name');
+    }
+
+    const templateRoot = path.resolve(TEMPLATE_DIR);
+    const filePath = path.resolve(templateRoot, `${templateName}.html`);
+    if (!filePath.startsWith(templateRoot + path.sep)) {
+      logger.error('[MAILER] Template path escapes template directory');
+      throw new Error('Invalid template name');
+    }
     const result = await tryAsync(() => fs.readFile(filePath, 'utf8'));
 
     if (!result.ok) {

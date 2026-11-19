@@ -35,7 +35,7 @@ router.get('/', (_req: Request, res: Response) => {
       errortitle: 'Fehler',
       errormessage: 'Ein Fehler ist beim Laden der Seite für die Release-Wartung aufgetreten.',
       errorstatus: 500,
-      errorstack: error.message,
+      errorstack: null,
     });
   }
 });

@@ -53,9 +53,9 @@ router.get('/', async (_req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der Versionen',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -87,9 +87,9 @@ router.get('/create', async (_req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Öffnen des Formulars',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -143,9 +143,9 @@ router.get('/update/:id', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Laden der Version',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });
@@ -175,9 +175,9 @@ router.get('/delete/:id', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Fehler beim Löschen der Version',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });

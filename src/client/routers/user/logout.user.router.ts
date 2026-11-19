@@ -11,12 +11,11 @@ router.get('/:username/logout-all-sessions', (req: Request, res: Response) => {
   req.logout((error?: unknown) => {
     if (error) {
       logger.error('Error logging out', { error });
-      const message =
-        error instanceof Error ? error.message : 'An unexpected error occurred while logging out.';
+      const message = 'An unexpected error occurred while logging out.';
       res.status(500).render('error', {
         errortitle: 'Logout Error',
         errormessage: message,
-        errorstack: error instanceof Error ? error.stack : undefined,
+        errorstack: null,
       });
       return;
     }

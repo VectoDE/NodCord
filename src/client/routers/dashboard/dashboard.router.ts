@@ -71,9 +71,9 @@ router.get('/', async (req: Request, res: Response) => {
     res.status(500).render('index/error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Dashboard Error',
-      errormessage: error.message,
+      errormessage: 'Ein interner Fehler ist aufgetreten. Bitte versuche es später erneut.',
       errorstatus: 500,
-      errorstack: error.stack,
+      errorstack: null,
     });
   }
 });

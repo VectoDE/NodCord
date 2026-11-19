@@ -34,7 +34,7 @@ router.get(':username/send-verification', async (req: Request, res: Response) =>
     res.redirect(`/user/${user.username}/settings`);
   } catch (error: unknown) {
     logger.error('Error sending verification email', { error });
-    const message = error instanceof Error ? error.message : 'Failed to send verification email.';
+    const message = 'Failed to send verification email.';
     res.status(500).render('error', {
       logoImage: '/assets/img/logo.png',
       errortitle: 'Error',

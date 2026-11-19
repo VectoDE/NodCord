@@ -1,10 +1,13 @@
 import { Router } from 'express';
 
+import { routerLimiter } from '@/middlewares/httpRateLimit.middleware';
 import { requireAuth } from '@/middlewares/authentication.middleware';
 import { validationMiddleware, v } from '@/middlewares/validation.middleware';
 import { standardResponse } from '@/utils/response.util';
 
 const router = Router();
+
+router.use(routerLimiter);
 
 router.post(
   '/profile',
