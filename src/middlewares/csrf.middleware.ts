@@ -15,7 +15,7 @@
  * - async.util           : safeAsync
  * - response.util        : standardResponse
  * - sync.util            : Once, Mutex (secret init & rotation safety)
- * - baseUrl.util (opt.)  : getBaseUrl() for domain scoping
+ * - origin.util          : Origin-Normalisierung und Herkunftsprüfung
  *
  * Usage (Express 5):
  *   app.use(csrfIssueToken());              // sets/refreshes CSRF cookie & exposes res.locals.csrfToken
@@ -36,17 +36,9 @@ import type { Request, Response, NextFunction } from 'express';
 import logger from '@/services/logger.service';
 
 import { safeAsync } from '@/utils/async.util';
+import { isAllowedMutationSource, normalizeOrigin, parseOriginList } from '@/utils/origin.util';
 import { standardResponse } from '@/utils/response.util';
 import { Once, Mutex } from '@/utils/sync.util';
-
-// Optional base URL util (best-effort)
-let getBaseUrlSafe: (() => string) | null = null;
-try {
-  const mod = require('@/utils/baseUrl.util');
-  if (typeof mod.getBaseUrl === 'function') getBaseUrlSafe = mod.getBaseUrl as () => string;
-} catch {
-  /* noop */
-}
 
 // ============================================================
 // Constants & Config
@@ -86,48 +78,33 @@ function timingSafeEq(a: Buffer, b: Buffer): boolean {
   return crypto.timingSafeEqual(a, b);
 }
 
-function getBaseHost(): string | null {
-  try {
-    if (getBaseUrlSafe) {
-      const u = new URL(getBaseUrlSafe());
-      return u.host.toLowerCase();
-    }
-    const envUrl = process.env['BASE_URL'];
-    if (envUrl) {
-      const u = new URL(envUrl);
-      return u.host.toLowerCase();
-    }
-    const h = process.env['CLIENT_BASE_URL'] ?? 'localhost';
-    const p = process.env['CLIENT_PORT'] ?? '3000';
-    return `${h}${p ? `:${p}` : ''}`.toLowerCase();
-  } catch {
-    return null;
+/**
+ * Origins, die zustandsändernde Anfragen schicken dürfen: der eigene Origin
+ * (aus Host-Header und Protokoll, `trust proxy` beachtet), BASE_URL,
+ * API_BASE_URL, CLIENT_BASE_URL (jeweils nur als vollständige URL),
+ * CLIENT_TRUSTED_ORIGINS und die übergebenen `trustedOrigins`.
+ */
+function allowedOrigins(req: Request, trusted: ReadonlySet<string>): Set<string> {
+  const allowed = new Set(trusted);
+  for (const key of ['BASE_URL', 'API_BASE_URL', 'CLIENT_BASE_URL']) {
+    const origin = normalizeOrigin(process.env[key]);
+    if (origin) allowed.add(origin);
   }
+  for (const origin of parseOriginList(process.env['CLIENT_TRUSTED_ORIGINS'])) allowed.add(origin);
+  const host = req.get('host');
+  const self = host ? normalizeOrigin(`${req.protocol}://${host}`) : null;
+  if (self) allowed.add(self);
+  return allowed;
 }
 
-/** Strict same-origin check for cookie-credentialed requests. */
-function isSameOrigin(req: Request): boolean {
-  const origin = (req.headers['origin'] as string | undefined)?.toLowerCase();
-  const referer = (req.headers['referer'] as string | undefined)?.toLowerCase();
-  const hostHdr = (req.headers['host'] as string | undefined)?.toLowerCase();
-  const baseHost = getBaseHost();
-
-  // If no Origin/Referer, we can't prove cross-origin; allow by host match (server-to-server)
-  if (!origin && !referer) return !baseHost || (hostHdr ? hostHdr === baseHost : true);
-
-  const ref =
-    origin ??
-    (referer
-      ? (() => {
-          try {
-            return new URL(referer).host.toLowerCase();
-          } catch {
-            return '';
-          }
-        })()
-      : '');
-  if (!ref) return false;
-  return !baseHost || ref === baseHost;
+/** Herkunftsprüfung für zustandsändernde Anfragen (fail-closed). */
+function isSameOrigin(req: Request, trusted: ReadonlySet<string>): boolean {
+  return isAllowedMutationSource({
+    origin: req.get('origin') ?? undefined,
+    referer: req.get('referer') ?? undefined,
+    hasCookie: Boolean(req.get('cookie')),
+    allowed: allowedOrigins(req, trusted),
+  });
 }
 
 // ============================================================
@@ -227,6 +204,8 @@ export interface CsrfVerifyOptions {
   maxAgeMs?: number | undefined;
   /** Enforce Origin/Referer same-origin for cookie credentialed requests (default true) */
   enforceSameOrigin?: boolean | undefined;
+  /** Zusätzlich erlaubte Origins (z. B. die CORS-Allowlist des Frontends) */
+  trustedOrigins?: readonly string[] | undefined;
   /** Header override (default x-csrf-token) */
   headerName?: string | undefined;
   /** Cookie override (default csrf_token) */
@@ -269,7 +248,7 @@ export function csrfIssueToken(cookieName = CSRF_COOKIE) {
  * Validates:
  *  - Method is protected (POST/PUT/PATCH/DELETE by default)
  *  - Token exists in both cookie and header and is valid & fresh
- *  - (optional) Same-origin via Origin/Referer vs server host
+ *  - (optional) Herkunft via Origin/Referer gegen die erlaubten Origins
  */
 export function csrfVerify(opts?: CsrfVerifyOptions) {
   const exclude = opts?.exclude ?? [];
@@ -277,6 +256,11 @@ export function csrfVerify(opts?: CsrfVerifyOptions) {
   const enforceSO = opts?.enforceSameOrigin ?? true;
   const headerName = (opts?.headerName ?? CSRF_HEADER).toLowerCase();
   const cookieName = opts?.cookieName ?? CSRF_COOKIE;
+  const trusted = new Set(
+    (opts?.trustedOrigins ?? [])
+      .map((o) => normalizeOrigin(o))
+      .filter((o): o is string => o !== null),
+  );
 
   return safeAsync(async (req: Request, res: Response, next: NextFunction) => {
     // Fast path: safe methods skip verification but still require token issuance upstream
@@ -293,11 +277,11 @@ export function csrfVerify(opts?: CsrfVerifyOptions) {
     }
 
     // Same-origin (defense-in-depth when cookies are involved)
-    if (enforceSO && !isSameOrigin(req)) {
+    if (enforceSO && !isSameOrigin(req, trusted)) {
       logger.warn('[CSRF] Same-origin check failed.', {
         path,
         origin: req.headers['origin'],
-        referer: req.headers['referer'],
+        hasReferer: Boolean(req.headers['referer']),
       });
       return standardResponse(res, 403, { error: 'CSRF origin check failed' });
     }
