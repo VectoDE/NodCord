@@ -7,6 +7,7 @@ import passport from 'passport';
 import { compressionMiddleware } from '@/middlewares/compression.middleware';
 import { csrfIssueToken, csrfVerify, sendCsrfToken } from '@/middlewares/csrf.middleware';
 import { resolveTrustProxyHops } from '@/utils/trustProxy.util';
+import { routerLimiter } from '@/middlewares/httpRateLimit.middleware';
 import { loggingMiddleware } from '@/middlewares/logging.middleware';
 import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
 import { requireAuth } from '@/middlewares/authentication.middleware';
@@ -102,8 +103,10 @@ crudRoutes.forEach(({ path, router }) => {
     return;
   }
 
+  // Eigenes Router-Limit vor der Anmeldung: begrenzt auch Versuche mit
+  // ungültigen Tokens (zusätzlich zum globalen Limit).
   const guards = crudRoutePolicies[path]?.() ?? [];
-  app.use(path, requireAuth(), ...guards, router);
+  app.use(path, routerLimiter, requireAuth(), ...guards, router);
 });
 
 // Monitoring-Routen (/system/*) registriert startMonitor() erst beim Start.
