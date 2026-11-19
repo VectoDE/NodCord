@@ -145,7 +145,6 @@
     "stripe": "^19.1.0",
     "swagger-ui-express": "^5.0.1",
     "systeminformation": "^5.27.11",
-    "translate-google": "^1.5.0",
     "uuid": "^13.0.0",
     "validator": "^13.15.15",
     "web-vitals": "^5.1.0",
