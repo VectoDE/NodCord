@@ -230,7 +230,8 @@ function startSweeper(
       logger.debug('[RATE] GC', { ns, removed, size: reg.size });
     }
   }, cadenceSec * 1000);
-  // Node won't keep process alive for active interval by default in Node >= 11
+  // Der Sweeper soll den Prozess nicht am Beenden hindern.
+  timer.unref();
   sweepers.set(ns, timer);
 }
 

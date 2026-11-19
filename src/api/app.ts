@@ -5,12 +5,9 @@ import http from 'node:http';
 import passport from 'passport';
 
 import { compressionMiddleware } from '@/middlewares/compression.middleware';
-import { corsMiddleware } from '@/middlewares/cors.middleware';
 import { csrfIssueToken, csrfVerify, sendCsrfToken } from '@/middlewares/csrf.middleware';
-import { globalApiLimiter } from '@/middlewares/httpRateLimit.middleware';
 import { resolveTrustProxyHops } from '@/utils/trustProxy.util';
 import { loggingMiddleware } from '@/middlewares/logging.middleware';
-import { rateLimiterMiddleware } from '@/middlewares/rateLimiter.middleware';
 import { securityHeaderMiddleware } from '@/middlewares/securityHeader.middleware';
 import { requireAuth } from '@/middlewares/authentication.middleware';
 import { requireAnyRole } from '@/middlewares/role.middleware';
@@ -23,6 +20,7 @@ import { safeAsync } from '@/utils/async.util';
 import { Once } from '@/utils/sync.util';
 import { standardResponse } from '@/utils/response.util';
 import crudRoutes from '@/api/routers/index';
+import { applyCorsAndRateLimits } from '@/api/pipeline';
 
 import '@/configs/passport.config';
 
@@ -65,9 +63,9 @@ if (isProd) {
 }
 
 app.use(loggingMiddleware());
-app.use(globalApiLimiter);
-app.use(rateLimiterMiddleware({ tokensPerSecond: 10, burst: 30 }));
-app.use(corsMiddleware({ origin: ['https://nodcord.hauknetz.de', 'http://localhost:3000'] }));
+applyCorsAndRateLimits(app, {
+  corsOrigins: ['https://nodcord.hauknetz.de', 'http://localhost:3000'],
+});
 app.use(securityHeaderMiddleware());
 app.use(compressionMiddleware({ minSize: 1024 }));
 app.use(csrfIssueToken());
@@ -108,6 +106,11 @@ crudRoutes.forEach(({ path, router }) => {
   app.use(path, requireAuth(), ...guards, router);
 });
 
+// Monitoring-Routen (/system/*) registriert startMonitor() erst beim Start.
+// Der Router hängt deshalb schon hier vor dem 404-Handler (#89).
+const monitorRouter = express.Router();
+app.use(monitorRouter);
+
 app.use((_req, res) => standardResponse(res, 404, { error: 'Not Found' }, 'Not Found'));
 
 app.use(
@@ -132,7 +135,7 @@ export const createServer = safeAsync(async () => {
 
   await initOnce.run(async () => {
     logger.info('[APP] Starting API Server...', { port: PORT, env: ENV });
-    await startMonitor(app, { routePrefix: '/system', protectMetrics: true });
+    await startMonitor(monitorRouter, { routePrefix: '/system', protectMetrics: true });
   });
 
   await new Promise<void>((resolve) => server.listen(PORT, resolve));
