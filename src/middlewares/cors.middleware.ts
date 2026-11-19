@@ -235,6 +235,13 @@ export function corsMiddleware(options?: CorsOptions) {
   // ----------------------------------------------------------
   if (opts.credentials) {
     const allowList = credentialedAllowList(opts);
+    // Normalisierter Origin -> Allowlist-Eintrag. Der gesetzte Header-Wert
+    // kommt so nachweislich aus der Konfiguration, nie aus dem Request.
+    const allowMap = new Map<string, string>();
+    for (const entry of allowList) {
+      const normalized = normalizeOrigin(entry);
+      if (normalized && normalized !== 'null') allowMap.set(normalized, normalized);
+    }
 
     return safeAsync(async (req: Request, res: Response, next: NextFunction) => {
       const start = performance.now();
@@ -246,7 +253,8 @@ export function corsMiddleware(options?: CorsOptions) {
 
       await initOnce.run(async () => logInit(opts));
 
-      const allowOrigin = findAllowedOrigin(originHeader, allowList);
+      const requested = normalizeOrigin(originHeader);
+      const allowOrigin = requested ? allowMap.get(requested) : undefined;
       res.setHeader('Vary', 'Origin');
       if (!allowOrigin) {
         if (opts.verboseLog) logger.debug('[CORS] Blocked origin', { origin: originHeader });

@@ -52,13 +52,20 @@ client.use(cookieParser());
 // --------------------------------------------------------
 // Wird erst beim ersten Request bzw. in startClient() aufgebaut, damit die
 // Umgebungsvariablen (dotenv) sicher geladen sind. Fehlkonfigurationen in
-// Produktion führen so in startClient() zum Startabbruch.
+// Produktion (jedes NODE_ENV außer development/test) führen so in
+// startClient() zum Startabbruch.
 
 const MIN_SESSION_SECRET_LENGTH = 32;
 const PLACEHOLDER_SECRETS = new Set(['session_secret', 'change_me', 'changeme', 'secret']);
 
-function isProduction(): boolean {
-  return process.env['NODE_ENV'] === 'production';
+/**
+ * Nur ausdrücklich gesetzte Entwicklungs-/Testumgebungen gelten als unsicher
+ * erlaubt. Fehlt NODE_ENV oder hat einen anderen Wert, gelten die strengen
+ * Regeln wie in Produktion (fail-closed).
+ */
+function isDevelopmentOrTest(): boolean {
+  const env = process.env['NODE_ENV'];
+  return env === 'development' || env === 'test';
 }
 
 /** Liefert das Session-Secret; in Produktion fail-closed ohne Fallback. */
@@ -69,19 +76,19 @@ function resolveSessionSecret(): string {
 
   if (secret && !weak) return secret;
 
-  if (isProduction()) {
+  if (!isDevelopmentOrTest()) {
     throw new Error(
       `[CLIENT] SESSION_SECRET fehlt oder ist zu schwach (mindestens ${MIN_SESSION_SECRET_LENGTH} Zeichen, kein Platzhalter). Start abgebrochen.`,
     );
   }
 
   if (secret) {
-    logger.warn('[CLIENT] SESSION_SECRET ist schwach. In Produktion würde der Start abgebrochen.');
+    logger.warn('[CLIENT] SESSION_SECRET ist schwach. Außerhalb von development/test würde der Start abgebrochen.');
     return secret;
   }
 
   logger.warn(
-    '[CLIENT] SESSION_SECRET fehlt. Es wird ein zufälliges, flüchtiges Secret verwendet (nur außerhalb von Produktion).',
+    '[CLIENT] SESSION_SECRET fehlt. Es wird ein zufälliges, flüchtiges Secret verwendet (nur bei NODE_ENV=development oder test).',
   );
   return crypto.randomBytes(48).toString('hex');
 }
@@ -121,7 +128,7 @@ export function initClientSecurity(): ClientSecurityStack {
       cookie: {
         httpOnly: true,
         sameSite: 'lax',
-        secure: isProduction(),
+        secure: !isDevelopmentOrTest(),
       },
     }),
     cors: corsMiddleware({ credentials: true, origin: trustedOrigins, verboseLog: false }),
